@@ -4,10 +4,24 @@ trigger: always_on
 
 # Course Notes Manager
 
+## Architecture: Modular One-HTML-File-Per-Module
+To prevent massive files (thousands of LOC) and reduce syntax errors, **each lecture / module is stored in its own standalone HTML file**:
+```text
+Notes/<Course>/
+├── 1- Introduction to DW.html        (~1,500 lines)
+├── 2- Dimensional Modeling.html      (~1,500 lines)
+└── 3- ETL Architecture.html          (~1,500 lines)
+```
+
 ## When the user shares course content:
-1. Find/create `Notes/<Course>/<Descriptive Lecture Name>.html` (e.g. `Notes/<Course>/1- Introduction to DW.html`). Do not use `index.html` as the default file name. Use the template below for new files.
-2. **Read the existing file first.** Append new `.topic-card` sections after existing ones in `#main-content`. Add matching `<li>` to `#nav-list`. Increment IDs (`topic-1`, `topic-2`…). Never delete existing content.
-3. If a book/reference is provided, cite it at the top of generated sections.
+1. **Determine the target file**:
+   - If content belongs to an existing lecture/module: open `Notes/<Course>/<N>- <Module Name>.html`, append new `.topic-card` sections after existing ones in `#main-content`, and add matching `<li>` to `#nav-list`.
+   - If content is a new lecture/module: create a new file `Notes/<Course>/<N>- <Descriptive Lecture Name>.html` using the template below. **Never use `index.html` as the default file name.**
+2. **Read the existing file first before making edits.** Never delete or overwrite existing content. Increment IDs (`topic-1`, `topic-2`…).
+3. **Cross-Module Navigation in Sidebar**:
+   - The current module's topics are listed under an open collapsible `.nav-section` with `.nav-sublist` calling `showTopic('topic-X')`.
+   - Other modules in the course are listed as cross-file `.nav-module-link` anchors (e.g. `<a class="nav-module-link" href="./2- Dimensional Modeling.html"><span class="nav-num">02</span>Dimensional Modeling</a>`).
+4. If a book/reference/syllabus is provided, cite it at the top of generated sections.
 
 ## Design Philosophy
 - **Sleek Dark Zinc** palette — neutral deep darks with vibrant semantic accents.
@@ -18,11 +32,11 @@ trigger: always_on
   - `--qst-bd`, `--qst-bg` (vivid violet): Questions / think-about-it (`details`).
   - `--wrn-bd`, `--wrn-bg` (amber): Warnings / important (`.note-box`).
   - `--crit-bd`, `--crit-bg` (red-orange): Critical warnings (`.warning-box`).
-- **Full-width screen coverage**: Text and topic cards span the full available width of the screen (`width: 100%`). Do not constrain `.module-container` or `.topic-card` with artificial `max-width: 860px`.
-- **Generous whitespace**: 36px/40px card padding, 18px callout margins, 1.75 line-height on body text. Content should breathe, never feel cramped.
-- **Subtle interactivity**: cards glow brand color on hover, details toggle brand on hover, back-to-top fades in. Transitions stay ≤0.3s — smooth but snappy.
-- **Typography hierarchy**: Poppins at 600/700 for headings, 400 for body, 300 for muted text. This creates a clear visual flow so students can scan quickly.
-- **Multi-page architecture**: Topics are loaded dynamically as single views rather than all scrolling at once, with next/previous buttons for pagination.
+- **Full-width screen coverage**: Text and topic cards span the full available width of the screen (`width: 100%`). Do not constrain `.module-container` or `.topic-card` with artificial `max-width`.
+- **Generous whitespace**: 36px/40px card padding, 18px callout margins, 1.75 line-height on body text, 96px bottom padding to prevent fixed elements from overlapping content.
+- **Subtle interactivity**: cards glow brand color on hover, active sidebar topics highlight in terracotta with indicator bar and solid badge, back-to-top fades in smoothly. Transitions stay ≤0.3s.
+- **Typography hierarchy**: Poppins at 600/700 for headings, 400 for body, 300 for muted text.
+- **Multi-page architecture**: Topics within a module are loaded dynamically as single views with Next/Previous pagination.
 
 ## Writing & Explanation Style
 - Write as if you're an expert tutor — **clear, conversational, thorough**. Avoid dry textbook tone.
@@ -49,7 +63,7 @@ trigger: always_on
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>[Course] — Notes</title>
+    <title>[Course] — [Module Title]</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -78,9 +92,10 @@ trigger: always_on
         />
       </div>
       <ul class="nav-list" id="nav-list">
+        <!-- Current Module (Active & Expandable) -->
         <li class="nav-section">
           <div class="nav-section-title" onclick="toggleSection(this)">
-            <span>New Module</span>
+            <span>Module 1 — Title</span>
             <span class="chevron">▼</span>
           </div>
           <ul class="nav-sublist">
@@ -91,15 +106,22 @@ trigger: always_on
             </li>
           </ul>
         </li>
+
+        <!-- Other Course Modules (Cross-File Links) -->
+        <!-- <li>
+          <a class="nav-module-link" href="./2- Dimensional Modeling.html">
+            <span class="nav-num">02</span>Dimensional Modeling
+          </a>
+        </li> -->
       </ul>
     </div>
     <div id="main-content">
-      <div class="module-container" id="module-new">
+      <div class="module-container" id="module-1">
         <div class="module-header">
           <div class="module-eyebrow">[Course]</div>
-          <h1 class="module-title">New Module</h1>
+          <h1 class="module-title">Module 1 — Title</h1>
         </div>
-        <!-- Each topic card: -->
+        <!-- Topic Card: -->
         <div class="topic-card" id="topic-1">
           <h2><span class="topic-num">1</span>Topic Title</h2>
           <p class="topic-subtitle">One-line descriptor</p>
@@ -159,8 +181,9 @@ trigger: always_on
       ↑
     </button>
     <script>
-      const topics = ["topic-1"]; // e.g. ["topic-1","topic-2"]
+      const topics = ["topic-1"]; // e.g. ["topic-1", "topic-2"]
       let currentTopicIndex = 0;
+
       function getTopicTitle(id) {
         const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
                      document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
@@ -184,6 +207,7 @@ trigger: always_on
         }
         return 'Topic';
       }
+
       function showTopic(id) {
         document
           .querySelectorAll(".topic-card")
@@ -191,6 +215,7 @@ trigger: always_on
         const t = document.getElementById(id);
         if (t) t.style.display = "block";
         currentTopicIndex = topics.indexOf(id);
+
         document
           .querySelectorAll(".nav-sublist a")
           .forEach((a) => a.classList.remove("active"));
@@ -205,22 +230,26 @@ trigger: always_on
             if (chevron) chevron.style.transform = 'rotate(0deg)';
           }
         }
-        const pb = document.getElementById("prev-btn"),
-          nb = document.getElementById("next-btn"),
-          pt = document.getElementById("prev-title"),
-          nt = document.getElementById("next-title");
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
         if (currentTopicIndex > 0) {
           pb.style.display = "flex";
           if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
         } else {
           pb.style.display = "none";
         }
+
         if (currentTopicIndex < topics.length - 1) {
           nb.style.display = "flex";
           if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
         } else {
           nb.style.display = "none";
         }
+
         document
           .getElementById("main-content")
           .scrollTo({ top: 0, behavior: "smooth" });
@@ -229,16 +258,19 @@ trigger: always_on
           if (sb) sb.classList.remove('open');
         }
       }
+
       function goPrev() {
         if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
       }
+
       function goNext() {
         if (currentTopicIndex < topics.length - 1)
           showTopic(topics[currentTopicIndex + 1]);
       }
+
       function toggleSection(el) {
-        const s = el.nextElementSibling,
-          c = el.querySelector(".chevron");
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
         if (s.style.display === "none") {
           s.style.display = "block";
           c.style.transform = "rotate(0deg)";
@@ -247,20 +279,20 @@ trigger: always_on
           c.style.transform = "rotate(-90deg)";
         }
       }
+
       function filterContent() {
         const q = document.getElementById("search-input").value.toLowerCase();
         document
-          .querySelectorAll(".nav-sublist li")
-          .forEach(
-            (i) =>
-              (i.style.display = i.textContent.toLowerCase().includes(q)
-                ? ""
-                : "none"),
-          );
+          .querySelectorAll(".nav-sublist li, .nav-list > li")
+          .forEach((i) => {
+            i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+          });
       }
+
       if (topics.length > 0) showTopic(topics[0]);
-      const mc = document.getElementById("main-content"),
-        bb = document.getElementById("back-to-top");
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
       mc.addEventListener(
         "scroll",
         () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
@@ -268,5 +300,4 @@ trigger: always_on
     </script>
   </body>
 </html>
-```
 ```
