@@ -1834,6 +1834,30 @@ how many processors you add. This is the "Amdahl ceiling."</pre
       ];
       let currentTopicIndex = 0;
 
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
       function showTopic(id) {
         document
           .querySelectorAll(".topic-card")
@@ -1844,35 +1868,30 @@ how many processors you add. This is the "Amdahl ceiling."</pre
         document
           .querySelectorAll(".nav-sublist a")
           .forEach((a) => a.classList.remove("active"));
-        const lk = document.querySelector(
-          ".nav-sublist a[onclick=\"showTopic('" + id + "');return false;\"]",
-        );
-        if (lk) lk.classList.add("active");
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
         const pb = document.getElementById("prev-btn");
         const nb = document.getElementById("next-btn");
         const pt = document.getElementById("prev-title");
         const nt = document.getElementById("next-title");
         if (currentTopicIndex > 0) {
           pb.style.display = "flex";
-          const pl = document.querySelector(
-            ".nav-sublist a[onclick=\"showTopic('" +
-              topics[currentTopicIndex - 1] +
-              "');return false;\"]",
-          );
-          if (pt && pl)
-            pt.textContent = pl.innerText.replace(/^\d+\s*/, "").trim();
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
         } else {
           pb.style.display = "none";
         }
         if (currentTopicIndex < topics.length - 1) {
           nb.style.display = "flex";
-          const nl = document.querySelector(
-            ".nav-sublist a[onclick=\"showTopic('" +
-              topics[currentTopicIndex + 1] +
-              "');return false;\"]",
-          );
-          if (nt && nl)
-            nt.textContent = nl.innerText.replace(/^\d+\s*/, "").trim();
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
         } else {
           nb.style.display = "none";
         }

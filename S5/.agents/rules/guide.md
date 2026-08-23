@@ -5,7 +5,7 @@ trigger: always_on
 # Course Notes Manager
 
 ## When the user shares course content:
-1. Find/create `Notes/<Course>/index.html`. Use the template below for new files.
+1. Find/create `Notes/<Course>/<Descriptive Lecture Name>.html` (e.g. `Notes/<Course>/1- Introduction to DW.html`). Do not use `index.html` as the default file name. Use the template below for new files.
 2. **Read the existing file first.** Append new `.topic-card` sections after existing ones in `#main-content`. Add matching `<li>` to `#nav-list`. Increment IDs (`topic-1`, `topic-2`…). Never delete existing content.
 3. If a book/reference is provided, cite it at the top of generated sections.
 
@@ -161,6 +161,29 @@ trigger: always_on
     <script>
       const topics = ["topic-1"]; // e.g. ["topic-1","topic-2"]
       let currentTopicIndex = 0;
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
       function showTopic(id) {
         document
           .querySelectorAll(".topic-card")
@@ -171,45 +194,40 @@ trigger: always_on
         document
           .querySelectorAll(".nav-sublist a")
           .forEach((a) => a.classList.remove("active"));
-        const lk = document.querySelector(
-          `.nav-sublist a[onclick="showTopic('${id}')"]`,
-        );
-        if (lk) lk.classList.add("active");
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
         const pb = document.getElementById("prev-btn"),
           nb = document.getElementById("next-btn"),
           pt = document.getElementById("prev-title"),
           nt = document.getElementById("next-title");
         if (currentTopicIndex > 0) {
           pb.style.display = "flex";
-          const pl = document.querySelector(
-            `.nav-sublist a[onclick="showTopic('${topics[currentTopicIndex - 1]}')"]`,
-          );
-          if (pt && pl)
-            pt.textContent = pl.querySelector(".nav-num")
-              ? pl.textContent
-                  .replace(pl.querySelector(".nav-num").textContent, "")
-                  .trim()
-              : pl.innerText.trim();
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
         } else {
           pb.style.display = "none";
         }
         if (currentTopicIndex < topics.length - 1) {
           nb.style.display = "flex";
-          const nl = document.querySelector(
-            `.nav-sublist a[onclick="showTopic('${topics[currentTopicIndex + 1]}')"]`,
-          );
-          if (nt && nl)
-            nt.textContent = nl.querySelector(".nav-num")
-              ? nl.textContent
-                  .replace(nl.querySelector(".nav-num").textContent, "")
-                  .trim()
-              : nl.innerText.trim();
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
         } else {
           nb.style.display = "none";
         }
         document
           .getElementById("main-content")
           .scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
       }
       function goPrev() {
         if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);

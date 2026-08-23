@@ -188,6 +188,30 @@
       const topics = ["topic-1", "topic-2"]; // add more as needed
       let currentTopicIndex = 0;
 
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
       function showTopic(id) {
         document
           .querySelectorAll(".topic-card")
@@ -199,10 +223,17 @@
         document
           .querySelectorAll(".nav-sublist a")
           .forEach((a) => a.classList.remove("active"));
-        const lk = document.querySelector(
-          `.nav-sublist a[onclick="showTopic('${id}')"]`,
-        );
-        if (lk) lk.classList.add("active");
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
 
         const pb = document.getElementById("prev-btn");
         const nb = document.getElementById("next-btn");
@@ -211,30 +242,14 @@
 
         if (currentTopicIndex > 0) {
           pb.style.display = "flex";
-          const pl = document.querySelector(
-            `.nav-sublist a[onclick="showTopic('${topics[currentTopicIndex - 1]}')"]`,
-          );
-          if (pt && pl)
-            pt.textContent = pl.querySelector(".nav-num")
-              ? pl.textContent
-                  .replace(pl.querySelector(".nav-num").textContent, "")
-                  .trim()
-              : pl.innerText.trim();
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
         } else {
           pb.style.display = "none";
         }
 
         if (currentTopicIndex < topics.length - 1) {
           nb.style.display = "flex";
-          const nl = document.querySelector(
-            `.nav-sublist a[onclick="showTopic('${topics[currentTopicIndex + 1]}')"]`,
-          );
-          if (nt && nl)
-            nt.textContent = nl.querySelector(".nav-num")
-              ? nl.textContent
-                  .replace(nl.querySelector(".nav-num").textContent, "")
-                  .trim()
-              : nl.innerText.trim();
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
         } else {
           nb.style.display = "none";
         }
@@ -242,6 +257,10 @@
         document
           .getElementById("main-content")
           .scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
       }
 
       function goPrev() {
