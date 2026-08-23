@@ -1,0 +1,1919 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing &amp; Business Intelligence — Notes</title>
+    <meta
+      name="description"
+      content="Comprehensive notes for Data Warehousing and Business Intelligence covering DW architecture, source data, ETL, staging, data marts and more."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button
+      id="menu-toggle"
+      onclick="document.getElementById('sidebar').classList.toggle('open')"
+    >
+      &#9776;
+    </button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">Data Warehousing &amp; BI</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics&#8230;"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 1 &mdash; Intro to DW</span>
+            <span class="chevron">&#9660;</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a
+                href="#"
+                onclick="
+                  showTopic('topic-1');
+                  return false;
+                "
+                ><span class="nav-num">1</span>What is a Data Warehouse?</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                onclick="
+                  showTopic('topic-2');
+                  return false;
+                "
+                ><span class="nav-num">2</span>Source Data Types</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                onclick="
+                  showTopic('topic-3');
+                  return false;
+                "
+                ><span class="nav-num">3</span>Target System Qualities</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                onclick="
+                  showTopic('topic-4');
+                  return false;
+                "
+                ><span class="nav-num">4</span>Data Staging &amp; ETL</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                onclick="
+                  showTopic('topic-5');
+                  return false;
+                "
+                ><span class="nav-num">5</span>DW Building Blocks</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                onclick="
+                  showTopic('topic-6');
+                  return false;
+                "
+                ><span class="nav-num">6</span>DW vs Data Marts</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                onclick="
+                  showTopic('topic-7');
+                  return false;
+                "
+                ><span class="nav-num">7</span>Business Intelligence</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                onclick="
+                  showTopic('topic-8');
+                  return false;
+                "
+                ><span class="nav-num">8</span>Why is DW Hard?</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-intro">
+        <div class="module-header">
+          <div class="module-eyebrow">
+            Data Warehousing &amp; Business Intelligence
+          </div>
+          <h1 class="module-title">
+            Module 1 &mdash; Introduction to Data Warehousing
+          </h1>
+        </div>
+
+        <!-- TOPIC 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>What is a Data Warehouse?</h2>
+          <p class="topic-subtitle">
+            The big picture &mdash; what DW is, why it exists, and how it
+            differs from operational systems
+          </p>
+          <p>
+            Imagine your company has dozens of separate databases &mdash; one
+            for sales, one for HR, one for inventory, one for payroll. Each
+            speaks a different language, uses a different format, and lives on
+            different hardware. A <strong>Data Warehouse (DW)</strong> is the
+            solution: it pulls all that scattered data together, cleans it up,
+            and makes it available for strategic decision-making. Think of it as
+            the &ldquo;one source of truth&rdquo; for the whole organisation.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Data Warehouse:</strong> A complete repository of corporate
+            data extracted from transaction systems that is available for ad-hoc
+            access by &ldquo;knowledge workers.&rdquo; It is an information
+            environment that provides an integrated, consistent, and historical
+            view of enterprise data optimised for decision-support queries
+            &mdash; <em>without</em> hindering day-to-day operational systems.
+          </div>
+          <h3>Key Characteristics</h3>
+          <ul>
+            <li>
+              Provides an <strong>integrated and total view</strong> of the
+              enterprise
+            </li>
+            <li>
+              Makes <strong>current and historical data</strong> easily
+              available for decision-making
+            </li>
+            <li>
+              Enables decision-support transactions
+              <strong>without hindering operational systems</strong>
+            </li>
+            <li>
+              Renders the organisation&rsquo;s information
+              <strong>consistent</strong>
+            </li>
+            <li>
+              Presents a <strong>flexible, interactive</strong> source of
+              strategic information
+            </li>
+          </ul>
+          <h3>DW is an Environment, Not a Product</h3>
+          <p>
+            A DW is not a piece of software you buy off the shelf. It is a
+            <strong>computing environment</strong> &mdash; an assemblage of
+            hardware, software, people, and processes built around the needs of
+            the decision-maker. It blends: data acquisition, data modelling,
+            data cleaning, metadata management, storage management, and
+            application tools.
+          </p>
+          <h3>Operational Systems vs Data Warehouse</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Operational (OLTP)</th>
+                <th>Data Warehouse (DSS)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Purpose</td>
+                <td>Run the business (&ldquo;making the wheels turn&rdquo;)</td>
+                <td>
+                  Analyse the business (&ldquo;watching the wheels turn&rdquo;)
+                </td>
+              </tr>
+              <tr>
+                <td>Data Content</td>
+                <td>Current values</td>
+                <td>Archived, derived, summarised</td>
+              </tr>
+              <tr>
+                <td>Data Structure</td>
+                <td>Optimised for transactions</td>
+                <td>Optimised for complex queries</td>
+              </tr>
+              <tr>
+                <td>Access Frequency</td>
+                <td>High (many small reads/writes)</td>
+                <td>Lower (few, complex reads)</td>
+              </tr>
+              <tr>
+                <td>Updates</td>
+                <td>Continuous, real-time</td>
+                <td>Periodic / batch</td>
+              </tr>
+              <tr>
+                <td>Schema</td>
+                <td>3NF (normalised)</td>
+                <td>Star/snowflake (denormalised)</td>
+              </tr>
+              <tr>
+                <td>Users</td>
+                <td>Clerks, front-line staff</td>
+                <td>Analysts, executives, knowledge workers</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Exam anchor:</strong> Remember the one-liners from the
+            slides &mdash; &ldquo;Operational systems <em>run</em> the business;
+            DW <em>gives insight into how to improve</em> the business.&rdquo;
+            Examiners love these contrasts.
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>DW &ne; a product, &ne; just a big database.</strong>
+            Students often describe it as &ldquo;a large relational
+            database.&rdquo; It is specifically an <em>environment</em> designed
+            for decision-support, with its own schema styles (star/snowflake),
+            ETL processes, and metadata layer.
+          </div>
+          <details>
+            <summary>
+              Why was the data warehouse concept born? What problem does it
+              solve?
+            </summary>
+            <p>
+              Organisations suffer from
+              <strong>&ldquo;data glut, knowledge scarcity&rdquo;</strong>
+              &mdash; they are drowning in data spread across siloed operational
+              systems, yet executives cannot easily extract strategic insights.
+              Earlier solutions (ad-hoc reports, EIS) all failed because they
+              could not scale or stay consistent. DW was designed as a
+              <strong>decision-support environment</strong> that consolidates,
+              cleans, and makes all that data consistently accessible without
+              disrupting daily operations.
+            </p>
+          </details>
+          <details>
+            <summary>
+              What does &ldquo;7x24 availability&rdquo; mean in a DW context,
+              and why does it matter?
+            </summary>
+            <p>
+              Initially DW systems often start with a <strong>6x12</strong> (6
+              days, 12 hours) availability requirement, but they quickly evolve
+              toward a <strong>7x24</strong> (always-on) goal as business users
+              demand round-the-clock analytics access. This raises significant
+              infrastructure challenges around batch update windows, hardware
+              redundancy, and maintenance scheduling.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard: What are the tradeoffs of using a denormalised star schema
+              instead of 3NF in a DW?
+            </summary>
+            <p>
+              <strong>Pros:</strong> Dramatically faster analytical queries
+              &mdash; fewer joins, simpler query plans, better use of columnar
+              storage or bitmap indexes. <strong>Cons:</strong> Data redundancy
+              (storage cost), more complex ETL to maintain consistency, and
+              updates are harder (though DW data is mostly read-only). The
+              tradeoff is almost always worth it in a DW because query
+              performance is king, and writes happen in batch.
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                A DW is an <em>environment</em> for strategic information
+                &mdash; not a single product
+              </li>
+              <li>
+                It consolidates data from many sources into one integrated,
+                consistent view
+              </li>
+              <li>
+                Operational systems (OLTP) run the business; DW (DSS) analyses
+                and improves it
+              </li>
+              <li>
+                DW uses denormalised schemas (star/snowflake) optimised for
+                complex queries
+              </li>
+              <li>
+                DW runs separately from operational systems and is refreshed via
+                periodic batch loads
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 2 -->
+        <div class="topic-card" id="topic-2" style="display: none">
+          <h2><span class="topic-num">2</span>Source Data Types</h2>
+          <p class="topic-subtitle">
+            Where the data comes from &mdash; production, internal, archived,
+            and external sources
+          </p>
+          <p>
+            Before data lands in a warehouse it must come from
+            <em>somewhere</em>. The DW draws from four broad categories of
+            source data. Each brings its own characteristics and challenges.
+            Understanding these is the first step in designing a realistic ETL
+            strategy.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Source Data:</strong> The raw input to the data warehouse
+            pipeline &mdash; all data that will be extracted, transformed, and
+            loaded into the warehouse. Sources can be internal or external, and
+            can be current or historical.
+          </div>
+          <h3>1 &mdash; Production Data</h3>
+          <p>
+            Data generated by the organisation&rsquo;s
+            <strong>operational (OLTP) systems</strong> &mdash; ERP, CRM, POS,
+            banking transaction systems. This is typically the richest and most
+            important source.
+          </p>
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>Major Issue: Disparity.</strong> Production systems across
+            an enterprise almost never speak the same language. Different DBMS
+            vendors (Oracle, SQL Server, MySQL), different data formats (CSV,
+            XML, proprietary binary), different hardware/OS platforms, and
+            different field naming conventions (&ldquo;CUST_ID&rdquo; vs
+            &ldquo;CustomerNo&rdquo;). Integrating all of this is one of the
+            hardest problems in DW design.
+          </div>
+          <h3>2 &mdash; Internal Data</h3>
+          <p>
+            Data from &ldquo;private&rdquo; sources within the organisation that
+            are <strong>not part of formal operational systems</strong>:
+            spreadsheets, local Access databases, Word documents with embedded
+            tables, scanned records.
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Major Issues:</strong> (a) <em>Selecting</em> what internal
+            data is worth including &mdash; not all of it is relevant or
+            reliable; (b) <em>Deciding</em> whether to incorporate it at all,
+            since informal data may have quality and consistency problems
+            requiring significant cleansing effort.
+          </div>
+          <h3>3 &mdash; Archived Data</h3>
+          <p>
+            Historical backup data from operational systems &mdash; old
+            transaction records, year-end snapshots, legacy system exports. This
+            is your only window into the organisation&rsquo;s past before the DW
+            existed.
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Major Issue:</strong> <em>How much</em> archived data to
+            include. The further back you go, the older and potentially less
+            compatible the formats (magnetic tape archives from the 1990s).
+            Restoring and converting old formats is expensive; balance
+            historical depth against cost and feasibility.
+          </div>
+          <h3>4 &mdash; External Data</h3>
+          <p>
+            Data purchased or obtained from
+            <strong>third-party vendors, agencies, or public sources</strong>:
+            Nielsen market research, census demographics, weather feeds,
+            competitor benchmarks, economic indicators.
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Major Issues:</strong> (a) <em>Selecting</em> relevant
+            external datasets; (b) <em>Integrating</em> external data with
+            internal data &mdash; reconciling different keys, geographies, time
+            granularities, and naming conventions.
+          </div>
+          <h3>Side-by-Side Comparison</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Source Type</th>
+                <th>Origin</th>
+                <th>Key Challenge</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Production</td>
+                <td>Operational systems (OLTP)</td>
+                <td>
+                  Disparity &mdash; different formats, platforms, interfaces
+                </td>
+                <td>SAP ERP, POS system, banking core</td>
+              </tr>
+              <tr>
+                <td>Internal</td>
+                <td>Private org. sources</td>
+                <td>Selection + quality &mdash; informal, inconsistent</td>
+                <td>Excel reports, Access DBs, shared drives</td>
+              </tr>
+              <tr>
+                <td>Archived</td>
+                <td>Operational system backups</td>
+                <td>Deciding how far back to go; format obsolescence</td>
+                <td>Year-end tapes, legacy system exports</td>
+              </tr>
+              <tr>
+                <td>External</td>
+                <td>Third-party vendors / public</td>
+                <td>Relevance selection + integration</td>
+                <td>Nielsen, census data, market benchmarks</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Real-world source data challenge at a retail chain</h4>
+            <pre>
+Production : POS transaction DB (Oracle), CRM (Salesforce), Inventory (SAP)
+Internal   : Regional manager spreadsheets with hand-keyed promotions data
+Archived   : 5 years of old POS data on magnetic tape (legacy DB2 format)
+External   : Nielsen household spending reports, local weather API for seasonal analysis
+
+ETL must handle: converting DB2 tape archives, cleaning manager spreadsheets
+(typos, inconsistent date formats), reconciling Oracle/SAP customer IDs,
+and mapping Nielsen geographic codes to internal store codes.</pre
+            >
+          </div>
+          <details>
+            <summary>
+              Why is production data described as having a
+              &ldquo;disparity&rdquo; problem?
+            </summary>
+            <p>
+              Even within a single company, operational systems are built over
+              decades using different technologies from different vendors. The
+              result: different DBMS engines, hardware, network interfaces, data
+              formats, and field naming conventions &mdash; all describing the
+              same business entities in incompatible ways. The DW must reconcile
+              all these disparities during extraction and transformation.
+            </p>
+          </details>
+          <details>
+            <summary>
+              What decision must be made about archived data, and what factors
+              influence it?
+            </summary>
+            <p>
+              The key decision is
+              <strong>how much historical data to include</strong>. Factors: (1)
+              Business need &mdash; how far back do analysts need to go for
+              trend analysis? (2) Format feasibility &mdash; can old backup
+              formats even be read today? (3) Cost &mdash; restoring and
+              converting old archives is expensive. (4) Data quality &mdash;
+              older data may have more errors. A pragmatic decision is 3&ndash;5
+              years unless there is a specific business requirement for more.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard: If external data uses different geographic codes than your
+              internal data, how would you resolve this in the ETL pipeline?
+            </summary>
+            <p>
+              Classic <strong>surrogate key / lookup table</strong> problem.
+              Steps: (1) Create a <em>mapping table</em> translating external
+              codes (e.g., Nielsen DMA codes) to internal codes (e.g., store
+              region IDs). (2) During transformation, join the external data to
+              this mapping table. (3) For unmapped codes, handle with a default
+              &ldquo;Unknown&rdquo; dimension member or flag for manual review.
+              (4) Keep the mapping table versioned, since external agencies
+              sometimes change their coding schemes.
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                Four source types: <em>production</em> (OLTP),
+                <em>internal</em> (private), <em>archived</em> (historical
+                backup), <em>external</em> (third-party)
+              </li>
+              <li>
+                Production data&rsquo;s main challenge is
+                <em>disparity</em> &mdash; multiple formats, platforms,
+                interfaces
+              </li>
+              <li>
+                Internal data requires careful selection &mdash; not all
+                informal data is worth incorporating
+              </li>
+              <li>
+                Archived data raises the &ldquo;how far back?&rdquo; question
+                &mdash; balance history vs. feasibility and cost
+              </li>
+              <li>
+                External data must be selected for relevance and then carefully
+                integrated with internal keys
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 3 -->
+        <div class="topic-card" id="topic-3" style="display: none">
+          <h2><span class="topic-num">3</span>Target System Qualities</h2>
+          <p class="topic-subtitle">
+            What the data warehouse must deliver &mdash; the five
+            characteristics of good strategic information
+          </p>
+          <p>
+            Building a DW is pointless if the output &mdash; the strategic
+            information &mdash; is poor quality. The slides identify five key
+            characteristics that the target DW system must satisfy to be useful.
+            Think of these as the <em>quality criteria</em> your DW must meet.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Strategic Information:</strong> Information extracted or
+            discovered from large quantities of data that helps executives and
+            knowledge workers make decisions about the organisation&rsquo;s
+            direction and growth. It is the <em>output</em> of the data
+            warehousing process and must meet specific quality standards to be
+            trustworthy.
+          </div>
+          <h3>The 5 Qualities of Strategic Information</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Quality</th>
+                <th>What it means</th>
+                <th>DW Design Implication</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Integrated</strong></td>
+                <td>
+                  Data from all sources is reconciled into a single, unified
+                  view
+                </td>
+                <td>
+                  ETL pipeline must resolve naming conflicts, unit
+                  inconsistencies, and key mismatches
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Data Integrity</strong></td>
+                <td>
+                  Data is accurate, complete, and consistent &mdash; faithfully
+                  represents the real world
+                </td>
+                <td>
+                  Data cleansing, validation rules, referential integrity checks
+                  during staging
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Credible</strong></td>
+                <td>
+                  Users <em>trust</em> the data and rely on it for decisions
+                </td>
+                <td>
+                  Data lineage tracking, audit logs, transparent transformation
+                  rules
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Accessible</strong></td>
+                <td>
+                  Authorised users can get to the data they need without
+                  technical barriers
+                </td>
+                <td>
+                  OLAP tools, self-service BI frontends, proper indexing,
+                  role-based access control
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Timely</strong></td>
+                <td>Data is up-to-date enough for the decisions being made</td>
+                <td>
+                  Appropriate ETL scheduling &mdash; daily, weekly, or
+                  near-real-time as needed
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong
+              >Credibility is the hardest to build and easiest to
+              destroy.</strong
+            >
+            If analysts discover that the DW contradicts operational system
+            numbers even once, they stop trusting it. Consistent, auditable, and
+            well-documented transformations are essential. Document everything.
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>Timely &ne; real-time.</strong> Many students assume a DW
+            needs to be constantly updated. In practice, most DWs are refreshed
+            in <em>batch</em> &mdash; nightly, weekly, or monthly &mdash;
+            because real-time updates are expensive and most strategic decisions
+            do not require second-by-second data.
+          </div>
+          <h3>Source System vs Target System</h3>
+          <p>
+            The <strong>source system</strong> is the extraction side &mdash;
+            pulling data from operational sources with all their disparity
+            issues. The <strong>target system</strong> is the DW itself &mdash;
+            the environment that must satisfy the five qualities above. The
+            staging area bridges the gap through transformation.
+          </p>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Integrity vs Credibility &mdash; Spot the Difference</h4>
+            <pre>
+Scenario A: DW correctly stores that Customer X made 50 purchases last year.
+            The operational system also says 50. --> HIGH integrity.
+
+Scenario B: An analyst believes the DW says 42, not 50, due to a past known bug.
+            She goes to the operational system instead. --> LOW credibility.
+
+Lesson: Integrity = correctness. Credibility = user trust.
+        You can have high integrity but low credibility (after a past mistake).
+        You cannot sustainably have high credibility without high integrity.</pre
+            >
+          </div>
+          <details>
+            <summary>
+              A DW reports 10,000 active customers. The CRM says 12,000. Why
+              might this happen and which is correct?
+            </summary>
+            <p>
+              Classic <strong>data integration / definition problem</strong>.
+              Possible causes: (1) Different definitions of &ldquo;active&rdquo;
+              &mdash; DW uses &ldquo;purchased in last 12 months,&rdquo; CRM
+              uses &ldquo;account not closed.&rdquo; (2) ETL applied a filter
+              the business is not aware of. (3) CRM includes duplicates. (4) ETL
+              load is stale. Resolution requires checking
+              <strong>data lineage and transformation rules</strong>. This is
+              exactly why documented ETL rules and data dictionaries are
+              essential for credibility.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Why do organisations suffer from &ldquo;data glut but knowledge
+              scarcity&rdquo;?
+            </summary>
+            <p>
+              Organisations accumulate vast transactional data across siloed
+              operational systems, but this data is
+              <strong>not accessible for strategic analysis</strong> &mdash;
+              scattered across systems with different formats, inconsistent
+              definitions, and no unified view. Knowledge workers drown in raw
+              data but struggle to find meaningful, reliable information. DW
+              solves this by integrating, cleaning, and making data accessible
+              through analytical tools.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard: How would you design an ETL pipeline to ensure data
+              integrity when merging customer records from three separate source
+              systems?
+            </summary>
+            <p>
+              (1) Assign a <em>master customer surrogate key</em> in the DW
+              independent of source system keys. (2) Build an
+              <em>identity resolution module</em> that matches customers across
+              systems using deterministic rules (same email, same name+address)
+              and probabilistic matching for uncertain cases. (3) Implement
+              <em>validation checks</em> at each stage &mdash; null checks,
+              referential integrity, range checks. (4) Use an
+              <em>error staging table</em> to quarantine records that fail
+              validation. (5) Log all transformation decisions for audit
+              purposes. (6) Run reconciliation counts before and after load to
+              confirm totals are consistent.
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                Strategic information must be:
+                <em
+                  >integrated, accurate (integrity), credible, accessible, and
+                  timely</em
+                >
+              </li>
+              <li>
+                Credibility is user trust &mdash; once broken, it is hard to
+                rebuild; document all transformations
+              </li>
+              <li>
+                Timely does not mean real-time &mdash; most DWs use batch
+                refresh cycles
+              </li>
+              <li>
+                Source system = extraction challenge (disparity); Target system
+                = quality delivery challenge
+              </li>
+              <li>
+                DW architecture must be designed to satisfy all five qualities
+                simultaneously
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 4 -->
+        <div class="topic-card" id="topic-4" style="display: none">
+          <h2><span class="topic-num">4</span>Data Staging &amp; ETL</h2>
+          <p class="topic-subtitle">
+            The transformation engine &mdash; extracting, cleaning, and loading
+            data into the warehouse
+          </p>
+          <p>
+            Data staging is the <strong>prep kitchen</strong> of the data
+            warehouse. Raw ingredients (source data) come in messy and
+            incompatible; they are washed, chopped, and combined into something
+            clean and consistent before being served to the warehouse. The
+            staging area is a separate, intermediate data environment &mdash;
+            not part of the source systems, not yet part of the warehouse.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Data Staging:</strong> An intermediate area where data is
+            prepared (extracted, transformed, and cleansed) before being loaded
+            into the data warehouse. It acts as a buffer and transformation
+            server between source systems and the DW.
+          </div>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>ETL (Extract, Transform, Load):</strong> The three-step
+            process at the heart of data staging.<br /><br />
+            <strong style="color: var(--def-bd)">Extract</strong> &mdash; Pull
+            data from source systems (production, internal, archived,
+            external).<br />
+            <strong style="color: var(--def-bd)">Transform</strong> &mdash;
+            Clean, reformat, reconcile, aggregate, and enrich the data. The most
+            complex and time-consuming step.<br />
+            <strong style="color: var(--def-bd)">Load</strong> &mdash; Insert
+            the transformed, clean data into the DW storage.
+          </div>
+          <h3>Extraction in Detail</h3>
+          <ul>
+            <li>
+              <strong>Full extraction</strong> &mdash; pull all data every time
+              (simple but expensive)
+            </li>
+            <li>
+              <strong>Incremental extraction</strong> &mdash; pull only records
+              changed since the last load (efficient but needs change-tracking
+              via timestamps or CDC)
+            </li>
+            <li>
+              <strong>Log-based extraction</strong> &mdash; read the source DB
+              transaction log to capture changes (minimal impact on source,
+              complex to implement)
+            </li>
+          </ul>
+          <h3>Transformation in Detail</h3>
+          <p>
+            The staging area &mdash; sometimes called the
+            <strong>data transformation server</strong> &mdash; performs:
+          </p>
+          <ul>
+            <li>
+              <strong>Data cleansing</strong> &mdash; fix errors, handle nulls,
+              standardise formats (dates: &ldquo;01/05/2024&rdquo; vs
+              &ldquo;2024-05-01&rdquo; vs &ldquo;1 May 2024&rdquo;)
+            </li>
+            <li>
+              <strong>Data integration</strong> &mdash; reconcile records from
+              different sources
+            </li>
+            <li>
+              <strong>Data aggregation</strong> &mdash; roll up daily sales to
+              monthly totals
+            </li>
+            <li>
+              <strong>Surrogate key generation</strong> &mdash; assign
+              warehouse-specific keys independent of source keys
+            </li>
+            <li>
+              <strong>Business rule application</strong> &mdash; derived
+              calculations (profit = revenue &minus; cost)
+            </li>
+            <li>
+              <strong>Denormalisation</strong> &mdash; reshape 3NF source data
+              into star/snowflake schema
+            </li>
+          </ul>
+          <h3>Loading in Detail</h3>
+          <p>
+            After transformation, data is loaded into the warehouse as either a
+            <strong>full refresh</strong> (replace everything) or an
+            <strong>incremental (delta) load</strong> (append/update only
+            changed records). Most production DWs use incremental loads to keep
+            load windows manageable.
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong
+              >The staging area must be separate from both source and
+              DW.</strong
+            >
+            Never load directly from source to DW. The staging area lets you
+            fail safely, re-run transformations, audit intermediate results, and
+            isolate the DW from source availability issues.
+          </div>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>A simple ETL pipeline in pseudocode</h4>
+            <pre>
+-- EXTRACT
+SELECT customer_id, cust_name, email, purchase_date, amount
+FROM src_crm.transactions
+WHERE updated_at > @last_load_timestamp;
+
+-- TRANSFORM (in staging)
+UPDATE stg.transactions SET
+  cust_name     = TRIM(UPPER(cust_name)),      -- standardise case
+  email         = LOWER(email),                -- standardise format
+  purchase_date = CAST(purchase_date AS DATE), -- fix data type
+  amount        = ROUND(amount, 2)             -- normalise precision
+WHERE cust_name IS NOT NULL AND amount > 0;   -- reject nulls / invalid
+
+-- LOAD
+INSERT INTO dw.fact_sales (surr_key, customer_sk, date_sk, amount)
+SELECT NEXT_VAL(surr_seq), d_cust.sk, d_date.sk, stg.amount
+FROM stg.transactions stg
+JOIN dw.dim_customer d_cust ON stg.customer_id = d_cust.source_id
+JOIN dw.dim_date     d_date ON stg.purchase_date = d_date.full_date;</pre
+            >
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>Underestimating transformation complexity.</strong> In
+            practice, transformation accounts for 60&ndash;80% of total ETL
+            development effort. &ldquo;Just move the data&rdquo; quickly turns
+            into hundreds of business rules to handle edge cases in real, messy
+            source data.
+          </div>
+          <details>
+            <summary>
+              What is the difference between full extraction and incremental
+              extraction?
+            </summary>
+            <p>
+              <strong>Full extraction</strong> pulls all data from the source
+              every time. Simple but very expensive for large datasets.
+              <strong>Incremental extraction</strong> pulls only records changed
+              since the last extraction (using timestamps, version numbers, or
+              CDC). Much more efficient but requires the source system to
+              reliably support change tracking.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Why must the staging area be separate from both the source systems
+              and the DW?
+            </summary>
+            <p>
+              (1) <strong>Isolation</strong> &mdash; heavy transformation
+              operations do not impact source system performance. (2)
+              <strong>Failure recovery</strong> &mdash; if a transformation step
+              fails, you can rerun from staging data without re-extracting from
+              source. (3) <strong>Auditability</strong> &mdash; staging lets you
+              inspect intermediate data to diagnose data quality issues. (4)
+              <strong>Decoupling</strong> &mdash; the DW does not need to be
+              down while staging is running.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard: Your ETL pipeline takes 14 hours to run but your load window
+              is 8 hours. What strategies could reduce ETL runtime?
+            </summary>
+            <p>
+              <strong>Parallelism:</strong> Extract from multiple sources
+              simultaneously. <strong>Incremental loads:</strong> Switch from
+              full to delta extraction to reduce data volume.
+              <strong>Pushdown transformation:</strong> Perform transformations
+              in the source or target DBMS using native SQL (databases are
+              faster at set-based operations).
+              <strong>Partitioning:</strong> Partition large staging tables and
+              process partitions in parallel.
+              <strong>Indexing strategy:</strong> Drop indexes before bulk load,
+              rebuild after. <strong>Hardware scaling:</strong> Move ETL to a
+              more powerful server or cloud-based distributed compute (e.g.,
+              Spark). <strong>Cache lookup tables:</strong> Load
+              frequently-joined reference data into memory to avoid repeated DB
+              hits.
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                Staging = the intermediate transformation area &mdash; a buffer
+                and transformation server
+              </li>
+              <li>
+                ETL = <em>Extract</em> &rarr; <em>Transform</em> (clean,
+                reconcile, restructure) &rarr; <em>Load</em> into DW
+              </li>
+              <li>
+                Transformation is the most complex step: cleansing, integration,
+                aggregation, surrogate keys, business rules
+              </li>
+              <li>
+                Staging must be separate from both source and DW to enable
+                isolation, recovery, and auditing
+              </li>
+              <li>
+                Incremental (delta) loads are preferred over full loads for
+                performance in production DWs
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 5 -->
+        <div class="topic-card" id="topic-5" style="display: none">
+          <h2>
+            <span class="topic-num">5</span>DW Building Blocks &amp; Components
+          </h2>
+          <p class="topic-subtitle">
+            The architecture of a complete data warehouse &mdash; five key
+            components and how they fit together
+          </p>
+          <p>
+            A data warehouse is not one thing &mdash; it is five interconnected
+            components working in concert. Understanding the
+            <strong>building blocks</strong> of DW architecture is fundamental,
+            since everything else (ETL design, query optimisation, governance)
+            hangs off this structure.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>DW Building Blocks:</strong> The five key architectural
+            components of a data warehouse environment: (1) Data Source, (2)
+            Data Staging, (3) Data Storage, (4) Information and Delivery, (5)
+            Management and Control.
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Component</th>
+                <th>Role</th>
+                <th>Key Technologies</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><strong>Data Source</strong></td>
+                <td>
+                  All input data &mdash; production, internal, archived,
+                  external
+                </td>
+                <td>OLTP DBs, flat files, APIs, external feeds</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><strong>Data Staging</strong></td>
+                <td>ETL &mdash; extract, transform, load data</td>
+                <td>Informatica, SSIS, Talend, custom scripts</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td><strong>Data Storage</strong></td>
+                <td>
+                  Separate repository with its own DBMS, hardware, admin tools
+                </td>
+                <td>RDBMS or MDDBMS, columnar DBs</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td><strong>Information &amp; Delivery</strong></td>
+                <td>
+                  Tools to access, query, and present DW data to end users
+                </td>
+                <td>OLAP cubes, Power BI, Tableau, ad-hoc query tools</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td><strong>Management &amp; Control</strong></td>
+                <td>
+                  Orchestrates all other components &mdash; ETL scheduling, user
+                  access, batch updates, metadata interaction
+                </td>
+                <td>Airflow, access management, monitoring tools</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Data Storage in Detail</h3>
+          <p>
+            The data storage layer is a
+            <strong>completely separate repository</strong> from source systems.
+            It has its own:
+          </p>
+          <ul>
+            <li>
+              <strong>DBMS</strong> &mdash; either RDBMS (relational/SQL) or
+              MDDBMS (multi-dimensional OLAP cubes)
+            </li>
+            <li>
+              <strong>Hardware and Software</strong> &mdash; optimised for
+              large, complex read-heavy queries
+            </li>
+            <li>
+              <strong>Administration Tools</strong> &mdash; backup/recovery,
+              performance monitoring, index management
+            </li>
+          </ul>
+          <h3>Metadata &mdash; The Hidden Component</h3>
+          <p>
+            Metadata is <strong>data about data</strong> in the DW &mdash;
+            similar to the data dictionary and data catalog in a DBMS. It
+            describes: where data came from (lineage), how it was transformed,
+            what each field means (business definitions), when data was last
+            refreshed, and who has access to what.
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Management and Control interacts with Metadata.</strong> The
+            orchestration layer uses metadata to know what to run, when, and for
+            whom. Without good metadata, the DW is a black box &mdash; nobody
+            knows where the numbers come from or whether to trust them.
+          </div>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Architecture Flow (from slides)</h4>
+            <pre>
+Operational Data  (IT Users)
+       |
+       v  [Data Transformation / ETL]
+Enterprise Warehouse + Integrated Data Marts
+       |
+       v  [Replication]
+Dependent Data Marts / Departmental Warehouses
+       |
+       v  [BI Tools / Delivery]
+Business Users</pre
+            >
+          </div>
+          <details>
+            <summary>
+              What is the difference between RDBMS and MDDBMS in a DW context?
+            </summary>
+            <p>
+              An <strong>RDBMS</strong> stores data in tables and uses SQL. In a
+              DW this means star/snowflake schema with fact and dimension
+              tables. An <strong>MDDBMS</strong> stores data in pre-aggregated
+              cubes organised by dimensions (Time x Product x Region), enabling
+              very fast OLAP operations. RDBMS offers more flexibility; MDDBMS
+              offers faster pre-built analytics. Modern cloud DWs (BigQuery,
+              Snowflake, Redshift) are relational with columnar storage that
+              gives many MDDBMS-like performance benefits.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Why does Management and Control need to interact with Metadata?
+            </summary>
+            <p>
+              Management and Control orchestrates ETL jobs, information
+              delivery, user access, and batch updates. To do this
+              intelligently, it needs metadata: which ETL jobs depend on which
+              sources? What is the refresh schedule? Which users have permission
+              to query what? What was the last successful load time? Without
+              metadata, the orchestration layer must hardcode all of this,
+              making the system brittle and opaque.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard: How would you ensure the Management and Control component
+              handles an ETL failure gracefully without corrupting the
+              warehouse?
+            </summary>
+            <p>
+              <strong>Key patterns:</strong> (1)
+              <em>Transactional loading</em> &mdash; wrap each load step in a
+              transaction; rollback on failure, preserving the last good state.
+              (2) <em>Checkpointing</em> &mdash; record the last successfully
+              completed ETL step in metadata; restart from checkpoint on
+              failure. (3) <em>Error tables</em> &mdash; route bad records to a
+              separate error staging table rather than failing the whole
+              pipeline. (4) <em>Alerting</em> &mdash; send failure notifications
+              immediately. (5) <em>Idempotent loads</em> &mdash; design load
+              operations so re-running produces the same result with no
+              duplicates. (6) <em>Load audit table</em> &mdash; record every
+              load attempt (start, end, records processed, status).
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                Five components:
+                <em
+                  >Data Source &rarr; Staging (ETL) &rarr; Storage &rarr;
+                  Information Delivery &rarr; Management &amp; Control</em
+                >
+              </li>
+              <li>
+                Data Storage is a completely separate repository with its own
+                DBMS, hardware, and admin tools
+              </li>
+              <li>
+                Metadata (data about data) is the connective tissue enabling
+                lineage, governance, and orchestration
+              </li>
+              <li>
+                Management &amp; Control oversees ETL, delivery, access, and
+                batch updates &mdash; interacts with metadata
+              </li>
+              <li>
+                Information Delivery tools (OLAP, BI dashboards) are how end
+                users consume the DW
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 6 -->
+        <div class="topic-card" id="topic-6" style="display: none">
+          <h2><span class="topic-num">6</span>Data Warehouse vs Data Marts</h2>
+          <p class="topic-subtitle">
+            Enterprise-wide vs departmental &mdash; the DW/DM relationship and
+            the top-down vs bottom-up debate
+          </p>
+          <p>
+            Once you understand what a DW is, the next question is: build one
+            big warehouse, or a set of smaller, departmental
+            <strong>data marts</strong>? This is one of the most debated design
+            decisions in DW architecture.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Data Mart:</strong> A focused subset of the data warehouse
+            scoped to a specific business function, department, or subject area
+            (e.g., Sales DM, HR DM, Finance DM). It contains a subset of the
+            enterprise data relevant to that department&rsquo;s needs.
+          </div>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Dependent Data Mart:</strong> Populated from the central
+            enterprise data warehouse &mdash; a logical subset of the overall
+            DW, not a standalone system. This is the preferred architecture
+            (Kimball&rsquo;s approach).<br /><br />
+            <strong>Independent Data Mart:</strong> Built directly from source
+            systems without going through a central DW. Fast to build initially
+            but creates &ldquo;information silos&rdquo; and consistency
+            problems.
+          </div>
+          <h3>Top-Down vs Bottom-Up Approach</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Aspect</th>
+                <th>Top-Down (Inmon)</th>
+                <th>Bottom-Up (Kimball)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Start with</td>
+                <td>Enterprise-wide DW first, then derive marts</td>
+                <td>
+                  Build data marts one at a time, conforming to a shared
+                  architecture
+                </td>
+              </tr>
+              <tr>
+                <td>Time to first value</td>
+                <td>Long &mdash; enterprise DW takes years</td>
+                <td>Short &mdash; first mart can deliver value in months</td>
+              </tr>
+              <tr>
+                <td>Risk</td>
+                <td>High upfront investment before any ROI</td>
+                <td>Lower risk, iterative delivery</td>
+              </tr>
+              <tr>
+                <td>Consistency</td>
+                <td>High &mdash; single source of truth from day one</td>
+                <td>Depends on how well marts are &ldquo;conformed&rdquo;</td>
+              </tr>
+              <tr>
+                <td>Data Mart type</td>
+                <td>Dependent (derived from central DW)</td>
+                <td>Dependent (logical subsets, not independent)</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Kimball&rsquo;s Practical Approach</h3>
+          <p>
+            The slides highlight
+            <strong>Kimball&rsquo;s practical approach</strong> as the
+            recommended middle path:
+          </p>
+          <ol>
+            <li>
+              <strong>Plan and define requirements</strong> at the overall
+              corporate level
+            </li>
+            <li>
+              <strong>Create the architecture</strong> for a complete enterprise
+              warehouse
+            </li>
+            <li>
+              <strong>Conform and standardise</strong> the data content (shared
+              dimension definitions)
+            </li>
+            <li>
+              <strong>Implement one data mart at a time</strong> &mdash;
+              delivering business value incrementally
+            </li>
+          </ol>
+          <p>
+            In this approach each data mart is a
+            <strong>logical subset</strong> of the overall DW &mdash; they are
+            all <em>dependent</em> data marts drawing from the central
+            enterprise warehouse. This gives Kimball&rsquo;s speed-to-value with
+            Inmon&rsquo;s consistency.
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>&ldquo;Conformed dimensions&rdquo;</strong> are the key to
+            making Kimball&rsquo;s approach work. If Sales DM and Marketing DM
+            both have a &ldquo;Customer&rdquo; dimension, they must define
+            &ldquo;Customer&rdquo; identically &mdash; same grain, same
+            attributes, same keys. Otherwise cross-mart queries produce
+            inconsistent numbers.
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>Independent data marts seem attractive initially</strong>
+            &mdash; fast to build, each department gets exactly what they want.
+            But they become a nightmare: each mart has its own ETL, definitions,
+            and quality issues. When the CFO asks &ldquo;how many customers do
+            we have?&rdquo;, Sales says 100K, Marketing says 85K, Finance says
+            110K. Nobody can reconcile the numbers. This is the
+            &ldquo;independent mart anti-pattern.&rdquo;
+          </div>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>
+              Information Evolution &mdash; 5 Stages of DW Maturity (from
+              slides)
+            </h4>
+            <pre>
+Stage 1 - REPORT        : What happened?       (Primarily batch)
+Stage 2 - ANALYZE       : Why did it happen?   (Ad-hoc queries grow)
+Stage 3 - PREDICT       : What will happen?    (Analytical modelling)
+Stage 4 - OPERATIONALIZE: What IS happening?   (Continuous update, time-sensitive)
+Stage 5 - ACTIVATE      : What do you WANT?    (Event-based triggering)</pre
+            >
+          </div>
+          <details>
+            <summary>
+              What is the difference between a dependent and independent data
+              mart?
+            </summary>
+            <p>
+              A <strong>dependent data mart</strong> is populated from a central
+              enterprise data warehouse &mdash; it is a consistent, auditable
+              subset. An <strong>independent data mart</strong> is built
+              directly from operational source systems, bypassing any central
+              warehouse. Independent marts are faster to build but create data
+              silos where departments have different (often conflicting)
+              versions of the same facts.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Why might an organisation choose bottom-up (Kimball) over top-down
+              (Inmon)?
+            </summary>
+            <p>
+              Top-down requires a massive upfront investment &mdash; it can take
+              2&ndash;5 years before any business user sees value. Many
+              organisations cannot justify this politically or financially.
+              Kimball&rsquo;s bottom-up approach delivers a working data mart in
+              3&ndash;6 months, proving ROI early. As long as marts are built to
+              a shared architectural plan with conformed dimensions, the result
+              is effectively an enterprise DW assembled incrementally.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard: How do conformed dimensions solve the consistency problem
+              when building multiple data marts incrementally?
+            </summary>
+            <p>
+              <strong>Conformed dimensions</strong> are dimension tables (Date,
+              Customer, Product) defined identically across all data marts. When
+              two marts share a conformed dimension, you can drill across both
+              in a single query and get consistent results because
+              &ldquo;Customer&rdquo; means the same thing in both.
+              Implementation: (1) Define a &ldquo;Bus Matrix&rdquo; mapping each
+              mart&rsquo;s fact tables to shared dimensions. (2) Develop shared
+              dimension tables centrally. (3) Enforce that each new mart uses
+              the published shared dimensions. (4) Where a mart needs additional
+              attributes, extend &mdash; do not fork. This is the essence of
+              Kimball&rsquo;s Dimensional Bus Architecture.
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                Data mart = focused, departmental subset of DW (Sales, HR,
+                Finance, etc.)
+              </li>
+              <li>
+                Dependent marts draw from the central DW; independent marts are
+                built from source systems (anti-pattern)
+              </li>
+              <li>
+                Top-down (Inmon): enterprise DW first &mdash; consistent but
+                slow; Bottom-up (Kimball): mart-by-mart &mdash; fast ROI, needs
+                discipline
+              </li>
+              <li>
+                Kimball&rsquo;s practical approach: plan enterprise-wide, build
+                incrementally with conformed dimensions
+              </li>
+              <li>
+                Conformed dimensions are the glue that keeps multi-mart DWs
+                consistent and queryable together
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 7 -->
+        <div class="topic-card" id="topic-7" style="display: none">
+          <h2><span class="topic-num">7</span>Business Intelligence (BI)</h2>
+          <p class="topic-subtitle">
+            What BI is, how it relates to DW, and its four core capabilities
+          </p>
+          <p>
+            Data warehousing and Business Intelligence are two sides of the same
+            coin. The DW provides the <em>foundation</em>; BI provides the
+            <em>application</em>. You can have a DW without BI tools (just raw
+            data access), but you cannot have meaningful BI without a solid data
+            foundation &mdash; and that foundation is the DW.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Business Intelligence (BI):</strong> A process that adds
+            value to business processes through monitoring performance
+            indicators about the business environment and their impact on
+            business strategy &mdash; helping define, refine, and improve the
+            business model for profitable operations.
+          </div>
+          <h3>What BI Entails (In Plain Terms)</h3>
+          <ul>
+            <li>
+              <strong>Run simple queries</strong> &mdash; &ldquo;How many units
+              did we sell last quarter?&rdquo;
+            </li>
+            <li>
+              <strong>Perform &lsquo;what-if&rsquo; analyses</strong> &mdash;
+              &ldquo;If we drop price by 10%, what happens to margin?&rdquo;
+            </li>
+            <li>
+              <strong>Interactively analyse results</strong> &mdash; drill down
+              from region &rarr; country &rarr; store; slice by product category
+            </li>
+            <li>
+              <strong>Discover trends and apply them</strong> &mdash;
+              &ldquo;Sales always spike in Q4 &mdash; plan inventory
+              accordingly&rdquo;
+            </li>
+          </ul>
+          <h3>Desired Features of a DW to Support BI</h3>
+          <ul>
+            <li>
+              Designed for <strong>analytical tasks</strong> (not transactional)
+            </li>
+            <li>Data from <strong>multiple sources</strong>, integrated</li>
+            <li>
+              Easy to use and conducive to
+              <strong>long interactive sessions</strong>
+            </li>
+            <li><strong>Read-intensive</strong> data usage patterns</li>
+            <li>
+              Users can run queries and get results
+              <strong>online</strong> (OLAP)
+            </li>
+            <li>Content updated <strong>periodically and stably</strong></li>
+            <li>
+              Ability for users to <strong>initiate reports themselves</strong>
+            </li>
+          </ul>
+          <h3>OLAP Response Time Requirements</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Query Type</th>
+                <th>Target Response Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Simple OLAP queries (slice, dice, drill)</td>
+                <td>A small number of <strong>seconds</strong></td>
+              </tr>
+              <tr>
+                <td>Complex query scripts / large list selections</td>
+                <td>A small number of <strong>minutes</strong></td>
+              </tr>
+              <tr>
+                <td>Sophisticated modelling / data mining algorithms</td>
+                <td>A small number of <strong>hours</strong></td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            Achieving second-level OLAP response times often requires
+            <strong>denormalisation</strong>,
+            <strong>pre-aggregation</strong> (materialised views, OLAP cubes),
+            and/or <strong>sampling</strong>.
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>BI vs traditional reporting:</strong> Traditional MIS
+            reporting gives you a fixed report designed weeks ago. BI allows
+            <em>interactive exploration</em> &mdash; the user drives the
+            analysis, drilling in and pivoting without waiting for IT to write a
+            new report. This self-service capability is what makes BI genuinely
+            transformative.
+          </div>
+          <details>
+            <summary>
+              How does BI differ from traditional MIS reporting?
+            </summary>
+            <p>
+              Traditional <strong>MIS reporting</strong> is batch-oriented,
+              pre-defined, and IT-driven &mdash; someone designs a report
+              template, schedules it to run, and managers receive it on a
+              schedule. <strong>BI</strong> enables interactive data exploration
+              by end-users themselves &mdash; they drill down, slice by
+              different dimensions, and run ad-hoc queries without involving IT.
+              The key shift is from <em>IT-push</em> to <em>user-pull</em> of
+              analytical insight.
+            </p>
+          </details>
+          <details>
+            <summary>
+              What does OLAP stand for and why are interactive response times
+              important?
+            </summary>
+            <p>
+              <strong>OLAP = Online Analytical Processing.</strong> Analytical
+              queries (aggregations, drill-downs, slice-and-dice) run against
+              the DW in near-real-time. Interactive response times matter
+              because if a query takes 20 minutes, the user loses their train of
+              thought, abandons exploration, and the BI tool becomes useless for
+              discovery. The goal is to keep simple analytical queries in the
+              <em>seconds</em> range.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard: What technical techniques enable second-level OLAP response
+              times on billions of rows?
+            </summary>
+            <p>
+              <strong>Pre-aggregation:</strong> Materialised views or OLAP cubes
+              pre-compute common aggregations so queries read small result sets.
+              <strong>Columnar storage:</strong> Store data column-by-column,
+              dramatically reducing I/O for analytical queries touching only a
+              few columns. <strong>Partitioning:</strong> Partition fact tables
+              by date; most queries filter by date range, so only relevant
+              partitions are scanned.
+              <strong>Bitmap indexing:</strong> Efficient for low-cardinality
+              dimensions (region, product category).
+              <strong>Caching:</strong> Cache frequently-run query results.
+              <strong>Sampling:</strong> Statistical sampling can give 95%+
+              accurate results in milliseconds on a fraction of the data.
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                BI = the process of converting DW data into actionable business
+                insight
+              </li>
+              <li>
+                Four core BI capabilities: simple queries, what-if analysis,
+                interactive exploration, trend discovery
+              </li>
+              <li>
+                OLAP requires interactive (seconds) response times &mdash;
+                achieved via denormalisation, cubes, columnar storage
+              </li>
+              <li>
+                DW is the foundation; BI tools are the application layer on top
+              </li>
+              <li>
+                BI enables self-service analytics &mdash; shifting from IT-push
+                to user-pull of insight
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 8 -->
+        <div class="topic-card" id="topic-8" style="display: none">
+          <h2>
+            <span class="topic-num">8</span>Why is DW Hard? &amp; Scalability
+          </h2>
+          <p class="topic-subtitle">
+            The fundamental challenges of large-scale data warehousing and
+            Amdahl&rsquo;s Law
+          </p>
+          <p>
+            Building a DW sounds conceptually simple &mdash; consolidate data,
+            clean it, query it. So why do so many DW projects fail or run over
+            budget? Because the <em>execution</em> is genuinely hard in ways
+            that only appear when dealing with terabytes of data and hundreds of
+            concurrent users.
+          </p>
+          <h3>Core Challenges (from Slides)</h3>
+          <ul>
+            <li>
+              <strong>No stable requirements</strong> &mdash; business questions
+              evolve constantly; a DW designed for today&rsquo;s questions must
+              adapt to tomorrow&rsquo;s
+            </li>
+            <li>
+              <strong>Familiar DB techniques break down</strong> &mdash;
+              normalisation, OLTP indexing strategies all perform poorly at DSS
+              scale
+            </li>
+            <li>
+              <strong>VLDB scale is hard to comprehend</strong> &mdash;
+              techniques that work on 100 GB fail spectacularly on 100 TB
+            </li>
+            <li>
+              <strong>Non-linear performance impacts</strong> &mdash; doubling
+              data size does not halve performance linearly; it often degrades
+              exponentially
+            </li>
+            <li>
+              <strong>Complex deployment architectures</strong> &mdash;
+              distributed systems, parallel processing, replication, failover
+            </li>
+            <li>
+              <strong>Rapidly changing product landscape</strong> &mdash; tools
+              and platforms keep evolving
+            </li>
+          </ul>
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong
+              >&ldquo;Hardware is the easyware&hellip; software is the
+              hardware.&rdquo;</strong
+            >
+            &mdash; If the software does not scale, it does not matter how much
+            hardware you add. Optimise your software and algorithms first,
+            <em>then</em> scale hardware. The reverse does not work.
+          </div>
+          <h3>Amdahl&rsquo;s Law</h3>
+          <p>
+            Amdahl&rsquo;s Law quantifies the theoretical maximum speedup
+            achievable by parallelising a program. Critical for understanding
+            why simply adding more processors does not always solve DW
+            performance problems.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Amdahl&rsquo;s Law:</strong> The speedup of a program using
+            N parallel processors is limited by the fraction that must remain
+            sequential.<br /><br />
+            <code>SpeedUp = 1 / (S + P/N)</code><br /><br />
+            Where: <strong>S</strong> = sequential fraction,
+            <strong>P</strong> = parallel fraction (S + P = 1),
+            <strong>N</strong> = number of processors.<br />
+            <em
+              >The keys to parallel performance: (1) amount of parallelism and
+              (2) overhead management.</em
+            >
+          </div>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Amdahl&rsquo;s Law Calculation</h4>
+            <pre>
+Given: 10% sequential (S=0.1), 90% parallel (P=0.9), 4 processors (N=4)
+
+SpeedUp = 1 / (0.1 + 0.9/4)
+        = 1 / (0.1 + 0.225)
+        = 1 / 0.325
+        = 3.08x  (not 4x as you might hope)
+
+With 100 processors:
+SpeedUp = 1 / (0.1 + 0.9/100) = 1 / 0.109 = 9.17x
+
+The sequential fraction (10%) caps the maximum speedup at 10x no matter
+how many processors you add. This is the "Amdahl ceiling."</pre
+            >
+          </div>
+          <h3>Parallel Processing in DW &mdash; The Impact</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Approach</th>
+                <th>Time to Read 1 TB</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Serial (1 task)</td>
+                <td>~1.2 days</td>
+              </tr>
+              <tr>
+                <td>2 parallel tasks</td>
+                <td>~0.6 days</td>
+              </tr>
+              <tr>
+                <td>100 parallel tasks</td>
+                <td>&lt;18 minutes</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            Requirements for parallel efficiency: (a)
+            <strong>even distribution of tasks</strong> (no data skew) and (b)
+            <strong>hardware that can sustain the I/O levels</strong>. Adding
+            100 parallel processes to a single spinning disk gains nothing.
+          </p>
+          <h3>Scalability Dimensions</h3>
+          <p>
+            Scalability in DW is not just about data size. Design for all four
+            dimensions independently:
+          </p>
+          <ul>
+            <li>
+              <strong>Amount of Detailed Data</strong> &mdash; raw fact table
+              rows
+            </li>
+            <li>
+              <strong>Complexity of Data Model</strong> &mdash; number of
+              dimensions, hierarchy levels
+            </li>
+            <li>
+              <strong>Concurrent Users</strong> &mdash; 10 analysts vs 10,000
+              business users
+            </li>
+            <li>
+              <strong>Query Complexity</strong> &mdash; simple direct queries
+              &rarr; multi-table joins &rarr; regression analysis &rarr; data
+              mining
+            </li>
+          </ul>
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong
+              >Designing for today&rsquo;s data volume and user count
+              only.</strong
+            >
+            DW usage grows over time &mdash; more users, richer data, more
+            complex queries. A design that works for 50 analysts on 500 GB today
+            may collapse when 500 analysts hit 50 TB in 3 years. Always design
+            with a scalability headroom of 10&times; or more.
+          </div>
+          <details>
+            <summary>
+              What does Amdahl&rsquo;s Law tell us about the limits of
+              parallelism?
+            </summary>
+            <p>
+              Even with unlimited processors, the maximum speedup is capped:
+              <strong>SpeedUp &le; 1/S</strong>. If 20% of a program is
+              sequential, the maximum speedup is 5&times; &mdash; no matter how
+              many processors you add. This means reducing the sequential
+              fraction itself becomes the bottleneck as parallelism scales up.
+              For DW, ETL coordination overhead, index rebuild steps, and commit
+              operations (often sequential) become the real bottleneck.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Why do performance impacts become non-linear at VLDB scale?
+            </summary>
+            <p>
+              At small scale, most operations fit in memory (buffer cache) and
+              response times are dominated by CPU. At VLDB scale, data spills to
+              disk &mdash; and disk I/O is orders of magnitude slower. Hash
+              joins that worked in-memory now require multiple passes over disk.
+              Sort operations require merge-sort over dozens of passes. Index
+              lookups cause massive random I/O. Result: doubling data size might
+              increase query time by 4&ndash;10&times; rather than 2&times;.
+              VLDB requires completely different algorithmic and physical design
+              strategies.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard: If 15% of your ETL pipeline is sequential and you have 8
+              parallel workers, what is your speedup? What would you need to
+              achieve a 10x speedup?
+            </summary>
+            <p>
+              <strong>Current speedup:</strong> SpeedUp = 1 / (0.15 + 0.85/8) =
+              1 / (0.15 + 0.106) = 1 / 0.256 =
+              <strong>3.9&times;</strong>.<br /><br />
+              <strong>For 10&times; speedup:</strong> Need S &le; 0.1 (10% or
+              less sequential). Currently at 15%, must
+              <strong>reduce the sequential fraction to &le;10%</strong> by
+              identifying and parallelising coordination logic, locking, and
+              commit operations. Even with S=0.10 and N=8: SpeedUp = 1/(0.10 +
+              0.90/8) = 4.8&times;. For a true 10&times;, you need both S &le;
+              10% AND N &asymp; 90+ parallel processors.
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                DW is hard due to evolving requirements, VLDB scale, non-linear
+                performance, and complex architectures
+              </li>
+              <li>
+                &ldquo;Hardware is easyware&rdquo; &mdash; software scalability
+                comes first; hardware only amplifies good software design
+              </li>
+              <li>
+                Amdahl&rsquo;s Law: SpeedUp = 1/(S + P/N) &mdash; sequential
+                fractions cap the maximum parallel speedup
+              </li>
+              <li>
+                Parallel processing can reduce 1.2-day I/O to under 18 minutes
+                &mdash; but requires even task distribution
+              </li>
+              <li>
+                Design for 4 scalability dimensions: data volume, model
+                complexity, concurrent users, query complexity
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()" style="display: none">
+          <div>
+            <span class="btn-label">&#8592; Previous</span
+            ><span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next &#8594;</span
+            ><span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      &#8593;
+    </button>
+
+    <script>
+      const topics = [
+        "topic-1",
+        "topic-2",
+        "topic-3",
+        "topic-4",
+        "topic-5",
+        "topic-6",
+        "topic-7",
+        "topic-8",
+      ];
+      let currentTopicIndex = 0;
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(
+          ".nav-sublist a[onclick=\"showTopic('" + id + "');return false;\"]",
+        );
+        if (lk) lk.classList.add("active");
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          const pl = document.querySelector(
+            ".nav-sublist a[onclick=\"showTopic('" +
+              topics[currentTopicIndex - 1] +
+              "');return false;\"]",
+          );
+          if (pt && pl)
+            pt.textContent = pl.innerText.replace(/^\d+\s*/, "").trim();
+        } else {
+          pb.style.display = "none";
+        }
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          const nl = document.querySelector(
+            ".nav-sublist a[onclick=\"showTopic('" +
+              topics[currentTopicIndex + 1] +
+              "');return false;\"]",
+          );
+          if (nt && nl)
+            nt.textContent = nl.innerText.replace(/^\d+\s*/, "").trim();
+        } else {
+          nb.style.display = "none";
+        }
+        document
+          .getElementById("main-content")
+          .scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768)
+          document.getElementById("sidebar").classList.remove("open");
+      }
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q)
+            ? ""
+            : "none";
+        });
+      }
+      showTopic(topics[0]);
+      const mc = document.getElementById("main-content"),
+        bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => {
+        bb.style.display = mc.scrollTop > 300 ? "flex" : "none";
+      });
+    </script>
+  </body>
+</html>

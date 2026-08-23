@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Artificial Intelligence — Notes</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button
+      id="menu-toggle"
+      onclick="document.getElementById('sidebar').classList.toggle('open')"
+    >
+      ☰
+    </button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">Artificial Intelligence</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Intro to AI</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Introduction to AI Agents</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>The PEAS Framework</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Agent Architecture & Types</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Approaches to AI</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div id="main-content">
+      <div class="module-container" id="module-intro">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence</div>
+          <h1 class="module-title">Intro to AI</h1>
+        </div>
+        <div class="topic-card" id="topic-1">
+        <h2><span class="topic-num">1</span>Introduction to AI Agents</h2>
+        <p class="topic-subtitle">The core loop: Perceive → Decide → Act</p>
+        <p>
+          At its core, <strong>Artificial Intelligence</strong> is about an
+          agent perceiving an environment, deciding what to do, and acting to
+          achieve some objective. It is not just about "thinking", but rather a
+          continuous cycle of: <strong>Perceive → Decide → Act</strong>.
+        </p>
+
+        <h3>The Agent-Environment Interaction</h3>
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Agent:</strong> An entity that perceives its environment and
+          takes actions. (e.g., a self-driving car, a chess program, or a
+          human).
+        </div>
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Environment:</strong> Everything outside the agent that it
+          interacts with. If the agent makes decisions, the environment is the
+          world it operates in.
+        </div>
+
+        <p>
+          To interact with the environment, agents rely on two main components:
+        </p>
+        <ul>
+          <li>
+            <strong>Sensors:</strong> The input mechanism that allows an agent
+            to perceive its environment (e.g., cameras, microphones, GPS).
+          </li>
+          <li>
+            <strong>Actuators:</strong> The output mechanism used by the agent
+            to physically or digitally affect its environment (e.g., motors,
+            steering wheels, API calls).
+          </li>
+        </ul>
+
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Percept:</strong> The specific information an agent receives
+          from its sensors at a particular moment.
+        </div>
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Action:</strong> The decision or output of the agent, executed
+          via an actuator.
+        </div>
+
+        <div class="example">
+          <div class="callout-label">Example</div>
+          <h4>A Self-Driving Car</h4>
+          <ul>
+            <li>
+              <strong>Sensors:</strong> Cameras see the road, cars, pedestrians.
+            </li>
+            <li><strong>Percept:</strong> "Red traffic light 50m ahead."</li>
+            <li>
+              <strong>AI Agent:</strong> Processes the percept and makes a
+              decision.
+            </li>
+            <li><strong>Action:</strong> AI decides to brake.</li>
+            <li>
+              <strong>Actuator:</strong> The car's braking system engages.
+            </li>
+            <li>
+              <strong>Environment:</strong> The car slows down on the road.
+            </li>
+          </ul>
+        </div>
+
+        <h3>Measuring Success: Performance Measure</h3>
+        <p>
+          How do we know if an AI is successful? We need a way to evaluate its
+          behavior.
+        </p>
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Performance Measure:</strong> A metric that tells us how well
+          an agent is doing its job. It defines the objective the AI is trying
+          to optimize.
+        </div>
+
+        <div class="note-box">
+          <div class="callout-label">Pro Tip</div>
+          <strong>Pro Tip:</strong> When defining a performance measure, focus
+          on what you want the agent to achieve in the environment, not how you
+          want the agent to behave. E.g., for a vacuum, measure "amount of dirt
+          removed", not "time spent vacuuming".
+        </div>
+
+        <h3>The Rational Agent</h3>
+        <p>
+          This is one of the most foundational concepts in AI. We design agents
+          to be rational.
+        </p>
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Rational Agent:</strong> An agent that chooses the action
+          expected to maximize its performance measure, given its percept
+          history, built-in knowledge, and available actions. In short: doing
+          the best it can with the information it has.
+        </div>
+
+        <div class="warning-box">
+          <div class="callout-label">Common Mistake</div>
+          <strong>Rationality vs. Perfection</strong><br />
+          Students often confuse rationality with omniscience (knowing
+          everything). A perfect agent knows the exact outcome of its actions
+          and the future. A rational agent only maximizes
+          <em>expected</em> performance based on what it currently knows. If a
+          self-driving car brakes for a mannequin thinking it's a person, it's
+          still acting rationally based on its imperfect sensors!
+        </div>
+
+        <div class="summary-box">
+          <h4>Topic 1 Summary</h4>
+          <ul>
+            <li>AI is a cycle of Perceive → Decide → Act.</li>
+            <li>Sensors take in percepts; actuators carry out actions.</li>
+            <li>The Performance Measure defines success.</li>
+            <li>
+              A rational agent maximizes expected success given its available
+              information, but it is not perfect or omniscient.
+            </li>
+          </ul>
+        </div>
+
+        <details>
+          <summary>
+            Practice Q1: Identify the components for a Spam Filter AI.
+          </summary>
+          <p><strong>Answer:</strong></p>
+          <ul>
+            <li><strong>Agent:</strong> Spam Filter Program</li>
+            <li>
+              <strong>Environment:</strong> Email inbox, incoming messages
+            </li>
+            <li>
+              <strong>Sensors:</strong> Email text parser, sender info reader
+            </li>
+            <li>
+              <strong>Actuators:</strong> Mechanism to flag as spam or move to
+              folder
+            </li>
+            <li>
+              <strong>Performance Measure:</strong> High accuracy in catching
+              spam, minimal false positives (not blocking legitimate emails)
+            </li>
+          </ul>
+        </details>
+        <details>
+          <summary>
+            Practice Q2: Why is a thermostat considered a basic agent?
+          </summary>
+          <p>
+            <strong>Answer:</strong> It fits the definition: it perceives the
+            environment (room temperature) through a sensor (thermometer),
+            decides what to do based on a set point, and acts through an
+            actuator (turning the heater on/off).
+          </p>
+        </details>
+        <details>
+          <summary>
+            Practice Q3: Is a poker bot that bluffs and loses the game
+            irrational?
+          </summary>
+          <p>
+            <strong>Answer:</strong> Not necessarily. A rational agent maximizes
+            its <em>expected</em> outcome. In poker, you have incomplete
+            information (hidden cards). Bluffing might mathematically be the
+            rational choice with the highest expected value given the bot's hand
+            and opponent tendencies, even if it happens to lose that specific
+            hand. Rationality does not guarantee a perfect outcome.
+          </p>
+        </details>
+      </div>
+
+      <div class="topic-card" id="topic-2">
+        <h2><span class="topic-num">2</span>The PEAS Framework</h2>
+        <p class="topic-subtitle">Defining the task environment for any AI system</p>
+        <p>
+          When designing an AI system, the first step is to formally define the
+          problem it needs to solve. We call this the
+          <strong>Task Environment</strong>.
+        </p>
+
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Task Environment:</strong> The complete specification of the
+          problem the agent operates in, described using the PEAS framework.
+        </div>
+
+        <p><strong>PEAS</strong> stands for:</p>
+        <ul>
+          <li>
+            <strong>P - Performance Measure:</strong> How do we measure success?
+          </li>
+          <li>
+            <strong>E - Environment:</strong> Where does the agent operate and
+            what does it interact with?
+          </li>
+          <li>
+            <strong>A - Actuators:</strong> How does the agent act upon the
+            world?
+          </li>
+          <li>
+            <strong>S - Sensors:</strong> How does the agent perceive the world?
+          </li>
+        </ul>
+
+        <h3>Examples of PEAS</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Agent Type</th>
+              <th>Performance Measure</th>
+              <th>Environment</th>
+              <th>Actuators</th>
+              <th>Sensors</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Self-Driving Car</strong></td>
+              <td>Safety, speed, legality, comfort</td>
+              <td>Roads, traffic, pedestrians, weather</td>
+              <td>Steering, brakes, accelerator</td>
+              <td>Cameras, radar, lidar, GPS</td>
+            </tr>
+            <tr>
+              <td><strong>Vacuum Robot</strong></td>
+              <td>Cleanliness, efficiency, battery life</td>
+              <td>House, furniture, dirt, walls</td>
+              <td>Wheels, vacuum motor, brushes</td>
+              <td>Dirt sensor, collision sensor, camera</td>
+            </tr>
+            <tr>
+              <td><strong>Chess AI</strong></td>
+              <td>Win game / maximize win probability</td>
+              <td>Chess board, opponent</td>
+              <td>Output move (e.g., GUI update)</td>
+              <td>Board state input, opponent moves</td>
+            </tr>
+            <tr>
+              <td><strong>Medical Diagnosis AI</strong></td>
+              <td>Correct diagnosis, patient safety</td>
+              <td>Patient, medical history, lab results</td>
+              <td>Output report, suggest tests/treatment</td>
+              <td>Symptom input, blood tests, X-rays</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note-box">
+          <div class="callout-label">Exam Hint</div>
+          <strong>Exam Hint:</strong> You will almost certainly be asked to
+          write a PEAS description for a novel scenario in an exam. Remember
+          that software bots (like the Chess or Medical AI) have digital sensors
+          (like keyboard inputs or database reads) and digital actuators (like
+          screen displays or API requests). Agents do not need physical bodies!
+        </div>
+
+        <div class="summary-box">
+          <h4>Topic 2 Summary</h4>
+          <ul>
+            <li>A Task Environment specifies the problem for an AI.</li>
+            <li>
+              PEAS is the standard framework for describing a task environment.
+            </li>
+            <li>
+              Defining PEAS is the necessary first step before designing the
+              agent's internal architecture.
+            </li>
+          </ul>
+        </div>
+
+        <details>
+          <summary>
+            Practice Q1: Create a PEAS description for an Automated English
+            Tutor.
+          </summary>
+          <p><strong>Answer:</strong></p>
+          <ul>
+            <li>
+              <strong>Performance Measure:</strong> Student's test score
+              improvement, engagement time.
+            </li>
+            <li>
+              <strong>Environment:</strong> The software platform, the student
+              user.
+            </li>
+            <li>
+              <strong>Actuators:</strong> Displaying text/questions on screen,
+              playing audio hints, providing grades.
+            </li>
+            <li>
+              <strong>Sensors:</strong> Keyboard/mouse input (student answers),
+              microphone (if assessing speaking).
+            </li>
+          </ul>
+        </details>
+        <details>
+          <summary>
+            Practice Q2: Identify the 'Actuator' in a movie recommendation
+            system (like Netflix).
+          </summary>
+          <p>
+            <strong>Answer:</strong> The actuator is the UI element or algorithm
+            output that displays the recommended movie list on the user's
+            screen.
+          </p>
+        </details>
+        <details>
+          <summary>
+            Practice Q3: Why is it important to clearly define the Performance
+            Measure in PEAS?
+          </summary>
+          <p>
+            <strong>Answer:</strong> Because a rational agent will optimize
+            whatever performance measure you give it. If you give a vacuum agent
+            a measure of "amount of dirt cleaned", it might dump its own dirt
+            back onto the floor just to clean it up again and inflate its score!
+            A well-defined measure (e.g., "cleanliness of floor minus energy
+            used") aligns the AI's goals with human desires.
+          </p>
+        </details>
+      </div>
+
+      <div class="topic-card" id="topic-3">
+        <h2><span class="topic-num">3</span>Agent Architecture &amp; Types</h2>
+        <p class="topic-subtitle">Building the decision-making brain of an agent</p>
+
+        <p>
+          Once we know the task environment (PEAS), we need to build the agent
+          itself.
+        </p>
+
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Agent Architecture:</strong> The computing device, hardware,
+          or platform that the agent runs on (e.g., robot body, a laptop, a
+          cloud server).
+        </div>
+        <div class="definition">
+          <div class="callout-label">Definition</div>
+          <strong>Agent Program:</strong> The actual software or algorithm that
+          implements the decision-making process.
+        </div>
+
+        <p>Therefore: <code>Agent = Architecture + Program</code></p>
+
+        <h3>The Agent Function</h3>
+        <p>
+          Mathematically, an agent's behavior is described by the
+          <strong>Agent Function</strong>, which maps any given percept sequence
+          (everything it has seen so far) to an action.
+        </p>
+
+        <pre><code>f: P* → A
+
+# Given a history of percepts (P*), pick an action (A).</code></pre>
+
+        <h3>Four Types of Agent Programs</h3>
+        <p>
+          There are four classic ways to design the decision-making logic of an
+          agent, ranging from simple to highly complex.
+        </p>
+
+        <h4>1. Simple Reflex Agent</h4>
+        <p>
+          Acts purely based on the <em>current</em> percept, ignoring history.
+          It uses simple Condition-Action (if-then) rules.
+        </p>
+        <ul>
+          <li><strong>Pros:</strong> Fast, simple, takes little memory.</li>
+          <li>
+            <strong>Cons:</strong> Fails in complex environments because it has
+            no memory.
+          </li>
+          <li>
+            <strong>Example:</strong>
+            <code>if car_in_front_brakes: apply_brakes()</code>
+          </li>
+        </ul>
+
+        <h4>2. Model-Based Reflex Agent</h4>
+        <p>
+          Maintains an internal state (a "model" of the world) based on percept
+          history. This allows it to handle partially observable environments.
+        </p>
+        <ul>
+          <li>
+            <strong>How it works:</strong> Current Percept + Previous Knowledge
+            = Updated Internal State → Action.
+          </li>
+          <li>
+            <strong>Example:</strong> A car tracking another car in its blind
+            spot. It can't see the car <em>right now</em>, but its internal
+            model remembers the car moved there 2 seconds ago.
+          </li>
+        </ul>
+
+        <h4>3. Goal-Based Agent</h4>
+        <p>
+          Uses a world model, plus goal information, to select actions that
+          achieve that goal. It plans ahead.
+        </p>
+        <ul>
+          <li>
+            <strong>How it works:</strong> "What will happen if I do X? Will
+            that help me reach my goal?"
+          </li>
+          <li>
+            <strong>Example:</strong> A navigation AI searching for a route from
+            Lahore to Islamabad. It considers future steps to reach the
+            destination.
+          </li>
+        </ul>
+
+        <h4>4. Utility-Based Agent</h4>
+        <p>
+          Similar to goal-based, but instead of just asking "Does this reach the
+          goal?", it asks "How <em>happy</em> does this make me?" It maximizes a
+          utility function.
+        </p>
+        <ul>
+          <li>
+            <strong>How it works:</strong> Evaluates multiple paths to the goal
+            and chooses the best one based on tradeoffs (e.g., speed vs. safety
+            vs. cost).
+          </li>
+          <li>
+            <strong>Example:</strong> A GPS app offering the fastest route vs.
+            the route with no tolls. It optimizes for the most "utility".
+          </li>
+        </ul>
+
+        <div class="summary-box">
+          <h4>Topic 3 Summary</h4>
+          <ul>
+            <li>The Agent Function maps percept histories to actions.</li>
+            <li>Simple Reflex Agents act on the current percept only.</li>
+            <li>Model-Based Agents remember past states.</li>
+            <li>Goal-Based Agents plan to achieve a specific target.</li>
+            <li>
+              Utility-Based Agents optimize to find the <em>best</em> way to
+              achieve a target.
+            </li>
+          </ul>
+        </div>
+
+        <details>
+          <summary>
+            Practice Q1: A chess bot evaluates millions of future board states
+            and scores them to find the optimal move. What type of agent is
+            this?
+          </summary>
+          <p>
+            <strong>Answer:</strong> Utility-Based Agent. It is not just trying
+            to reach a goal state (checkmate), but it is evaluating the
+            "utility" (score) of intermediate states to pick the objectively
+            best path forward.
+          </p>
+        </details>
+        <details>
+          <summary>
+            Practice Q2: A smart thermostat turns on the AC when it reads a
+            temperature > 25°C. What type of agent is this?
+          </summary>
+          <p>
+            <strong>Answer:</strong> Simple Reflex Agent. It only looks at the
+            current percept (temperature) and uses a simple condition-action
+            rule.
+          </p>
+        </details>
+        <details>
+          <summary>
+            Practice Q3: Why is a Simple Reflex Agent a bad choice for a
+            maze-solving robot?
+          </summary>
+          <p>
+            <strong>Answer:</strong> A maze often requires remembering where you
+            have already been (internal state) to avoid walking in circles. A
+            simple reflex agent only knows what its sensors see
+            <em>right now</em> (e.g., "wall in front"), so it might get stuck in
+            an infinite loop turning back and forth.
+          </p>
+        </details>
+      </div>
+
+      <div class="topic-card" id="topic-4">
+        <h2><span class="topic-num">4</span>The Four AI Approaches</h2>
+        <p class="topic-subtitle">How researchers have historically defined "intelligence"</p>
+        <p>
+          Historically, researchers have defined the goal of Artificial
+          Intelligence in four distinct ways. These are divided by whether we
+          care about <strong>thinking vs. acting</strong>, and
+          <strong>humanly vs. rationally</strong>.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Thinking</th>
+              <th>Acting</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Humanly</strong></td>
+              <td>Does it think like a human? (Cognitive Modeling)</td>
+              <td>Does it behave like a human? (The Turing Test)</td>
+            </tr>
+            <tr>
+              <td><strong>Rationally</strong></td>
+              <td>Does it reason perfectly/logically? (Laws of Thought)</td>
+              <td>Does it make the best decisions? (Rational Agents)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>1. Acting Humanly (The Turing Test)</h3>
+        <p>
+          Goal: Make machines behave so human-like that they are
+          indistinguishable from real humans. Alan Turing proposed the Turing
+          Test: if a human interrogator cannot tell whether they are chatting
+          with a machine or a human, the machine passes.
+        </p>
+
+        <h3>2. Thinking Humanly (Cognitive Modeling)</h3>
+        <p>
+          Goal: Figure out exactly how the human brain works, and build software
+          that mimics that process (e.g., using neural networks inspired by
+          biology). Closely tied to psychology and neuroscience.
+        </p>
+
+        <h3>3. Thinking Rationally (Laws of Thought)</h3>
+        <p>
+          Goal: Build systems that reason flawlessly using formal logic
+          (syllogisms). E.g., "A=B, B=C, therefore A=C".<br />
+          <strong>Problem:</strong> The real world is full of uncertainty, and
+          not everything can be neatly defined in absolute logical terms.
+        </p>
+
+        <h3>4. Acting Rationally (Rational Agent Approach)</h3>
+        <p>
+          Goal: Build agents that choose actions to maximize their performance
+          measure. <strong>This is the modern standard for AI.</strong>
+        </p>
+
+        <div class="note-box">
+          <div class="callout-label">Key Insight</div>
+          <strong>Why modern AI focuses on Acting Rationally:</strong> We
+          usually don't care if an AI "thinks" the way humans do, or if it can
+          perfectly logically prove every step. We care about results. A
+          self-driving car doesn't need to drive exactly like a human (humans
+          crash!); it just needs to drive safely and efficiently (rationally).
+        </div>
+
+        <div class="warning-box">
+          <div class="callout-label">Common Mistake</div>
+          <strong>Rationality vs Human Behavior</strong><br />
+          Humans are not perfectly rational. We make emotional decisions,
+          mistakes, and have biases. Therefore, "Acting Humanly" and "Acting
+          Rationally" are very different goals!
+        </div>
+
+        <div class="summary-box">
+          <h4>Topic 4 Summary</h4>
+          <ul>
+            <li>
+              AI approaches are split along human-like vs. rational, and
+              thinking vs. acting.
+            </li>
+            <li>
+              Acting Humanly focuses on mimicking human behavior (Turing Test).
+            </li>
+            <li>Acting Rationally focuses on maximizing objective success.</li>
+            <li>
+              Modern AI courses almost exclusively focus on building Rational
+              Agents.
+            </li>
+          </ul>
+        </div>
+
+        <details>
+          <summary>
+            Practice Q1: If a conversational AI intentionally makes typos to
+            seem more realistic, which AI approach is its designer following?
+          </summary>
+          <p>
+            <strong>Answer:</strong> Acting Humanly. The goal is to mimic human
+            behavior (imperfections and all) to pass as human, not to perfectly
+            transmit information.
+          </p>
+        </details>
+        <details>
+          <summary>
+            Practice Q2: Why did traditional "Thinking Rationally" (Symbolic AI)
+            struggle with real-world problems like vision or speech?
+          </summary>
+          <p>
+            <strong>Answer:</strong> Because formal logic requires absolute
+            certainty (True/False). Real-world sensor data (like a blurry camera
+            image) is noisy and uncertain. Rational thought requires dealing
+            with probabilities, which strict symbolic logic struggled with.
+          </p>
+        </details>
+        <details>
+          <summary>
+            Practice Q3: Under the "Acting Rationally" framework, is an AI
+            required to explain its internal thought process to a user?
+          </summary>
+          <p>
+            <strong>Answer:</strong> No. The rational agent approach only
+            evaluates the <em>action taken</em> and its effect on the
+            performance measure. While explainability is useful for humans, it
+            is not a requirement for an agent to be considered rational, so long
+            as it chooses the optimal action.
+          </p>
+        </details>
+      </div>
+      </div>
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+      </div>
+    </div>
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
+      let currentTopicIndex = 0;
+
+      function showTopic(id) {
+        document.querySelectorAll('.topic-card').forEach(c => c.style.display = 'none');
+        const target = document.getElementById(id);
+        if (target) target.style.display = 'block';
+        
+        currentTopicIndex = topics.indexOf(id);
+        
+        document.querySelectorAll('.nav-sublist a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-sublist a[onclick="showTopic('${id}')"]`);
+        if (link) link.classList.add('active');
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevTitle = document.getElementById('prev-title');
+        const nextTitle = document.getElementById('next-title');
+
+        if (currentTopicIndex > 0) {
+          prevBtn.style.display = 'flex';
+          const pLink = document.querySelector(`.nav-sublist a[onclick="showTopic('${topics[currentTopicIndex - 1]}')"]`);
+          if (prevTitle && pLink) prevTitle.textContent = pLink.querySelector('.nav-num') ? pLink.textContent.replace(pLink.querySelector('.nav-num').textContent, '').trim() : pLink.innerText.trim();
+        } else {
+          prevBtn.style.display = 'none';
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nextBtn.style.display = 'flex';
+          const nLink = document.querySelector(`.nav-sublist a[onclick="showTopic('${topics[currentTopicIndex + 1]}')"]`);
+          if (nextTitle && nLink) nextTitle.textContent = nLink.querySelector('.nav-num') ? nLink.textContent.replace(nLink.querySelector('.nav-num').textContent, '').trim() : nLink.innerText.trim();
+        } else {
+          nextBtn.style.display = 'none';
+        }
+        
+        document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(element) {
+        const sublist = element.nextElementSibling;
+        const chevron = element.querySelector('.chevron');
+        if (sublist.style.display === 'none') {
+          sublist.style.display = 'block';
+          chevron.style.transform = 'rotate(0deg)';
+        } else {
+          sublist.style.display = 'none';
+          chevron.style.transform = 'rotate(-90deg)';
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+            i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      // Initialize
+      showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content"),
+        bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>

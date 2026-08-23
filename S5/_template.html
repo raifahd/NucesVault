@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>[Course] — [Module Name]</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!--
+    Adjust the href path to notes.css depending on where this file lives:
+      Same folder as notes.css  →  href="./notes.css"
+      One folder deep           →  href="../notes.css"
+      Two folders deep          →  href="../../notes.css"
+  -->
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button
+      id="menu-toggle"
+      onclick="document.getElementById('sidebar').classList.toggle('open')"
+    >
+      ☰
+    </button>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR
+     - Add one .nav-section per module/lecture file
+     - Use <a class="nav-module-link" href="other-file.html"> to link between files
+     - Use <a onclick="showTopic('topic-N')"> for topics within this file
+     ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">[Course Name]</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <!-- Link to OTHER lecture files like this: -->
+        <!--
+    <li>
+      <a class="nav-module-link" href="./intro-to-ai.html">
+        <span class="nav-mod-num">L1</span>Intro to AI
+      </a>
+    </li>
+    -->
+
+        <!-- Topics WITHIN this file: -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>[Module Name]</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')"
+                ><span class="nav-num">01</span>Topic One</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')"
+                ><span class="nav-num">02</span>Topic Two</a
+              >
+            </li>
+            <!-- add more topics here -->
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">[Course Name]</div>
+          <h1 class="module-title">[Module Name]</h1>
+        </div>
+
+        <!-- ── TOPIC CARD ───────────────────────────────────────
+         Copy this block for each new topic.
+         Increment id="topic-N" and the topics[] array in JS.
+         ─────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Topic One Title</h2>
+          <p class="topic-subtitle">One-line descriptor of this topic</p>
+
+          <p>
+            Intro paragraph — plain language "what and why" before any formulas.
+          </p>
+
+          <h3>Subsection</h3>
+          <p>Body text here.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Term:</strong> Formal definition here. Intuitive one-liner
+            in brackets.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Example Title</h4>
+            <p>Step-by-step walkthrough.</p>
+            <pre><code>// code or pseudocode here</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Exam hint or useful shortcut.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            Common misconception students make.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Point one</li>
+              <li>Point two</li>
+              <li>Point three</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Question text here?</summary>
+              <p><strong>Answer:</strong> Full worked answer here.</p>
+            </details>
+            <details>
+              <summary>Medium: Question text here?</summary>
+              <p><strong>Answer:</strong> Full worked answer here.</p>
+            </details>
+            <details>
+              <summary>Hard: Question text here?</summary>
+              <p><strong>Answer:</strong> Full worked answer here.</p>
+            </details>
+          </div>
+        </div>
+        <!-- end topic-1 -->
+
+        <!-- Paste another topic-card here for topic-2, etc. -->
+      </div>
+      <!-- end module-container -->
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      // ── List all topic IDs in order ────────────────────────
+      const topics = ["topic-1", "topic-2"]; // add more as needed
+      let currentTopicIndex = 0;
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(
+          `.nav-sublist a[onclick="showTopic('${id}')"]`,
+        );
+        if (lk) lk.classList.add("active");
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          const pl = document.querySelector(
+            `.nav-sublist a[onclick="showTopic('${topics[currentTopicIndex - 1]}')"]`,
+          );
+          if (pt && pl)
+            pt.textContent = pl.querySelector(".nav-num")
+              ? pl.textContent
+                  .replace(pl.querySelector(".nav-num").textContent, "")
+                  .trim()
+              : pl.innerText.trim();
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          const nl = document.querySelector(
+            `.nav-sublist a[onclick="showTopic('${topics[currentTopicIndex + 1]}')"]`,
+          );
+          if (nt && nl)
+            nt.textContent = nl.querySelector(".nav-num")
+              ? nl.textContent
+                  .replace(nl.querySelector(".nav-num").textContent, "")
+                  .trim()
+              : nl.innerText.trim();
+        } else {
+          nb.style.display = "none";
+        }
+
+        document
+          .getElementById("main-content")
+          .scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      // Initialise
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>
