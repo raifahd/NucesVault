@@ -12,7 +12,7 @@
     <style>
       body {
         background-color: var(--bg);
-        color: var(--text);
+        color: var(--tx);
         padding: 40px 20px;
         display: flex;
         flex-direction: column;
@@ -32,8 +32,8 @@
         margin-bottom: 10px;
       }
       .course-section {
-        background: var(--card-bg);
-        border: 1px solid var(--border);
+        background: var(--sb);
+        border: 1px solid var(--bd);
         border-radius: 12px;
         padding: 24px;
         margin-bottom: 24px;
@@ -47,8 +47,8 @@
       .course-title {
         font-size: 1.5rem;
         margin-bottom: 16px;
-        color: var(--text);
-        border-bottom: 1px solid var(--border);
+        color: var(--tx);
+        border-bottom: 1px solid var(--bd);
         padding-bottom: 8px;
       }
       .lecture-list {
@@ -63,19 +63,19 @@
         display: flex;
         align-items: center;
         text-decoration: none;
-        color: var(--text-muted);
+        color: var(--mt);
         padding: 8px 12px;
         border-radius: 8px;
         transition: background 0.2s, color 0.2s;
       }
       .lecture-link:hover {
-        background: rgba(217, 119, 87, 0.1); /* --ac at 10% */
+        background: var(--hv); /* --ac at 10% */
         color: var(--ac);
       }
       .lecture-num {
         font-family: monospace;
-        background: var(--border);
-        color: var(--text);
+        background: var(--bd);
+        color: var(--tx);
         padding: 2px 8px;
         border-radius: 4px;
         margin-right: 12px;
@@ -87,7 +87,7 @@
     <div class="hub-container">
       <div class="hub-header">
         <h1 class="hub-title">Semester 5 Notes</h1>
-        <p style="color: var(--text-muted)">Select a course to start reading.</p>
+        <p style="color: var(--mt)">Select a course to start reading.</p>
       </div>
 
       <!-- Artificial Intelligence -->
