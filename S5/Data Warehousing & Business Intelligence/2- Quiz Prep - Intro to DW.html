@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing &amp; BI — Ch 1 &amp; 2 Notes + Quiz Prep</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button
+      id="menu-toggle"
+      onclick="document.getElementById('sidebar').classList.toggle('open')"
+    >
+      ☰
+    </button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">Data Warehousing &amp; BI</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to DW.html">
+            <span class="nav-num">01</span>Intro to DW
+          </a>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 2 — Book Notes &amp; Quiz</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')">
+                <span class="nav-num">1</span>Ch 1: The Compelling Need
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                <span class="nav-num">2</span>Ch 2: DW Building Blocks
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                <span class="nav-num">3</span>Chapter Review Qs
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')">
+                <span class="nav-num">4</span>Practice MCQs &amp; Match
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div id="main-content">
+      <div class="module-container" id="module-2">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Warehousing &amp; BI</div>
+          <h1 class="module-title">Module 2 — Chapter Notes &amp; Quiz Prep</h1>
+        </div>
+
+        <!-- Topic Card 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Chapter 1: The Compelling Need for Data Warehousing</h2>
+          <p class="topic-subtitle">Detailed notes on the Information Crisis, Past Failures, and the need for Strategic Information.</p>
+
+          <p>We are drowning in data but have little knowledge. This is the <strong>Information Crisis</strong>. Companies have accumulated mountains of data over decades, but this data is siloed in operational systems and cannot be readily used to make strategic decisions.</p>
+
+          <h3>The Need for Strategic Information</h3>
+          <p>Executives need strategic information to gain a competitive edge, improve performance, and steer the company in the proper direction. Strategic information must have 5 characteristics:</p>
+          <ul>
+            <li><strong>Integrated:</strong> A single, enterprise-wide view.</li>
+            <li><strong>Data Integrity:</strong> Accurate and conforms to business rules.</li>
+            <li><strong>Accessible:</strong> Responsive for analysis with intuitive access paths.</li>
+            <li><strong>Credible:</strong> Trusted by users; every business factor has one and only one value.</li>
+            <li><strong>Timely:</strong> Available within the stipulated time frame.</li>
+          </ul>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Strategic Information vs. Operational Data:</strong> Operational data is event-driven and provides snapshots of transactions. Strategic information is broad-based, integrated, and used to spot trends over time (e.g., tracking customer loyalty or evaluating route profitability).
+          </div>
+
+          <h3>Failures of Past Decision-Support Systems</h3>
+          <p>Before Data Warehousing, IT departments tried to provide strategic information using several inadequate methods. These attempts failed because they relied on operational systems that were never designed for analysis:</p>
+          <ul>
+            <li><strong>Ad hoc Reports:</strong> Custom programs written for each request. Overwhelmed IT.</li>
+            <li><strong>Special Extract Programs:</strong> Suites of programs run periodically to extract data into files.</li>
+            <li><strong>Small Applications &amp; Information Centers:</strong> Pre-determined reports/screens. Too rigid.</li>
+            <li><strong>Executive Information Systems (EIS):</strong> Preprogrammed screens for executives. They lacked the flexibility to drill down into the data when new questions arose.</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>The Familiar Merry-Go-Round:</strong> Users request a report -> IT places request on backlog -> 4 to 6 weeks pass -> IT delivers report -> User discovers they need different data -> User requests a new report. The cycle repeats endlessly.
+          </div>
+
+          <h3>Evolution of Business Intelligence (BI)</h3>
+          <p>Business Intelligence (BI) is the umbrella term for applications and technologies that gather, cleanse, and analyze data to improve decision-making. It consists of two environments:</p>
+          <ul>
+            <li><strong>Data to Information (The DW):</strong> Extracting, cleansing, transforming, and storing data.</li>
+            <li><strong>Information to Knowledge (Analytics):</strong> Analytical tools used by users to access and analyze the stored data.</li>
+          </ul>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Operational (OLTP) systems run the business; Informational (DW/DSS) systems watch and analyze the business.</li>
+              <li>Past attempts failed because they tried to pull strategic insights directly from highly normalized, siloed operational databases.</li>
+              <li>A Data Warehouse is the only viable solution because it provides an environment explicitly designed for read-intensive, interactive, historical analysis.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic Card 2 -->
+        <div class="topic-card" id="topic-2" style="display: none">
+          <h2><span class="topic-num">2</span>Chapter 2: Data Warehouse Building Blocks</h2>
+          <p class="topic-subtitle">Detailed notes on defining features, architectures, and the five core components.</p>
+          
+          <h3>Defining Features of a Data Warehouse</h3>
+          <p>Bill Inmon (the father of DW) and Sean Kelly defined the core characteristics of a data warehouse. It must be:</p>
+          <ul>
+            <li><strong>Subject-Oriented:</strong> Data is stored by real-world business subjects (e.g., Customer, Product, Sales) rather than by applications (e.g., Order Processing, Billing).</li>
+            <li><strong>Integrated:</strong> Data from diverse sources is standardized. Inconsistencies in naming conventions, codes, and measurements are removed.</li>
+            <li><strong>Time-Variant:</strong> Data is kept as historical snapshots. Every record contains a time element, allowing for historical trend analysis.</li>
+            <li><strong>Nonvolatile:</strong> Data is read-only. It is loaded in batches and is not updated in real-time by individual transactions.</li>
+          </ul>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Data Granularity</h4>
+            Data granularity refers to the level of detail. A bank might keep three levels of granularity in its DW:
+            <strong>Daily Detail:</strong> Individual deposit/withdrawal amounts.
+            <strong>Monthly Summary:</strong> Number of transactions and ending balance per month.
+            <strong>Quarterly Summary:</strong> Number of transactions and ending balance per quarter.
+          </div>
+
+          <h3>Data Warehouses vs. Data Marts</h3>
+          <p>A Data Mart is a subset of the DW targeted to a specific business group (e.g., Sales Data Mart). The two leading approaches to building the architecture are:</p>
+          <table>
+            <thead>
+              <tr><th>Approach</th><th>Description</th><th>Pros &amp; Cons</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Top-Down (Inmon CIF)</strong></td>
+                <td>Build a centralized, enterprise-wide DW (in 3NF) first. Then, create dependent data marts (Hub-and-Spoke).</td>
+                <td>Pros: True corporate view, centralized control. Cons: Takes years to build, high risk of failure.</td>
+              </tr>
+              <tr>
+                <td><strong>Bottom-Up (Kimball Bus)</strong></td>
+                <td>Build iterative data marts one by one. Link them together using <strong>conformed dimensions</strong> to form the enterprise DW (Data-Mart Bus).</td>
+                <td>Pros: Faster ROI, manageable pieces. Cons: Requires strict discipline to avoid creating independent, fragmented data silos.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Independent Data Marts</strong> (built directly from operational sources without a central strategy) are considered an architectural failure because they perpetuate data redundancy and inconsistent numbers across departments.
+          </div>
+
+          <h3>The 5 Building Blocks of DW Architecture</h3>
+          <ol>
+            <li><strong>Source Data:</strong> Includes <em>Production Data</em> (OLTP databases with high disparity), <em>Internal Data</em> (spreadsheets, docs), <em>Archived Data</em> (historical backups), and <em>External Data</em> (purchased industry benchmarks).</li>
+            <li><strong>Data Staging (ETL):</strong> The workbench where data is Extracted, Transformed (cleaned, standardized, aggregated, surrogate keys assigned), and Loaded. Must be physically separate from the source and the target DW.</li>
+            <li><strong>Data Storage:</strong> The actual repository (RDBMS or MDDBMS) optimized for read-heavy, analytical queries.</li>
+            <li><strong>Information Delivery:</strong> The tools used by users to consume data (Ad hoc reports, OLAP/Complex queries, Data Mining, Dashboards).</li>
+            <li><strong>Management and Control:</strong> Coordinates ETL scheduling, user access, and interacts with Metadata to orchestrate the whole system.</li>
+          </ol>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Metadata:</strong> "Data about data." It acts as the glue of the DW. <br>
+            <em>Operational Metadata:</em> Info about source system structures.<br>
+            <em>Extraction/Transformation Metadata:</em> Info about ETL rules and mappings.<br>
+            <em>End-User Metadata:</em> The business dictionary that helps users navigate the DW.
+          </div>
+        </div>
+
+        <!-- Topic Card 3 -->
+        <div class="topic-card" id="topic-3" style="display: none">
+          <h2><span class="topic-num">3</span>Chapter 1 &amp; 2 Review Questions</h2>
+          <p class="topic-subtitle">Proper quiz prep covering the end-of-chapter questions from the textbook.</p>
+
+          <details>
+            <summary>Q1: Why were past attempts by IT to provide strategic information failures? List three concrete reasons.</summary>
+            <p><strong>Answer:</strong>
+              1. <strong>Attempting to use Operational Data directly:</strong> They tried to query OLTP systems which were event-driven, highly normalized, and lacked historical depth.<br>
+              2. <strong>The "Merry-Go-Round" effect:</strong> Lack of self-service. Users requested an ad-hoc report, waited weeks, then realized they needed slightly different data, overwhelming IT.<br>
+              3. <strong>Data Fragmentation:</strong> Extract programs pulled from disparate systems without integrating or cleaning the data, leading to inconsistent and non-credible reports.
+            </p>
+          </details>
+
+          <details>
+            <summary>Q2: Describe five differences between operational systems and informational systems.</summary>
+            <p><strong>Answer:</strong>
+              1. <strong>Content:</strong> Operational has current values; Informational has archived, derived, and summarized data.<br>
+              2. <strong>Structure:</strong> Operational is optimized for transactions (normalized); Informational is optimized for queries (denormalized).<br>
+              3. <strong>Usage:</strong> Operational is predictable and repetitive; Informational is ad-hoc, random, and heuristic.<br>
+              4. <strong>Access Type:</strong> Operational involves read, update, delete; Informational is read-only.<br>
+              5. <strong>Users:</strong> Operational is used by a large number of front-line staff; Informational is used by a relatively smaller number of analysts and executives.
+            </p>
+          </details>
+
+          <details>
+            <summary>Q3: Explain the 4 defining features of a Data Warehouse.</summary>
+            <p><strong>Answer:</strong>
+              1. <strong>Subject-Oriented:</strong> Data is grouped by business entities (Customers, Sales) rather than by applications (Order Entry).<br>
+              2. <strong>Integrated:</strong> Data from disparate sources is unified, standardizing naming conventions, measurements, and formats.<br>
+              3. <strong>Time-Variant:</strong> Data is stored as a series of snapshots over time, rather than just keeping the most current value.<br>
+              4. <strong>Nonvolatile:</strong> Data is loaded periodically in batches and is not updated in real-time. It is read-only.
+            </p>
+          </details>
+
+          <details>
+            <summary>Q4: How do Top-Down and Bottom-Up approaches differ?</summary>
+            <p><strong>Answer:</strong>
+              <strong>Top-Down (Inmon):</strong> Builds the massive, enterprise-wide DW first, then feeds dependent data marts from it. High consistency, but takes a very long time to build.<br>
+              <strong>Bottom-Up (Kimball):</strong> Builds departmental data marts one at a time to show quick ROI. As long as these marts share "conformed dimensions," they logically link together to form the enterprise DW.
+            </p>
+          </details>
+
+          <details>
+            <summary>Q5: Why do you need a separate Data Staging component?</summary>
+            <p><strong>Answer:</strong>
+              Data Staging must be separate because extracting, cleaning, transforming, and deduplicating data from multiple disparate sources is computationally heavy. If you did this in the source system, you would degrade operational performance. If you did it directly in the DW, you would expose users to dirty, inconsistent data during the transformation process. It acts as a safe "prep kitchen."
+            </p>
+          </details>
+          
+          <details>
+            <summary>Q6: What are the three major types of metadata in a data warehouse?</summary>
+            <p><strong>Answer:</strong>
+              1. <strong>Operational Metadata:</strong> Defines the source systems and their data structures.<br>
+              2. <strong>Extraction and Transformation Metadata:</strong> Documents the ETL rules, mappings, and load schedules.<br>
+              3. <strong>End-User Metadata:</strong> Provides a business glossary and navigation map so users can query the data using familiar business terms.
+            </p>
+          </details>
+
+        </div>
+
+        <!-- Topic Card 4 -->
+        <div class="topic-card" id="topic-4" style="display: none">
+          <h2><span class="topic-num">4</span>Practice MCQs &amp; Matching Exercises</h2>
+          <p class="topic-subtitle">Test your retention of the material with these quick checks.</p>
+
+          <h3>Multiple Choice</h3>
+          
+          <details>
+            <summary>1. According to Amdahl's Law, what primarily limits the speedup you can get by adding more parallel processors?</summary>
+            <p><strong>Answer: B</strong><br>
+              A) The speed of the hard drives<br>
+              B) The fraction of the program that must be executed sequentially<br>
+              C) The amount of RAM available<br>
+              D) Network bandwidth<br>
+              <em>Explanation:</em> SpeedUp = 1 / (Sequential Fraction + (Parallel Fraction / Processors)). The sequential fraction acts as a hard ceiling.
+            </p>
+          </details>
+
+          <details>
+            <summary>2. An architecture where independent data marts are built directly from operational sources without conforming dimensions usually results in:</summary>
+            <p><strong>Answer: A</strong><br>
+              A) Fragmented data silos and inconsistent reporting across the enterprise<br>
+              B) A perfectly integrated enterprise data warehouse<br>
+              C) The Inmon Corporate Information Factory<br>
+              D) High credibility among executives<br>
+              <em>Explanation:</em> Independent data marts are an anti-pattern. Because they do not share conformed dimensions or a central DW, they produce conflicting data.
+            </p>
+          </details>
+
+          <details>
+            <summary>3. Which component of the DW architecture is responsible for interacting with Metadata to orchestrate ETL schedules and user access?</summary>
+            <p><strong>Answer: C</strong><br>
+              A) Information Delivery<br>
+              B) Data Storage<br>
+              C) Management &amp; Control<br>
+              D) Data Staging<br>
+            </p>
+          </details>
+
+          <h3>Matching Exercise</h3>
+          <p>Match the terms on the left with their descriptions on the right:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1. Nonvolatile data</td>
+                <td>A. read-only after it is loaded</td>
+              </tr>
+              <tr>
+                <td>2. Disparate data</td>
+                <td>B. because of multiple inconsistent operational sources</td>
+              </tr>
+              <tr>
+                <td>3. Data staging</td>
+                <td>C. workbench for data integration and cleansing</td>
+              </tr>
+              <tr>
+                <td>4. Metadata</td>
+                <td>D. roadmap and context for users and administrators</td>
+              </tr>
+              <tr>
+                <td>5. Dependent data mart</td>
+                <td>E. receives data from the main centralized data warehouse</td>
+              </tr>
+              <tr>
+                <td>6. Time-variant data</td>
+                <td>F. contains historical snapshots, not just current values</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <details>
+            <summary>Check Answers</summary>
+            <p>
+              1 &rarr; A<br>
+              2 &rarr; B<br>
+              3 &rarr; C<br>
+              4 &rarr; D<br>
+              5 &rarr; E<br>
+              6 &rarr; F
+            </p>
+          </details>
+          
+          <div class="summary-box">
+            <h4>Final Quiz Tips</h4>
+            <ul>
+              <li><strong>Top-down = Inmon</strong> = Centralized DW first, dependent marts later.</li>
+              <li><strong>Bottom-up = Kimball</strong> = Data Mart Bus, conformed dimensions.</li>
+              <li><strong>Operational (OLTP)</strong> = Runs the business, current data, high transactions.</li>
+              <li><strong>Informational (DSS/DW)</strong> = Watches the business, historical data, read-only.</li>
+              <li><strong>Metadata</strong> = Data about data, essential for credibility and orchestration.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()" style="display: none;">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })"
+    >
+      ↑
+    </button>
+    
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        document
+          .getElementById("main-content")
+          .scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li, .nav-list > li")
+          .forEach((i) => {
+            i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+          });
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>
