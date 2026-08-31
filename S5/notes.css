@@ -817,7 +817,42 @@ details strong {
     display: block;
   }
   #main-content {
-    padding: 24px 20px 96px;
-    padding-top: 60px;
+    padding: 24px 16px 96px;
+    padding-top: 70px;
+  }
+  .topic-card {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+  .module-title {
+    font-size: 1.6rem;
+  }
+  .topic-card h2 {
+    font-size: 1.25rem;
+    align-items: flex-start;
+  }
+  .topic-subtitle {
+    margin-left: 0;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .definition, .note-box, .warning-box, .example {
+    padding: 16px;
+    margin: 16px 0;
+  }
+  .bottom-nav {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+  .bottom-nav button {
+    max-width: 100%;
+    width: 100%;
+    align-items: center !important;
+  }
+  .bottom-nav button div {
+    text-align: center !important;
+  }
+  #next-btn {
+    margin-left: 0;
   }
 }
