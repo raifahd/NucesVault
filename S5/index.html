@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>S5 Course Notes Hub</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="notes.css" />
+    <style>
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .hub-container {
+        max-width: 800px;
+        width: 100%;
+      }
+      .hub-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .hub-title {
+        font-size: 2.5rem;
+        color: var(--ac);
+        margin-bottom: 10px;
+      }
+      .course-section {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, border-color 0.3s ease;
+      }
+      .course-section:hover {
+        transform: translateY(-2px);
+        border-color: var(--ac);
+      }
+      .course-title {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+        color: var(--text);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 8px;
+      }
+      .lecture-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .lecture-list li {
+        margin-bottom: 8px;
+      }
+      .lecture-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text-muted);
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: background 0.2s, color 0.2s;
+      }
+      .lecture-link:hover {
+        background: rgba(217, 119, 87, 0.1); /* --ac at 10% */
+        color: var(--ac);
+      }
+      .lecture-num {
+        font-family: monospace;
+        background: var(--border);
+        color: var(--text);
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-right: 12px;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hub-container">
+      <div class="hub-header">
+        <h1 class="hub-title">Semester 5 Notes</h1>
+        <p style="color: var(--text-muted)">Select a course to start reading.</p>
+      </div>
+
+      <!-- Artificial Intelligence -->
+      <div class="course-section">
+        <h2 class="course-title">Artificial Intelligence (AI)</h2>
+        <ul class="lecture-list">
+          <li>
+            <a href="Artifical Intelligence (AI)/1- Introduction to AI.html" class="lecture-link">
+              <span class="lecture-num">01</span> Introduction to AI
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Data Analysis & Visualization -->
+      <div class="course-section">
+        <h2 class="course-title">Data Analysis & Visualization</h2>
+        <ul class="lecture-list">
+          <li>
+            <a href="Data Analysis & Visualization/1- Introduction to Data Analysis & Visualization.html" class="lecture-link">
+              <span class="lecture-num">01</span> Introduction to Data Analysis & Visualization
+            </a>
+          </li>
+          <li>
+            <a href="Data Analysis & Visualization/2- Data Analysis Lifecycle.html" class="lecture-link">
+              <span class="lecture-num">02</span> Data Analysis Lifecycle
+            </a>
+          </li>
+          <li>
+            <a href="Data Analysis & Visualization/3- Data Preparation.html" class="lecture-link">
+              <span class="lecture-num">03</span> Data Preparation
+            </a>
+          </li>
+          <li>
+            <a href="Data Analysis & Visualization/4- Exploratory Data Analysis.html" class="lecture-link">
+              <span class="lecture-num">04</span> Exploratory Data Analysis
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Data Warehousing & Business Intelligence -->
+      <div class="course-section">
+        <h2 class="course-title">Data Warehousing & Business Intelligence</h2>
+        <ul class="lecture-list">
+          <li>
+            <a href="Data Warehousing & Business Intelligence/1- Introduction to DW.html" class="lecture-link">
+              <span class="lecture-num">01</span> Introduction to DW
+            </a>
+          </li>
+          <li>
+            <a href="Data Warehousing & Business Intelligence/2- Quiz Prep - Intro to DW.html" class="lecture-link">
+              <span class="lecture-num">02</span> Quiz Prep - Intro to DW
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
