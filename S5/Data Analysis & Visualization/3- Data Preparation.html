@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>DAV — Data Preparation</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../notes.css"/>
+<style>
+.gt{width:100%;border-collapse:collapse;margin:12px 0;font-size:.86rem;}
+.gt th{background:var(--ac);color:#fff;padding:7px 10px;text-align:left;}
+.gt td{padding:7px 10px;border-bottom:1px solid var(--bd);}
+.gt tr:nth-child(even) td{background:var(--bg2);}
+.stage-flow{display:flex;flex-direction:column;gap:8px;margin:16px 0;}
+.stage{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:8px;background:var(--bg2);border-left:3px solid var(--ac);}
+.stage .num{min-width:28px;height:28px;background:var(--ac);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;}
+.stage .info h4{margin:0 0 3px;font-size:.9rem;color:var(--ac);}
+.stage .info p{margin:0;font-size:.82rem;color:var(--muted);line-height:1.5;}
+.roccc{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin:14px 0;}
+.roccc-item{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:12px;}
+.roccc-item .rl{font-size:1.6rem;font-weight:700;color:var(--ac);margin-bottom:4px;}
+.roccc-item h4{margin:0 0 4px;font-size:.88rem;}
+.roccc-item p{margin:0;font-size:.78rem;color:var(--muted);}
+.messy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:14px 0;}
+.messy-card{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:14px;}
+.messy-card .badge{display:inline-block;background:var(--ac);color:#fff;border-radius:4px;padding:2px 8px;font-size:.75rem;font-weight:600;margin-bottom:6px;}
+.messy-card h4{margin:0 0 5px;font-size:.88rem;}
+.messy-card p{margin:0;font-size:.78rem;color:var(--muted);}
+</style>
+</head><body>
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<div id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-course-label">DS-3001</div>
+    <div class="sidebar-title">Data Analysis &amp; Visualization</div>
+  </div>
+  <div class="sidebar-search-wrap">
+    <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()"/>
+  </div>
+  <ul class="nav-list" id="nav-list">
+    <li class="nav-section">
+      <div class="nav-section-title" onclick="toggleSection(this)">
+        <span>Module 3 — Data Preparation</span><span class="chevron">▼</span>
+      </div>
+      <ul class="nav-sublist">
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Why Data Cleaning Matters</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Cleaning vs Preprocessing</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>The 4-Step Procedure</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Examine &amp; Plan</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Common Preprocessing Steps</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Best Practices &amp; PCS</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>🎯 Quiz Prep</a></li></ul>
+    </li>
+    
+    <li><a class="nav-module-link" href="./1- Introduction to Data Analysis &amp; Visualization.html"><span class="nav-num">01</span>Introduction to VDS</a></li>
+    <li><a class="nav-module-link" href="./2- Data Analysis Lifecycle.html"><span class="nav-num">02</span>Data Analysis Lifecycle</a></li>
+    <li><a class="nav-module-link" href="./4- Exploratory Data Analysis.html"><span class="nav-num">04</span>Exploratory Data Analysis</a></li>
+  </ul>
+</div>
+<div id="main-content">
+<div class="module-container" id="module-3">
+<div class="module-header">
+  <div class="module-eyebrow">DS-3001 · Book: Ch. 4 · Slide 03</div>
+  <h1 class="module-title">Module 3 — Data Preparation &amp; EDA</h1>
+</div>
+
+<div class="topic-card" id="topic-1">
+  <h2><span class="topic-num">1</span>Why Data Cleaning Matters</h2>
+  <p class="topic-subtitle">The time-intensive bedrock of any data science project</p>
+  <p>Data preparation is often unglamorous, but it is the most critical phase of the DSLC (Stage 2). It consumes a massive portion of the total project time and directly dictates the validity of all downstream analysis.</p>
+  <div class="messy-grid">
+    <div class="messy-card">
+      <span class="badge">Time</span>
+      <h4>Time-Intensive Bedrock</h4>
+      <p>Data preparation consumes the largest slice of the total time spent on any data science project. It is unavoidable.</p>
+    </div>
+    <div class="messy-card">
+      <span class="badge">Judgment</span>
+      <h4>Requires Human Judgment</h4>
+      <p>Cannot be fully automated. Every dataset requires human critical thinking, domain expertise, and contextual decision-making to clean properly.</p>
+    </div>
+    <div class="messy-card">
+      <span class="badge">Learning</span>
+      <h4>Deep Domain Learning</h4>
+      <p>Hands-on cleaning builds intimate knowledge of data limits, quirks, and collection flaws essential for drawing valid downstream conclusions.</p>
+    </div>
+  </div>
+  <div class="summary-box"><h4>Key Takeaways</h4><ul>
+    <li>Data cleaning isn't just a chore; it's where you truly learn the domain and dataset limitations.</li>
+    <li>It relies heavily on human judgment — automated tools can only go so far.</li>
+  </ul></div>
+</div>
+
+<div class="topic-card" id="topic-2">
+  <h2><span class="topic-num">2</span>Data Cleaning vs Preprocessing</h2>
+  <p class="topic-subtitle">Two distinct phases with different goals</p>
+  <p>Though often grouped under "Data Preparation," cleaning and preprocessing serve different purposes in the DSLC.</p>
+  <table class="gt">
+    <thead><tr><th></th><th>Data Cleaning</th><th>Data Preprocessing</th></tr></thead>
+    <tbody>
+      <tr><td><strong>What it is</strong></td><td>Modifying raw data to be unambiguous, well-formatted, and readable by computers.</td><td>Modifying clean data to meet specific algorithmic requirements.</td></tr>
+      <tr><td><strong>Goal</strong></td><td>Correct errors, standardize column names, fix variable types, eliminate ambiguities.</td><td>Prepare data objects specifically tailored for model execution or statistical analysis.</td></tr>
+      <tr><td><strong>Examples</strong></td><td>Fixing typos, parsing dates, replacing impossible values (e.g., age=999).</td><td>Scale normalization, one-hot encoding, featurization.</td></tr>
+      <tr><td><strong>Key Rule</strong></td><td>Do it without altering original source files.</td><td>Applied on top of already-cleaned data.</td></tr>
+    </tbody>
+  </table>
+  <div class="note-box"><div class="callout-label">Judgment Calls</div>For both cleaning and preprocessing, there are many different possible valid outputs. You must <strong>document the judgment calls</strong> you made and investigate whether your downstream results are stable under different, equally valid choices.</div>
+  <details><summary>Practice Q: Why is one-hot encoding considered preprocessing and not data cleaning?</summary>
+    <p><strong>Answer:</strong> Data cleaning focuses on fixing errors and making the data correct and readable (e.g., ensuring all categorical states are spelled correctly). One-hot encoding changes the structure of the data (creating binary columns for each category) specifically because certain machine learning algorithms cannot natively handle categorical text. It's a transformation to meet algorithmic requirements, which defines preprocessing.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-3">
+  <h2><span class="topic-num">3</span>The 4-Step Procedure</h2>
+  <p class="topic-subtitle">A structured workflow for tackling messy data</p>
+  <div class="stage-flow">
+    <div class="stage"><div class="num">1</div><div class="info"><h4>Domain Research</h4><p>Before touching the data, learn collection details, survey parameters, and domain constraints. Answer: What does each variable measure? How was data collected? What is the observational unit?</p></div></div>
+    <div class="stage"><div class="num">2</div><div class="info"><h4>Load Data</h4><p>Import the data safely without modifying the raw source files directly. Figure out how data is stored, and if there are multiple tables, how they connect (keys).</p></div></div>
+    <div class="stage"><div class="num">3</div><div class="info"><h4>Examine &amp; Plan</h4><p>Identify messy traits and formulate precise action items. Determine what parts of the data are actually relevant to your specific question.</p></div></div>
+    <div class="stage"><div class="num">4</div><div class="info"><h4>Execute Clean</h4><p>Apply the changes in encapsulated, reusable functions.</p></div></div>
+  </div>
+  <div class="warning-box"><div class="callout-label">Common Mistake</div>Jumping straight to Step 4 (Execute Clean) without doing Step 1 (Domain Research). You cannot correctly fix anomalies if you don't understand the domain context of how they were generated.</div>
+</div>
+
+<div class="topic-card" id="topic-4">
+  <h2><span class="topic-num">4</span>Examine &amp; Plan — Common Issues</h2>
+  <p class="topic-subtitle">What to look for when inspecting raw data</p>
+  <p>During the "Examine &amp; Plan" phase, look for these common data anomalies to formulate your action plan:</p>
+  <ul>
+    <li>🚩 <strong>Invalid or inconsistent values:</strong> Typos, case differences ("New York" vs "new york"), impossible metrics (negative age).</li>
+    <li>🚩 <strong>Improperly formatted missing values:</strong> "N/A", "?", "-99", or blanks instead of proper null/NaN indicators.</li>
+    <li>🚩 <strong>Nonstandard data format:</strong> Data structured in "wide" format when "tidy" (long) format is needed, or nested JSONs.</li>
+    <li>🚩 <strong>Messy column names:</strong> Spaces, special characters, or obscure abbreviations.</li>
+    <li>🚩 <strong>Improper variable types:</strong> Numbers stored as strings, or dates stored as integers.</li>
+    <li>🚩 <strong>Incomplete data:</strong> Missing rows, truncated sets, or missing related tables.</li>
+  </ul>
+  <div class="example"><div class="callout-label">Tidy vs Long Format</div>In "tidy" data, every variable is a column, every observation is a row, and every value is a cell. Transforming wide data (where columns represent values of a variable, like Year_2020, Year_2021) into long format is a common cleaning task.</div>
+</div>
+
+<div class="topic-card" id="topic-5">
+  <h2><span class="topic-num">5</span>Common Preprocessing Steps</h2>
+  <p class="topic-subtitle">Getting data ready for algorithms</p>
+  <p>Once data is clean, you must often preprocess it to satisfy the algorithmic assumptions of models like Neural Networks or Linear Regression.</p>
+  <div class="messy-grid">
+    <div class="messy-card">
+      <span class="badge">Scale</span>
+      <h4>Standardization / Normalization</h4>
+      <p>Transforming numeric variables so they are on comparable scales (e.g., mean 0, variance 1). Critical for algorithms that rely on distance (like k-NN or PCA).</p>
+    </div>
+    <div class="messy-card">
+      <span class="badge">Shape</span>
+      <h4>Gaussian Transformation</h4>
+      <p>Transforming skewed variables (e.g., taking the log) so they follow a more normal (bell-curve) distribution, satisfying assumptions of many statistical models.</p>
+    </div>
+    <div class="messy-card">
+      <span class="badge">Encode</span>
+      <h4>One-Hot Encoding</h4>
+      <p>Splitting categorical variables into multiple binary (0/1) columns so machine learning models can process them mathematically.</p>
+    </div>
+    <div class="messy-card">
+      <span class="badge">Create</span>
+      <h4>Featurization</h4>
+      <p>Creating entirely new variables from existing ones to capture complex patterns (e.g., extracting "season" from a date, or "word count" from text).</p>
+    </div>
+  </div>
+</div>
+
+<div class="topic-card" id="topic-6">
+  <h2><span class="topic-num">6</span>Best Practices &amp; PCS</h2>
+  <p class="topic-subtitle">Professional rules of engagement for data preparation</p>
+  <p>Data preparation is where reproducibility and stability are most often lost. Follow these best practices to maintain the integrity of the DSLC.</p>
+  <ul>
+    <li>🛑 <strong>Never overwrite raw data:</strong> Always write code to transform memory-loaded objects, keeping original source files untouched. If you corrupt the source, you lose the ground truth.</li>
+    <li>📦 <strong>Encapsulate in functions:</strong> Wrap cleaning steps in modular functions with explicit parameters for key judgment calls (e.g., `def clean_data(remove_outliers=True)`).</li>
+    <li>📝 <strong>Document alternative choices:</strong> Record all subjective decisions in your documentation to enable later stability analysis.</li>
+    <li>🧪 <strong>Investigate stability (PCS):</strong> Test whether downstream conclusions hold across different valid cleaning options. If a conclusion flips because you chose to impute rather than drop missing values, the finding is unstable.</li>
+  </ul>
+</div>
+
+<div class="topic-card" id="topic-7">
+  <h2><span class="topic-num">7</span>🎯 Quiz Prep — Data Preparation</h2>
+  <p class="topic-subtitle">Test your knowledge on cleaning and preprocessing</p>
+  
+  <h3>⚡ Flash Cards</h3>
+  <table class="gt">
+    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Data Cleaning</strong></td><td>Fixing errors, ambiguities, and formatting without altering source files.</td></tr>
+      <tr><td><strong>Data Preprocessing</strong></td><td>Modifying clean data to meet specific algorithmic requirements (e.g., scaling).</td></tr>
+      <tr><td><strong>Featurization</strong></td><td>Creating new variables from existing ones.</td></tr>
+      <tr><td><strong>One-Hot Encoding</strong></td><td>Splitting categories into binary columns for ML algorithms.</td></tr>
+      <tr><td><strong>4-Step Procedure</strong></td><td>Domain Research → Load Data → Examine &amp; Plan → Execute Clean.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🎯 Practice Questions</h3>
+  <details><summary>Q: Why is it critical to never overwrite the raw data files?</summary>
+    <p><strong>A:</strong> If you overwrite the raw data file and make a mistake during the cleaning process, you permanently corrupt your ground truth. You can never go back and recover the original state to fix your error or try an alternative cleaning strategy. All transformations should happen via code on data loaded in memory.</p>
+  </details>
+  <details><summary>Q: Describe how the PCS framework applies to data cleaning.</summary>
+    <p><strong>A:</strong> Data cleaning involves subjective judgment calls (e.g., how to handle outliers or missing values). Under the <strong>Stability</strong> principle of PCS, you should encapsulate these choices as function parameters and test multiple valid cleaning strategies. If your final modeling results or conclusions change drastically depending on which cleaning choice you made, your results are unstable and untrustworthy.</p>
+  </details>
+  <details><summary>Q: List three common issues to look for during the "Examine &amp; Plan" stage.</summary>
+    <p><strong>A:</strong> 1) Improperly formatted missing values (e.g., "-99" or "N/A" stored as strings instead of nulls). 2) Improper variable types (e.g., a "Date" column stored as a string or integer). 3) Inconsistent values/typos (e.g., case sensitivity issues like "Male" vs "male").</p>
+  </details>
+</div>
+
+</div>
+<div class="bottom-nav">
+  <button id="prev-btn" onclick="goPrev()"><div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div></button>
+  <button id="next-btn" onclick="goNext()"><div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div></button>
+</div>
+</div>
+<button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+const topics=["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7"];let currentTopicIndex=0;
+function getTopicTitle(id){const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l){const n=l.querySelector('.nav-num');return n?l.textContent.replace(n.textContent,'').trim():l.textContent.trim();}const c=document.getElementById(id);if(c){const h=c.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return n?h.textContent.replace(n.textContent,'').trim():h.textContent.trim();}}return'Topic';}
+function showTopic(id){document.querySelectorAll('.topic-card').forEach(c=>c.style.display='none');const t=document.getElementById(id);if(t)t.style.display='block';currentTopicIndex=topics.indexOf(id);document.querySelectorAll('.nav-sublist a').forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l)l.classList.add('active');const pb=document.getElementById('prev-btn'),nb=document.getElementById('next-btn'),pt=document.getElementById('prev-title'),nt=document.getElementById('next-title');pb.style.display=currentTopicIndex>0?'flex':'none';nb.style.display=currentTopicIndex<topics.length-1?'flex':'none';if(pt&&currentTopicIndex>0)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);if(nt&&currentTopicIndex<topics.length-1)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');}
+function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector('.chevron');if(s.style.display==='none'){s.style.display='block';c.style.transform='rotate(0deg)';}else{s.style.display='none';c.style.transform='rotate(-90deg)';}}
+function filterContent(){const q=document.getElementById('search-input').value.toLowerCase();document.querySelectorAll('.nav-sublist li,.nav-list>li').forEach(i=>{i.style.display=i.textContent.toLowerCase().includes(q)?'':'none';});}
+showTopic(topics[0]);
+const mc=document.getElementById('main-content'),bb=document.getElementById('back-to-top');
+mc.addEventListener('scroll',()=>bb.style.display=mc.scrollTop>300?'flex':'none');
+</script>
+</body></html>

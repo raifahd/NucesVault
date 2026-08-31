@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>DAV — Exploratory Data Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../notes.css"/>
+<style>
+.gt{width:100%;border-collapse:collapse;margin:12px 0;font-size:.86rem;}
+.gt th{background:var(--ac);color:#fff;padding:7px 10px;text-align:left;}
+.gt td{padding:7px 10px;border-bottom:1px solid var(--bd);}
+.gt tr:nth-child(even) td{background:var(--bg2);}
+.stage-flow{display:flex;flex-direction:column;gap:8px;margin:16px 0;}
+.stage{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:8px;background:var(--bg2);border-left:3px solid var(--ac);}
+.stage .num{min-width:28px;height:28px;background:var(--ac);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;}
+.stage .info h4{margin:0 0 3px;font-size:.9rem;color:var(--ac);}
+.stage .info p{margin:0;font-size:.82rem;color:var(--muted);line-height:1.5;}
+.viz-types{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:14px 0;}
+.viz-card{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:14px;}
+.viz-card .vtype{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+.viz-card h4{margin:0 0 4px;font-size:.9rem;color:var(--ac);}
+.viz-card p{margin:0;font-size:.78rem;color:var(--muted);}
+</style>
+</head><body>
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<div id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-course-label">DS-3001</div>
+    <div class="sidebar-title">Data Analysis &amp; Visualization</div>
+  </div>
+  <div class="sidebar-search-wrap">
+    <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()"/>
+  </div>
+  <ul class="nav-list" id="nav-list">
+    <li class="nav-section">
+      <div class="nav-section-title" onclick="toggleSection(this)">
+        <span>Module 4 — Exploratory Data Analysis</span><span class="chevron">▼</span>
+      </div>
+      <ul class="nav-sublist">
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Three Modes of Analysis</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>The Q&amp;A Workflow</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Choosing a Visualization</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>🎯 Quiz Prep</a></li></ul>
+    </li>
+    
+    <li><a class="nav-module-link" href="./1- Introduction to Data Analysis &amp; Visualization.html"><span class="nav-num">01</span>Introduction to VDS</a></li>
+    <li><a class="nav-module-link" href="./2- Data Analysis Lifecycle.html"><span class="nav-num">02</span>Data Analysis Lifecycle</a></li>
+    <li><a class="nav-module-link" href="./3- Data Preparation.html"><span class="nav-num">03</span>Data Preparation</a></li>
+  </ul>
+</div>
+<div id="main-content">
+<div class="module-container" id="module-4">
+<div class="module-header">
+  <div class="module-eyebrow">DS-3001 · Book: Ch. 5 · Slide 04</div>
+  <h1 class="module-title">Module 4 — Exploratory Data Analysis</h1>
+</div>
+
+<div class="topic-card" id="topic-1">
+  <h2><span class="topic-num">1</span>Three Modes of Data Analysis</h2>
+  <p class="topic-subtitle">Confirmatory, Exploratory, and Explanatory</p>
+  <p>Data analysis is not a monolith. The approach and visualizations you use depend entirely on what you are trying to achieve. There are three primary modes of data analysis:</p>
+  
+  <table class="gt">
+    <thead><tr><th>Mode</th><th>Primary Goal</th><th>Characteristics</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Confirmatory (CDA)</strong></td>
+        <td>Statistical inference and hypothesis testing.</td>
+        <td>Relies on probability models (t-dist, normal). Assumes data is a random sample from a hypothetical population. Used to estimate parameters and calculate confidence intervals.</td>
+        <td>Testing if a new drug significantly lowers blood pressure compared to a placebo.</td>
+      </tr>
+      <tr>
+        <td><strong>Exploratory (EDA)</strong></td>
+        <td>Find insights and understand the data context.</td>
+        <td>Creating preliminary visualizations to uncover patterns/trends. Often quick, rough, and used <em>internally</em> by the data scientist.</td>
+        <td>Plotting a quick scatterplot of age vs income to see if any visible correlation exists.</td>
+      </tr>
+      <tr>
+        <td><strong>Explanatory</strong></td>
+        <td>Tell a story to an external audience.</td>
+        <td>Producing polished, presentation-quality figures to communicate specific, interesting findings.</td>
+        <td>Creating an annotated, branded bar chart for an executive board meeting.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note-box"><div class="callout-label">EDA vs Explanatory Visualization</div>
+    During EDA, you might generate 100 messy, unpolished plots just to understand what's in the data. Only 1 or 2 of those might reveal something important enough to be cleaned up, annotated, and turned into an <em>Explanatory</em> visualization for stakeholders.
+  </div>
+</div>
+
+<div class="topic-card" id="topic-2">
+  <h2><span class="topic-num">2</span>The Question-and-Answer Workflow</h2>
+  <p class="topic-subtitle">A structured approach to Exploratory Data Analysis</p>
+  <p>EDA is not just mindlessly plotting variables against each other. It should be an iterative, question-driven process.</p>
+  
+  <div class="stage-flow">
+    <div class="stage"><div class="num">1</div><div class="info"><h4>Ask a Domain Question</h4><p>Start with specific questions related to the project goal. Don't start with "let's plot X". Start with: <em>"Are global organ donations increasing over time?"</em></p></div></div>
+    <div class="stage"><div class="num">2</div><div class="info"><h4>Choose a Technique</h4><p>Select a visualization based on the variables involved in your question. (e.g., For a question about "change over time," select a line plot).</p></div></div>
+    <div class="stage"><div class="num">3</div><div class="info"><h4>Iterate and Refine</h4><p>Let the initial answers prompt new questions. If the line plot shows a sudden dip in 2020, ask a follow-up question: <em>"Was that dip isolated to one specific country?"</em> Always keep the overall project goal in focus to avoid getting lost in the weeds.</p></div></div>
+  </div>
+  
+  <div class="warning-box"><div class="callout-label">Common Mistake</div>
+    Getting lost during EDA by falling down a rabbit hole of interesting but irrelevant patterns. Always tie your follow-up questions back to the core project goal.
+  </div>
+</div>
+
+<div class="topic-card" id="topic-3">
+  <h2><span class="topic-num">3</span>Choosing a Visualization Technique</h2>
+  <p class="topic-subtitle">Matching the plot to the variable types (Step 2 of the workflow)</p>
+  <p>The type of visualization you choose depends strictly on the types of variables you are trying to compare.</p>
+  
+  <div class="viz-types">
+    <div class="viz-card">
+      <div class="vtype">1 Numeric</div>
+      <h4>Histogram / Density</h4>
+      <p>Shows the distribution of a single continuous variable. Good for spotting skewness or outliers.</p>
+    </div>
+    <div class="viz-card">
+      <div class="vtype">1 Categorical</div>
+      <h4>Bar Chart</h4>
+      <p>Shows the frequency or count of categories. (Avoid pie charts unless comparing to a clear whole).</p>
+    </div>
+    <div class="viz-card">
+      <div class="vtype">2 Numeric</div>
+      <h4>Scatterplot</h4>
+      <p>Shows the relationship or correlation between two continuous variables.</p>
+    </div>
+    <div class="viz-card">
+      <div class="vtype">1 Numeric + 1 Cat</div>
+      <h4>Boxplot / Violin Plot</h4>
+      <p>Compares the distribution of a numeric variable across different categories.</p>
+    </div>
+    <div class="viz-card">
+      <div class="vtype">Time Series</div>
+      <h4>Line Plot</h4>
+      <p>Connects numeric data points over sequential time to show trends.</p>
+    </div>
+  </div>
+</div>
+
+<div class="topic-card" id="topic-4">
+  <h2><span class="topic-num">4</span>🎯 Quiz Prep — Exploratory Data Analysis</h2>
+  <p class="topic-subtitle">Test your knowledge on the modes and workflows of EDA</p>
+  
+  <h3>⚡ Flash Cards</h3>
+  <table class="gt">
+    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>CDA</strong></td><td>Confirmatory Data Analysis: hypothesis testing and statistical inference using probability models.</td></tr>
+      <tr><td><strong>EDA</strong></td><td>Exploratory Data Analysis: internal, rough visualizations to uncover patterns and answer domain questions.</td></tr>
+      <tr><td><strong>Explanatory Analysis</strong></td><td>Polished, presentation-quality visualizations meant to tell a story to an external audience.</td></tr>
+      <tr><td><strong>Q&amp;A Workflow</strong></td><td>The 3-step EDA process: Ask a Domain Question → Choose a Technique → Iterate &amp; Refine.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🎯 Practice Questions</h3>
+  <details><summary>Q: What is the primary difference between Exploratory and Explanatory Data Analysis?</summary>
+    <p><strong>A:</strong> <strong>Audience and Polish.</strong> Exploratory analysis is used internally by the data scientist; the visualizations are often rough, numerous, and meant purely to understand the data. Explanatory analysis is for an external audience; the visualizations are heavily polished, annotated, curated, and meant to communicate a specific finding or tell a story.</p>
+  </details>
+  <details><summary>Q: Describe the 3 steps of the Q&amp;A workflow for EDA.</summary>
+    <p><strong>A:</strong> 1) <strong>Ask a Domain Question</strong> (e.g., "Do older houses sell for less?"). 2) <strong>Choose a Technique</strong> based on variables (e.g., House Age is numeric, Sale Price is numeric → use a scatterplot). 3) <strong>Iterate and Refine</strong> based on the answer (e.g., if the scatterplot shows a dip but then a rise for very old houses, ask "Are houses older than 100 years considered historical/premium?").</p>
+  </details>
+  <details><summary>Q: What is Confirmatory Data Analysis (CDA)?</summary>
+    <p><strong>A:</strong> CDA is the traditional statistical approach focused on hypothesis testing and inference. It relies on probability models (like the normal distribution) and assumes the data is a random sample from a hypothetical population. Its goal is to confirm or reject hypotheses (e.g., calculating p-values or confidence intervals).</p>
+  </details>
+</div>
+
+</div>
+<div class="bottom-nav">
+  <button id="prev-btn" onclick="goPrev()"><div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div></button>
+  <button id="next-btn" onclick="goNext()"><div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div></button>
+</div>
+</div>
+<button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+const topics=["topic-1", "topic-2", "topic-3", "topic-4"];let currentTopicIndex=0;
+function getTopicTitle(id){const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l){const n=l.querySelector('.nav-num');return n?l.textContent.replace(n.textContent,'').trim():l.textContent.trim();}const c=document.getElementById(id);if(c){const h=c.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return n?h.textContent.replace(n.textContent,'').trim():h.textContent.trim();}}return'Topic';}
+function showTopic(id){document.querySelectorAll('.topic-card').forEach(c=>c.style.display='none');const t=document.getElementById(id);if(t)t.style.display='block';currentTopicIndex=topics.indexOf(id);document.querySelectorAll('.nav-sublist a').forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l)l.classList.add('active');const pb=document.getElementById('prev-btn'),nb=document.getElementById('next-btn'),pt=document.getElementById('prev-title'),nt=document.getElementById('next-title');pb.style.display=currentTopicIndex>0?'flex':'none';nb.style.display=currentTopicIndex<topics.length-1?'flex':'none';if(pt&&currentTopicIndex>0)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);if(nt&&currentTopicIndex<topics.length-1)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');}
+function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector('.chevron');if(s.style.display==='none'){s.style.display='block';c.style.transform='rotate(0deg)';}else{s.style.display='none';c.style.transform='rotate(-90deg)';}}
+function filterContent(){const q=document.getElementById('search-input').value.toLowerCase();document.querySelectorAll('.nav-sublist li,.nav-list>li').forEach(i=>{i.style.display=i.textContent.toLowerCase().includes(q)?'':'none';});}
+showTopic(topics[0]);
+const mc=document.getElementById('main-content'),bb=document.getElementById('back-to-top');
+mc.addEventListener('scroll',()=>bb.style.display=mc.scrollTop>300?'flex':'none');
+</script>
+</body></html>

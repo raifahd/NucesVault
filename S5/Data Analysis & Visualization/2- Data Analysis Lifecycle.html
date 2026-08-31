@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>DAV — Data Analysis Lifecycle</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../notes.css"/>
+<style>
+.gt{width:100%;border-collapse:collapse;margin:12px 0;font-size:.86rem;}
+.gt th{background:var(--ac);color:#fff;padding:7px 10px;text-align:left;}
+.gt td{padding:7px 10px;border-bottom:1px solid var(--bd);}
+.gt tr:nth-child(even) td{background:var(--bg2);}
+.stage-flow{display:flex;flex-direction:column;gap:8px;margin:16px 0;}
+.stage{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:8px;background:var(--bg2);border-left:3px solid var(--ac);}
+.stage .num{min-width:28px;height:28px;background:var(--ac);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;}
+.stage .info h4{margin:0 0 3px;font-size:.9rem;color:var(--ac);}
+.stage .info p{margin:0;font-size:.82rem;color:var(--muted);line-height:1.5;}
+.roccc{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin:14px 0;}
+.roccc-item{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:12px;}
+.roccc-item .rl{font-size:1.6rem;font-weight:700;color:var(--ac);margin-bottom:4px;}
+.roccc-item h4{margin:0 0 4px;font-size:.88rem;}
+.roccc-item p{margin:0;font-size:.78rem;color:var(--muted);}
+.messy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:14px 0;}
+.messy-card{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:14px;}
+.messy-card .badge{display:inline-block;background:var(--ac);color:#fff;border-radius:4px;padding:2px 8px;font-size:.75rem;font-weight:600;margin-bottom:6px;}
+.messy-card h4{margin:0 0 5px;font-size:.88rem;}
+.messy-card p{margin:0;font-size:.78rem;color:var(--muted);}
+.viz-types{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:14px 0;}
+.viz-card{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:14px;}
+.viz-card .vtype{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+.viz-card h4{margin:0 0 4px;font-size:.9rem;color:var(--ac);}
+.viz-card p{margin:0;font-size:.78rem;color:var(--muted);}
+</style>
+</head><body>
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<div id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-course-label">DS-3001</div>
+    <div class="sidebar-title">Data Analysis &amp; Visualization</div>
+  </div>
+  <div class="sidebar-search-wrap">
+    <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()"/>
+  </div>
+  <ul class="nav-list" id="nav-list">
+    <li class="nav-section">
+      <div class="nav-section-title" onclick="toggleSection(this)">
+        <span>Module 2 — Data Analysis Lifecycle</span><span class="chevron">▼</span>
+      </div>
+      <ul class="nav-sublist">
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>DSLC — The 6 Stages</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Data Terminology</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Stage 1 — Problem Formulation</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Stage 2 — Cleaning, Preprocessing &amp; EDA</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Stages 3–4 — Structures &amp; Prediction</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Stages 5–6 — Evaluation &amp; Communication</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>ROCCC Framework</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-8')"><span class="nav-num">08</span>ML Alignment to Three Realms</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-9')"><span class="nav-num">09</span>🎯 Quiz Prep</a></li></ul>
+    </li>
+    
+    <li><a class="nav-module-link" href="./1- Introduction to Data Analysis &amp; Visualization.html"><span class="nav-num">01</span>Introduction to VDS</a></li>
+    <li><a class="nav-module-link" href="./3- Data Preparation.html"><span class="nav-num">03</span>Data Preparation</a></li>
+    <li><a class="nav-module-link" href="./4- Exploratory Data Analysis.html"><span class="nav-num">04</span>Exploratory Data Analysis</a></li>
+  </ul>
+</div>
+<div id="main-content">
+<div class="module-container" id="module-2">
+<div class="module-header">
+  <div class="module-eyebrow">DS-3001 · Book: Ch. 2 · Slide 02</div>
+  <h1 class="module-title">Module 2 — The Data Science Life Cycle</h1>
+</div>
+
+<div class="topic-card" id="topic-1">
+  <h2><span class="topic-num">1</span>The Data Science Life Cycle — Overview</h2>
+  <p class="topic-subtitle">6 non-linear stages that every DS project travels through — expect to loop back</p>
+  <p>The <strong>DSLC</strong> is a framework for organizing every data science project. It is <em>non-linear</em>: discovering messy data at Stage 2 sends you back to Stage 1; poor results at Stage 5 send you back to Stage 2 or 4. It is a <em>cycle</em>, not a checklist.</p>
+  <div class="stage-flow">
+    <div class="stage"><div class="num">1</div><div class="info"><h4>Problem Formulation &amp; Data Collection ✅ Mandatory</h4><p>Define the domain question, find data sources, plan the train/validation/test split for predictability evaluation.</p></div></div>
+    <div class="stage"><div class="num">2</div><div class="info"><h4>Data Cleaning, Preprocessing &amp; EDA ✅ Mandatory</h4><p>Fix messy data; transform it for algorithms; visually and numerically explore patterns relevant to the domain question.</p></div></div>
+    <div class="stage"><div class="num">3</div><div class="info"><h4>Uncovering Intrinsic Structures ⚪ Optional</h4><p>Dimensionality reduction (PCA) and clustering to discover hidden patterns — only if the domain question requires it.</p></div></div>
+    <div class="stage"><div class="num">4</div><div class="info"><h4>Predictive / Inferential Analysis ⚪ Optional</h4><p>Train ML models to predict outcomes, or run statistical inference to draw population-level conclusions.</p></div></div>
+    <div class="stage"><div class="num">5</div><div class="info"><h4>Evaluation of Results ✅ Mandatory</h4><p>Assess qualitatively (critical thinking, domain expert review) AND quantitatively (PCS: test set, stability, reproducibility, negative controls).</p></div></div>
+    <div class="stage"><div class="num">6</div><div class="info"><h4>Communication &amp; Updating Domain Knowledge ✅ Mandatory</h4><p>Translate technical findings into accessible language for stakeholders. Document the non-linear path for reproducibility.</p></div></div>
+  </div>
+  <div class="note-box"><div class="callout-label">Rule</div>Stages 1, 2, 5, 6 = <strong>mandatory</strong> for every project. Stages 3, 4 = <strong>optional</strong>, included only when the domain question requires prediction, inference, or structure discovery.</div>
+  <div class="summary-box"><h4>Key Takeaways</h4><ul>
+    <li>DSLC = non-linear, iterative — expect frequent back-tracking</li>
+    <li>Mandatory: 1 (problem/data), 2 (clean/EDA), 5 (evaluate), 6 (communicate)</li>
+    <li>Optional: 3 (clustering/PCA), 4 (prediction/inference)</li>
+    <li>PCS is woven throughout: plan predictability at Stage 1, test stability at Stage 2, evaluate at Stage 5</li>
+  </ul></div>
+  <details><summary>Practice Q: Which DSLC stages are mandatory vs. optional, and why?</summary>
+    <p><strong>Answer:</strong> <em>Mandatory (every project):</em> Stage 1 (must define question + get data), Stage 2 (must clean + explore), Stage 5 (must evaluate quality), Stage 6 (must communicate). <em>Optional:</em> Stage 3 (clustering/PCA — only needed for structure discovery questions), Stage 4 (prediction/inference — only needed if the question requires a model or statistical conclusion).</p>
+  </details>
+  <details><summary>Practice Q: Why is the DSLC non-linear? Give a concrete example of back-tracking.</summary>
+    <p><strong>Answer:</strong> Real DS constantly reveals surprises. Example: During Stage 2 (EDA), you discover that 40% of entries in a key variable are missing due to a data collection flaw. You must return to Stage 1 to collect additional data, revise the question, or find a supplementary source. Another example: Stage 5 evaluation reveals your model's predictions don't generalize (poor predictability) → return to Stage 2 for better feature engineering or Stage 4 for a different algorithm.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-2">
+  <h2><span class="topic-num">2</span>Data Terminology</h2>
+  <p class="topic-subtitle">Rows, columns, variable types — the vocabulary of rectangular datasets</p>
+  <p>Most DS works with <strong>rectangular (tabular)</strong> data organized in rows and columns.</p>
+  <table class="gt">
+    <thead><tr><th>Term</th><th>Also Called</th><th>Definition</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Observational Unit</strong></td><td>Sample, Instance, Row</td><td>Each individual entity measured</td><td>One patient, one country, one house sale</td></tr>
+      <tr><td><strong>Variable / Feature</strong></td><td>Column, Attribute</td><td>A measured characteristic</td><td>Age, blood pressure, sale price</td></tr>
+      <tr><td><strong>Response / Target</strong></td><td>Outcome, Label, Y</td><td>Variable we want to predict or explain</td><td>Readmission risk, house price</td></tr>
+      <tr><td><strong>Predictor</strong></td><td>Feature, Input, X</td><td>Variables used to predict the response</td><td>Age, comorbidities, zip code</td></tr>
+    </tbody>
+  </table>
+  <h3>Variable Types</h3>
+  <table class="gt">
+    <thead><tr><th>Type</th><th>Description</th><th>Examples</th><th>Key Note</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Continuous Numeric</strong></td><td>Real-valued, arithmetic meaningful</td><td>Height (cm), temperature (°C), price</td><td>Can compute mean, SD, correlation</td></tr>
+      <tr><td><strong>Discrete Numeric</strong></td><td>Integer-valued counts</td><td># donations, # rooms, # visits</td><td>Often non-negative integers</td></tr>
+      <tr><td><strong>Nominal Categorical</strong></td><td>Named groups, no order</td><td>Country, blood type, species</td><td>Must one-hot encode for most ML</td></tr>
+      <tr><td><strong>Ordinal Categorical</strong></td><td>Named groups with meaningful order</td><td>Fair/Good/Excellent rating, education level</td><td>Order matters; careful encoding needed</td></tr>
+      <tr><td><strong>Date / Time</strong></td><td>Temporal data</td><td>Survey year, admission date, timestamp</td><td>Extract features: year, month, day-of-week</td></tr>
+      <tr><td><strong>Text</strong></td><td>Unstructured strings</td><td>Doctor's notes, customer reviews</td><td>Requires NLP preprocessing</td></tr>
+    </tbody>
+  </table>
+  <div class="note-box"><div class="callout-label">Why Variable Types Matter</div>Many algorithms won't accept categorical inputs — you must one-hot encode them. Others assume variables are on comparable scales — you must normalize/standardize. Misidentifying types causes errors and misleading results.</div>
+  <div class="summary-box"><h4>Key Takeaways</h4><ul>
+    <li>Rows = observational units; Columns = variables/features</li>
+    <li>Target/response = what we predict; Predictor = what we use to predict it</li>
+    <li>6 variable types: continuous, discrete, nominal, ordinal, date/time, text</li>
+    <li>Variable type determines preprocessing steps and which algorithms apply</li>
+  </ul></div>
+  <details><summary>Practice Q: Distinguish nominal from ordinal categorical variables.</summary>
+    <p><strong>Answer:</strong> Both are categorical (named groups), but <em>ordinal</em> has a meaningful ranking ("fair" &lt; "good" &lt; "excellent"), while <em>nominal</em> has no inherent order (country names — "USA," "France," "Japan" have no ordering). Ordinal variables can sometimes be mapped to integers; nominal variables need one-hot encoding for ML models that assume numeric inputs.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-3">
+  <h2><span class="topic-num">3</span>Stage 1 — Problem Formulation &amp; Data Collection</h2>
+  <p class="topic-subtitle">Start right: the question quality determines everything downstream</p>
+  <p>Stage 1 is where many DS projects fail before they start. Poorly framed questions and poorly designed data collection protocols create ceilings that no amount of sophisticated analysis can overcome.</p>
+  <h3>Formulating the Right Question</h3>
+  <ul>
+    <li>🤝 <strong>Collaborate with domain experts</strong> to translate broad goals into precise, data-answerable questions</li>
+    <li>🎯 <strong>Identify the core objective</strong> — predicting patient risk vs. understanding systemic causes require very different approaches</li>
+    <li>🔄 <strong>Align with available data</strong> — refine scope based on what's actually accessible. Never lock in a question before assessing data</li>
+    <li>⚖️ <strong>Consider ethics</strong> — Is the analysis ethical? Could conclusions harm vulnerable populations?</li>
+  </ul>
+  <div class="example"><div class="callout-label">Slide Example — Two Framings</div>
+    <table class="gt">
+      <thead><tr><th>Narrow (Risky)</th><th>Better (Critical)</th></tr></thead>
+      <tbody><tr>
+        <td>"Which website features make customers <em>less likely to cancel</em>?"</td>
+        <td>"<em>Why</em> do customers cancel our subscription?"</td>
+      </tr><tr>
+        <td>Assumes the website is the problem. Misses root causes.</td>
+        <td>Opens inquiry to all causes: pricing, product quality, UX, support, competition.</td>
+      </tr></tbody>
+    </table>
+  </div>
+  <h3>Data Collection &amp; PCS Planning</h3>
+  <div class="definition"><div class="callout-label">PCS at Stage 1</div>Plan <strong>Predictability</strong> evaluation from the start. Ask: Can I collect data resembling future scenarios? If yes — do it now. If no — plan to split existing data into train/validation/test sets <em>before</em> any analysis begins.</div>
+  <div class="warning-box"><div class="callout-label">Common Mistake</div>Collecting data without data scientist input. Domain experts often collect data in wrong formats, missing key variables, with no documentation. DS must be involved from the very beginning of collection design.</div>
+  <div class="summary-box"><h4>Key Takeaways</h4><ul>
+    <li>Ask: Is this the right, answerable, and ethical question?</li>
+    <li>Collaborate domain expert ↔ data scientist at Stage 1</li>
+    <li>Plan train/validation/test split at Stage 1, not after analysis begins</li>
+    <li>DS must be involved in data collection design — not just analysis</li>
+  </ul></div>
+  <details><summary>Practice Q: Why must data scientists be involved in data collection design?</summary>
+    <p><strong>Answer:</strong> Because they know what format, variables, sample size, and documentation are needed for valid analysis. Without DS input: data arrives in wrong format (PDF, not tabular), key variables are missing, there's no codebook, sample size is too small, or confounds are uncontrolled. These problems usually can't be fixed post-collection — you can't go back and re-measure. Early DS involvement prevents expensive collection mistakes.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-4">
+  <h2><span class="topic-num">4</span>Stage 2 — Cleaning, Preprocessing &amp; EDA</h2>
+  <p class="topic-subtitle">The messy, mandatory core that takes 50–80% of total project time</p>
+  <h3>Data Cleaning vs. Preprocessing — Key Distinction</h3>
+  <table class="gt">
+    <thead><tr><th></th><th>Data Cleaning</th><th>Preprocessing</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Goal</strong></td><td>Fix ambiguities, errors, inconsistencies — make data unambiguous for <em>any</em> use</td><td>Format clean data to meet the specific requirements of a <em>particular</em> algorithm</td></tr>
+      <tr><td><strong>Examples</strong></td><td>Fix column names, correct impossible values, handle missing values, standardize formats</td><td>Normalize numeric variables, one-hot encode categoricals, impute missing values, featurize</td></tr>
+      <tr><td><strong>When</strong></td><td>First, before any analysis</td><td>After cleaning, tailored to each algorithm</td></tr>
+      <tr><td><strong>Output</strong></td><td>Clean dataset — one function, multiple versions via arguments</td><td>Algorithm-ready dataset — different version for each algorithm</td></tr>
+    </tbody>
+  </table>
+  <div class="definition"><div class="callout-label">Data Preparation = Cleaning + Preprocessing</div>
+    <strong>Data Preparation</strong> is the two-stage procedure: (1) clean data to remove ambiguities, and (2) preprocess it to meet algorithmic requirements. Both involve judgment calls that must be documented and tested for stability.</div>
+  <div class="definition"><div class="callout-label">Featurization</div>
+    Creating <em>new</em> variables from existing ones during preprocessing. Example: from a date column, create "month," "day of week," "days since last purchase," "season." This expands the feature space to capture patterns not directly in the raw data.</div>
+  <div class="definition"><div class="callout-label">Data Snooping</div>
+    Using the test set (or future data) during EDA, cleaning, or model development. <strong>Forbidden!</strong> Snooping leaks information from the test set into modeling decisions, making the predictability evaluation dishonest and overly optimistic.</div>
+  <div class="note-box"><div class="callout-label">PCS at Stage 2 — Write Functions</div>
+    Encapsulate cleaning AND preprocessing in functions where each judgment call is a configurable argument. This directly enables: <strong>Stability</strong> testing (run with different args, check if conclusions change), <strong>Computability</strong> (reproducible), and easy generation of alternative dataset versions.</div>
+  <div class="summary-box"><h4>Key Takeaways</h4><ul>
+    <li>Cleaning = fix errors for any use; Preprocessing = prepare for specific algorithms</li>
+    <li>Data Preparation = Cleaning + Preprocessing (two-stage procedure)</li>
+    <li>Featurization = creating new derived variables during preprocessing</li>
+    <li>Write cleaning/preprocessing as functions with judgment-call arguments</li>
+    <li>Never snoop on the test set — it destroys the predictability evaluation</li>
+    <li>This stage typically consumes 50–80% of total project time</li>
+  </ul></div>
+  <details><summary>Practice Q: What is featurization and why is it done during preprocessing?</summary>
+    <p><strong>Answer:</strong> Featurization is the process of creating new variables (features) by applying transformations to existing variables. It's done during preprocessing (not cleaning) because it's specific to how an algorithm will use the data. Examples: from a "date of sale" column, extract "month," "year," "day of week" — each potentially capturing seasonal patterns. From text, extract word count or sentiment score. Featurization lets the model capture patterns that aren't directly encoded in the raw data.</p>
+  </details>
+  <details><summary>Practice Q: Why must cleaning be written as a function with argument options?</summary>
+    <p><strong>Answer:</strong> Because data cleaning involves judgment calls (e.g., whether to impute or remove missing values, how to handle impossible entries). By making each choice a function argument, you can: (1) easily generate alternative cleaned datasets with different choices, (2) run your full analysis on each version to test whether conclusions are <strong>stable</strong> across cleaning choices (PCS-Stability), and (3) reproduce the cleaning exactly for any version (PCS-Computability). If results change drastically with different arguments, the instability is itself an important finding.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-5">
+  <h2><span class="topic-num">5</span>Stages 3–4 — Structures, Prediction &amp; Inference</h2>
+  <p class="topic-subtitle">Optional but powerful — only when the domain question demands it</p>
+  <h3>Stage 3 — Intrinsic Data Structures (Optional)</h3>
+  <table class="gt">
+    <thead><tr><th>Technique</th><th>What it does</th><th>When to use</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Dimensionality Reduction (PCA)</strong></td><td>Projects high-dimensional data onto fewer informative dimensions, preserving key variance</td><td>Many correlated variables; visualization; pre-processing for other algorithms</td></tr>
+      <tr><td><strong>Clustering</strong></td><td>Discovers natural groups in data without pre-specified labels</td><td>Patient subgroup discovery; customer segmentation; anomaly detection</td></tr>
+    </tbody>
+  </table>
+  <h3>Stage 4 — Prediction vs. Inference (Optional)</h3>
+  <table class="gt">
+    <thead><tr><th>Goal</th><th>Question type</th><th>Example algorithms</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Prediction</strong></td><td>"What will Y be for a new observation?"</td><td>Linear Regression, Random Forest, XGBoost, Deep Learning</td><td>Predicted value / probability</td></tr>
+      <tr><td><strong>Statistical Inference</strong></td><td>"What does the data tell us about the population?"</td><td>Hypothesis testing, confidence intervals, causal models</td><td>Statistical conclusions with uncertainty quantification</td></tr>
+    </tbody>
+  </table>
+  <h3>ML Model Alignment — The Three Realms</h3>
+  <table class="gt">
+    <thead><tr><th>Model</th><th>Algorithmic Assumption</th><th>Data Best Fit</th><th>Real-World Fit</th><th>Key Pitfall</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Linear / Logistic Regression</strong></td><td>Linearity, error independence</td><td>Well-measured structured tabular</td><td>Proportional physical/economic relationships</td><td>Fails on non-linear threshold effects</td></tr>
+      <tr><td><strong>Random Forest / XGBoost</strong></td><td>Recursive partitioning; no distributional assumptions</td><td>Mixed types, missing values, high-dimensional</td><td>Threshold behaviors (medical triage, risk)</td><td>Cannot extrapolate outside training range</td></tr>
+      <tr><td><strong>Deep Neural Networks</strong></td><td>Hierarchical non-linear representations</td><td>High-dimensional unstructured (images, text, audio)</td><td>Hierarchical/local structure (vision, NLP)</td><td>Fits spurious correlations (watermark vs. pathology)</td></tr>
+    </tbody>
+  </table>
+  <div class="warning-box"><div class="callout-label">The Classic DNN Pitfall</div>A DNN trained to detect pneumonia from X-rays learned to recognize the hospital <em>watermark</em> on positive cases (an artifact of data collection), not actual radiological signs. It performed well on training data, failed at other hospitals. This is a Data Realm ↔ Reality Realm misalignment — the training data didn't represent reality accurately.</div>
+  <div class="summary-box"><h4>Key Takeaways</h4><ul>
+    <li>Stages 3 &amp; 4 are optional — include only when the domain question demands it</li>
+    <li>Every algorithm assumes something — mismatched assumptions → untrustworthy results</li>
+    <li>Linear: simple, interpretable, fails non-linearity; Trees: robust, can't extrapolate; DNN: powerful, fits spurious patterns</li>
+    <li>Algorithm selection = aligning algorithmic assumptions with both the data realm and real-world realm</li>
+  </ul></div>
+  <details><summary>Hard Q: Why can't Random Forest reliably predict values outside its training range?</summary>
+    <p><strong>Answer:</strong> Random Forests are <em>step-function estimators</em> — predictions are averages of training points in leaf nodes. For a new x outside the training range, there are no similar training points. The model returns the average of the nearest extreme training examples — it cannot extrapolate the trend. This is a fundamental algorithmic limitation: RF partitions the observed feature space but has no mechanism to learn or project beyond it.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-6">
+  <h2><span class="topic-num">6</span>Stages 5–6 — Evaluation &amp; Communication</h2>
+  <p class="topic-subtitle">Where results are scrutinized and DS delivers real-world value</p>
+  <h3>Stage 5 — Evaluation</h3>
+  <table class="gt">
+    <thead><tr><th>Evaluation Method</th><th>What it checks</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Qualitative / Critical Thinking</strong></td><td>Does the result make common sense? Does domain knowledge contradict it?</td><td>"The model says ice cream causes drowning" → obvious spurious correlation</td></tr>
+      <tr><td><strong>PCS — Predictability</strong></td><td>Does the result hold on the held-out test set?</td><td>Test accuracy vs. validation accuracy; large gap → overfitting</td></tr>
+      <tr><td><strong>PCS — Stability</strong></td><td>Does the conclusion hold under perturbations to data/method?</td><td>Run with different cleaning choices; conclusion should remain consistent</td></tr>
+      <tr><td><strong>Domain Expert Review</strong></td><td>Do experts in the field validate or contradict the findings?</td><td>Show oncologist the cancer detection results before publication</td></tr>
+      <tr><td><strong>Negative Controls</strong></td><td>Does the method correctly return null when there's no true signal?</td><td>Apply cancer detector to healthy tissue — should output "no cancer"</td></tr>
+    </tbody>
+  </table>
+  <div class="definition"><div class="callout-label">Negative Control</div>A test applied to a scenario where the true answer is null/zero. If your method finds a significant result in this null scenario, it has false positive problems — it's detecting noise, not real patterns.</div>
+  <h3>Stage 6 — Communication</h3>
+  <ul>
+    <li>🌉 <strong>Bridge the gap</strong> between technical methods and non-technical stakeholders</li>
+    <li>📊 <strong>Use effective visualizations</strong> — clear, non-misleading, audience-appropriate</li>
+    <li>📋 <strong>Document the full non-linear path</strong> — not just the polished final result, but the iterations and dead-ends, for reproducibility</li>
+    <li>🔄 <strong>Update domain knowledge</strong> — share veridical findings with the broader field</li>
+  </ul>
+  <div class="summary-box"><h4>Key Takeaways</h4><ul>
+    <li>Evaluate both qualitatively (common sense) AND quantitatively (PCS)</li>
+    <li>Negative controls are powerful false-positive checks</li>
+    <li>Domain expert review catches domain-nonsensical results</li>
+    <li>Communication = bridge technical ↔ non-technical; use accessible language and clear visuals</li>
+    <li>Document the iterative path for full reproducibility</li>
+  </ul></div>
+  <details><summary>Practice Q: What is a negative control and give a concrete example?</summary>
+    <p><strong>Answer:</strong> A negative control applies your method to a scenario where the true answer is known to be null — verifying your method doesn't produce false positives. Example: you have an algorithm to detect cancer gene signatures. Apply it to expression data from healthy tissue with no cancer markers. It should return "no cancer." If it returns "cancer" on healthy tissue, your method has a false positive rate problem that will contaminate results on real data. Another example: apply a time-series anomaly detector to purely random noise — it should find zero anomalies.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-7">
+  <h2><span class="topic-num">7</span>The ROCCC Framework</h2>
+  <p class="topic-subtitle">5-point checklist for evaluating data trustworthiness before analysis</p>
+  <p>Before trusting any dataset, apply ROCCC. A dataset that fails multiple criteria should be replaced, or its limitations prominently disclosed in all results.</p>
+  <div class="roccc">
+    <div class="roccc-item"><div class="rl">R</div><h4>Reliable</h4><p>Accurate, error-free, collected by a rigorous and unbiased process from a trusted organization.</p></div>
+    <div class="roccc-item"><div class="rl">O</div><h4>Original</h4><p>From the <em>primary source</em> — the entity that collected it. Not from a second-hand aggregator where context or accuracy may be lost.</p></div>
+    <div class="roccc-item"><div class="rl">C</div><h4>Comprehensive</h4><p>Contains all critical variables needed to answer the question. No major sampling bias or critical gaps.</p></div>
+    <div class="roccc-item"><div class="rl">C</div><h4>Current</h4><p>Up-to-date and reflects present conditions. Outdated data leads to obsolete, potentially dangerous conclusions.</p></div>
+    <div class="roccc-item"><div class="rl">C</div><h4>Cited</h4><p>Properly documented with metadata: who collected it, when, what each variable means, collection methodology.</p></div>
+  </div>
+  <div class="warning-box"><div class="callout-label">Common Mistake — "It's All We Have"</div>Using data solely because it's available. A dataset failing 4 of 5 ROCCC criteria produces untrustworthy results regardless of analytical sophistication. Garbage in → garbage out. Either find better data or prominently disclose the limitations.</div>
+  <div class="summary-box"><h4>ROCCC — Flash Summary</h4><ul>
+    <li><strong>R</strong>eliable — accurate, unbiased collection</li>
+    <li><strong>O</strong>riginal — primary source, not aggregator</li>
+    <li><strong>C</strong>omprehensive — contains all needed variables</li>
+    <li><strong>C</strong>urrent — reflects present conditions</li>
+    <li><strong>C</strong>ited — documented: who, when, what</li>
+  </ul></div>
+  <details><summary>Practice Q: Apply ROCCC to a 2003 hospital dataset from a general repository with no variable descriptions.</summary>
+    <p><strong>Answer:</strong> ❌ <em>Original</em> — from a general repository, not the collecting hospital; context/accuracy may be lost. ❌ <em>Current</em> — 2003 is >20 years old; medical practices, demographics, treatments have changed dramatically. ❌ <em>Cited</em> — no variable descriptions; unclear what each column actually measures. ⚠️ <em>Comprehensive</em> — scope unknown; single institution likely misses regional variation. Fails at minimum 3–4 of 5 criteria. Should be used only with major limitations disclosed, or replaced with better data.</p>
+  </details>
+  <details><summary>Practice Q: Why is using a secondary data source (aggregator) worse than a primary source?</summary>
+    <p><strong>Answer:</strong> (1) <em>Context loss</em> — original variable meanings/units may be misrepresented. (2) <em>Hidden transformations</em> — aggregator may have already cleaned or modified data, introducing unknown assumptions. (3) <em>Undocumented errors</em> — mistakes introduced during data transfer are not documented. (4) <em>Unverifiable methodology</em> — can't verify collection rigor without the primary source. Primary sources provide full provenance, methodology, and transparency.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-8">
+  <h2><span class="topic-num">8</span>ML Model Alignment to the Three Realms</h2>
+  <p class="topic-subtitle">Every algorithm makes assumptions — violate them and your results fail</p>
+  <p>Selecting an algorithm means selecting its <em>assumptions</em>. Those assumptions must align with your data realm and your real-world realm. This is three-realm thinking applied to model selection.</p>
+  <table class="gt">
+    <thead><tr><th>Model</th><th>Core Assumption</th><th>Best Data Context</th><th>Real-World Fit</th><th>Fatal Pitfall</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Linear / Logistic Regression</strong></td><td>Linearity; error independence</td><td>Structured tabular, well-measured, few outliers</td><td>Proportional relationships: dosage↔response, price↔size</td><td>Fails on thresholds, interactions, non-linearity</td></tr>
+      <tr><td><strong>Random Forest / XGBoost</strong></td><td>Recursive partitioning; no distribution assumed</td><td>Mixed types, missing values, high dimensions</td><td>Threshold effects: triage, risk scoring, credit</td><td>Cannot extrapolate beyond training range</td></tr>
+      <tr><td><strong>Deep Neural Networks</strong></td><td>Hierarchical non-linear features; overparameterized</td><td>Unstructured high-D: images, audio, text</td><td>Hierarchical structure: vision, NLP, speech</td><td>Fits spurious correlations (artifact detection)</td></tr>
+    </tbody>
+  </table>
+  <div class="note-box"><div class="callout-label">Selection Rule</div>Before choosing a model, ask: <em>"Do the algorithmic assumptions match what I know about my data AND my real-world domain?"</em> If not — the model is misaligned and PCS will expose this as poor predictability and instability.</div>
+  <div class="summary-box"><h4>Key Takeaways</h4><ul>
+    <li>Algorithm choice = assumption alignment with data realm + real-world realm</li>
+    <li>Linear: interpretable, fast, fails non-linearity</li>
+    <li>Trees: robust, handles mess, can't extrapolate</li>
+    <li>DNNs: powerful on unstructured data, prone to spurious artifact learning</li>
+  </ul></div>
+  <details><summary>Hard Q: A DNN trained on hospital X-ray data for pneumonia detection performs perfectly in training but fails at Hospital B. What went wrong in the three realms?</summary>
+    <p><strong>Answer:</strong> The <em>Data Realm</em> (Hospital A X-rays) was a poor approximation of <em>Reality</em> (pneumonia signs across all hospitals). Specifically: Hospital A's X-rays had a consistent watermark/stamp on all pneumonia-positive cases (data collection artifact). The DNN's <em>Mental Construct</em> (algorithm) learned to recognize this watermark rather than actual radiological pathology. Hospital B's X-rays lack this artifact → model fails. The fix: ensure training data is drawn from diverse sources (multiple hospitals) to better approximate the real-world Reality of pneumonia presentation across settings.</p>
+  </details>
+</div>
+
+<div class="topic-card" id="topic-9">
+  <h2><span class="topic-num">9</span>🎯 Quiz Prep — Chapter 2</h2>
+  <p class="topic-subtitle">Flash cards, exam traps, and key practice questions for the DSLC</p>
+  <div class="note-box"><div class="callout-label">Quiz Focus</div>Ch. 2 tests: DSLC stage order &amp; which are mandatory/optional, ROCCC criteria, data cleaning vs. preprocessing distinction, data snooping, negative controls, and ML alignment to three realms.</div>
+  <h3>⚡ Flash Cards</h3>
+  <table class="gt">
+    <thead><tr><th>Term</th><th>One-Line Definition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>DSLC</strong></td><td>6-stage non-linear life cycle: Problem → Clean/EDA → Structures → Model → Evaluate → Communicate</td></tr>
+      <tr><td><strong>Mandatory stages</strong></td><td>1, 2, 5, 6 — every project</td></tr>
+      <tr><td><strong>Optional stages</strong></td><td>3 (clustering/PCA), 4 (prediction/inference) — question-dependent</td></tr>
+      <tr><td><strong>ROCCC</strong></td><td>Reliable · Original · Comprehensive · Current · Cited</td></tr>
+      <tr><td><strong>Cleaning</strong></td><td>Fix errors/ambiguities for any purpose → write as function with argument options</td></tr>
+      <tr><td><strong>Preprocessing</strong></td><td>Format clean data for a specific algorithm → algorithm-specific, done after cleaning</td></tr>
+      <tr><td><strong>Featurization</strong></td><td>Creating new variables from existing ones during preprocessing</td></tr>
+      <tr><td><strong>Data Snooping</strong></td><td>Using test data during development — invalidates predictability evaluation</td></tr>
+      <tr><td><strong>Negative Control</strong></td><td>Testing method on null scenario to check for false positives</td></tr>
+      <tr><td><strong>Observational Unit</strong></td><td>Each row — the entity being measured</td></tr>
+      <tr><td><strong>Response / Target</strong></td><td>The variable we want to predict (Y)</td></tr>
+      <tr><td><strong>Predictor / Feature</strong></td><td>Variables used to predict the response (X)</td></tr>
+    </tbody>
+  </table>
+  <h3>🚩 Exam Traps</h3>
+  <div class="warning-box"><div class="callout-label">Trap 1</div>"Stages 3 and 4 are always included." → <strong>FALSE.</strong> Optional — only when the domain question requires structure discovery, prediction, or statistical inference.</div>
+  <div class="warning-box"><div class="callout-label">Trap 2</div>"Cleaning and preprocessing are the same." → <strong>FALSE.</strong> Cleaning = fix for any use; preprocessing = format for specific algorithm. Always clean first.</div>
+  <div class="warning-box"><div class="callout-label">Trap 3</div>"Available data = suitable data." → <strong>FALSE.</strong> Apply ROCCC first. Data can fail all 5 criteria and still "be available."</div>
+  <div class="warning-box"><div class="callout-label">Trap 4</div>"Looking at test set summary stats is okay — I'm not training on it." → <strong>FALSE.</strong> Any use of the test set during development constitutes data snooping. Even summary inspection can subconsciously influence decisions.</div>
+  <h3>🎯 Practice Questions</h3>
+  <details><summary>Q: List the 6 DSLC stages and which are mandatory vs optional.</summary>
+    <p><strong>A:</strong> 1. Problem formulation &amp; data collection ✅, 2. Cleaning, preprocessing &amp; EDA ✅, 3. Uncovering intrinsic structures ⚪, 4. Predictive/inferential analysis ⚪, 5. Evaluation ✅, 6. Communication ✅. Optional = 3 and 4 only.</p>
+  </details>
+  <details><summary>Q: Apply ROCCC to a dataset from Wikipedia (2015, no citations).</summary>
+    <p><strong>A:</strong> ❌ Reliable — Wikipedia is editable by anyone. ❌ Original — it's an aggregator. ⚠️ Comprehensive — unknown sampling. ❌ Current — 2015 may be outdated. ❌ Cited — no citations = no provenance. Fails 4–5 criteria. Not suitable for serious analysis.</p>
+  </details>
+  <details><summary>Q: Why is writing cleaning as a function with argument options important for PCS?</summary>
+    <p><strong>A:</strong> Directly supports <strong>Stability</strong> (test if conclusions change when cleaning options change) and <strong>Computability</strong> (reproducible cleaning). If conclusions are stable across cleaning argument variations → trustworthy under PCS. If unstable → the instability is itself an important finding that must be reported.</p>
+  </details>
+  <details><summary>Q: A linear regression fails to predict a drug with threshold effects. What went wrong?</summary>
+    <p><strong>A:</strong> Three-realm misalignment: the <em>algorithmic realm</em> (linear model) assumes proportional relationships, but the <em>real-world realm</em> exhibits threshold behavior (below threshold: no effect; above: sudden strong effect). The algorithm's assumptions don't match reality. Solution: use a threshold-capable model (piecewise linear, tree-based) that aligns with the real-world mechanism. PCS would detect this as poor predictability on the test set.</p>
+  </details>
+  <div class="summary-box"><h4>Chapter 2 — The Big Picture</h4><ul>
+    <li>DSLC = 6-stage non-linear cycle; mandatory: 1, 2, 5, 6; optional: 3, 4</li>
+    <li>Stage 1: frame the RIGHT question; involve DS in data collection from the start</li>
+    <li>Stage 2: Clean (any use) → Preprocess (algorithm-specific); document all judgment calls as function arguments</li>
+    <li>ROCCC = 5-point data quality checklist before trusting any dataset</li>
+    <li>Algorithm choice = matching assumptions to data realm + real-world realm (three-realm alignment)</li>
+  </ul></div>
+</div>
+
+</div>
+<div class="bottom-nav">
+  <button id="prev-btn" onclick="goPrev()"><div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div></button>
+  <button id="next-btn" onclick="goNext()"><div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div></button>
+</div>
+</div>
+<button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+const topics=["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7", "topic-8", "topic-9"];let currentTopicIndex=0;
+function getTopicTitle(id){const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l){const n=l.querySelector('.nav-num');return n?l.textContent.replace(n.textContent,'').trim():l.textContent.trim();}const c=document.getElementById(id);if(c){const h=c.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return n?h.textContent.replace(n.textContent,'').trim():h.textContent.trim();}}return'Topic';}
+function showTopic(id){document.querySelectorAll('.topic-card').forEach(c=>c.style.display='none');const t=document.getElementById(id);if(t)t.style.display='block';currentTopicIndex=topics.indexOf(id);document.querySelectorAll('.nav-sublist a').forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l)l.classList.add('active');const pb=document.getElementById('prev-btn'),nb=document.getElementById('next-btn'),pt=document.getElementById('prev-title'),nt=document.getElementById('next-title');pb.style.display=currentTopicIndex>0?'flex':'none';nb.style.display=currentTopicIndex<topics.length-1?'flex':'none';if(pt&&currentTopicIndex>0)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);if(nt&&currentTopicIndex<topics.length-1)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');}
+function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector('.chevron');if(s.style.display==='none'){s.style.display='block';c.style.transform='rotate(0deg)';}else{s.style.display='none';c.style.transform='rotate(-90deg)';}}
+function filterContent(){const q=document.getElementById('search-input').value.toLowerCase();document.querySelectorAll('.nav-sublist li,.nav-list>li').forEach(i=>{i.style.display=i.textContent.toLowerCase().includes(q)?'':'none';});}
+showTopic(topics[0]);
+const mc=document.getElementById('main-content'),bb=document.getElementById('back-to-top');
+mc.addEventListener('scroll',()=>bb.style.display=mc.scrollTop>300?'flex':'none');
+</script>
+</body></html>
