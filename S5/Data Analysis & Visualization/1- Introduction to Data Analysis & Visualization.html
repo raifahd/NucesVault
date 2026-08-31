@@ -1,537 +1,1649 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>DAV — Introduction to Veridical Data Science</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="../notes.css"/>
-<style>
-.pcs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0;}
-.pcs-card{border-radius:10px;padding:20px 16px;text-align:center;}
-.pcs-card.p{background:rgba(217,119,87,.12);border:2px solid var(--ac);}
-.pcs-card.c{background:rgba(59,130,246,.10);border:2px solid var(--exp-bd);}
-.pcs-card.s{background:rgba(34,197,94,.10);border:2px solid var(--def-bd);}
-.pcs-card .letter{font-size:2.4rem;font-weight:700;margin-bottom:6px;}
-.pcs-card.p .letter{color:var(--ac);}.pcs-card.c .letter{color:var(--exp-bd);}.pcs-card.s .letter{color:var(--def-bd);}
-.pcs-card h4{margin:0 0 8px;font-size:.9rem;font-weight:600;}
-.pcs-card p{margin:0;font-size:.82rem;color:var(--muted);line-height:1.5;}
-.realms-row{display:flex;gap:10px;align-items:center;justify-content:center;margin:20px 0;flex-wrap:wrap;}
-.realm{flex:1;min-width:140px;padding:16px 12px;border-radius:10px;text-align:center;}
-.realm.r1{background:rgba(217,119,87,.15);border:2px solid var(--ac);}
-.realm.r2{background:rgba(59,130,246,.12);border:2px solid var(--exp-bd);}
-.realm.r3{background:rgba(139,92,246,.12);border:2px solid var(--qst-bd);}
-.realm .ico{font-size:1.6rem;margin-bottom:6px;}.realm h4{margin:0 0 4px;font-size:.88rem;font-weight:600;}
-.realm p{margin:0;font-size:.78rem;color:var(--muted);}
-.arr{font-size:1.4rem;color:var(--muted);align-self:center;}
-.anq{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0;}
-.anq-card{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:12px;text-align:center;}
-.anq-card h4{color:var(--ac);margin:0 0 8px;font-size:.88rem;}
-.gt{width:100%;border-collapse:collapse;margin:12px 0;font-size:.86rem;}
-.gt th{background:var(--ac);color:#fff;padding:7px 10px;text-align:left;}
-.gt td{padding:7px 10px;border-bottom:1px solid var(--bd);}
-.gt tr:nth-child(even) td{background:var(--bg2);}
-@media(max-width:650px){.pcs-grid,.anq{grid-template-columns:1fr;}.realms-row{flex-direction:column;}}
-</style>
-</head><body>
-<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-<div id="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-course-label">DS-3001</div>
-    <div class="sidebar-title">Data Analysis &amp; Visualization</div>
-  </div>
-  <div class="sidebar-search-wrap">
-    <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()"/>
-  </div>
-  <ul class="nav-list" id="nav-list">
-    <li class="nav-section">
-      <div class="nav-section-title" onclick="toggleSection(this)">
-        <span>Module 1 — Intro to VDS</span><span class="chevron">▼</span>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DAV — Introduction to Veridical Data Science</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      .pcs-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 18px 0;
+      }
+      .pcs-card {
+        border-radius: 10px;
+        padding: 20px 16px;
+        text-align: center;
+      }
+      .pcs-card.p {
+        background: rgba(217, 119, 87, 0.12);
+        border: 2px solid var(--ac);
+      }
+      .pcs-card.c {
+        background: rgba(59, 130, 246, 0.1);
+        border: 2px solid var(--exp-bd);
+      }
+      .pcs-card.s {
+        background: rgba(34, 197, 94, 0.1);
+        border: 2px solid var(--def-bd);
+      }
+      .pcs-card .letter {
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .pcs-card.p .letter {
+        color: var(--ac);
+      }
+      .pcs-card.c .letter {
+        color: var(--exp-bd);
+      }
+      .pcs-card.s .letter {
+        color: var(--def-bd);
+      }
+      .pcs-card h4 {
+        margin: 0 0 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .pcs-card p {
+        margin: 0;
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .realms-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+      .realm {
+        flex: 1;
+        min-width: 140px;
+        padding: 16px 12px;
+        border-radius: 10px;
+        text-align: center;
+      }
+      .realm.r1 {
+        background: rgba(217, 119, 87, 0.15);
+        border: 2px solid var(--ac);
+      }
+      .realm.r2 {
+        background: rgba(59, 130, 246, 0.12);
+        border: 2px solid var(--exp-bd);
+      }
+      .realm.r3 {
+        background: rgba(139, 92, 246, 0.12);
+        border: 2px solid var(--qst-bd);
+      }
+      .realm .ico {
+        font-size: 1.6rem;
+        margin-bottom: 6px;
+      }
+      .realm h4 {
+        margin: 0 0 4px;
+        font-size: 0.88rem;
+        font-weight: 600;
+      }
+      .realm p {
+        margin: 0;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .arr {
+        font-size: 1.4rem;
+        color: var(--muted);
+        align-self: center;
+      }
+      .anq {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin: 16px 0;
+      }
+      .anq-card {
+        background: var(--bg2);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+      }
+      .anq-card h4 {
+        color: var(--ac);
+        margin: 0 0 8px;
+        font-size: 0.88rem;
+      }
+      .gt {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+        font-size: 0.86rem;
+      }
+      .gt th {
+        background: var(--ac);
+        color: #fff;
+        padding: 7px 10px;
+        text-align: left;
+      }
+      .gt td {
+        padding: 7px 10px;
+        border-bottom: 1px solid var(--bd);
+      }
+      .gt tr:nth-child(even) td {
+        background: var(--bg2);
+      }
+      @media (max-width: 650px) {
+        .pcs-grid,
+        .anq {
+          grid-template-columns: 1fr;
+        }
+        .realms-row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      id="menu-toggle"
+      onclick="document.getElementById('sidebar').classList.toggle('open')"
+    >
+      ☰
+    </button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">DS-3001</div>
+        <div class="sidebar-title">Data Analysis &amp; Visualization</div>
       </div>
-      <ul class="nav-sublist">
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>What is Veridical Data Science?</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>The Three Realms</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Data, Algorithms &amp; Decisions</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Critical Thinking &amp; Biases</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>The PCS Framework</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Anscombe's Quartet</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>🎯 Quiz Prep</a></li>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 1 — Intro to VDS</span><span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')"
+                ><span class="nav-num">01</span>What is Veridical Data
+                Science?</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')"
+                ><span class="nav-num">02</span>The Three Realms</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')"
+                ><span class="nav-num">03</span>Data, Algorithms &amp;
+                Decisions</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')"
+                ><span class="nav-num">04</span>Critical Thinking &amp;
+                Biases</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-5')"
+                ><span class="nav-num">05</span>The PCS Framework</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-6')"
+                ><span class="nav-num">06</span>Anscombe's Quartet</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-7')"
+                ><span class="nav-num">07</span>🎯 Quiz Prep</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html"
+            ><span class="nav-num">02</span>Data Analysis Lifecycle</a
+          >
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Data Preparation.html"
+            ><span class="nav-num">03</span>Data Preparation</a
+          >
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html"
+            ><span class="nav-num">04</span>Exploratory Data Analysis</a
+          >
+        </li>
       </ul>
-    </li>
-    <li><a class="nav-module-link" href="./2- Data Analysis Lifecycle.html"><span class="nav-num">02</span>Data Analysis Lifecycle</a></li>
-    <li><a class="nav-module-link" href="./3- Data Preparation.html"><span class="nav-num">03</span>Data Preparation</a></li>
-    <li><a class="nav-module-link" href="./4- Exploratory Data Analysis.html"><span class="nav-num">04</span>Exploratory Data Analysis</a></li>
-  </ul>
-</div>
+    </div>
 
-<div id="main-content">
-<div class="module-container" id="module-1">
-<div class="module-header">
-  <div class="module-eyebrow">DS-3001 · Book: Ch. 1 · Slide 01</div>
-  <h1 class="module-title">Module 1 — Introduction to Veridical Data Science</h1>
-</div>
+    <div id="main-content">
+      <div class="module-container" id="module-1">
+        <div class="module-header">
+          <div class="module-eyebrow">DS-3001 · Book: Ch. 1 · Slide 01</div>
+          <h1 class="module-title">
+            Module 1 — Introduction to Veridical Data Science
+          </h1>
+        </div>
 
-<!-- TOPIC 1 -->
-<div class="topic-card" id="topic-1">
-  <h2><span class="topic-num">1</span>What is Veridical Data Science?</h2>
-  <p class="topic-subtitle">Truthful, trustworthy, real-world data analysis — not just running algorithms</p>
-  <p>The word <strong>veridical</strong> means <em>truthful</em> or <em>coinciding with reality</em>. Veridical Data Science (VDS) is not just a toolbox of algorithms — it spans the <strong>entire data science life cycle</strong>, demanding that every result be trustworthy and relevant to the real-world problem at hand.</p>
-  <div class="definition">
-    <div class="callout-label">Definition — Veridical Data Science</div>
-    The practice of conducting data analysis while making <strong>human judgment calls</strong> and using <strong>domain knowledge</strong> to extract and communicate <em>useful and trustworthy</em> information from data to solve a real-world domain problem. <em>(Bin Yu &amp; Rebecca L. Barter, MIT Press)</em>
-  </div>
-  <div class="definition">
-    <div class="callout-label">Definition — Algorithm</div>
-    A set of instructions telling a computer to perform a task — from computing a mean, to producing a scatterplot, to training a neural network. Every algorithm is a <strong>mental construct</strong> created by humans. Even the humble mean is an algorithm.
-  </div>
-  <h3>Data Science = 3 Intersecting Pillars</h3>
-  <table class="gt">
-    <thead><tr><th>Pillar</th><th>What it covers</th><th>Without it…</th></tr></thead>
-    <tbody>
-      <tr><td>💻 Computer Science</td><td>Code, algorithms, scalability</td><td>Can't process large data</td></tr>
-      <tr><td>📐 Statistics / Math</td><td>Signal vs. noise, uncertainty</td><td>Meaningless outputs</td></tr>
-      <tr><td>🔬 Domain Knowledge</td><td>Context, interpretation, ethics</td><td>Misleading conclusions</td></tr>
-    </tbody>
-  </table>
-  <div class="note-box">
-    <div class="callout-label">Key Insight</div>
-    Data science is <strong>NOT</strong> a subfield of statistics or computer science. It is the <em>integration</em> of all three pillars applied to real-world domain problems.
-  </div>
-  <div class="summary-box">
-    <h4>Key Takeaways</h4>
-    <ul>
-      <li>Veridical = truthful; the goal is <strong>trustworthy</strong> results, not just any results</li>
-      <li>Every algorithm — even computing a mean — is a human-made mental construct</li>
-      <li>DS requires CS + Statistics + Domain Knowledge simultaneously</li>
-      <li>VDS spans the full life cycle: problem → data → analysis → communication</li>
-    </ul>
-  </div>
-  <details><summary>Practice Q: What does "veridical" mean and why does it matter for data science?</summary>
-    <p><strong>Answer:</strong> Veridical means "truthful" or "coinciding with reality." It matters because DS results drive real-world decisions (medical, financial, policy). If results are not genuinely trustworthy — just fitting artifacts in noisy data — those decisions will be wrong. VDS provides a framework to actively <em>demonstrate</em> trustworthiness rather than assuming it.</p>
-  </details>
-  <details><summary>Practice Q: True or False — "Algorithm" in VDS refers only to machine learning models.</summary>
-    <p><strong>Answer: FALSE.</strong> The term is used broadly. Computing a mean is an algorithm. Making a scatterplot is an algorithm. Any computational procedure that extracts a pattern from data counts. This broad definition reminds us that every analysis choice — not just complex ML — requires scrutiny.</p>
-  </details>
-  <details><summary>Hard Q: Why can't we simply automate the data science process end-to-end with AI?</summary>
-    <p><strong>Answer:</strong> Because key steps require <em>human judgment</em> and <em>domain knowledge</em>. Automated systems don't know that "99" in a medical survey means "declined to answer," or that a data collection flaw makes certain demographics underrepresented. They can't judge whether results are ethically sound or whether the framing of the question is appropriate. Critical thinking about reality, data, and algorithms cannot be fully automated.</p>
-  </details>
-</div>
+        <!-- TOPIC 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2>
+            <span class="topic-num">1</span>What is Veridical Data Science?
+          </h2>
+          <p class="topic-subtitle">
+            Truthful, trustworthy, real-world data analysis — not just running
+            algorithms
+          </p>
+          <p>
+            The word <strong>veridical</strong> means <em>truthful</em> or
+            <em>coinciding with reality</em>. Veridical Data Science (VDS) is
+            not just a toolbox of algorithms — it spans the
+            <strong>entire data science life cycle</strong>, demanding that
+            every result be trustworthy and relevant to the real-world problem
+            at hand.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition — Veridical Data Science</div>
+            The practice of conducting data analysis while making
+            <strong>human judgment calls</strong> and using
+            <strong>domain knowledge</strong> to extract and communicate
+            <em>useful and trustworthy</em> information from data to solve a
+            real-world domain problem.
+            <em>(Bin Yu &amp; Rebecca L. Barter, MIT Press)</em>
+          </div>
+          <div class="definition">
+            <div class="callout-label">Definition — Algorithm</div>
+            A set of instructions telling a computer to perform a task — from
+            computing a mean, to producing a scatterplot, to training a neural
+            network. Every algorithm is a
+            <strong>mental construct</strong> created by humans. Even the humble
+            mean is an algorithm.
+          </div>
+          <h3>Data Science = 3 Intersecting Pillars</h3>
+          <table class="gt">
+            <thead>
+              <tr>
+                <th>Pillar</th>
+                <th>What it covers</th>
+                <th>Without it…</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>💻 Computer Science</td>
+                <td>Code, algorithms, scalability</td>
+                <td>Can't process large data</td>
+              </tr>
+              <tr>
+                <td>📐 Statistics / Math</td>
+                <td>Signal vs. noise, uncertainty</td>
+                <td>Meaningless outputs</td>
+              </tr>
+              <tr>
+                <td>🔬 Domain Knowledge</td>
+                <td>Context, interpretation, ethics</td>
+                <td>Misleading conclusions</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note-box">
+            <div class="callout-label">Key Insight</div>
+            Data science is <strong>NOT</strong> a subfield of statistics or
+            computer science. It is the <em>integration</em> of all three
+            pillars applied to real-world domain problems.
+          </div>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                Veridical = truthful; the goal is
+                <strong>trustworthy</strong> results, not just any results
+              </li>
+              <li>
+                Every algorithm — even computing a mean — is a human-made mental
+                construct
+              </li>
+              <li>
+                DS requires CS + Statistics + Domain Knowledge simultaneously
+              </li>
+              <li>
+                VDS spans the full life cycle: problem → data → analysis →
+                communication
+              </li>
+            </ul>
+          </div>
+          <details>
+            <summary>
+              Practice Q: What does "veridical" mean and why does it matter for
+              data science?
+            </summary>
+            <p>
+              <strong>Answer:</strong> Veridical means "truthful" or "coinciding
+              with reality." It matters because DS results drive real-world
+              decisions (medical, financial, policy). If results are not
+              genuinely trustworthy — just fitting artifacts in noisy data —
+              those decisions will be wrong. VDS provides a framework to
+              actively <em>demonstrate</em> trustworthiness rather than assuming
+              it.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Practice Q: True or False — "Algorithm" in VDS refers only to
+              machine learning models.
+            </summary>
+            <p>
+              <strong>Answer: FALSE.</strong> The term is used broadly.
+              Computing a mean is an algorithm. Making a scatterplot is an
+              algorithm. Any computational procedure that extracts a pattern
+              from data counts. This broad definition reminds us that every
+              analysis choice — not just complex ML — requires scrutiny.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard Q: Why can't we simply automate the data science process
+              end-to-end with AI?
+            </summary>
+            <p>
+              <strong>Answer:</strong> Because key steps require
+              <em>human judgment</em> and <em>domain knowledge</em>. Automated
+              systems don't know that "99" in a medical survey means "declined
+              to answer," or that a data collection flaw makes certain
+              demographics underrepresented. They can't judge whether results
+              are ethically sound or whether the framing of the question is
+              appropriate. Critical thinking about reality, data, and algorithms
+              cannot be fully automated.
+            </p>
+          </details>
+        </div>
 
-<!-- TOPIC 2 -->
-<div class="topic-card" id="topic-2">
-  <h2><span class="topic-num">2</span>The Three Realms</h2>
-  <p class="topic-subtitle">Reality → Data → Algorithms: the three worlds every data scientist inhabits</p>
-  <p>One of VDS's most powerful insights: every data science project operates across <strong>three distinct realms</strong>. Gaps between these realms are where errors, misleading results, and failures hide.</p>
-  <div class="realms-row">
-    <div class="realm r1"><div class="ico">🌍</div><h4>Reality</h4><p>The actual world. We can never fully observe it — only measure it.</p></div>
-    <div class="arr">→</div>
-    <div class="realm r2"><div class="ico">📊</div><h4>Data (Approx. of Reality)</h4><p>A crude, partial, time-stamped snapshot of measurements.</p></div>
-    <div class="arr">→</div>
-    <div class="realm r3"><div class="ico">🧠</div><h4>Mental Constructs</h4><p>Our analyses and algorithms — human-designed models of reality.</p></div>
-  </div>
-  <div class="definition">
-    <div class="callout-label">The Two Critical Gaps</div>
-    <strong>Gap 1 — Data vs Reality:</strong> Does our dataset adequately represent reality? Biased sampling, measurement errors, and outdated data all widen this gap.<br><br>
-    <strong>Gap 2 — Algorithm vs Reality:</strong> Do our algorithms capture real patterns, or are they fitting noise/artifacts? Will conclusions hold on <em>future</em> data from the same real-world system?
-  </div>
-  <div class="example">
-    <div class="callout-label">Example — Hospital Readmission</div>
-    <p>A model is trained on 500 American patients to predict hospital readmission. It achieves 90% accuracy.</p>
-    <ul>
-      <li><strong>Reality:</strong> True biological/social risk factors for all patients globally</li>
-      <li><strong>Data:</strong> 500 Americans in 2022 — a tiny, time-limited, region-limited snapshot</li>
-      <li><strong>Algorithm:</strong> Logistic regression fitted to those 500 patients</li>
-      <li><strong>Risk:</strong> Applied to European hospitals, it may fail — the data poorly approximated broader reality</li>
-    </ul>
-  </div>
-  <div class="warning-box">
-    <div class="callout-label">Common Mistake</div>
-    "If my model fits the data well, I'm done." <strong>Wrong!</strong> The model might be fitting artifacts of the specific data collection, not real-world patterns. Trustworthiness requires evaluating on <em>future, unseen</em> data that better represents reality.
-  </div>
-  <div class="summary-box">
-    <h4>Key Takeaways</h4>
-    <ul>
-      <li>3 realms: <strong>Reality → Data (approximation) → Algorithms (mental constructs)</strong></li>
-      <li>Data is <em>imperfect, partial, time-stamped</em> — never a perfect mirror of reality</li>
-      <li>Algorithms are assumptions-in-code, not objective truth</li>
-      <li>Trustworthy DS = tight alignment across ALL three realms for both current AND future data</li>
-    </ul>
-  </div>
-  <details><summary>Practice Q: Name and describe the three realms of veridical data science.</summary>
-    <p><strong>Answer:</strong> (1) <em>Reality</em> — the actual real-world system being studied; we never directly observe it. (2) <em>Approximation of Reality (Data Realm)</em> — our dataset, an imprecise partial snapshot of reality taken at a moment in time. (3) <em>Mental Constructs (Algorithmic Realm)</em> — our analyses and algorithms, designed based on our assumptions about how reality works.</p>
-  </details>
-  <details><summary>Hard Q: Why is the gap between the data realm and reality unavoidable?</summary>
-    <p><strong>Answer:</strong> Two fundamental reasons: (1) <em>Measurement imprecision</em> — instruments and human recording introduce errors; no measurement perfectly captures the true real-world quantity. (2) <em>Sampling and temporal limitations</em> — data is collected from a finite subset of the population at a specific moment. This cannot represent all conditions, all people, all future states. Reality continues changing; datasets stay frozen.</p>
-  </details>
-</div>
+        <!-- TOPIC 2 -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>The Three Realms</h2>
+          <p class="topic-subtitle">
+            Reality → Data → Algorithms: the three worlds every data scientist
+            inhabits
+          </p>
+          <p>
+            One of VDS's most powerful insights: every data science project
+            operates across <strong>three distinct realms</strong>. Gaps between
+            these realms are where errors, misleading results, and failures
+            hide.
+          </p>
+          <div class="realms-row">
+            <div class="realm r1">
+              <div class="ico">🌍</div>
+              <h4>Reality</h4>
+              <p>
+                The actual world. We can never fully observe it — only measure
+                it.
+              </p>
+            </div>
+            <div class="arr">→</div>
+            <div class="realm r2">
+              <div class="ico">📊</div>
+              <h4>Data (Approx. of Reality)</h4>
+              <p>A crude, partial, time-stamped snapshot of measurements.</p>
+            </div>
+            <div class="arr">→</div>
+            <div class="realm r3">
+              <div class="ico">🧠</div>
+              <h4>Mental Constructs</h4>
+              <p>
+                Our analyses and algorithms — human-designed models of reality.
+              </p>
+            </div>
+          </div>
+          <div class="definition">
+            <div class="callout-label">The Two Critical Gaps</div>
+            <strong>Gap 1 — Data vs Reality:</strong> Does our dataset
+            adequately represent reality? Biased sampling, measurement errors,
+            and outdated data all widen this gap.<br /><br />
+            <strong>Gap 2 — Algorithm vs Reality:</strong> Do our algorithms
+            capture real patterns, or are they fitting noise/artifacts? Will
+            conclusions hold on <em>future</em> data from the same real-world
+            system?
+          </div>
+          <div class="example">
+            <div class="callout-label">Example — Hospital Readmission</div>
+            <p>
+              A model is trained on 500 American patients to predict hospital
+              readmission. It achieves 90% accuracy.
+            </p>
+            <ul>
+              <li>
+                <strong>Reality:</strong> True biological/social risk factors
+                for all patients globally
+              </li>
+              <li>
+                <strong>Data:</strong> 500 Americans in 2022 — a tiny,
+                time-limited, region-limited snapshot
+              </li>
+              <li>
+                <strong>Algorithm:</strong> Logistic regression fitted to those
+                500 patients
+              </li>
+              <li>
+                <strong>Risk:</strong> Applied to European hospitals, it may
+                fail — the data poorly approximated broader reality
+              </li>
+            </ul>
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            "If my model fits the data well, I'm done."
+            <strong>Wrong!</strong> The model might be fitting artifacts of the
+            specific data collection, not real-world patterns. Trustworthiness
+            requires evaluating on <em>future, unseen</em> data that better
+            represents reality.
+          </div>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                3 realms:
+                <strong
+                  >Reality → Data (approximation) → Algorithms (mental
+                  constructs)</strong
+                >
+              </li>
+              <li>
+                Data is <em>imperfect, partial, time-stamped</em> — never a
+                perfect mirror of reality
+              </li>
+              <li>Algorithms are assumptions-in-code, not objective truth</li>
+              <li>
+                Trustworthy DS = tight alignment across ALL three realms for
+                both current AND future data
+              </li>
+            </ul>
+          </div>
+          <details>
+            <summary>
+              Practice Q: Name and describe the three realms of veridical data
+              science.
+            </summary>
+            <p>
+              <strong>Answer:</strong> (1) <em>Reality</em> — the actual
+              real-world system being studied; we never directly observe it. (2)
+              <em>Approximation of Reality (Data Realm)</em> — our dataset, an
+              imprecise partial snapshot of reality taken at a moment in time.
+              (3) <em>Mental Constructs (Algorithmic Realm)</em> — our analyses
+              and algorithms, designed based on our assumptions about how
+              reality works.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard Q: Why is the gap between the data realm and reality
+              unavoidable?
+            </summary>
+            <p>
+              <strong>Answer:</strong> Two fundamental reasons: (1)
+              <em>Measurement imprecision</em> — instruments and human recording
+              introduce errors; no measurement perfectly captures the true
+              real-world quantity. (2)
+              <em>Sampling and temporal limitations</em> — data is collected
+              from a finite subset of the population at a specific moment. This
+              cannot represent all conditions, all people, all future states.
+              Reality continues changing; datasets stay frozen.
+            </p>
+          </details>
+        </div>
 
-<!-- TOPIC 3 -->
-<div class="topic-card" id="topic-3">
-  <h2><span class="topic-num">3</span>Data, Algorithms &amp; Decision Making</h2>
-  <p class="topic-subtitle">How imperfect inputs produce real-world consequences</p>
-  <p>The ultimate goal of DS: use data-driven insights to <strong>make real-world decisions</strong>. But those decisions are only as trustworthy as the weakest link in the chain: Reality → Data → Algorithm → Decision.</p>
-  <div class="definition">
-    <div class="callout-label">Definition — Current vs Future Data</div>
-    <strong>Current Data:</strong> The dataset you use to conduct analysis and train your algorithm.<br><br>
-    <strong>Future Data:</strong> The real-world data to which you will <em>apply</em> your conclusions. This is what actually matters — your algorithm needs to work on future data, not just memorize the current dataset.
-  </div>
-  <div class="definition">
-    <div class="callout-label">Definition — Uncertainty</div>
-    The extent to which a data-driven result <em>could have plausibly ended up being different</em>, arising from: different data samples, different cleaning choices, different algorithm selections, different parameters.
-  </div>
-  <h3>Sources of Uncertainty</h3>
-  <table class="gt">
-    <thead><tr><th>Source</th><th>Example Perturbation</th></tr></thead>
-    <tbody>
-      <tr><td>Data Collection</td><td>Different 500 patients → different dataset</td></tr>
-      <tr><td>Data Cleaning</td><td>Drop missing vs. impute → different cleaned data</td></tr>
-      <tr><td>Algorithm Choice</td><td>Logistic Regression vs. Random Forest → different predictions</td></tr>
-      <tr><td>Hyperparameters</td><td>Different tree depth → different model</td></tr>
-      <tr><td>Time</td><td>Model from 2022, applied in 2025 — reality shifted</td></tr>
-    </tbody>
-  </table>
-  <div class="note-box">
-    <div class="callout-label">The Core VDS Question</div>
-    How <strong>stable</strong> are your results across these sources of uncertainty? If conclusions flip when you change one cleaning step, how much should you trust them?
-  </div>
-  <div class="summary-box">
-    <h4>Key Takeaways</h4>
-    <ul>
-      <li>Current data = what you have; Future data = where your results must work</li>
-      <li>Uncertainty is inherent — in data collection, cleaning, analysis choices, and time</li>
-      <li>High-stakes decisions require <em>stable</em> results across multiple sources of uncertainty</li>
-    </ul>
-  </div>
-  <details><summary>Practice Q: Distinguish current data from future data. Why does the distinction matter?</summary>
-    <p><strong>Answer:</strong> Current data is used to build and train the model. Future data is where the model will actually be applied in the real world. The distinction matters because a model can perform perfectly on current data by memorizing patterns specific to that dataset (overfitting), yet completely fail on future data that differs even slightly. The goal of DS is always to make good decisions on future data — so evaluating performance on future-like held-out data is essential.</p>
-  </details>
-  <details><summary>Practice Q: List 3 sources of uncertainty in a data science project.</summary>
-    <p><strong>Answer:</strong> (1) Data collection uncertainty — different samples from the same population give different datasets. (2) Data cleaning/preprocessing uncertainty — different judgment calls (e.g., missing value treatment) produce different cleaned datasets. (3) Algorithm/model uncertainty — different algorithms or different hyperparameters produce different results. Additional valid sources: measurement error, sampling bias, temporal drift.</p>
-  </details>
-</div>
+        <!-- TOPIC 3 -->
+        <div class="topic-card" id="topic-3">
+          <h2>
+            <span class="topic-num">3</span>Data, Algorithms &amp; Decision
+            Making
+          </h2>
+          <p class="topic-subtitle">
+            How imperfect inputs produce real-world consequences
+          </p>
+          <p>
+            The ultimate goal of DS: use data-driven insights to
+            <strong>make real-world decisions</strong>. But those decisions are
+            only as trustworthy as the weakest link in the chain: Reality → Data
+            → Algorithm → Decision.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition — Current vs Future Data</div>
+            <strong>Current Data:</strong> The dataset you use to conduct
+            analysis and train your algorithm.<br /><br />
+            <strong>Future Data:</strong> The real-world data to which you will
+            <em>apply</em> your conclusions. This is what actually matters —
+            your algorithm needs to work on future data, not just memorize the
+            current dataset.
+          </div>
+          <div class="definition">
+            <div class="callout-label">Definition — Uncertainty</div>
+            The extent to which a data-driven result
+            <em>could have plausibly ended up being different</em>, arising
+            from: different data samples, different cleaning choices, different
+            algorithm selections, different parameters.
+          </div>
+          <h3>Sources of Uncertainty</h3>
+          <table class="gt">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Example Perturbation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Data Collection</td>
+                <td>Different 500 patients → different dataset</td>
+              </tr>
+              <tr>
+                <td>Data Cleaning</td>
+                <td>Drop missing vs. impute → different cleaned data</td>
+              </tr>
+              <tr>
+                <td>Algorithm Choice</td>
+                <td>
+                  Logistic Regression vs. Random Forest → different predictions
+                </td>
+              </tr>
+              <tr>
+                <td>Hyperparameters</td>
+                <td>Different tree depth → different model</td>
+              </tr>
+              <tr>
+                <td>Time</td>
+                <td>Model from 2022, applied in 2025 — reality shifted</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note-box">
+            <div class="callout-label">The Core VDS Question</div>
+            How <strong>stable</strong> are your results across these sources of
+            uncertainty? If conclusions flip when you change one cleaning step,
+            how much should you trust them?
+          </div>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                Current data = what you have; Future data = where your results
+                must work
+              </li>
+              <li>
+                Uncertainty is inherent — in data collection, cleaning, analysis
+                choices, and time
+              </li>
+              <li>
+                High-stakes decisions require <em>stable</em> results across
+                multiple sources of uncertainty
+              </li>
+            </ul>
+          </div>
+          <details>
+            <summary>
+              Practice Q: Distinguish current data from future data. Why does
+              the distinction matter?
+            </summary>
+            <p>
+              <strong>Answer:</strong> Current data is used to build and train
+              the model. Future data is where the model will actually be applied
+              in the real world. The distinction matters because a model can
+              perform perfectly on current data by memorizing patterns specific
+              to that dataset (overfitting), yet completely fail on future data
+              that differs even slightly. The goal of DS is always to make good
+              decisions on future data — so evaluating performance on
+              future-like held-out data is essential.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Practice Q: List 3 sources of uncertainty in a data science
+              project.
+            </summary>
+            <p>
+              <strong>Answer:</strong> (1) Data collection uncertainty —
+              different samples from the same population give different
+              datasets. (2) Data cleaning/preprocessing uncertainty — different
+              judgment calls (e.g., missing value treatment) produce different
+              cleaned datasets. (3) Algorithm/model uncertainty — different
+              algorithms or different hyperparameters produce different results.
+              Additional valid sources: measurement error, sampling bias,
+              temporal drift.
+            </p>
+          </details>
+        </div>
 
-<!-- TOPIC 4 -->
-<div class="topic-card" id="topic-4">
-  <h2><span class="topic-num">4</span>Critical Thinking &amp; Cognitive Biases</h2>
-  <p class="topic-subtitle">The human judgment layer that no algorithm can replace</p>
-  <p>Critical thinking must be applied at <strong>three levels</strong> in every data science project. It is your defense against garbage-in/garbage-out, misleading analyses, and unethical outcomes.</p>
-  <h3>Level 1 — Question the Domain Problem</h3>
-  <div class="example">
-    <div class="callout-label">Slide Example — Two Framings</div>
-    <table class="gt">
-      <thead><tr><th>Narrow (Dangerous)</th><th>Better (Critical)</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>"Which website features make customers <em>less likely to cancel</em>?"</td>
-          <td>"<em>Why</em> do customers cancel our subscription?"</td>
-        </tr>
-        <tr>
-          <td>Assumes the website is the only problem. Misses root causes.</td>
-          <td>Opens inquiry to all causes: pricing, product, competition, UX, support.</td>
-        </tr>
-      </tbody>
-    </table>
-    <p><strong>Ask:</strong> Is this the <em>right</em> question? Is it ethical? Are we solving the actual problem?</p>
-  </div>
-  <h3>Level 2 — Question the Data</h3>
-  <ul>
-    <li>📍 <strong>Source:</strong> Where did it come from? Who collected it and why?</li>
-    <li>✅ <strong>Trustworthy?</strong> Could there be bias, errors, or conflicts of interest?</li>
-    <li>🎯 <strong>Relevant?</strong> Does it match the question AND the future context where results will be applied?</li>
-    <li>📖 <strong>Values:</strong> What do specific values actually mean? (e.g., "99" = "declined to answer")</li>
-  </ul>
-  <h3>Level 3 — Question the Analysis &amp; Results</h3>
-  <ul>
-    <li>🌍 Do results make sense in reality? Do they pass the common-sense test?</li>
-    <li>⚙️ What assumptions does the algorithm make? Are they valid for this data?</li>
-    <li>❓ Do the results actually answer the original question?</li>
-    <li>📢 Are results being communicated accurately, without misleading visualizations?</li>
-  </ul>
-  <h3>Cognitive Biases — The Silent Killers</h3>
-  <div class="definition">
-    <div class="callout-label">Definition — Confirmation Bias</div>
-    Failing to critically scrutinize results <em>because they match what you expected</em>. You stop questioning because the output "feels right" — even if it's wrong. Leads to trusting a bad model that simply confirms prior beliefs.
-  </div>
-  <div class="definition">
-    <div class="callout-label">Definition — Desirability Bias</div>
-    Steering analysis toward the results that <em>other people (or popular opinion) want to see</em>. Often driven by business or social pressure. The analyst produces "pleasing" results rather than truthful ones.
-  </div>
-  <div class="warning-box">
-    <div class="callout-label">Common Mistake — p-Hacking / Data Snooping</div>
-    Running many analyses until one gives a "significant" result, then reporting only that one. This inflates false-positive rates. Results produced this way will not replicate. Document <em>all</em> analyses you ran, not just the best-looking one.
-  </div>
-  <div class="summary-box">
-    <h4>Key Takeaways</h4>
-    <ul>
-      <li>Critical thinking operates at 3 levels: domain problem → data → analysis</li>
-      <li><strong>Confirmation bias:</strong> accepting results because they match prior expectations</li>
-      <li><strong>Desirability bias:</strong> producing results to please stakeholders, not find truth</li>
-      <li>Always ask: Is this the right question? Is the data trustworthy and relevant?</li>
-      <li>Case study: 2019 Australian bushfire "1 billion animals" = a <em>modeled estimate</em> dependent on assumptions — not a direct count</li>
-    </ul>
-  </div>
-  <details><summary>Practice Q: How do confirmation bias and desirability bias differ?</summary>
-    <p><strong>Answer:</strong> <em>Confirmation bias</em> is internal — you stop scrutinizing because results align with <em>your own</em> prior beliefs. <em>Desirability bias</em> is external — you steer the analysis to produce what <em>others want</em> to see (bosses, clients, popular opinion). Both lead to untrustworthy results. Key: confirmation bias = your expectations; desirability bias = others' expectations.</p>
-  </details>
-  <details><summary>Hard Q: A dataset has a value of "99" for patient age. What critical thinking steps should you take?</summary>
-    <p><strong>Answer:</strong> (1) Is 99 a plausible age? Could be real, but unlikely in bulk. (2) Check the data documentation/codebook — "99" often means "missing/declined." (3) Ask the data collector if possible. (4) Check surrounding fields for consistency — if other fields suggest the patient is ~30, "99" is clearly a code. (5) Document your judgment call: decide whether to treat as missing (NA), exclude the record, or impute, and record why. (6) Test stability: does your conclusion change if you handle these differently?</p>
-  </details>
-</div>
+        <!-- TOPIC 4 -->
+        <div class="topic-card" id="topic-4">
+          <h2>
+            <span class="topic-num">4</span>Critical Thinking &amp; Cognitive
+            Biases
+          </h2>
+          <p class="topic-subtitle">
+            The human judgment layer that no algorithm can replace
+          </p>
+          <p>
+            Critical thinking must be applied at
+            <strong>three levels</strong> in every data science project. It is
+            your defense against garbage-in/garbage-out, misleading analyses,
+            and unethical outcomes.
+          </p>
+          <h3>Level 1 — Question the Domain Problem</h3>
+          <div class="example">
+            <div class="callout-label">Slide Example — Two Framings</div>
+            <table class="gt">
+              <thead>
+                <tr>
+                  <th>Narrow (Dangerous)</th>
+                  <th>Better (Critical)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    "Which website features make customers
+                    <em>less likely to cancel</em>?"
+                  </td>
+                  <td>"<em>Why</em> do customers cancel our subscription?"</td>
+                </tr>
+                <tr>
+                  <td>
+                    Assumes the website is the only problem. Misses root causes.
+                  </td>
+                  <td>
+                    Opens inquiry to all causes: pricing, product, competition,
+                    UX, support.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              <strong>Ask:</strong> Is this the <em>right</em> question? Is it
+              ethical? Are we solving the actual problem?
+            </p>
+          </div>
+          <h3>Level 2 — Question the Data</h3>
+          <ul>
+            <li>
+              📍 <strong>Source:</strong> Where did it come from? Who collected
+              it and why?
+            </li>
+            <li>
+              ✅ <strong>Trustworthy?</strong> Could there be bias, errors, or
+              conflicts of interest?
+            </li>
+            <li>
+              🎯 <strong>Relevant?</strong> Does it match the question AND the
+              future context where results will be applied?
+            </li>
+            <li>
+              📖 <strong>Values:</strong> What do specific values actually mean?
+              (e.g., "99" = "declined to answer")
+            </li>
+          </ul>
+          <h3>Level 3 — Question the Analysis &amp; Results</h3>
+          <ul>
+            <li>
+              🌍 Do results make sense in reality? Do they pass the common-sense
+              test?
+            </li>
+            <li>
+              ⚙️ What assumptions does the algorithm make? Are they valid for
+              this data?
+            </li>
+            <li>❓ Do the results actually answer the original question?</li>
+            <li>
+              📢 Are results being communicated accurately, without misleading
+              visualizations?
+            </li>
+          </ul>
+          <h3>Cognitive Biases — The Silent Killers</h3>
+          <div class="definition">
+            <div class="callout-label">Definition — Confirmation Bias</div>
+            Failing to critically scrutinize results
+            <em>because they match what you expected</em>. You stop questioning
+            because the output "feels right" — even if it's wrong. Leads to
+            trusting a bad model that simply confirms prior beliefs.
+          </div>
+          <div class="definition">
+            <div class="callout-label">Definition — Desirability Bias</div>
+            Steering analysis toward the results that
+            <em>other people (or popular opinion) want to see</em>. Often driven
+            by business or social pressure. The analyst produces "pleasing"
+            results rather than truthful ones.
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">
+              Common Mistake — p-Hacking / Data Snooping
+            </div>
+            Running many analyses until one gives a "significant" result, then
+            reporting only that one. This inflates false-positive rates. Results
+            produced this way will not replicate. Document <em>all</em> analyses
+            you ran, not just the best-looking one.
+          </div>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                Critical thinking operates at 3 levels: domain problem → data →
+                analysis
+              </li>
+              <li>
+                <strong>Confirmation bias:</strong> accepting results because
+                they match prior expectations
+              </li>
+              <li>
+                <strong>Desirability bias:</strong> producing results to please
+                stakeholders, not find truth
+              </li>
+              <li>
+                Always ask: Is this the right question? Is the data trustworthy
+                and relevant?
+              </li>
+              <li>
+                Case study: 2019 Australian bushfire "1 billion animals" = a
+                <em>modeled estimate</em> dependent on assumptions — not a
+                direct count
+              </li>
+            </ul>
+          </div>
+          <details>
+            <summary>
+              Practice Q: How do confirmation bias and desirability bias differ?
+            </summary>
+            <p>
+              <strong>Answer:</strong> <em>Confirmation bias</em> is internal —
+              you stop scrutinizing because results align with
+              <em>your own</em> prior beliefs. <em>Desirability bias</em> is
+              external — you steer the analysis to produce what
+              <em>others want</em> to see (bosses, clients, popular opinion).
+              Both lead to untrustworthy results. Key: confirmation bias = your
+              expectations; desirability bias = others' expectations.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard Q: A dataset has a value of "99" for patient age. What
+              critical thinking steps should you take?
+            </summary>
+            <p>
+              <strong>Answer:</strong> (1) Is 99 a plausible age? Could be real,
+              but unlikely in bulk. (2) Check the data documentation/codebook —
+              "99" often means "missing/declined." (3) Ask the data collector if
+              possible. (4) Check surrounding fields for consistency — if other
+              fields suggest the patient is ~30, "99" is clearly a code. (5)
+              Document your judgment call: decide whether to treat as missing
+              (NA), exclude the record, or impute, and record why. (6) Test
+              stability: does your conclusion change if you handle these
+              differently?
+            </p>
+          </details>
+        </div>
 
-<!-- TOPIC 5 -->
-<div class="topic-card" id="topic-5">
-  <h2><span class="topic-num">5</span>The PCS Framework</h2>
-  <p class="topic-subtitle">Predictability + Computability + Stability = the systematic path to trustworthy results</p>
-  <p>Critical thinking tells us <em>what to question</em>. The <strong>PCS Framework</strong> gives a systematic method to <em>demonstrate</em> trustworthiness computationally. It is the mathematical heart of veridical data science.</p>
-  <div class="pcs-grid">
-    <div class="pcs-card p"><div class="letter">P</div><h4>Predictability</h4><p>Results hold in relevant future/external data — the "reality check."</p></div>
-    <div class="pcs-card c"><div class="letter">C</div><h4>Computability</h4><p>Computations are clear, efficient, scalable, and reproducible.</p></div>
-    <div class="pcs-card s"><div class="letter">S</div><h4>Stability</h4><p>Conclusions stay consistent under reasonable perturbations to data or methods.</p></div>
-  </div>
-  <div class="definition">
-    <div class="callout-label">Predictability — Deep Dive</div>
-    Computationally demonstrating that results <em>reemerge in relevant future or external data</em> and align with domain knowledge.<br>
-    <strong>How:</strong> Train/validation/test split. Train set builds model; validation set tunes it; <strong>test set (held out until the very end)</strong> gives the final honest evaluation of generalization. Or: collect genuinely new data from the real-world domain.
-  </div>
-  <div class="definition">
-    <div class="callout-label">Computability — Deep Dive</div>
-    Code is written so others (or future you) can reproduce every result exactly. Implies: version control (Git), documented functions, no random seeds left unset, clear variable names. Computations must also be feasible given time/resource constraints.
-  </div>
-  <div class="definition">
-    <div class="callout-label">Stability — Deep Dive</div>
-    Conclusions remain <em>fairly consistent</em> when realistic changes are made to: (1) the data (different sample, different cleaning), (2) judgment calls (different missing-value strategy), and (3) algorithm choices (different model, different hyperparameters). Sensitive results are untrustworthy.
-  </div>
-  <div class="example">
-    <div class="callout-label">Train / Validation / Test Split</div>
-    <pre><code>All Data
+        <!-- TOPIC 5 -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>The PCS Framework</h2>
+          <p class="topic-subtitle">
+            Predictability + Computability + Stability = the systematic path to
+            trustworthy results
+          </p>
+          <p>
+            Critical thinking tells us <em>what to question</em>. The
+            <strong>PCS Framework</strong> gives a systematic method to
+            <em>demonstrate</em> trustworthiness computationally. It is the
+            mathematical heart of veridical data science.
+          </p>
+          <div class="pcs-grid">
+            <div class="pcs-card p">
+              <div class="letter">P</div>
+              <h4>Predictability</h4>
+              <p>
+                Results hold in relevant future/external data — the "reality
+                check."
+              </p>
+            </div>
+            <div class="pcs-card c">
+              <div class="letter">C</div>
+              <h4>Computability</h4>
+              <p>
+                Computations are clear, efficient, scalable, and reproducible.
+              </p>
+            </div>
+            <div class="pcs-card s">
+              <div class="letter">S</div>
+              <h4>Stability</h4>
+              <p>
+                Conclusions stay consistent under reasonable perturbations to
+                data or methods.
+              </p>
+            </div>
+          </div>
+          <div class="definition">
+            <div class="callout-label">Predictability — Deep Dive</div>
+            Computationally demonstrating that results
+            <em>reemerge in relevant future or external data</em> and align with
+            domain knowledge.<br />
+            <strong>How:</strong> Train/validation/test split. Train set builds
+            model; validation set tunes it;
+            <strong>test set (held out until the very end)</strong> gives the
+            final honest evaluation of generalization. Or: collect genuinely new
+            data from the real-world domain.
+          </div>
+          <div class="definition">
+            <div class="callout-label">Computability — Deep Dive</div>
+            Code is written so others (or future you) can reproduce every result
+            exactly. Implies: version control (Git), documented functions, no
+            random seeds left unset, clear variable names. Computations must
+            also be feasible given time/resource constraints.
+          </div>
+          <div class="definition">
+            <div class="callout-label">Stability — Deep Dive</div>
+            Conclusions remain <em>fairly consistent</em> when realistic changes
+            are made to: (1) the data (different sample, different cleaning),
+            (2) judgment calls (different missing-value strategy), and (3)
+            algorithm choices (different model, different hyperparameters).
+            Sensitive results are untrustworthy.
+          </div>
+          <div class="example">
+            <div class="callout-label">Train / Validation / Test Split</div>
+            <pre><code>All Data
 ├── Training Set (~65%)  → Fit the model
 ├── Validation Set (~20%) → Tune parameters, intermediate checks
 └── Test Set (~15%)       → FINAL honest evaluation of predictability
                             Never peek until development is complete!</code></pre>
-    <p><strong>Rule:</strong> Peeking at the test set during development = data leakage = dishonest predictability evaluation.</p>
-  </div>
-  <div class="note-box">
-    <div class="callout-label">Exam Hint</div>
-    PCS letters: <strong>P</strong> = future data check, <strong>C</strong> = reproducible code, <strong>S</strong> = robust to perturbations. PCS is applied throughout the entire DSLC, not just at the modeling stage.
-  </div>
-  <div class="summary-box">
-    <h4>Key Takeaways</h4>
-    <ul>
-      <li><strong>P</strong>redictability: Results generalize to future/external data (test set or new data)</li>
-      <li><strong>C</strong>omputability: Clear, reproducible, scalable code</li>
-      <li><strong>S</strong>tability: Robust to reasonable perturbations in data &amp; method choices</li>
-      <li>PCS = a framework for <em>demonstrating</em> trustworthiness, not assuming it</li>
-      <li>Test set must be held out and never used until final evaluation</li>
-    </ul>
-  </div>
-  <details><summary>Practice Q: Explain each letter of PCS with one sentence each.</summary>
-    <p><strong>P — Predictability:</strong> Results hold when evaluated on relevant future or external data (reality check). <strong>C — Computability:</strong> Computations are clear, efficient, scalable, and reproducible by others. <strong>S — Stability:</strong> Conclusions stay fairly consistent when realistic changes are made to data, judgment calls, or algorithm choices.</p>
-  </details>
-  <details><summary>Practice Q: Why must the test set be kept hidden until the very end?</summary>
-    <p><strong>Answer:</strong> The test set simulates truly unseen future data. If you use it to tune the model, you introduce data leakage — the model is indirectly fitted to it, and your final accuracy metric is no longer an honest measure of how the model will perform on genuine future data. Predictability evaluation becomes meaningless.</p>
-  </details>
-  <details><summary>Hard Q: Is cross-validating across 10 random splits sufficient to establish full stability? Explain.</summary>
-    <p><strong>Answer:</strong> No — it's only <em>partial</em> stability. Cross-validation tests stability to sampling variability within the current dataset. Full PCS stability also requires testing: (1) stability to data cleaning choices (e.g., different missing value strategies), (2) stability to preprocessing choices (normalization vs. standardization), and (3) stability to algorithm/model choices. A result should hold across <em>all three</em> perturbation types to be declared stable.</p>
-  </details>
-</div>
+            <p>
+              <strong>Rule:</strong> Peeking at the test set during development
+              = data leakage = dishonest predictability evaluation.
+            </p>
+          </div>
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            PCS letters: <strong>P</strong> = future data check,
+            <strong>C</strong> = reproducible code, <strong>S</strong> = robust
+            to perturbations. PCS is applied throughout the entire DSLC, not
+            just at the modeling stage.
+          </div>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                <strong>P</strong>redictability: Results generalize to
+                future/external data (test set or new data)
+              </li>
+              <li>
+                <strong>C</strong>omputability: Clear, reproducible, scalable
+                code
+              </li>
+              <li>
+                <strong>S</strong>tability: Robust to reasonable perturbations
+                in data &amp; method choices
+              </li>
+              <li>
+                PCS = a framework for <em>demonstrating</em> trustworthiness,
+                not assuming it
+              </li>
+              <li>
+                Test set must be held out and never used until final evaluation
+              </li>
+            </ul>
+          </div>
+          <details>
+            <summary>
+              Practice Q: Explain each letter of PCS with one sentence each.
+            </summary>
+            <p>
+              <strong>P — Predictability:</strong> Results hold when evaluated
+              on relevant future or external data (reality check).
+              <strong>C — Computability:</strong> Computations are clear,
+              efficient, scalable, and reproducible by others.
+              <strong>S — Stability:</strong> Conclusions stay fairly consistent
+              when realistic changes are made to data, judgment calls, or
+              algorithm choices.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Practice Q: Why must the test set be kept hidden until the very
+              end?
+            </summary>
+            <p>
+              <strong>Answer:</strong> The test set simulates truly unseen
+              future data. If you use it to tune the model, you introduce data
+              leakage — the model is indirectly fitted to it, and your final
+              accuracy metric is no longer an honest measure of how the model
+              will perform on genuine future data. Predictability evaluation
+              becomes meaningless.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Hard Q: Is cross-validating across 10 random splits sufficient to
+              establish full stability? Explain.
+            </summary>
+            <p>
+              <strong>Answer:</strong> No — it's only
+              <em>partial</em> stability. Cross-validation tests stability to
+              sampling variability within the current dataset. Full PCS
+              stability also requires testing: (1) stability to data cleaning
+              choices (e.g., different missing value strategies), (2) stability
+              to preprocessing choices (normalization vs. standardization), and
+              (3) stability to algorithm/model choices. A result should hold
+              across <em>all three</em> perturbation types to be declared
+              stable.
+            </p>
+          </details>
+        </div>
 
-<!-- TOPIC 6 -->
-<div class="topic-card" id="topic-6">
-  <h2><span class="topic-num">6</span>Anscombe's Quartet</h2>
-  <p class="topic-subtitle">Why four "identical" datasets are completely different — and why you MUST visualize your data</p>
-  <p>The opening slide of this course presents <strong>Anscombe's Quartet</strong> — the most famous demonstration in statistics that summary numbers lie.</p>
-  <h3>Four Datasets. Identical Statistics.</h3>
-  <table class="gt">
-    <thead><tr><th>Statistic</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
-    <tbody>
-      <tr><td>Mean of X</td><td>9</td><td>9</td><td>9</td><td>9</td></tr>
-      <tr><td>Variance of X</td><td>11</td><td>11</td><td>11</td><td>11</td></tr>
-      <tr><td>Mean of Y</td><td>7.50</td><td>7.50</td><td>7.50</td><td>7.50</td></tr>
-      <tr><td>Variance of Y</td><td>4.125</td><td>4.125</td><td>4.125</td><td>4.125</td></tr>
-      <tr><td>Correlation (X,Y)</td><td>0.816</td><td>0.816</td><td>0.816</td><td>0.816</td></tr>
-    </tbody>
-  </table>
-  <p>If you only read the numbers — you'd declare all four identical. <em>They're not.</em></p>
-  <h3>Four Completely Different Stories</h3>
-  <div class="anq">
-    <div class="anq-card">
-      <h4>Dataset A — Genuinely linear</h4>
-      <svg viewBox="0 0 180 140" style="background:#1a1a2e;border-radius:6px;width:100%;max-width:200px;">
-        <line x1="15" y1="125" x2="170" y2="125" stroke="#444" stroke-width="1"/>
-        <line x1="15" y1="10" x2="15" y2="125" stroke="#444" stroke-width="1"/>
-        <line x1="25" y1="108" x2="165" y2="22" stroke="#d97757" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <circle cx="35" cy="102" r="4" fill="#d97757" opacity=".85"/>
-        <circle cx="50" cy="92" r="4" fill="#d97757" opacity=".85"/>
-        <circle cx="65" cy="86" r="4" fill="#d97757" opacity=".85"/>
-        <circle cx="80" cy="72" r="4" fill="#d97757" opacity=".85"/>
-        <circle cx="95" cy="68" r="4" fill="#d97757" opacity=".85"/>
-        <circle cx="110" cy="52" r="4" fill="#d97757" opacity=".85"/>
-        <circle cx="125" cy="48" r="4" fill="#d97757" opacity=".85"/>
-        <circle cx="140" cy="38" r="4" fill="#d97757" opacity=".85"/>
-        <circle cx="155" cy="28" r="4" fill="#d97757" opacity=".85"/>
-        <text x="90" y="137" text-anchor="middle" fill="#888" font-size="9">✅ Linear — model fits well</text>
-      </svg>
-    </div>
-    <div class="anq-card">
-      <h4>Dataset B — Curved (non-linear)</h4>
-      <svg viewBox="0 0 180 140" style="background:#1a1a2e;border-radius:6px;width:100%;max-width:200px;">
-        <line x1="15" y1="125" x2="170" y2="125" stroke="#444" stroke-width="1"/>
-        <line x1="15" y1="10" x2="15" y2="125" stroke="#444" stroke-width="1"/>
-        <line x1="25" y1="108" x2="165" y2="22" stroke="#d97757" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <circle cx="30" cy="115" r="4" fill="#59b6f0" opacity=".85"/>
-        <circle cx="50" cy="80" r="4" fill="#59b6f0" opacity=".85"/>
-        <circle cx="70" cy="55" r="4" fill="#59b6f0" opacity=".85"/>
-        <circle cx="90" cy="42" r="4" fill="#59b6f0" opacity=".85"/>
-        <circle cx="110" cy="52" r="4" fill="#59b6f0" opacity=".85"/>
-        <circle cx="130" cy="74" r="4" fill="#59b6f0" opacity=".85"/>
-        <circle cx="150" cy="105" r="4" fill="#59b6f0" opacity=".85"/>
-        <text x="90" y="137" text-anchor="middle" fill="#888" font-size="9">❌ Curved — linear is wrong!</text>
-      </svg>
-    </div>
-    <div class="anq-card">
-      <h4>Dataset C — Outlier-driven</h4>
-      <svg viewBox="0 0 180 140" style="background:#1a1a2e;border-radius:6px;width:100%;max-width:200px;">
-        <line x1="15" y1="125" x2="170" y2="125" stroke="#444" stroke-width="1"/>
-        <line x1="15" y1="10" x2="15" y2="125" stroke="#444" stroke-width="1"/>
-        <line x1="25" y1="108" x2="165" y2="22" stroke="#d97757" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <circle cx="30" cy="118" r="4" fill="#22c55e" opacity=".85"/>
-        <circle cx="50" cy="110" r="4" fill="#22c55e" opacity=".85"/>
-        <circle cx="70" cy="103" r="4" fill="#22c55e" opacity=".85"/>
-        <circle cx="90" cy="96" r="4" fill="#22c55e" opacity=".85"/>
-        <circle cx="110" cy="89" r="4" fill="#22c55e" opacity=".85"/>
-        <circle cx="130" cy="82" r="4" fill="#22c55e" opacity=".85"/>
-        <circle cx="150" cy="18" r="5" fill="#f97316" opacity=".9"/>
-        <text x="158" y="16" fill="#f97316" font-size="8">!</text>
-        <text x="90" y="137" text-anchor="middle" fill="#888" font-size="9">⚠️ 1 outlier distorts everything</text>
-      </svg>
-    </div>
-    <div class="anq-card">
-      <h4>Dataset D — Leverage point</h4>
-      <svg viewBox="0 0 180 140" style="background:#1a1a2e;border-radius:6px;width:100%;max-width:200px;">
-        <line x1="15" y1="125" x2="170" y2="125" stroke="#444" stroke-width="1"/>
-        <line x1="15" y1="10" x2="15" y2="125" stroke="#444" stroke-width="1"/>
-        <line x1="25" y1="108" x2="165" y2="22" stroke="#d97757" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <circle cx="50" cy="110" r="4" fill="#a855f7" opacity=".85"/>
-        <circle cx="50" cy="95" r="4" fill="#a855f7" opacity=".85"/>
-        <circle cx="50" cy="80" r="4" fill="#a855f7" opacity=".85"/>
-        <circle cx="50" cy="66" r="4" fill="#a855f7" opacity=".85"/>
-        <circle cx="50" cy="53" r="4" fill="#a855f7" opacity=".85"/>
-        <circle cx="50" cy="40" r="4" fill="#a855f7" opacity=".85"/>
-        <circle cx="155" cy="48" r="5" fill="#f97316" opacity=".9"/>
-        <text x="90" y="137" text-anchor="middle" fill="#888" font-size="9">⚠️ 1 high-leverage point fakes correlation</text>
-      </svg>
-    </div>
-  </div>
-  <div class="definition">
-    <div class="callout-label">The Lesson</div>
-    <strong>Summary statistics are insufficient.</strong> Means, variances, and correlations can be identical for datasets with radically different shapes, requiring completely different models and interpretations. <em>Always plot your data first.</em> This is the foundational motivation for EDA.
-  </div>
-  <div class="warning-box">
-    <div class="callout-label">Common Mistake</div>
-    Reporting "there is a strong linear correlation (r = 0.816)" without ever visualizing the data. Dataset B has r = 0.816 but is clearly non-linear — a linear model would give wrong predictions. Dataset D has r = 0.816 but it's entirely driven by one artificial leverage point.
-  </div>
-  <div class="summary-box">
-    <h4>Key Takeaways</h4>
-    <ul>
-      <li>4 datasets → <strong>identical statistics</strong> → <strong>completely different structures</strong></li>
-      <li>A: genuine linear; B: curved (wrong model); C: one outlier skews regression; D: artificial leverage</li>
-      <li>Correlation ≠ shape; statistics ≠ understanding</li>
-      <li><strong>Always visualize data</strong> before interpreting any summary statistic</li>
-      <li>This is the #1 motivation for Exploratory Data Analysis (EDA)</li>
-    </ul>
-  </div>
-  <details><summary>Practice Q: What is the key lesson of Anscombe's Quartet?</summary>
-    <p><strong>Answer:</strong> That summary statistics alone (mean, variance, correlation) are insufficient to understand a dataset. Four datasets with identical summary statistics can have completely different underlying structures — a genuine linear relationship, a curved relationship, an outlier-driven spurious correlation, and a leverage-point artifact. This demonstrates why <strong>data visualization is mandatory</strong>, not optional, in any honest analysis.</p>
-  </details>
-  <details><summary>Practice Q: What makes Dataset D particularly deceptive?</summary>
-    <p><strong>Answer:</strong> Dataset D has all data points clustered at one x-value (creating no real x-variation), plus one outlier at a very high x-value. This single point has extreme "leverage" — it <em>creates</em> the apparent linear correlation almost entirely by itself. Remove that one point and the correlation vanishes. Without a plot, you'd think you have a strongly correlated linear relationship, when in fact the correlation is an artifact of one anomalous data point.</p>
-  </details>
-</div>
+        <!-- TOPIC 6 -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>Anscombe's Quartet</h2>
+          <p class="topic-subtitle">
+            Why four "identical" datasets are completely different — and why you
+            MUST visualize your data
+          </p>
+          <p>
+            The opening slide of this course presents
+            <strong>Anscombe's Quartet</strong> — the most famous demonstration
+            in statistics that summary numbers lie.
+          </p>
+          <h3>Four Datasets. Identical Statistics.</h3>
+          <table class="gt">
+            <thead>
+              <tr>
+                <th>Statistic</th>
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+                <th>D</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mean of X</td>
+                <td>9</td>
+                <td>9</td>
+                <td>9</td>
+                <td>9</td>
+              </tr>
+              <tr>
+                <td>Variance of X</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+                <td>11</td>
+              </tr>
+              <tr>
+                <td>Mean of Y</td>
+                <td>7.50</td>
+                <td>7.50</td>
+                <td>7.50</td>
+                <td>7.50</td>
+              </tr>
+              <tr>
+                <td>Variance of Y</td>
+                <td>4.125</td>
+                <td>4.125</td>
+                <td>4.125</td>
+                <td>4.125</td>
+              </tr>
+              <tr>
+                <td>Correlation (X,Y)</td>
+                <td>0.816</td>
+                <td>0.816</td>
+                <td>0.816</td>
+                <td>0.816</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            If you only read the numbers — you'd declare all four identical.
+            <em>They're not.</em>
+          </p>
+          <h3>Four Completely Different Stories</h3>
+          <div class="anq">
+            <div class="anq-card">
+              <h4>Dataset A — Genuinely linear</h4>
+              <svg
+                viewBox="0 0 180 140"
+                style="
+                  background: #1a1a2e;
+                  border-radius: 6px;
+                  width: 100%;
+                  max-width: 200px;
+                "
+              >
+                <line
+                  x1="15"
+                  y1="125"
+                  x2="170"
+                  y2="125"
+                  stroke="#444"
+                  stroke-width="1"
+                />
+                <line
+                  x1="15"
+                  y1="10"
+                  x2="15"
+                  y2="125"
+                  stroke="#444"
+                  stroke-width="1"
+                />
+                <line
+                  x1="25"
+                  y1="108"
+                  x2="165"
+                  y2="22"
+                  stroke="#d97757"
+                  stroke-width="1.5"
+                  stroke-dasharray="4,3"
+                />
+                <circle cx="35" cy="102" r="4" fill="#d97757" opacity=".85" />
+                <circle cx="50" cy="92" r="4" fill="#d97757" opacity=".85" />
+                <circle cx="65" cy="86" r="4" fill="#d97757" opacity=".85" />
+                <circle cx="80" cy="72" r="4" fill="#d97757" opacity=".85" />
+                <circle cx="95" cy="68" r="4" fill="#d97757" opacity=".85" />
+                <circle cx="110" cy="52" r="4" fill="#d97757" opacity=".85" />
+                <circle cx="125" cy="48" r="4" fill="#d97757" opacity=".85" />
+                <circle cx="140" cy="38" r="4" fill="#d97757" opacity=".85" />
+                <circle cx="155" cy="28" r="4" fill="#d97757" opacity=".85" />
+                <text
+                  x="90"
+                  y="137"
+                  text-anchor="middle"
+                  fill="#888"
+                  font-size="9"
+                >
+                  ✅ Linear — model fits well
+                </text>
+              </svg>
+            </div>
+            <div class="anq-card">
+              <h4>Dataset B — Curved (non-linear)</h4>
+              <svg
+                viewBox="0 0 180 140"
+                style="
+                  background: #1a1a2e;
+                  border-radius: 6px;
+                  width: 100%;
+                  max-width: 200px;
+                "
+              >
+                <line
+                  x1="15"
+                  y1="125"
+                  x2="170"
+                  y2="125"
+                  stroke="#444"
+                  stroke-width="1"
+                />
+                <line
+                  x1="15"
+                  y1="10"
+                  x2="15"
+                  y2="125"
+                  stroke="#444"
+                  stroke-width="1"
+                />
+                <line
+                  x1="25"
+                  y1="108"
+                  x2="165"
+                  y2="22"
+                  stroke="#d97757"
+                  stroke-width="1.5"
+                  stroke-dasharray="4,3"
+                />
+                <circle cx="30" cy="115" r="4" fill="#59b6f0" opacity=".85" />
+                <circle cx="50" cy="80" r="4" fill="#59b6f0" opacity=".85" />
+                <circle cx="70" cy="55" r="4" fill="#59b6f0" opacity=".85" />
+                <circle cx="90" cy="42" r="4" fill="#59b6f0" opacity=".85" />
+                <circle cx="110" cy="52" r="4" fill="#59b6f0" opacity=".85" />
+                <circle cx="130" cy="74" r="4" fill="#59b6f0" opacity=".85" />
+                <circle cx="150" cy="105" r="4" fill="#59b6f0" opacity=".85" />
+                <text
+                  x="90"
+                  y="137"
+                  text-anchor="middle"
+                  fill="#888"
+                  font-size="9"
+                >
+                  ❌ Curved — linear is wrong!
+                </text>
+              </svg>
+            </div>
+            <div class="anq-card">
+              <h4>Dataset C — Outlier-driven</h4>
+              <svg
+                viewBox="0 0 180 140"
+                style="
+                  background: #1a1a2e;
+                  border-radius: 6px;
+                  width: 100%;
+                  max-width: 200px;
+                "
+              >
+                <line
+                  x1="15"
+                  y1="125"
+                  x2="170"
+                  y2="125"
+                  stroke="#444"
+                  stroke-width="1"
+                />
+                <line
+                  x1="15"
+                  y1="10"
+                  x2="15"
+                  y2="125"
+                  stroke="#444"
+                  stroke-width="1"
+                />
+                <line
+                  x1="25"
+                  y1="108"
+                  x2="165"
+                  y2="22"
+                  stroke="#d97757"
+                  stroke-width="1.5"
+                  stroke-dasharray="4,3"
+                />
+                <circle cx="30" cy="118" r="4" fill="#22c55e" opacity=".85" />
+                <circle cx="50" cy="110" r="4" fill="#22c55e" opacity=".85" />
+                <circle cx="70" cy="103" r="4" fill="#22c55e" opacity=".85" />
+                <circle cx="90" cy="96" r="4" fill="#22c55e" opacity=".85" />
+                <circle cx="110" cy="89" r="4" fill="#22c55e" opacity=".85" />
+                <circle cx="130" cy="82" r="4" fill="#22c55e" opacity=".85" />
+                <circle cx="150" cy="18" r="5" fill="#f97316" opacity=".9" />
+                <text x="158" y="16" fill="#f97316" font-size="8">!</text>
+                <text
+                  x="90"
+                  y="137"
+                  text-anchor="middle"
+                  fill="#888"
+                  font-size="9"
+                >
+                  ⚠️ 1 outlier distorts everything
+                </text>
+              </svg>
+            </div>
+            <div class="anq-card">
+              <h4>Dataset D — Leverage point</h4>
+              <svg
+                viewBox="0 0 180 140"
+                style="
+                  background: #1a1a2e;
+                  border-radius: 6px;
+                  width: 100%;
+                  max-width: 200px;
+                "
+              >
+                <line
+                  x1="15"
+                  y1="125"
+                  x2="170"
+                  y2="125"
+                  stroke="#444"
+                  stroke-width="1"
+                />
+                <line
+                  x1="15"
+                  y1="10"
+                  x2="15"
+                  y2="125"
+                  stroke="#444"
+                  stroke-width="1"
+                />
+                <line
+                  x1="25"
+                  y1="108"
+                  x2="165"
+                  y2="22"
+                  stroke="#d97757"
+                  stroke-width="1.5"
+                  stroke-dasharray="4,3"
+                />
+                <circle cx="50" cy="110" r="4" fill="#a855f7" opacity=".85" />
+                <circle cx="50" cy="95" r="4" fill="#a855f7" opacity=".85" />
+                <circle cx="50" cy="80" r="4" fill="#a855f7" opacity=".85" />
+                <circle cx="50" cy="66" r="4" fill="#a855f7" opacity=".85" />
+                <circle cx="50" cy="53" r="4" fill="#a855f7" opacity=".85" />
+                <circle cx="50" cy="40" r="4" fill="#a855f7" opacity=".85" />
+                <circle cx="155" cy="48" r="5" fill="#f97316" opacity=".9" />
+                <text
+                  x="90"
+                  y="137"
+                  text-anchor="middle"
+                  fill="#888"
+                  font-size="9"
+                >
+                  ⚠️ 1 high-leverage point fakes correlation
+                </text>
+              </svg>
+            </div>
+          </div>
+          <div class="definition">
+            <div class="callout-label">The Lesson</div>
+            <strong>Summary statistics are insufficient.</strong> Means,
+            variances, and correlations can be identical for datasets with
+            radically different shapes, requiring completely different models
+            and interpretations. <em>Always plot your data first.</em> This is
+            the foundational motivation for EDA.
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            Reporting "there is a strong linear correlation (r = 0.816)" without
+            ever visualizing the data. Dataset B has r = 0.816 but is clearly
+            non-linear — a linear model would give wrong predictions. Dataset D
+            has r = 0.816 but it's entirely driven by one artificial leverage
+            point.
+          </div>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>
+                4 datasets → <strong>identical statistics</strong> →
+                <strong>completely different structures</strong>
+              </li>
+              <li>
+                A: genuine linear; B: curved (wrong model); C: one outlier skews
+                regression; D: artificial leverage
+              </li>
+              <li>Correlation ≠ shape; statistics ≠ understanding</li>
+              <li>
+                <strong>Always visualize data</strong> before interpreting any
+                summary statistic
+              </li>
+              <li>
+                This is the #1 motivation for Exploratory Data Analysis (EDA)
+              </li>
+            </ul>
+          </div>
+          <details>
+            <summary>
+              Practice Q: What is the key lesson of Anscombe's Quartet?
+            </summary>
+            <p>
+              <strong>Answer:</strong> That summary statistics alone (mean,
+              variance, correlation) are insufficient to understand a dataset.
+              Four datasets with identical summary statistics can have
+              completely different underlying structures — a genuine linear
+              relationship, a curved relationship, an outlier-driven spurious
+              correlation, and a leverage-point artifact. This demonstrates why
+              <strong>data visualization is mandatory</strong>, not optional, in
+              any honest analysis.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Practice Q: What makes Dataset D particularly deceptive?
+            </summary>
+            <p>
+              <strong>Answer:</strong> Dataset D has all data points clustered
+              at one x-value (creating no real x-variation), plus one outlier at
+              a very high x-value. This single point has extreme "leverage" — it
+              <em>creates</em> the apparent linear correlation almost entirely
+              by itself. Remove that one point and the correlation vanishes.
+              Without a plot, you'd think you have a strongly correlated linear
+              relationship, when in fact the correlation is an artifact of one
+              anomalous data point.
+            </p>
+          </details>
+        </div>
 
-<!-- TOPIC 7 — QUIZ PREP -->
-<div class="topic-card" id="topic-7">
-  <h2><span class="topic-num">7</span>🎯 Quiz Prep — Chapter 1</h2>
-  <p class="topic-subtitle">Flash definitions, exam traps, and worked practice questions for tomorrow</p>
-  <div class="note-box">
-    <div class="callout-label">Quiz Strategy</div>
-    Chapter 1 is <strong>concept-heavy, not math-heavy</strong>. Focus on: PCS definitions, three realms, Anscombe's lesson, current vs future data, and the two cognitive biases. Know the <em>WHY</em> behind each concept.
-  </div>
-  <h3>⚡ Flash Cards — Must Know</h3>
-  <table class="gt">
-    <thead><tr><th>Term</th><th>One-Line Definition</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Veridical DS</strong></td><td>Truthful DS — using human judgment &amp; domain knowledge to extract trustworthy insights</td></tr>
-      <tr><td><strong>Algorithm</strong></td><td>Any instruction set extracting patterns from data (mean, scatterplot, or neural network)</td></tr>
-      <tr><td><strong>Three Realms</strong></td><td>Reality → Data (approximation) → Algorithms (mental constructs)</td></tr>
-      <tr><td><strong>Current Data</strong></td><td>Data used to build/train — your existing dataset</td></tr>
-      <tr><td><strong>Future Data</strong></td><td>Real-world data where results will be applied — the real target</td></tr>
-      <tr><td><strong>Uncertainty</strong></td><td>Extent to which a result could plausibly have been different</td></tr>
-      <tr><td><strong>Predictability (P)</strong></td><td>Results hold in future/external data (train-validation-test)</td></tr>
-      <tr><td><strong>Computability (C)</strong></td><td>Computations are clear, reproducible, scalable</td></tr>
-      <tr><td><strong>Stability (S)</strong></td><td>Conclusions hold under reasonable perturbations to data/methods</td></tr>
-      <tr><td><strong>Confirmation Bias</strong></td><td>Not scrutinizing results because they match your prior expectations</td></tr>
-      <tr><td><strong>Desirability Bias</strong></td><td>Steering analysis toward results others <em>want</em> to see</td></tr>
-      <tr><td><strong>Anscombe's Quartet</strong></td><td>4 datasets, identical stats, radically different shapes — always visualize!</td></tr>
-    </tbody>
-  </table>
-  <h3>🚩 Exam Traps — Don't Fall For These</h3>
-  <div class="warning-box">
-    <div class="callout-label">Trap 1</div>
-    "Data science is a subfield of statistics." → <strong>FALSE.</strong> It is the <em>integration</em> of CS, statistics, and domain knowledge.
-  </div>
-  <div class="warning-box">
-    <div class="callout-label">Trap 2</div>
-    "A model with 98% training accuracy is trustworthy." → <strong>FALSE.</strong> Could be overfitting. Need to evaluate on held-out future data.
-  </div>
-  <div class="warning-box">
-    <div class="callout-label">Trap 3</div>
-    "All four Anscombe datasets have different correlations." → <strong>FALSE.</strong> All have r ≈ 0.816. That's the entire point.
-  </div>
-  <div class="warning-box">
-    <div class="callout-label">Trap 4</div>
-    "Confirmation bias = wanting positive results." → <strong>PARTIALLY FALSE.</strong> It's about results matching <em>your prior beliefs</em> (positive or negative). Desirability bias = wanting results that please <em>others</em>.
-  </div>
-  <h3>🎯 Likely Quiz Questions (with Answers)</h3>
-  <details><summary>Q: What does P stand for in PCS, and how do you evaluate it?</summary>
-    <p><strong>A:</strong> P = <strong>Predictability</strong>. Evaluated by demonstrating results hold on relevant future or external data. Mechanically: split data into training/validation/test sets; use the test set (held out, never peeked at) for final evaluation. Or: collect new data from the target real-world domain and test there.</p>
-  </details>
-  <details><summary>Q: An analyst's conclusion changes dramatically when they switch from removing missing values to imputing them. What does PCS say about this?</summary>
-    <p><strong>A:</strong> The conclusion lacks <strong>Stability</strong> (the S in PCS). It is highly sensitive to one data cleaning judgment call. Under VDS, this instability is itself an important finding — it means neither conclusion should be reported as trustworthy without further investigation. Both cleaning strategies should be documented, and domain knowledge should guide the choice. The sensitivity should be reported to stakeholders.</p>
-  </details>
-  <details><summary>Q: True or False — VDS focuses only on the modeling/ML stage of a project.</summary>
-    <p><strong>A: FALSE.</strong> VDS spans the <em>entire</em> data science life cycle: from problem formulation, data collection, cleaning, EDA, and modeling, through evaluation and communication of results. The PCS framework is applied at every stage, not just modeling.</p>
-  </details>
-  <details><summary>Q: A researcher reports a correlation of 0.81 between X and Y and concludes "there is a strong linear relationship." What is missing?</summary>
-    <p><strong>A:</strong> A visualization. As Anscombe's Quartet demonstrates, a correlation of ~0.816 can arise from: a genuine linear relationship (A), a curved non-linear relationship where linear is wrong (B), a nearly perfect linear dataset with one outlier distorting the regression (C), or an artificial correlation created by a single high-leverage point (D). Without a scatter plot, the analyst cannot distinguish between these four fundamentally different scenarios.</p>
-  </details>
-  <div class="summary-box">
-    <h4>Chapter 1 — The Big Picture in 5 Points</h4>
-    <ul>
-      <li>VDS = Truthful DS operating across 3 realms: Reality → Data → Algorithms</li>
-      <li>The core challenge: imperfect data + imperfect algorithms → results that may not reflect reality</li>
-      <li>Critical thinking (at domain, data, and analysis levels) is the human defense layer</li>
-      <li><strong>PCS</strong> = systematic framework: Predictability + Computability + Stability</li>
-      <li>Anscombe's Quartet: <em>always plot your data</em> — summary statistics cannot be trusted alone</li>
-    </ul>
-  </div>
-</div>
-
-</div><!-- /module-container -->
-<div class="bottom-nav">
-  <button id="prev-btn" onclick="goPrev()"><div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div></button>
-  <button id="next-btn" onclick="goNext()"><div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div></button>
-</div>
-</div><!-- /main-content -->
-<button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script>
-const topics=["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6","topic-7"];
-let currentTopicIndex=0;
-function getTopicTitle(id){const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l){const n=l.querySelector('.nav-num');return n?l.textContent.replace(n.textContent,'').trim():l.textContent.trim();}const c=document.getElementById(id);if(c){const h=c.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return n?h.textContent.replace(n.textContent,'').trim():h.textContent.trim();}}return'Topic';}
-function showTopic(id){document.querySelectorAll('.topic-card').forEach(c=>c.style.display='none');const t=document.getElementById(id);if(t)t.style.display='block';currentTopicIndex=topics.indexOf(id);document.querySelectorAll('.nav-sublist a').forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l)l.classList.add('active');const pb=document.getElementById('prev-btn'),nb=document.getElementById('next-btn'),pt=document.getElementById('prev-title'),nt=document.getElementById('next-title');pb.style.display=currentTopicIndex>0?'flex':'none';nb.style.display=currentTopicIndex<topics.length-1?'flex':'none';if(pt&&currentTopicIndex>0)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);if(nt&&currentTopicIndex<topics.length-1)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');}
-function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
-function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
-function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector('.chevron');if(s.style.display==='none'){s.style.display='block';c.style.transform='rotate(0deg)';}else{s.style.display='none';c.style.transform='rotate(-90deg)';}}
-function filterContent(){const q=document.getElementById('search-input').value.toLowerCase();document.querySelectorAll('.nav-sublist li,.nav-list>li').forEach(i=>{i.style.display=i.textContent.toLowerCase().includes(q)?'':'none';});}
-showTopic(topics[0]);
-const mc=document.getElementById('main-content'),bb=document.getElementById('back-to-top');
-mc.addEventListener('scroll',()=>bb.style.display=mc.scrollTop>300?'flex':'none');
-</script>
-</body></html>
+        <!-- TOPIC 7 — QUIZ PREP -->
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">7</span>🎯 Quiz Prep — Chapter 1</h2>
+          <p class="topic-subtitle">
+            Flash definitions, exam traps, and worked practice questions for
+            tomorrow
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Quiz Strategy</div>
+            Chapter 1 is <strong>concept-heavy, not math-heavy</strong>. Focus
+            on: PCS definitions, three realms, Anscombe's lesson, current vs
+            future data, and the two cognitive biases. Know the
+            <em>WHY</em> behind each concept.
+          </div>
+          <h3>⚡ Flash Cards — Must Know</h3>
+          <table class="gt">
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>One-Line Definition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Veridical DS</strong></td>
+                <td>
+                  Truthful DS — using human judgment &amp; domain knowledge to
+                  extract trustworthy insights
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Algorithm</strong></td>
+                <td>
+                  Any instruction set extracting patterns from data (mean,
+                  scatterplot, or neural network)
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Three Realms</strong></td>
+                <td>
+                  Reality → Data (approximation) → Algorithms (mental
+                  constructs)
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Current Data</strong></td>
+                <td>Data used to build/train — your existing dataset</td>
+              </tr>
+              <tr>
+                <td><strong>Future Data</strong></td>
+                <td>
+                  Real-world data where results will be applied — the real
+                  target
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Uncertainty</strong></td>
+                <td>
+                  Extent to which a result could plausibly have been different
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Predictability (P)</strong></td>
+                <td>
+                  Results hold in future/external data (train-validation-test)
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Computability (C)</strong></td>
+                <td>Computations are clear, reproducible, scalable</td>
+              </tr>
+              <tr>
+                <td><strong>Stability (S)</strong></td>
+                <td>
+                  Conclusions hold under reasonable perturbations to
+                  data/methods
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Confirmation Bias</strong></td>
+                <td>
+                  Not scrutinizing results because they match your prior
+                  expectations
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Desirability Bias</strong></td>
+                <td>
+                  Steering analysis toward results others <em>want</em> to see
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Anscombe's Quartet</strong></td>
+                <td>
+                  4 datasets, identical stats, radically different shapes —
+                  always visualize!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>🚩 Exam Traps — Don't Fall For These</h3>
+          <div class="warning-box">
+            <div class="callout-label">Trap 1</div>
+            "Data science is a subfield of statistics." →
+            <strong>FALSE.</strong> It is the <em>integration</em> of CS,
+            statistics, and domain knowledge.
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Trap 2</div>
+            "A model with 98% training accuracy is trustworthy." →
+            <strong>FALSE.</strong> Could be overfitting. Need to evaluate on
+            held-out future data.
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Trap 3</div>
+            "All four Anscombe datasets have different correlations." →
+            <strong>FALSE.</strong> All have r ≈ 0.816. That's the entire point.
+          </div>
+          <div class="warning-box">
+            <div class="callout-label">Trap 4</div>
+            "Confirmation bias = wanting positive results." →
+            <strong>PARTIALLY FALSE.</strong> It's about results matching
+            <em>your prior beliefs</em> (positive or negative). Desirability
+            bias = wanting results that please <em>others</em>.
+          </div>
+          <h3>🎯 Likely Quiz Questions (with Answers)</h3>
+          <details>
+            <summary>
+              Q: What does P stand for in PCS, and how do you evaluate it?
+            </summary>
+            <p>
+              <strong>A:</strong> P = <strong>Predictability</strong>. Evaluated
+              by demonstrating results hold on relevant future or external data.
+              Mechanically: split data into training/validation/test sets; use
+              the test set (held out, never peeked at) for final evaluation. Or:
+              collect new data from the target real-world domain and test there.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Q: An analyst's conclusion changes dramatically when they switch
+              from removing missing values to imputing them. What does PCS say
+              about this?
+            </summary>
+            <p>
+              <strong>A:</strong> The conclusion lacks
+              <strong>Stability</strong> (the S in PCS). It is highly sensitive
+              to one data cleaning judgment call. Under VDS, this instability is
+              itself an important finding — it means neither conclusion should
+              be reported as trustworthy without further investigation. Both
+              cleaning strategies should be documented, and domain knowledge
+              should guide the choice. The sensitivity should be reported to
+              stakeholders.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Q: True or False — VDS focuses only on the modeling/ML stage of a
+              project.
+            </summary>
+            <p>
+              <strong>A: FALSE.</strong> VDS spans the <em>entire</em> data
+              science life cycle: from problem formulation, data collection,
+              cleaning, EDA, and modeling, through evaluation and communication
+              of results. The PCS framework is applied at every stage, not just
+              modeling.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Q: A researcher reports a correlation of 0.81 between X and Y and
+              concludes "there is a strong linear relationship." What is
+              missing?
+            </summary>
+            <p>
+              <strong>A:</strong> A visualization. As Anscombe's Quartet
+              demonstrates, a correlation of ~0.816 can arise from: a genuine
+              linear relationship (A), a curved non-linear relationship where
+              linear is wrong (B), a nearly perfect linear dataset with one
+              outlier distorting the regression (C), or an artificial
+              correlation created by a single high-leverage point (D). Without a
+              scatter plot, the analyst cannot distinguish between these four
+              fundamentally different scenarios.
+            </p>
+          </details>
+          <div class="summary-box">
+            <h4>Chapter 1 — The Big Picture in 5 Points</h4>
+            <ul>
+              <li>
+                VDS = Truthful DS operating across 3 realms: Reality → Data →
+                Algorithms
+              </li>
+              <li>
+                The core challenge: imperfect data + imperfect algorithms →
+                results that may not reflect reality
+              </li>
+              <li>
+                Critical thinking (at domain, data, and analysis levels) is the
+                human defense layer
+              </li>
+              <li>
+                <strong>PCS</strong> = systematic framework: Predictability +
+                Computability + Stability
+              </li>
+              <li>
+                Anscombe's Quartet: <em>always plot your data</em> — summary
+                statistics cannot be trusted alone
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- /module-container -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span
+            ><span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span
+            ><span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- /main-content -->
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+    <script>
+      const topics = [
+        "topic-1",
+        "topic-2",
+        "topic-3",
+        "topic-4",
+        "topic-5",
+        "topic-6",
+        "topic-7",
+      ];
+      let currentTopicIndex = 0;
+      function getTopicTitle(id) {
+        const l = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);
+        if (l) {
+          const n = l.querySelector(".nav-num");
+          return n
+            ? l.textContent.replace(n.textContent, "").trim()
+            : l.textContent.trim();
+        }
+        const c = document.getElementById(id);
+        if (c) {
+          const h = c.querySelector("h2");
+          if (h) {
+            const n = h.querySelector(".topic-num");
+            return n
+              ? h.textContent.replace(n.textContent, "").trim()
+              : h.textContent.trim();
+          }
+        }
+        return "Topic";
+      }
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const l = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);
+        if (l) l.classList.add("active");
+        const pb = document.getElementById("prev-btn"),
+          nb = document.getElementById("next-btn"),
+          pt = document.getElementById("prev-title"),
+          nt = document.getElementById("next-title");
+        pb.style.display = currentTopicIndex > 0 ? "flex" : "none";
+        nb.style.display =
+          currentTopicIndex < topics.length - 1 ? "flex" : "none";
+        if (pt && currentTopicIndex > 0)
+          pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        if (nt && currentTopicIndex < topics.length - 1)
+          nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        document
+          .getElementById("main-content")
+          .scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768)
+          document.getElementById("sidebar").classList.remove("open");
+      }
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li,.nav-list>li")
+          .forEach((i) => {
+            i.style.display = i.textContent.toLowerCase().includes(q)
+              ? ""
+              : "none";
+          });
+      }
+      showTopic(topics[0]);
+      const mc = document.getElementById("main-content"),
+        bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>
