@@ -251,65 +251,54 @@ body {
   background: rgba(217, 119, 87, 0.2);
 }
 
-/* Sidebar Collapsed State */
+/* ── Sidebar Collapse ────────────────────────────────────── */
 #sidebar {
-  transition: width 0.3s ease, min-width 0.3s ease;
+  transition: width 0.25s ease, min-width 0.25s ease;
 }
 #sidebar.collapsed {
-  width: 72px;
-  min-width: 72px;
+  width: 60px;
+  min-width: 60px;
 }
+/* hide all text labels when collapsed */
 #sidebar.collapsed .sidebar-course-label,
 #sidebar.collapsed .sidebar-title,
-#sidebar.collapsed .nav-section-title span:first-child,
-#sidebar.collapsed .chevron {
+#sidebar.collapsed .sidebar-search-wrap,
+#sidebar.collapsed .nav-section-title > span:first-child,
+#sidebar.collapsed .nav-section-title > .chevron,
+#sidebar.collapsed .nav-sublist a > :not(.nav-num),
+#sidebar.collapsed .nav-module-link > :not(.nav-num) {
   display: none;
 }
+/* center the header when collapsed */
 #sidebar.collapsed .sidebar-header {
-  padding: 24px 12px 16px;
-  display: flex;
   justify-content: center;
+  padding: 20px 0;
 }
-#sidebar.collapsed .sidebar-search-wrap {
-  padding: 14px 12px;
+#sidebar.collapsed .sidebar-header-text {
+  display: none;
 }
-#sidebar.collapsed #search-input {
-  padding: 9px;
-  background-position: center;
-  color: transparent;
-  cursor: pointer;
-}
-#sidebar.collapsed #search-input::placeholder {
-  color: transparent;
-}
+/* section title becomes just a small divider dot */
 #sidebar.collapsed .nav-section-title {
-  padding: 10px 0;
   justify-content: center;
+  padding: 8px 0;
 }
 #sidebar.collapsed .nav-section-title::after {
-  content: "•••";
-  font-size: 1rem;
-  letter-spacing: 2px;
-  color: var(--mt);
+  content: "·";
+  color: var(--bd);
+  font-size: 1.2rem;
 }
+/* nav items center their number badge */
 #sidebar.collapsed .nav-sublist {
-  padding: 2px 8px 6px;
+  padding: 2px 0;
 }
 #sidebar.collapsed .nav-sublist a {
-  padding: 8px 0;
   justify-content: center;
-}
-#sidebar.collapsed .nav-sublist a span:last-child,
-#sidebar.collapsed .nav-sublist a text {
-  display: none;
+  padding: 8px 0;
 }
 #sidebar.collapsed .nav-module-link {
-  padding: 9px 0;
   justify-content: center;
-  margin: 2px 8px;
-}
-#sidebar.collapsed .nav-module-link span:last-child {
-  display: none;
+  padding: 8px 0;
+  margin: 2px 0;
 }
 .sidebar-toggle-btn {
   background: transparent;
