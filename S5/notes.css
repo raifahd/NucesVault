@@ -60,9 +60,17 @@ body {
   overflow: hidden;
 }
 .sidebar-header {
-  padding: 28px 20px 16px;
+  padding: 24px 20px 16px;
   border-bottom: 1px solid var(--bd);
   flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.sidebar-header-text {
+  flex: 1;
+  min-width: 0; /* allows text truncation if needed */
 }
 .sidebar-course-label {
   font-size: 0.65rem;
@@ -308,23 +316,19 @@ body {
   border: none;
   color: var(--mt);
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
+  padding: 6px;
+  border-radius: 6px;
   transition: color 0.2s, background 0.2s;
-  position: absolute;
-  top: 16px;
-  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .sidebar-toggle-btn:hover {
   color: var(--tx);
   background: rgba(255, 255, 255, 0.05);
 }
 #sidebar.collapsed .sidebar-toggle-btn {
-  position: static;
   margin: 0 auto;
-}
-.sidebar-header {
-  position: relative;
 }
 
 #menu-toggle {

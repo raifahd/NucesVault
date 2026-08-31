@@ -34,21 +34,30 @@
 <button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
 <div id="sidebar">
   <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">DS-3001</div>
+          <div class="sidebar-title">Data Analysis &amp; Visualization</div>
+        </div>
         <button class="sidebar-toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('collapsed')" title="Toggle Sidebar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
-    <div class="sidebar-course-label">DS-3001</div>
-    <div class="sidebar-title">Data Analysis &amp; Visualization</div>
-  </div>
+      </div>
+        
+      </div>
   <div class="sidebar-search-wrap">
     <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()"/>
   </div>
   <ul class="nav-list" id="nav-list">
-    <li class="nav-section">
-      <div class="nav-section-title" onclick="toggleSection(this)">
-        <span>Module 2 — Data Analysis Lifecycle</span><span class="chevron">▼</span>
-      </div>
-      <ul class="nav-sublist">
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
+            <span class="nav-num">01</span>Introduction to Data Analysis & Visualization
+          </a>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Data Analysis Lifecycle</span><span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
         <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>DSLC — The 6 Stages</a></li>
         <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Data Terminology</a></li>
         <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Stage 1 — Problem Formulation</a></li>
@@ -58,12 +67,23 @@
         <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>ROCCC Framework</a></li>
         <li><a href="javascript:void(0)" onclick="showTopic('topic-8')"><span class="nav-num">08</span>ML Alignment to Three Realms</a></li>
         <li><a href="javascript:void(0)" onclick="showTopic('topic-9')"><span class="nav-num">09</span>🎯 Quiz Prep</a></li></ul>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Data Preparation.html">
+            <span class="nav-num">03</span>Data Preparation
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
+            <span class="nav-num">04</span>Exploratory Data Analysis
+          </a>
+        </li>
+      </ul>
     </li>
-    
-    <li><a class="nav-module-link" href="./1- Introduction to Data Analysis &amp; Visualization.html"><span class="nav-num">01</span>Introduction to VDS</a></li>
-    <li><a class="nav-module-link" href="./3- Data Preparation.html"><span class="nav-num">03</span>Data Preparation</a></li>
-    <li><a class="nav-module-link" href="./4- Exploratory Data Analysis.html"><span class="nav-num">04</span>Exploratory Data Analysis</a></li>
-  </ul>
+<li><a class="nav-module-link" href="./1- Introduction to Data Analysis &amp; Visualization.html"><span class="nav-num">01</span>Introduction to VDS</a></li>
+<li><a class="nav-module-link" href="./3- Data Preparation.html"><span class="nav-num">03</span>Data Preparation</a></li>
+<li><a class="nav-module-link" href="./4- Exploratory Data Analysis.html"><span class="nav-num">04</span>Exploratory Data Analysis</a></li>
+</ul>
 </div>
 <div id="main-content">
 <div class="module-container" id="module-2">
