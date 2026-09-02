@@ -11,21 +11,14 @@
     <link rel="stylesheet" href="../notes.css" />
   </head>
   <body>
-    <button
-      id="menu-toggle"
-      onclick="document.getElementById('sidebar').classList.toggle('open')"
-    >
-      ☰
-    </button>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
     <div id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-header-text">
           <div class="sidebar-course-label">Course Notes</div>
           <div class="sidebar-title">Artificial Intelligence</div>
         </div>
-        <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('collapsed')" title="Toggle Sidebar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
       </div><div class="sidebar-search-wrap">
         <input
           type="text"
@@ -44,13 +37,7 @@
             <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>The PEAS Framework</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Agent Architecture & Types</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Approaches to AI</a></li>
-          </ul>
-        </li>
       </ul>
-        </li>
-      </ul>
-        </li>
-</ul>
     </div>
     <div id="main-content">
       <div class="module-container" id="module-intro">
@@ -740,16 +727,15 @@
       }
 
       
-      function checkSidebarSize() {
-        if (window.innerWidth <= 1024) {
-          document.getElementById('sidebar').classList.add('collapsed');
-        } else {
-          document.getElementById('sidebar').classList.remove('collapsed');
-        }
-      }
-      window.addEventListener('resize', checkSidebarSize);
-      checkSidebarSize();
+      
         
+      
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
       function showTopic(id) {
         document.querySelectorAll('.topic-card').forEach(c => c.style.display = 'none');
         const target = document.getElementById(id);
@@ -792,7 +778,9 @@
         document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
         if (window.innerWidth <= 768) {
           const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
           if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
         }
       }
 

@@ -21,16 +21,14 @@
 .viz-card p{margin:0;font-size:.78rem;color:var(--muted);}
 </style>
 </head><body>
-<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 <div id="sidebar">
   <div class="sidebar-header">
         <div class="sidebar-header-text">
           <div class="sidebar-course-label">DS-3001</div>
           <div class="sidebar-title">Data Analysis &amp; Visualization</div>
         </div>
-        <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('collapsed')" title="Toggle Sidebar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
       </div><div class="sidebar-search-wrap">
     <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()"/>
   </div>
@@ -197,7 +195,14 @@
 <script>
 const topics=["topic-1", "topic-2", "topic-3", "topic-4"];let currentTopicIndex=0;
 function getTopicTitle(id){const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l){const n=l.querySelector('.nav-num');return n?l.textContent.replace(n.textContent,'').trim():l.textContent.trim();}const c=document.getElementById(id);if(c){const h=c.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return n?h.textContent.replace(n.textContent,'').trim():h.textContent.trim();}}return'Topic';}
-function showTopic(id){document.querySelectorAll('.topic-card').forEach(c=>c.style.display='none');const t=document.getElementById(id);if(t)t.style.display='block';currentTopicIndex=topics.indexOf(id);document.querySelectorAll('.nav-sublist a').forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l)l.classList.add('active');const pb=document.getElementById('prev-btn'),nb=document.getElementById('next-btn'),pt=document.getElementById('prev-title'),nt=document.getElementById('next-title');pb.style.display=currentTopicIndex>0?'flex':'none';nb.style.display=currentTopicIndex<topics.length-1?'flex':'none';if(pt&&currentTopicIndex>0)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);if(nt&&currentTopicIndex<topics.length-1)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');}
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+      function showTopic(id){document.querySelectorAll('.topic-card').forEach(c=>c.style.display='none');const t=document.getElementById(id);if(t)t.style.display='block';currentTopicIndex=topics.indexOf(id);document.querySelectorAll('.nav-sublist a').forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(l)l.classList.add('active');const pb=document.getElementById('prev-btn'),nb=document.getElementById('next-btn'),pt=document.getElementById('prev-title'),nt=document.getElementById('next-title');pb.style.display=currentTopicIndex>0?'flex':'none';nb.style.display=currentTopicIndex<topics.length-1?'flex':'none';if(pt&&currentTopicIndex>0)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);if(nt&&currentTopicIndex<topics.length-1)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');}
 function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
 function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
 function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector('.chevron');if(s.style.display==='none'){s.style.display='block';c.style.transform='rotate(0deg)';}else{s.style.display='none';c.style.transform='rotate(-90deg)';}}

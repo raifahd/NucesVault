@@ -251,88 +251,51 @@ body {
   background: rgba(217, 119, 87, 0.2);
 }
 
-/* ── Sidebar Collapse ────────────────────────────────────── */
-#sidebar {
-  transition: width 0.25s ease, min-width 0.25s ease;
-}
-#sidebar.collapsed {
-  width: 60px;
-  min-width: 60px;
-}
-/* hide all text labels when collapsed */
-#sidebar.collapsed .sidebar-course-label,
-#sidebar.collapsed .sidebar-title,
-#sidebar.collapsed .sidebar-search-wrap,
-#sidebar.collapsed .nav-section-title > span:first-child,
-#sidebar.collapsed .nav-section-title > .chevron,
-#sidebar.collapsed .nav-sublist a > :not(.nav-num),
-#sidebar.collapsed .nav-module-link > :not(.nav-num) {
+/* ── Backdrop for Mobile Sidebar ────────────────────────── */
+#sidebar-backdrop {
   display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
-/* center the header when collapsed */
-#sidebar.collapsed .sidebar-header {
-  justify-content: center;
-  padding: 20px 0;
-}
-#sidebar.collapsed .sidebar-header-text {
-  display: none;
-}
-/* section title becomes just a small divider dot */
-#sidebar.collapsed .nav-section-title {
-  justify-content: center;
-  padding: 8px 0;
-}
-#sidebar.collapsed .nav-section-title::after {
-  content: "·";
-  color: var(--bd);
-  font-size: 1.2rem;
-}
-/* nav items center their number badge */
-#sidebar.collapsed .nav-sublist {
-  padding: 2px 0;
-}
-#sidebar.collapsed .nav-sublist a {
-  justify-content: center;
-  padding: 8px 0;
-}
-#sidebar.collapsed .nav-module-link {
-  justify-content: center;
-  padding: 8px 0;
-  margin: 2px 0;
-}
-.sidebar-toggle-btn {
-  background: transparent;
-  border: none;
-  color: var(--mt);
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  transition: color 0.2s, background 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.sidebar-toggle-btn:hover {
-  color: var(--tx);
-  background: rgba(255, 255, 255, 0.05);
-}
-#sidebar.collapsed .sidebar-toggle-btn {
-  margin: 0 auto;
+#sidebar-backdrop.active {
+  display: block;
+  opacity: 1;
 }
 
 #menu-toggle {
   display: none;
   position: fixed;
-  top: 16px;
-  left: 16px;
+  top: 14px;
+  left: 14px;
   z-index: 1000;
-  background: var(--sb);
+  background: rgba(24, 24, 27, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--bd);
   color: var(--tx);
-  font-size: 1.2rem;
-  padding: 8px 12px;
+  font-size: 1.15rem;
+  padding: 8px 13px;
   border-radius: 8px;
   cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transition: all 0.2s ease;
+}
+#menu-toggle:hover,
+#menu-toggle:active {
+  background: var(--hv);
+  border-color: var(--ac);
+  color: var(--ac);
 }
 
 /* ── Main Content ───────────────────────────────────────── */
@@ -881,24 +844,38 @@ details strong {
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
   #sidebar {
     position: fixed;
-    left: -300px;
-    z-index: 900;
-    transition: left 0.3s;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 285px;
+    max-width: 85vw;
+    min-width: unset;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: none;
   }
   #sidebar.open {
-    left: 0;
+    transform: translateX(0);
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.85);
   }
   #menu-toggle {
-    display: block;
+    display: inline-flex;
   }
   #main-content {
-    padding: 24px 16px 96px;
-    padding-top: 70px;
+    padding: 68px 16px 96px;
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .topic-card {
-    padding: 24px 20px;
+    padding: 24px 18px;
     border-radius: 12px;
   }
   .module-title {
@@ -912,6 +889,12 @@ details strong {
     margin-left: 0;
     padding-bottom: 16px;
     margin-bottom: 24px;
+  }
+  .topic-card table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
   }
   .definition, .note-box, .warning-box, .example {
     padding: 16px;

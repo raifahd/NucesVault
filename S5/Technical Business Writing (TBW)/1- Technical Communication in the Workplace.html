@@ -15,12 +15,8 @@
     <link rel="stylesheet" href="../notes.css" />
   </head>
   <body>
-    <button
-      id="menu-toggle"
-      onclick="document.getElementById('sidebar').classList.toggle('open')"
-    >
-      &#9776;
-    </button>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
     <!-- ═══════════════════════════════════════════════════════
          SIDEBAR
@@ -31,28 +27,6 @@
           <div class="sidebar-course-label">Course Notes</div>
           <div class="sidebar-title">Technical Business Writing</div>
         </div>
-        <button
-          class="sidebar-toggle-btn"
-          id="sidebar-toggle-btn"
-          onclick="document.getElementById('sidebar').classList.toggle('collapsed')"
-          title="Toggle Sidebar"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
-        </button>
       </div>
 
       <div class="sidebar-search-wrap">
@@ -1190,16 +1164,15 @@
         return "Topic";
       }
 
-      function checkSidebarSize() {
-        if (window.innerWidth <= 1024) {
-          document.getElementById("sidebar").classList.add("collapsed");
-        } else {
-          document.getElementById("sidebar").classList.remove("collapsed");
-        }
-      }
-      window.addEventListener("resize", checkSidebarSize);
-      checkSidebarSize();
+      
 
+      
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
       function showTopic(id) {
         document
           .querySelectorAll(".topic-card")
@@ -1247,8 +1220,10 @@
 
         if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
         if (window.innerWidth <= 768) {
-          const sb = document.getElementById("sidebar");
-          if (sb) sb.classList.remove("open");
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
         }
       }
 
