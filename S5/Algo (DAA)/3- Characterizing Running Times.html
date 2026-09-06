@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DAA — Characterizing Running Times</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">DAA</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- The Role of Algorithms in Computing.html"><span class="nav-num">01</span>The Role of Algorithms in Computing</a></li>
+        <li><a class="nav-module-link" href="./2- Getting Started.html"><span class="nav-num">02</span>Getting Started</a></li>
+        
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 3 — Characterizing Running Times</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Growth Rates</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Asymptotic Functions</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Standard Notations</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Exercises</a></li>
+          </ul>
+        </li>
+
+        <li><a class="nav-module-link" href="./4- Divide-and-Conquer.html"><span class="nav-num">04</span>Divide-and-Conquer</a></li>
+        <li><a class="nav-module-link" href="./5- Probabilistic Analysis and Randomized Algorithms.html"><span class="nav-num">05</span>Probabilistic Analysis</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-3">
+        <div class="module-header">
+          <div class="module-eyebrow">DAA</div>
+          <h1 class="module-title">Module 3 — Characterizing Running Times</h1>
+        </div>
+        
+        <!-- Topic 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Growth Rates</h2>
+          <p class="topic-subtitle">Understanding algorithm scalability</p>
+          
+          <p>Imagine <strong>Algorithm A</strong> takes <code>100n</code> steps and <strong>Algorithm B</strong> takes <code>n²</code> steps. Which one is faster?</p>
+          <p>The answer is: <em>"it depends on n"</em>.</p>
+          
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>n</th><th>A: 100n</th><th>B: n²</th><th>Faster Algorithm</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>10</td><td>1,000</td><td>100</td><td>B</td></tr>
+                <tr><td>50</td><td>5,000</td><td>2,500</td><td>B</td></tr>
+                <tr><td>100</td><td>10,000</td><td>10,000</td><td>tie</td></tr>
+                <tr><td>200</td><td>20,000</td><td>40,000</td><td>A</td></tr>
+                <tr><td>1,000</td><td>100,000</td><td>1,000,000</td><td>A</td></tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <p>The crossover happens exactly at <code>n = 100</code>. But which side matters more? We care about the large-n side because small inputs run fast on any algorithm! We study behaviour as <code>n → ∞</code>.</p>
+          
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Growth rate (order of growth)</strong>: The way an algorithm's running time increases as a function of the input size <code>n</code>, considering only the dominant term and disregarding constant factors.
+          </div>
+          
+          <div class="note-box">
+            <div class="callout-label">What we discard</div>
+            <ul>
+              <li><strong>Constant factors</strong> (e.g., the 100 in 100n) - Because they are hardware/compiler dependent.</li>
+              <li><strong>Lower-order terms</strong> (e.g., 5n in 3n² + 5n) - Because their contribution vanishes as <code>n</code> grows.</li>
+              <li><strong>Small inputs</strong> - Because they finish fast regardless.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic 2 -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Asymptotic Functions and Notation</h2>
+          <p class="topic-subtitle">The mathematical machinery for "eventually, ignoring constants"</p>
+          
+          <div class="definition">
+            <div class="callout-label">Definition - Big-O (Upper Bound)</div>
+            <strong>O(g(n))</strong> = { f(n) : there exist positive constants <code>c</code> and <code>n₀</code> such that <code>0 ≤ f(n) ≤ c·g(n)</code> for all <code>n ≥ n₀</code> }<br><br>
+            <em>Read as: <strong>f grows no faster than g.</strong></em>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Detailed Proof</div>
+            <h4>Proving Big-O bounds with <code>c</code> and <code>n₀</code></h4>
+            <p><strong>Claim:</strong> <code>4n² + 100n + 500 = O(n²)</code></p>
+            <p>We need to find positive constants <code>c</code> and <code>n₀</code> such that <code>4n² + 100n + 500 ≤ c·n²</code> for all <code>n ≥ n₀</code>.</p>
+            <p>Dividing both sides by <code>n²</code> gives: <code>4 + 100/n + 500/n² ≤ c</code>.</p>
+            <p>This inequality is satisfied for many choices of <code>c</code> and <code>n₀</code>:</p>
+            <ul>
+              <li>If we choose <code>n₀ = 1</code>, then <code>4 + 100/1 + 500/1 = 604</code>, so <code>c = 604</code> works.</li>
+              <li>If we choose <code>n₀ = 10</code>, then <code>4 + 100/10 + 500/100 = 19</code>, so <code>c = 19</code> works.</li>
+              <li>If we choose <code>n₀ = 100</code>, then <code>4 + 100/100 + 500/10000 = 5.05</code>, so <code>c = 5.05</code> works.</li>
+            </ul>
+            <p>Since we found at least one pair (e.g., <code>n₀ = 1, c = 604</code>) that satisfies the inequality, the claim is proven.</p>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition - Big-Omega (Lower Bound)</div>
+            <strong>Ω(g(n))</strong> = { f(n) : there exist positive constants <code>c</code> and <code>n₀</code> such that <code>0 ≤ c·g(n) ≤ f(n)</code> for all <code>n ≥ n₀</code> }<br><br>
+            <em>Read as: <strong>f grows at least as fast as g.</strong></em>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition - Big-Theta (Tight Bound)</div>
+            <strong>Θ(g(n))</strong> = { f(n) : there exist positive constants <code>c₁</code>, <code>c₂</code> and <code>n₀</code> such that <code>0 ≤ c₁·g(n) ≤ f(n) ≤ c₂·g(n)</code> for all <code>n ≥ n₀</code> }<br><br>
+            <em>Read as: <strong>f grows at exactly the same rate as g.</strong></em><br>
+            <strong>Theorem:</strong> <code>f(n) = Θ(g(n))</code> if and only if <code>f(n) = O(g(n))</code> and <code>f(n) = Ω(g(n))</code>.
+          </div>
+
+          <h3>Little-o and little-omega</h3>
+          <p>These denote <em>strict</em> bounds (analogous to <code>&lt;</code> and <code>&gt;</code>, rather than <code>≤</code> and <code>≥</code>).</p>
+          <ul>
+            <li><strong>o(g)</strong>: strictly slower. <code>f(n) &lt; c·g(n)</code> for <strong>every</strong> c > 0.</li>
+            <li><strong>ω(g)</strong>: strictly faster. <code>f(n) &gt; c·g(n)</code> for <strong>every</strong> c > 0.</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>The Limit Method:</strong> A fast way to find bounds is computing <code>L = lim(n→∞) f(n)/g(n)</code>:
+            <ul>
+              <li>If <code>L = 0</code>, <code>f = O(g)</code> and <code>f = o(g)</code> (f is strictly smaller)</li>
+              <li>If <code>L = finite, ≠ 0</code>, <code>f = Θ(g)</code> (f is the same rate)</li>
+              <li>If <code>L = ∞</code>, <code>f = Ω(g)</code> and <code>f = ω(g)</code> (f is strictly larger)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic 3 -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Standard Notations & Common Functions</h2>
+          <p class="topic-subtitle">Mathematical tools for analysis</p>
+          
+          <h3>Exponentials and Polynomials</h3>
+          <p>A polynomial in <code>n</code> of degree <code>d</code> is asymptotically positive if the leading coefficient is greater than 0. The function <code>nᵈ</code> is monotonically increasing for <code>d > 0</code>.</p>
+          <p>Any exponential function with a base strictly greater than 1 grows faster than any polynomial function. Mathematically: <code>lim(n→∞) (nᵇ / aⁿ) = 0</code> for all <code>a > 1</code>, which implies <code>nᵇ = o(aⁿ)</code>.</p>
+
+          <h3>Logarithms</h3>
+          <p>We use the following notations:</p>
+          <ul>
+            <li><code>lg n = log₂ n</code> (binary logarithm)</li>
+            <li><code>ln n = logₑ n</code> (natural logarithm)</li>
+            <li><code>lgᵏ n = (lg n)ᵏ</code> (exponentiation)</li>
+            <li><code>lg lg n = lg(lg n)</code> (composition)</li>
+          </ul>
+          <p>Any positive polynomial function grows faster than any polylogarithmic function: <code>lgᵇ n = o(nᵃ)</code> for <code>a > 0</code>.</p>
+
+          <div class="definition">
+            <div class="callout-label">The Iterated Logarithm Function</div>
+            <p>We use the notation <code>lg* n</code> (read "log star of n") to denote the number of times the logarithm function must be iteratively applied before the result becomes less than or equal to 1.</p>
+            <p>The iterated logarithm is a very slowly growing function:</p>
+            <ul>
+              <li><code>lg* 2 = 1</code></li>
+              <li><code>lg* 4 = 2</code></li>
+              <li><code>lg* 16 = 3</code></li>
+              <li><code>lg* 65536 = 4</code></li>
+              <li><code>lg* (2⁶⁵⁵³⁶) = 5</code></li>
+            </ul>
+            <p>Since the number of atoms in the observable universe is estimated to be about <code>10⁸⁰</code> (which is much less than <code>2⁶⁵⁵³⁶</code>), we rarely encounter an input size <code>n</code> for which <code>lg* n > 5</code>.</p>
+          </div>
+
+          <h3>Factorials</h3>
+          <p>The factorial function <code>n!</code> grows very fast. A weak upper bound is <code>n! ≤ nⁿ</code>. A tighter bound is given by <strong>Stirling's approximation</strong>:</p>
+          <p><code>n! = √(2πn) (n/e)ⁿ (1 + Θ(1/n))</code></p>
+          <p>Using this, we can prove that <code>n! = o(nⁿ)</code>, <code>n! = ω(2ⁿ)</code>, and <code>lg(n!) = Θ(n log n)</code>.</p>
+
+          <h3>Fibonacci Numbers</h3>
+          <p>Defined as <code>F₀ = 0, F₁ = 1</code>, and <code>Fᵢ = Fᵢ₋₁ + Fᵢ₋₂</code>.</p>
+          <p>Fibonacci numbers are related to the golden ratio <code>φ = (1 + √5)/2 ≈ 1.618</code> and its conjugate <code>φ̂ = (1 - √5)/2 ≈ -0.618</code>. Both are roots of the equation <code>x² = x + 1</code>.</p>
+          <p>Specifically, <code>Fᵢ = (φⁱ - φ̂ⁱ)/√5</code>. Since <code>|φ̂| < 1</code>, this implies that <code>Fᵢ = ⌊φⁱ / √5 + 1/2⌋</code>. Thus, Fibonacci numbers grow exponentially.</p>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Exponentials grow faster than polynomials.</li>
+              <li>Polynomials grow faster than polylogarithms.</li>
+              <li>Factorials grow faster than exponentials.</li>
+              <li><code>lg* n</code> grows so slowly it can be considered a constant (≤ 5) for all practical applications.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic 4 -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Exercises & Solutions</h2>
+          <p class="topic-subtitle">Test your understanding</p>
+          
+          <details>
+            <summary>Practice Q1: Prove 2n² + 3n + 1 = O(n²)</summary>
+            <p><strong>Answer:</strong><br>
+            For n ≥ 1: <code>3n ≤ 3n²</code> and <code>1 ≤ n²</code>.<br>
+            So the expression <code>2n² + 3n + 1 ≤ 2n² + 3n² + n² = 6n²</code>.<br>
+            We can take constants <code>c = 6</code> and <code>n₀ = 1</code>. This satisfies the Big-O definition.</p>
+          </details>
+
+          <details>
+            <summary>Practice Q2: Prove n² + n ≠ O(n)</summary>
+            <p><strong>Answer:</strong><br>
+            Suppose it were. Then there exist <code>c, n₀ > 0</code> such that <code>n² + n ≤ cn</code> for all <code>n ≥ n₀</code>.<br>
+            Dividing by <code>n</code> gives <code>n + 1 ≤ c</code>.<br>
+            Choosing <code>n = max(n₀, c)</code> yields a contradiction, because <code>n + 1</code> will be strictly greater than <code>c</code>. Thus, it cannot be O(n).</p>
+          </details>
+
+          <details>
+            <summary>Practice Q3: Is 2ⁿ⁺¹ = O(2ⁿ)?</summary>
+            <p><strong>Answer:</strong><br>
+            <strong>Yes.</strong> <code>2ⁿ⁺¹ = 2·2ⁿ</code>, so choosing <code>c = 2</code> and <code>n₀ = 1</code> perfectly satisfies <code>2·2ⁿ ≤ c·2ⁿ</code>.</p>
+          </details>
+          
+          <details>
+            <summary>Practice Q4: Is 2²ⁿ = O(2ⁿ)?</summary>
+            <p><strong>Answer:</strong><br>
+            <strong>No.</strong> <code>2²ⁿ = (2ⁿ)² = 2ⁿ·2ⁿ</code>. The ratio <code>2²ⁿ / 2ⁿ = 2ⁿ → ∞</code>. Coefficients can be absorbed by <code>c</code>, but changing exponents fundamentally changes the growth class.</p>
+          </details>
+        </div>
+
+      </div>
+      
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">↑</button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) return h2.textContent.replace(numEl.textContent, '').trim();
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        document.getElementById("main-content").scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none" || !s.style.display) {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li, .nav-list > li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"));
+    </script>
+  </body>
+</html>

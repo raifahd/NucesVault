@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Analysis & Visualization — Evolution of Data Architecture</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      .diagram-img {
+        width: 100%;
+        max-width: 800px;
+        border-radius: 12px;
+        margin: 20px 0;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      id="menu-toggle"
+      onclick="document.getElementById('sidebar').classList.toggle('open')"
+    >
+      ☰
+    </button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">Data Analysis & Visualization</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <!-- Current Module (Active & Expandable) -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 5 — Evolution of Data Architecture</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')">
+                <span class="nav-num">01</span>Warehouses to Lakehouses
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                <span class="nav-num">02</span>Medallion Architecture
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                <span class="nav-num">03</span>🎯 Quiz Prep
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Other Course Modules (Cross-File Links) -->
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
+            <span class="nav-num">01</span>Introduction to DAV
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
+            <span class="nav-num">02</span>Data Analysis Lifecycle
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Data Preparation.html">
+            <span class="nav-num">03</span>Data Preparation
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
+            <span class="nav-num">04</span>Exploratory Data Analysis
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div id="main-content">
+      <div class="module-container" id="module-5">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Analysis & Visualization</div>
+          <h1 class="module-title">Module 5 — Evolution of Data Architecture</h1>
+          <p class="topic-subtitle">Based on "Delta Lake: The Definitive Guide" and "Building Medallion Architectures"</p>
+        </div>
+
+        <!-- Topic Card 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>From Data Warehouses to Lakehouses</h2>
+          <p class="topic-subtitle">The evolutionary journey of data storage and processing</p>
+          
+          <p>As organizations collect more data, the systems used to store, query, and aggregate this data have evolved significantly. Over the last few decades, we've transitioned from strict, structured storage to flexible, massive-scale systems, finally arriving at a hybrid model known as the Data Lakehouse.</p>
+          
+          <img src="data_architecture_evolution.jpg" alt="Evolution of Data Architecture Diagram" class="diagram-img" />
+
+          <h3>1. Data Warehouses</h3>
+          <p>Data warehouses are purpose-built to aggregate and process large amounts of <strong>structured data</strong> quickly. They rely on relational databases to provide strong transaction protections and include management features like backup, recovery, indexes, and partitioning.</p>
+          
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>ACID Transactions:</strong> A set of properties (Atomicity, Consistency, Isolation, Durability) that guarantee database transactions are processed reliably. This ensures data integrity and consistency, which is crucial for business applications.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Limitation</div>
+            While highly robust for BI (Business Intelligence), data warehouses are often hard to scale for large volumes, high velocity, or a variety of unstructured analytics (like machine learning). They historically required expensive vertical scaling rather than horizontal distribution.
+          </div>
+
+          <h3>2. Data Lakes</h3>
+          <p>Data lakes emerged to handle the "Big Data" explosion—an internet-scale volume, velocity, and variety of data. They are highly scalable storage repositories (like HDFS, Amazon S3, Azure ADLS) that hold raw data in its native format (structured, semi-structured, and unstructured) until needed. They use commodity hardware to scale out workloads across multiple nodes.</p>
+
+          <div class="note-box">
+            <div class="callout-label">BASE Model vs ACID</div>
+            Unlike warehouses, data lakes traditionally follow the <strong>BASE model</strong> (Basically Available, Soft-state, Eventually consistent). While they allow storing anything flexibly, the lack of ACID guarantees makes them an unreliable form of data storage. A processing failure mid-write leaves the storage in an inconsistent state with orphaned files, leading to corrupted analytics and "data swamps".
+          </div>
+
+          <h3>3. Data Lakehouses</h3>
+          <p>To fix the reliability issues of Data Lakes while maintaining their scale, the <strong>Data Lakehouse</strong> was born. It merges the scalability and flexibility of data lakes with the management features and performance optimization of data warehouses.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Data Lakehouse:</strong> A unified data management architecture that eliminates disjointed systems by bringing ACID transactions, metadata management, and Data Warehouse performance directly to the low-cost object storage of Data Lakes.
+          </div>
+
+          <p>Open-source formats like <strong>Delta Lake</strong>, Apache Iceberg, and Apache Hudi are the foundation of this architecture. They add a transactional metadata log on top of raw Parquet files.</p>
+          
+          <div class="example">
+            <div class="callout-label">Key Features of Delta Lake</div>
+            <h4>Why Lakehouses Work</h4>
+            <ul>
+              <li><strong>ACID Transactions:</strong> Multiple concurrent readers and writers can access data without conflict. If a job fails, the transaction log rolls it back completely.</li>
+              <li><strong>Time Travel:</strong> The transaction log retains previous versions of data, allowing you to query historical snapshots for audits or recovery.</li>
+              <li><strong>Unified Batch & Streaming:</strong> Allows using the exact same APIs and logic for both batch processing and real-time streaming data.</li>
+              <li><strong>Schema Evolution/Enforcement:</strong> Prevents bad data from corrupting the table by enforcing schemas on write, while allowing schemas to evolve when business needs change.</li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li><strong>Data Warehouses:</strong> Great for structured BI and ACID, but expensive and rigid.</li>
+              <li><strong>Data Lakes:</strong> Scalable and flexible for all data types (ML/AI), but unreliable (BASE model) and prone to swamps.</li>
+              <li><strong>Lakehouses:</strong> The sweet spot. Unifies BI, ML, and Streaming on a single platform using transaction logs (like Delta) over object storage.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic Card 2 -->
+        <div class="topic-card" id="topic-2" style="display: none;">
+          <h2><span class="topic-num">2</span>The Medallion Architecture</h2>
+          <p class="topic-subtitle">Progressively refining data through logical layers</p>
+          
+          <p>With the Lakehouse providing a unified storage platform, organizations need a design pattern to logically organize their data pipelines. The <strong>Medallion Architecture</strong> utilizes three layers—Bronze, Silver, and Gold—to progressively refine datasets from raw ingestion to business-ready insights.</p>
+
+          <img src="medallion_architecture.jpg" alt="Medallion Architecture Diagram" class="diagram-img" />
+
+          <p>It is crucial to think of these layers as <strong>logical</strong>, not strictly physical. A single logical layer might span across several physical storage zones depending on the complexity of the data sources.</p>
+
+          <h3>1. Bronze Layer (Raw Copies)</h3>
+          <p>The Bronze layer acts as the landing zone for raw data collected from various sources. Data is stored in its original structure without transformations.</p>
+          <ul>
+            <li><strong>Immutable:</strong> Data here is treated as read-only. This serves as an absolute historical record and the single source of truth.</li>
+            <li><strong>Historization:</strong> You capture iterative changes over time here (e.g., appending new files), but you do <em>not</em> build fully processed SCD2 (Slowly Changing Dimension Type 2) tables here.</li>
+            <li><strong>Schema-on-Read:</strong> Often applied here to maximize ingestion flexibility, though some basic technical validation checks (format, completeness) are applied to catch massive errors early.</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            Do not apply complex business rules, updates, or merges to data in the Bronze layer. If the data is altered from its source state, you lose the ability to replay your pipelines or audit the raw source if downstream bugs are discovered.
+          </div>
+
+          <h3>2. Silver Layer (Filtered, Clean, Augmented)</h3>
+          <p>The Silver layer refines, cleanses, and standardizes the raw data. It acts as an "enterprise view" of all key business entities and transactions.</p>
+          <ul>
+            <li><strong>Cleaning Activities:</strong> Removing noise, handling missing values, removing duplicates, trimming spaces, correcting types, and standardizing formats (e.g., date formats, naming conventions).</li>
+            <li><strong>Source-Aligned:</strong> Data is still granular and closely aligned with the source system. It is generally <em>not</em> recommended to prematurely cross-join different source systems here, as it tightly couples domains together.</li>
+            <li><strong>Schema-on-Write:</strong> Typically enforced here using formats like Delta Lake to ensure data quality before it proceeds.</li>
+          </ul>
+
+          <h3>3. Gold Layer (Modeled for Consumption)</h3>
+          <p>The Gold layer delivers refined data optimized for specific business insights, reporting, and decision making. Data is aggregated, summarized, and enriched.</p>
+          <p>There are two popular data modeling techniques used in the Gold layer:</p>
+
+          <table style="width:100%; border-collapse: collapse; margin-top:10px; margin-bottom: 20px;">
+            <tr style="border-bottom: 2px solid var(--border-color);">
+              <th style="padding: 10px; text-align: left;">Modeling Approach</th>
+              <th style="padding: 10px; text-align: left;">Description</th>
+              <th style="padding: 10px; text-align: left;">Pros & Cons</th>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px;"><strong>Star Schema (Kimball)</strong></td>
+              <td style="padding: 10px;">A central <em>Fact Table</em> (quantitative data like sales) surrounded by <em>Dimension Tables</em> (context like time, location, customer). Uses Surrogate Keys to track history (SCDs).</td>
+              <td style="padding: 10px;">Excellent for complex slicing/dicing in BI and historical tracking. Labor-intensive to build and maintain.</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px;"><strong>One-Big-Table (OBT)</strong></td>
+              <td style="padding: 10px;">All relevant data is consolidated into a single, massive, denormalized table. No complex joins required.</td>
+              <td style="padding: 10px;">Extremely fast for simple queries and loved by ML data scientists. Can lead to massive data duplication and complex nested fields.</td>
+            </tr>
+          </table>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li><strong>Bronze = Raw:</strong> Immutable landing zone, historical archive, schema-on-read.</li>
+              <li><strong>Silver = Clean:</strong> Filtered, standardized, deduplicated, schema-on-write. Aligned to source.</li>
+              <li><strong>Gold = Curated:</strong> Aggregated, enriched, and modeled (Star Schema or OBT). Optimized for BI, dashboards, and ML.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic Card 3 -->
+        <div class="topic-card" id="topic-3" style="display: none;">
+          <h2><span class="topic-num">3</span>🎯 Quiz Prep</h2>
+          <p class="topic-subtitle">Test your knowledge on Data Architecture and Medallion Layers</p>
+          
+          <p>Use these practice questions to prepare for your upcoming quiz. The questions range from easy definitions to hard conceptual applications.</p>
+
+          <details>
+            <summary><strong>Question 1 (Easy):</strong> What does the acronym ACID stand for in database transactions?</summary>
+            <div style="padding: 10px; border-left: 3px solid var(--ac); margin-top: 10px;">
+              <p><strong>Answer:</strong> Atomicity, Consistency, Isolation, and Durability.</p>
+              <p><em>Explanation:</em> These properties ensure that database transactions are processed reliably, guaranteeing data integrity. Data Warehouses and Lakehouses provide ACID protections, whereas traditional Data Lakes do not.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary><strong>Question 2 (Easy):</strong> Which layer of the Medallion Architecture is considered the "immutable historical record"?</summary>
+            <div style="padding: 10px; border-left: 3px solid var(--ac); margin-top: 10px;">
+              <p><strong>Answer:</strong> The Bronze Layer.</p>
+              <p><em>Explanation:</em> The Bronze layer stores raw data exactly as it was ingested. It is kept immutable (read-only) so that it can serve as a single source of truth and an audit trail if data needs to be reprocessed later.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary><strong>Question 3 (Medium):</strong> Why is the BASE model problematic for traditional Data Lakes when dealing with data processing failures?</summary>
+            <div style="padding: 10px; border-left: 3px solid var(--ac); margin-top: 10px;">
+              <p><strong>Answer:</strong> The lack of ACID guarantees under the BASE model means that if a large write job fails midway through, the system does not automatically roll back the changes.</p>
+              <p><em>Explanation:</em> This leaves the storage system in an inconsistent state with orphaned or partial files. Subsequent queries might read these partial files, leading to duplicate counts and incorrect analytics (a "data swamp").</p>
+            </div>
+          </details>
+
+          <details>
+            <summary><strong>Question 4 (Medium):</strong> In which Medallion layer should you primarily apply "Schema-on-Write" and data cleansing tasks like trimming spaces and standardizing date formats?</summary>
+            <div style="padding: 10px; border-left: 3px solid var(--ac); margin-top: 10px;">
+              <p><strong>Answer:</strong> The Silver Layer.</p>
+              <p><em>Explanation:</em> While the Bronze layer often uses schema-on-read to flexibly ingest raw data, the Silver layer is responsible for refining, cleaning, and enforcing schemas (schema-on-write) to ensure that the rest of the enterprise uses high-quality, standardized data.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary><strong>Question 5 (Hard):</strong> A data engineer decides to merge customer data from Salesforce, SAP, and an internal web database directly in the Bronze layer to save time. What architectural principles does this violate, and what issues might it cause?</summary>
+            <div style="padding: 10px; border-left: 3px solid var(--ac); margin-top: 10px;">
+              <p><strong>Answer:</strong> This violates the principle of Bronze immutability and premature integration.</p>
+              <p><em>Explanation:</em> First, Bronze should be an exact, unaltered replica of the source system. Second, prematurely integrating different source systems tightly couples domains together early in the pipeline. If a data scientist only wants raw Salesforce data, they are now forced to untangle it from the SAP data. Integration and merging across different source systems should be reserved for the Gold layer, or at earliest, the end of the Silver layer.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary><strong>Question 6 (Hard):</strong> Compare the advantages and disadvantages of using a Star Schema versus a One-Big-Table (OBT) design in the Gold layer.</summary>
+            <div style="padding: 10px; border-left: 3px solid var(--ac); margin-top: 10px;">
+              <p><strong>Answer:</strong></p>
+              <ul>
+                <li><strong>Star Schema:</strong><br><em>Pros:</em> Eliminates data redundancy, handles historical changes gracefully (SCDs via surrogate keys), and perfectly models business logic for complex slicing/dicing in BI tools.<br><em>Cons:</em> Complex and labor-intensive to design, build, and maintain. Requires computationally expensive joins during queries.</li>
+                <li><strong>One-Big-Table (OBT):</strong><br><em>Pros:</em> Extremely fast query performance (no joins required), easy to understand, and preferred by ML tools that expect flat data.<br><em>Cons:</em> Massive data duplication (redundancy), difficult to manage when schemas change (requires recreating the table), and heavily nested structures can complicate specific aggregations.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+      </div>
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3"]; 
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        document
+          .getElementById("main-content")
+          .scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li, .nav-list > li")
+          .forEach((i) => {
+            i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+          });
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>

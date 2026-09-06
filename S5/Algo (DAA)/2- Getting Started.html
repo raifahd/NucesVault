@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DAA — Getting Started</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">DAA</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- The Role of Algorithms in Computing.html"><span class="nav-num">01</span>The Role of Algorithms in Computing</a></li>
+        
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 2 — Getting Started</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Insertion Sort</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Analyzing Algorithms</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Divide-and-Conquer</a></li>
+          </ul>
+        </li>
+
+        <li><a class="nav-module-link" href="./3- Characterizing Running Times.html"><span class="nav-num">03</span>Characterizing Running Times</a></li>
+        <li><a class="nav-module-link" href="./4- Divide-and-Conquer.html"><span class="nav-num">04</span>Divide-and-Conquer</a></li>
+        <li><a class="nav-module-link" href="./5- Probabilistic Analysis and Randomized Algorithms.html"><span class="nav-num">05</span>Probabilistic Analysis</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-2">
+        <div class="module-header">
+          <div class="module-eyebrow">DAA</div>
+          <h1 class="module-title">Module 2 — Getting Started</h1>
+        </div>
+        
+        <!-- Topic 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Insertion Sort</h2>
+          <p class="topic-subtitle">Sorting like a hand of playing cards</p>
+          
+          <p>Insertion sort is an efficient algorithm for sorting a small number of elements. It works the way you might sort a hand of playing cards: you start with an empty left hand, and pick cards one by one from the table, inserting each into the correct sorted position in your left hand.</p>
+
+          <pre><code>INSERTION-SORT(A, n)
+1  for i = 2 to n
+2      key = A[i]
+3      // Insert A[i] into the sorted subarray A[1 : i - 1].
+4      j = i - 1
+5      while j > 0 and A[j] > key
+6          A[j + 1] = A[j]
+7          j = j - 1
+8      A[j + 1] = key</code></pre>
+
+          <h3>Loop Invariants</h3>
+          <p>We use <strong>loop invariants</strong> to help us understand why an algorithm is correct. We must show three things about a loop invariant:</p>
+          
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Loop Invariant Properties:</strong>
+            <ul>
+              <li><strong>Initialization:</strong> It is true prior to the first iteration of the loop.</li>
+              <li><strong>Maintenance:</strong> If it is true before an iteration of the loop, it remains true before the next iteration.</li>
+              <li><strong>Termination:</strong> When the loop terminates, the invariant gives us a useful property that helps show the algorithm is correct.</li>
+            </ul>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Detailed Proof</div>
+            <h4>Proving Insertion Sort Correctness</h4>
+            <p><strong>Loop invariant:</strong> At the start of each iteration of the <code>for</code> loop of lines 1-8, the subarray <code>A[1 : i - 1]</code> consists of the elements originally in <code>A[1 : i - 1]</code>, but in sorted order.</p>
+            <ul>
+              <li><strong>Initialization:</strong> Before the first iteration, <code>i = 2</code>. The subarray <code>A[1 : i - 1]</code> is just <code>A[1]</code>. A single element is trivially sorted, so the loop invariant holds.</li>
+              <li><strong>Maintenance:</strong> The body of the <code>for</code> loop moves the values <code>A[i - 1], A[i - 2], ...</code> by one position to the right until it finds the proper position for <code>A[i]</code> (lines 4-7), and then it inserts the value of <code>A[i]</code>. The subarray <code>A[1 : i]</code> now consists of the original elements but in sorted order. Incrementing <code>i</code> for the next iteration preserves the invariant.</li>
+              <li><strong>Termination:</strong> The loop terminates when <code>i > n</code>, which means <code>i = n + 1</code>. Substituting <code>n + 1</code> for <code>i</code> in the wording of the loop invariant yields that the subarray <code>A[1 : n]</code> consists of the original elements in <code>A[1 : n]</code>, but in sorted order. Hence, the algorithm is correct.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic 2 -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Analyzing Algorithms</h2>
+          <p class="topic-subtitle">Predicting the resources an algorithm requires</p>
+          
+          <p>We analyze algorithms to predict computational time. We use the <strong>RAM (Random-Access Machine) model</strong> of computation, where instructions execute one after another sequentially, and each data access takes constant time.</p>
+
+          <div class="example">
+            <div class="callout-label">Detailed Example</div>
+            <h4>Exact Mathematical Analysis of Insertion Sort</h4>
+            <p>Let's analyze the <code>INSERTION-SORT</code> procedure precisely. Let <code>cₖ</code> be the cost of the <code>k</code>-th line. Let <code>tᵢ</code> denote the number of times the <code>while</code> loop test in line 5 is executed for that value of <code>i</code>.</p>
+            
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr><th>Line</th><th>Code</th><th>Cost</th><th>Times Executed</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td><code>for i = 2 to n</code></td><td><code>c₁</code></td><td><code>n</code></td></tr>
+                  <tr><td>2</td><td><code>key = A[i]</code></td><td><code>c₂</code></td><td><code>n - 1</code></td></tr>
+                  <tr><td>3</td><td><code>// Insert A[i]...</code></td><td><code>0</code></td><td><code>n - 1</code></td></tr>
+                  <tr><td>4</td><td><code>j = i - 1</code></td><td><code>c₄</code></td><td><code>n - 1</code></td></tr>
+                  <tr><td>5</td><td><code>while j > 0 and A[j] > key</code></td><td><code>c₅</code></td><td><code>Σ_{i=2}^{n} tᵢ</code></td></tr>
+                  <tr><td>6</td><td><code>A[j + 1] = A[j]</code></td><td><code>c₆</code></td><td><code>Σ_{i=2}^{n} (tᵢ - 1)</code></td></tr>
+                  <tr><td>7</td><td><code>j = j - 1</code></td><td><code>c₇</code></td><td><code>Σ_{i=2}^{n} (tᵢ - 1)</code></td></tr>
+                  <tr><td>8</td><td><code>A[j + 1] = key</code></td><td><code>c₈</code></td><td><code>n - 1</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Best Case (Already sorted array):</strong><br>
+            <code>A[i] > key</code> fails immediately every time, so <code>tᵢ = 1</code> for every <code>i</code>.<br>
+            <code>T(n) = c₁n + c₂(n - 1) + c₄(n - 1) + c₅(n - 1) + c₈(n - 1)</code><br>
+            This can be written as <code>an + b</code>. The best-case running time is a <strong>linear function</strong> of <code>n</code>, or <strong>Θ(n)</strong>.</p>
+            
+            <p><strong>Worst Case (Reverse sorted array):</strong><br>
+            The element must travel past all <code>i - 1</code> elements before it, so <code>tᵢ = i</code> for every <code>i</code>.<br>
+            Using the arithmetic series sum formula, <code>Σ_{i=2}^{n} i = n(n + 1)/2 - 1</code>.<br>
+            Substituting this into our equation yields a formula of the form <code>an² + bn + c</code>. The worst-case running time is a <strong>quadratic function</strong> of <code>n</code>, or <strong>Θ(n²)</strong>.</p>
+          </div>
+
+          <h3>Why focus on Worst-Case?</h3>
+          <p>We usually concentrate on finding the worst-case running time for three reasons:</p>
+          <ol>
+            <li>It gives an <strong>upper bound guarantee</strong>. The algorithm will <em>never</em> take longer.</li>
+            <li>For some algorithms, the worst case occurs fairly often (e.g., searching for an absent record in a database).</li>
+            <li>The "average case" is often roughly as bad as the worst case. (e.g., in insertion sort, a randomly chosen element still needs to travel roughly halfway down the sorted subarray, resulting in a quadratic <code>n²</code> function).</li>
+          </ol>
+        </div>
+
+        <!-- Topic 3 -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Divide-and-Conquer</h2>
+          <p class="topic-subtitle">Breaking problems into smaller subproblems</p>
+          
+          <p>Many useful algorithms are <em>recursive</em>. They typically follow the <strong>divide-and-conquer</strong> paradigm, which consists of three characteristic steps:</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <ul>
+              <li><strong>Divide</strong> the problem into a number of subproblems that are smaller instances of the same problem.</li>
+              <li><strong>Conquer</strong> the subproblems by solving them recursively. If the subproblem sizes are small enough, solve them straightforwardly as a base case.</li>
+              <li><strong>Combine</strong> the solutions to the subproblems into the solution for the original problem.</li>
+            </ul>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Merge Sort</h4>
+            <ul>
+              <li><strong>Divide:</strong> Divide the <code>n</code>-element sequence to be sorted into two subsequences of <code>n/2</code> elements each.</li>
+              <li><strong>Conquer:</strong> Sort the two subsequences recursively using merge sort.</li>
+              <li><strong>Combine:</strong> Merge the two sorted subsequences to produce the sorted answer.</li>
+            </ul>
+            <p>The <code>MERGE(A, p, q, r)</code> procedure takes two sorted subarrays <code>A[p : q]</code> and <code>A[q+1 : r]</code> and merges them in <strong>Θ(n)</strong> time by repeatedly selecting the smallest unpicked element from the two subarrays.</p>
+          </div>
+
+          <h3>Analyzing Divide-and-Conquer Algorithms</h3>
+          <p>When an algorithm contains a recursive call, its running time is described by a <strong>recurrence equation</strong>.</p>
+          
+          <p>For Merge Sort on an array of <code>n</code> elements:</p>
+          <ul>
+            <li><strong>Divide:</strong> Computes the middle of the subarray, taking <strong>Θ(1)</strong> time.</li>
+            <li><strong>Conquer:</strong> Recursively solves two subproblems of size <code>n/2</code>, taking <strong>2T(n/2)</strong> time.</li>
+            <li><strong>Combine:</strong> The <code>MERGE</code> procedure takes <strong>Θ(n)</strong> time.</li>
+          </ul>
+          <p>This yields the recurrence:</p>
+          <pre><code>T(n) = 2T(n/2) + Θ(n)</code></pre>
+          
+          <div class="note-box">
+            <div class="callout-label">Recursion Tree for Merge Sort</div>
+            <p>To understand the running time intuitively, imagine a tree:</p>
+            <ul>
+              <li>At the top level (root), the cost is <code>cn</code> (where c is the constant hidden by the Θ).</li>
+              <li>At the next level down, there are two subproblems, each costing <code>c(n/2)</code>. The total cost at this level is <code>2 × c(n/2) = cn</code>.</li>
+              <li>At the next level, four subproblems each cost <code>c(n/4)</code>. The total cost is <code>4 × c(n/4) = cn</code>.</li>
+            </ul>
+            <p>Each level of the tree has a total cost of <code>cn</code>. The tree bottoms out when the subproblem size drops to 1, which occurs at depth <code>lg n</code>. Thus, there are <code>lg n + 1</code> levels. Adding the costs up gives <code>cn(lg n + 1) = cn lg n + cn</code>, which is <strong>Θ(n log n)</strong>.</p>
+          </div>
+        </div>
+
+      </div>
+      
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">↑</button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) return h2.textContent.replace(numEl.textContent, '').trim();
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        document.getElementById("main-content").scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none" || !s.style.display) {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li, .nav-list > li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"));
+    </script>
+  </body>
+</html>

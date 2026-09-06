@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DAA — The Role of Algorithms in Computing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">DAA</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 1 — Role of Algorithms</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Algorithms</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Algorithms as a Technology</a></li>
+          </ul>
+        </li>
+
+        <li><a class="nav-module-link" href="./2- Getting Started.html"><span class="nav-num">02</span>Getting Started</a></li>
+        <li><a class="nav-module-link" href="./3- Characterizing Running Times.html"><span class="nav-num">03</span>Characterizing Running Times</a></li>
+        <li><a class="nav-module-link" href="./4- Divide-and-Conquer.html"><span class="nav-num">04</span>Divide-and-Conquer</a></li>
+        <li><a class="nav-module-link" href="./5- Probabilistic Analysis and Randomized Algorithms.html"><span class="nav-num">05</span>Probabilistic Analysis</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-1">
+        <div class="module-header">
+          <div class="module-eyebrow">DAA</div>
+          <h1 class="module-title">Module 1 — The Role of Algorithms in Computing</h1>
+        </div>
+        
+        <!-- Topic 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Algorithms</h2>
+          <p class="topic-subtitle">What are algorithms and why are they worthwhile?</p>
+          
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Algorithm:</strong> Any well-defined computational procedure that takes some value (or set of values) as <em>input</em> and produces some value (or set of values) as <em>output</em> in a finite amount of time. It is a tool for solving a well-specified <em>computational problem</em>.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>The Sorting Problem</h4>
+            <p><strong>Input:</strong> A sequence of <code>n</code> numbers <code>⟨a₁, a₂, ..., aₙ⟩</code>.</p>
+            <p><strong>Output:</strong> A permutation (reordering) <code>⟨a'₁, a'₂, ..., a'ₙ⟩</code> of the input such that <code>a'₁ ≤ a'₂ ≤ ... ≤ a'ₙ</code>.</p>
+            <p>An <strong>instance</strong> of this problem could be <code>⟨31, 41, 59, 26, 41, 58⟩</code>, and a correct sorting algorithm will return <code>⟨26, 31, 41, 41, 58, 59⟩</code>.</p>
+          </div>
+
+          <h3>Correctness</h3>
+          <p>An algorithm is said to be <strong>correct</strong> if, for every input instance, it <em>halts</em> with the correct output. An incorrect algorithm might not halt, or might halt with an incorrect answer. We generally only concern ourselves with correct algorithms, although sometimes controllable-error-rate incorrect algorithms can be useful in advanced scenarios (e.g., finding large prime numbers).</p>
+
+          <h3>What kinds of problems are solved by algorithms?</h3>
+          <ul>
+            <li><strong>Biological analysis:</strong> The Human Genome project uses algorithms to determine similarity between DNA sequences.</li>
+            <li><strong>The Internet:</strong> Managing massive data volumes, routing traffic, and search engines using graph algorithms.</li>
+            <li><strong>E-commerce:</strong> Public-key cryptography and digital signatures for safe transactions.</li>
+            <li><strong>Resource allocation:</strong> Determining the optimal places to put oil wells or how to route planes efficiently (often modeled as linear programs).</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="callout-label">Hard Problems (NP-Complete)</div>
+            <p>Most of this book is about efficient algorithms (algorithms that run in a reasonable amount of time). However, there is an interesting subset of problems known as <strong>NP-complete</strong>.</p>
+            <ul>
+              <li>Nobody has ever found an efficient algorithm for an NP-complete problem.</li>
+              <li>Nobody has ever proven that an efficient algorithm <em>cannot</em> exist.</li>
+              <li>If an efficient algorithm exists for any one of them, then efficient algorithms exist for all of them.</li>
+            </ul>
+            <p><strong>Example: The Traveling-Salesperson Problem.</strong> A delivery company wants to select an order of delivery stops that yields the lowest overall distance traveled. This problem has no known efficient algorithm. If you encounter an NP-complete problem, you shouldn't waste time trying to find a perfectly optimal algorithm; instead, you should focus on an <em>approximation algorithm</em> that finds a good-enough solution quickly.</p>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Algorithms are well-defined procedures that solve computational problems.</li>
+              <li>An algorithm is correct if it halts and produces the correct output for every possible input.</li>
+              <li>NP-complete problems have no known efficient exact solution, making approximation algorithms highly valuable.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic 2 -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Algorithms as a Technology</h2>
+          <p class="topic-subtitle">Why efficiency matters even with infinite hardware</p>
+          
+          <p>If computers were infinitely fast and memory was free, any correct method would do. However, computing time is a bounded, precious resource. Therefore, we should view <strong>algorithms as a technology</strong>, much like hardware. Total system performance depends on choosing efficient algorithms as much as on choosing fast hardware.</p>
+
+          <p>Different algorithms devised for the same problem can differ dramatically in efficiency. Let's compare two sorting algorithms:</p>
+          
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Running Time</th>
+                  <th>Growth Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Insertion Sort</strong></td>
+                  <td><code>c₁n²</code></td>
+                  <td>Quadratic (faster for very small <code>n</code>)</td>
+                </tr>
+                <tr>
+                  <td><strong>Merge Sort</strong></td>
+                  <td><code>c₂n log n</code></td>
+                  <td>Log-linear (much faster for large <code>n</code>)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Since <code>log n</code> grows much slower than <code>n</code>, the <code>c₂n log n</code> curve will inevitably drop below the <code>c₁n²</code> curve once <code>n</code> gets large enough, regardless of how much smaller the constant factor <code>c₁</code> is compared to <code>c₂</code>.</p>
+
+          <div class="example">
+            <div class="callout-label">Detailed Example</div>
+            <h4>Hardware vs Algorithms</h4>
+            <p>Suppose Computer A is 1,000 times faster than Computer B.</p>
+            <ul>
+              <li><strong>Computer A (Fast):</strong> Executes 10 billion (<code>10¹⁰</code>) instructions per second. Uses Insertion Sort programmed perfectly in machine language (<code>2n²</code> instructions).</li>
+              <li><strong>Computer B (Slow):</strong> Executes 10 million (<code>10⁷</code>) instructions per second. Uses Merge Sort programmed poorly using a high-level language (<code>50n log n</code> instructions).</li>
+            </ul>
+            <p>If we sort 10 million (<code>10⁷</code>) numbers:</p>
+            <ul>
+              <li><strong>Computer A takes:</strong><br>
+                <code>2(10⁷)² instructions / (10¹⁰ instructions/second)</code><br>
+                <code>= (2 × 10¹⁴) / 10¹⁰</code><br>
+                <code>= 20,000 seconds</code> (more than 5.5 hours)
+              </li>
+              <li><strong>Computer B takes:</strong><br>
+                <code>50(10⁷) log(10⁷) instructions / (10⁷ instructions/second)</code><br>
+                <code>≈ 1,163 seconds</code> (under 20 minutes)
+              </li>
+            </ul>
+            <p><strong>Conclusion:</strong> By using an algorithm whose running time grows more slowly, the slower Computer B runs more than 17 times faster than Computer A! If we sorted 100 million numbers, Insertion Sort would take more than 23 days, while Merge Sort would take under four hours.</p>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>System performance depends as much on efficient algorithms as on fast hardware.</li>
+              <li>Asymptotic efficiency (how the algorithm scales) is far more important than constant factors or raw CPU speed for large input sizes.</li>
+            </ul>
+          </div>
+          
+          <details>
+            <summary>Practice Q: Hardware limitation vs Algorithm efficiency</summary>
+            <p><strong>Question:</strong> Why is it that hardware advances alone cannot solve NP-complete problems?</p>
+            <p><strong>Answer:</strong> NP-complete problems scale exponentially or worse (like <code>2ⁿ</code> or <code>n!</code>). Even if a computer gets 1,000 times faster, an exponential algorithm might only allow you to increase the problem size by a tiny additive constant (e.g., from <code>n=50</code> to <code>n=60</code>) before the running time balloons back to months or years. Algorithms dictate the <em>shape</em> of the curve; hardware only scales it.</p>
+          </details>
+
+        </div>
+
+      </div>
+      
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">↑</button>
+
+    <script>
+      const topics = ["topic-1", "topic-2"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) return h2.textContent.replace(numEl.textContent, '').trim();
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        document.getElementById("main-content").scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none" || !s.style.display) {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li, .nav-list > li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"));
+    </script>
+  </body>
+</html>

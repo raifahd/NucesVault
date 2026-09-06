@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DAA — Probabilistic Analysis and Randomized Algorithms</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">DAA</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- The Role of Algorithms in Computing.html"><span class="nav-num">01</span>The Role of Algorithms in Computing</a></li>
+        <li><a class="nav-module-link" href="./2- Getting Started.html"><span class="nav-num">02</span>Getting Started</a></li>
+        <li><a class="nav-module-link" href="./3- Characterizing Running Times.html"><span class="nav-num">03</span>Characterizing Running Times</a></li>
+        <li><a class="nav-module-link" href="./4- Divide-and-Conquer.html"><span class="nav-num">04</span>Divide-and-Conquer</a></li>
+        
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 5 — Probabilistic Analysis</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>The Hiring Problem</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Indicator Random Variables</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Randomized Algorithms</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Birthday Paradox & More</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-5">
+        <div class="module-header">
+          <div class="module-eyebrow">DAA</div>
+          <h1 class="module-title">Module 5 — Probabilistic Analysis & Randomized Algorithms</h1>
+        </div>
+        
+        <!-- Topic 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>The Hiring Problem</h2>
+          <p class="topic-subtitle">Analyzing expected costs</p>
+          
+          <p>Suppose you need to hire an office assistant. The employment agency sends one candidate each day. If the candidate is better than your current assistant, you fire the current one and hire the new one. Interviewing is cheap (<code>cᵢ</code>), but hiring and firing is expensive (<code>cₕ</code>).</p>
+
+          <pre><code>HIRE-ASSISTANT(n)
+1  best = 0   // candidate 0 is a least-qualified dummy candidate
+2  for i = 1 to n
+3      interview candidate i
+4      if candidate i is better than candidate best
+5          best = i
+6          hire candidate i</code></pre>
+
+          <h3>Worst-case Analysis</h3>
+          <p>In the worst case, the candidates arrive in strictly increasing order of quality. You hire every single person you interview. The total hiring cost is <strong>O(cₕ · n)</strong>.</p>
+          
+          <h3>Probabilistic Analysis</h3>
+          <p>We often use probability to analyze the <strong>average-case running time</strong> (or expected cost). This assumes something about the distribution of the inputs. For the hiring problem, we assume the applicants come in a <em>random order</em> (a uniform random permutation).</p>
+        </div>
+
+        <!-- Topic 2 -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Indicator Random Variables</h2>
+          <p class="topic-subtitle">A powerful tool for probabilistic analysis</p>
+          
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Indicator Random Variable:</strong> Given a sample space <code>S</code> and an event <code>A</code>, the indicator random variable <code>I{A}</code> is <code>1</code> if <code>A</code> occurs, and <code>0</code> if <code>A</code> does not occur.
+          </div>
+
+          <p><strong>Lemma 5.1:</strong> The expected value of an indicator random variable associated with an event <code>A</code> is equal to the probability that <code>A</code> occurs. <code>E[X_A] = Pr{A}</code>.</p>
+
+          <div class="example">
+            <div class="callout-label">Detailed Proof</div>
+            <h4>Solving the Hiring Problem Cost</h4>
+            <p>Let <code>Xᵢ</code> be the indicator random variable that candidate <code>i</code> is hired. <code>Xᵢ = 1</code> if hired, <code>0</code> otherwise.</p>
+            <p>Candidate <code>i</code> is hired if and only if they are the best candidate among the first <code>i</code> candidates. Since candidates arrive in random order, any of the first <code>i</code> candidates is equally likely to be the best so far.</p>
+            <p><code>E[Xᵢ] = Pr{candidate i is hired} = 1 / i</code>.</p>
+            <p>The total expected number of hires <code>X</code> is the sum of <code>Xᵢ</code>. By linearity of expectation:<br/>
+            <code>E[X] = E[Σ_{i=1}^{n} Xᵢ] = Σ_{i=1}^{n} E[Xᵢ] = Σ_{i=1}^{n} (1/i)</code>.</p>
+            <p>This summation is the harmonic series, which can be bounded as:<br>
+            <code>Σ_{i=1}^{n} (1/i) = ln n + O(1)</code>.</p>
+            <p>Therefore, the expected hiring cost is <strong>O(cₕ ln n)</strong>, which is a massive improvement over the worst-case <code>O(n)</code>.</p>
+          </div>
+        </div>
+
+        <!-- Topic 3 -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Randomized Algorithms</h2>
+          <p class="topic-subtitle">Enforcing randomness instead of hoping for it</p>
+          
+          <p>What if we don't know the input distribution? We can use a <strong>randomized algorithm</strong>. Instead of assuming the candidates arrive randomly, we ask the agency for the list of <code>n</code> candidates in advance, and <em>we randomly permute</em> the list before interviewing them.</p>
+
+          <p>By taking control of the randomization, the algorithm's performance no longer depends on the specific input arrangement. Even the worst input will be shuffled into a random order. We call this the <strong>expected running time</strong>.</p>
+
+          <pre><code>RANDOMLY-PERMUTE(A, n)
+1  for i = 1 to n
+2      swap A[i] with A[RANDOM(i, n)]</code></pre>
+
+          <div class="example">
+            <div class="callout-label">Detailed Proof</div>
+            <h4>Proof of RANDOMLY-PERMUTE Correctness</h4>
+            <p><strong>Loop invariant:</strong> Just prior to the <code>i</code>-th iteration of the <code>for</code> loop, for each possible <code>(i - 1)</code>-permutation of the <code>n</code> elements, the subarray <code>A[1 : i - 1]</code> contains this permutation with probability <code>(n - i + 1)! / n!</code>.</p>
+            <ul>
+              <li><strong>Initialization:</strong> Before the first iteration, <code>i = 1</code>. The subarray <code>A[1:0]</code> is empty, and a 0-permutation has no elements. The probability is <code>n! / n! = 1</code>. The invariant holds.</li>
+              <li><strong>Maintenance:</strong> During the <code>i</code>-th iteration, we want to form an <code>i</code>-permutation <code>⟨x₁, ..., xᵢ⟩</code>. By the loop invariant, the probability that the first <code>i - 1</code> elements are <code>⟨x₁, ..., xᵢ₋₁⟩</code> is <code>(n - i + 1)! / n!</code>. The algorithm then chooses <code>xᵢ</code> randomly from the remaining <code>n - i + 1</code> elements. Thus, the probability of selecting exactly <code>xᵢ</code> is <code>1 / (n - i + 1)</code>.<br>
+              Multiplying these gives: <code>((n - i + 1)! / n!) * (1 / (n - i + 1)) = (n - i)! / n!</code>. The invariant holds for the next iteration.</li>
+              <li><strong>Termination:</strong> When the loop terminates, <code>i = n + 1</code>. The probability that <code>A[1:n]</code> contains a specific <code>n</code>-permutation is <code>(n - (n + 1) + 1)! / n! = 0! / n! = 1 / n!</code>. Thus, it produces a uniform random permutation.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic 4 -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Birthday Paradox & More</h2>
+          <p class="topic-subtitle">Classic probabilistic examples</p>
+
+          <div class="example">
+            <div class="callout-label">Detailed Example</div>
+            <h4>The Birthday Paradox</h4>
+            <p>How many people must be in a room before there's a 50% chance two of them share a birthday? The answer is surprisingly few: <strong>23 people</strong>.</p>
+            <p><strong>Proof using Indicator Random Variables:</strong><br>
+            Let <code>X_ij = 1</code> if person <code>i</code> and <code>j</code> share a birthday (probability <code>1/n</code>, where <code>n=365</code>).<br>
+            The expected number of pairs sharing a birthday is <code>E[X] = Σ_{i=1}^{k-1} Σ_{j=i+1}^{k} E[X_ij] = k(k-1)/(2n)</code>.<br>
+            Setting this expected value to 1 and solving for <code>k</code> yields approx 28 people, but the 50% probability threshold is crossed at just 23 because the exact probability of all birthdays being distinct is <code>1 × (1 - 1/n) × (1 - 2/n) × ... × (1 - (k-1)/n)</code>. Using the inequality <code>1 + x ≤ e^x</code>, this is bounded by <code>e^{-k(k-1)/2n}</code>. Setting this to <code>1/2</code> yields <code>k ≈ 23</code>.</p>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Detailed Example</div>
+            <h4>Balls and Bins (Coupon Collector's Problem)</h4>
+            <p>Tossing identical balls into <code>b</code> bins independently. Probability of landing in a specific bin is <code>1/b</code>.</p>
+            <ul>
+              <li><strong>Expected balls in a bin:</strong> <code>n/b</code> (Binomial distribution).</li>
+              <li><strong>Tosses until a given bin gets a ball:</strong> <code>b</code> (Geometric distribution).</li>
+              <li><strong>Tosses until EVERY bin gets a ball:</strong> Let <code>nᵢ</code> be the number of tosses in the <code>i</code>-th stage (getting a hit in an empty bin). The probability of success is <code>(b - i + 1) / b</code>. The expected number of tosses for this stage is <code>b / (b - i + 1)</code>.<br>
+              Summing over all stages: <code>E[n] = Σ_{i=1}^{b} (b / (b - i + 1)) = b Σ_{i=1}^{b} (1/i) = b(ln b + O(1))</code>.</li>
+            </ul>
+          </div>
+          
+          <div class="example">
+            <div class="callout-label">Detailed Example</div>
+            <h4>Streaks of Coin Flips</h4>
+            <p>If you flip a coin <code>n</code> times, what is the longest streak of consecutive heads you expect to see? The expected length is <strong>Θ(lg n)</strong>.</p>
+            <p><strong>Upper bound O(lg n):</strong> The probability that a streak of <code>k = 2⌈lg n⌉</code> heads starts at a given position is <code>1 / 2^(2⌈lg n⌉) ≤ 1/n²</code>. Using Boole's inequality, the probability it starts <em>anywhere</em> is at most <code>n(1/n²) = 1/n</code>. The expected length is thus tightly bounded by <code>O(lg n)</code>.</p>
+            <p><strong>Lower bound Ω(lg n):</strong> If we partition the flips into blocks of size <code>s = ⌊(lg n)/2⌋</code>, the probability a block is NOT all heads is <code>1 - 1/√n</code>. The probability that NONE of the blocks are all heads is <code>(1 - 1/√n)^(n/s) ≤ e^{-(2n/lg n)/√n} = O(1/n)</code>. Thus, with high probability, at least one block is all heads, yielding an expected length of <strong>Ω(lg n)</strong>.</p>
+          </div>
+
+        </div>
+
+      </div>
+      
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">↑</button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) return h2.textContent.replace(numEl.textContent, '').trim();
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        document.getElementById("main-content").scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none" || !s.style.display) {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li, .nav-list > li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"));
+    </script>
+  </body>
+</html>

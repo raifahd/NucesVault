@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DAA — Divide-and-Conquer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-course-label">Course Notes</div>
+        <div class="sidebar-title">DAA</div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- The Role of Algorithms in Computing.html"><span class="nav-num">01</span>The Role of Algorithms in Computing</a></li>
+        <li><a class="nav-module-link" href="./2- Getting Started.html"><span class="nav-num">02</span>Getting Started</a></li>
+        <li><a class="nav-module-link" href="./3- Characterizing Running Times.html"><span class="nav-num">03</span>Characterizing Running Times</a></li>
+        
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 4 — Divide and Conquer</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Matrix Multiplication</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Strassen's Algorithm</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Substitution Method</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Recursion-Tree Method</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>The Master Method</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Exercises</a></li>
+          </ul>
+        </li>
+
+        <li><a class="nav-module-link" href="./5- Probabilistic Analysis and Randomized Algorithms.html"><span class="nav-num">05</span>Probabilistic Analysis</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-4">
+        <div class="module-header">
+          <div class="module-eyebrow">DAA</div>
+          <h1 class="module-title">Module 4 — Divide-and-Conquer</h1>
+        </div>
+        
+        <!-- Topic 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Matrix Multiplication</h2>
+          <p class="topic-subtitle">A straightforward approach vs Divide-and-Conquer</p>
+          
+          <p>Multiplying two <code>n × n</code> matrices <code>A</code> and <code>B</code> gives an <code>n × n</code> matrix <code>C</code> where each element <code>c_ij</code> is the sum of <code>n</code> pairwise products.</p>
+          <p>The standard triply nested <code>for</code> loop takes <strong>Θ(n³)</strong> time because there are three loops, each running exactly <code>n</code> times.</p>
+
+          <h3>Divide-and-Conquer Matrix Multiplication</h3>
+          <p>We can divide each <code>n × n</code> matrix into four <code>n/2 × n/2</code> submatrices. Computing <code>C</code> then requires <strong>eight</strong> multiplications of <code>n/2 × n/2</code> matrices, and four additions.</p>
+          <p><code>C₁₁ = A₁₁B₁₁ + A₁₂B₂₁</code><br>
+          <code>C₁₂ = A₁₁B₁₂ + A₁₂B₂₂</code><br>
+          <code>C₂₁ = A₂₁B₁₁ + A₂₂B₂₁</code><br>
+          <code>C₂₂ = A₂₁B₁₂ + A₂₂B₂₂</code></p>
+
+          <pre><code>T(n) = 8T(n/2) + Θ(n²)</code></pre>
+          
+          <p>By solving this recurrence, we find that the running time is still <strong>Θ(n³)</strong>. It doesn't beat the straightforward method.</p>
+        </div>
+
+        <!-- Topic 2 -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Strassen's Algorithm</h2>
+          <p class="topic-subtitle">Breaking the Θ(n³) barrier</p>
+          
+          <p>In 1969, Volker Strassen discovered an algorithm that reduces the <em>bushiness</em> of the recursion tree. Instead of performing 8 recursive matrix multiplications, his algorithm performs only <strong>7</strong>.</p>
+
+          <div class="example">
+            <div class="callout-label">Detailed Formulation</div>
+            <h4>Strassen's 4 Steps</h4>
+            <p><strong>Step 1:</strong> Partition the matrices (takes <code>Θ(1)</code> time via index calculation).</p>
+            <p><strong>Step 2:</strong> Create 10 matrices <code>S₁</code> to <code>S₁₀</code> using additions and subtractions (takes <code>Θ(n²)</code> time):<br>
+            <code>S₁ = B₁₂ - B₂₂</code><br>
+            <code>S₂ = A₁₁ + A₁₂</code><br>
+            <code>S₃ = A₂₁ + A₂₂</code><br>
+            <code>S₄ = B₂₁ - B₁₁</code><br>
+            <code>S₅ = A₁₁ + A₂₂</code><br>
+            <code>S₆ = B₁₁ + B₂₂</code><br>
+            <code>S₇ = A₁₂ - A₂₂</code><br>
+            <code>S₈ = B₂₁ + B₂₂</code><br>
+            <code>S₉ = A₁₁ - A₂₁</code><br>
+            <code>S₁₀ = B₁₁ + B₁₂</code></p>
+
+            <p><strong>Step 3:</strong> Recursively compute 7 matrix products <code>P₁</code> to <code>P₇</code> (takes <code>7T(n/2)</code> time):<br>
+            <code>P₁ = A₁₁ · S₁</code><br>
+            <code>P₂ = S₂ · B₂₂</code><br>
+            <code>P₃ = S₃ · B₁₁</code><br>
+            <code>P₄ = A₂₂ · S₄</code><br>
+            <code>P₅ = S₅ · S₆</code><br>
+            <code>P₆ = S₇ · S₈</code><br>
+            <code>P₇ = S₉ · S₁₀</code></p>
+
+            <p><strong>Step 4:</strong> Compute the final <code>C</code> submatrices using additions and subtractions of the <code>P</code> matrices (takes <code>Θ(n²)</code> time):<br>
+            <code>C₁₁ = P₅ + P₄ - P₂ + P₆</code><br>
+            <code>C₁₂ = P₁ + P₂</code><br>
+            <code>C₂₁ = P₃ + P₄</code><br>
+            <code>C₂₂ = P₅ + P₁ - P₃ - P₇</code></p>
+          </div>
+          
+          <p>The recurrence becomes:</p>
+          <pre><code>T(n) = 7T(n/2) + Θ(n²)</code></pre>
+          
+          <p>Using the Master Theorem, this recurrence yields a running time of <code>Θ(n^(lg 7)) ≈ O(n²·⁸¹)</code>.</p>
+        </div>
+
+        <!-- Topic 3 -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Substitution Method</h2>
+          <p class="topic-subtitle">Proving recurrences using induction</p>
+          
+          <p>The <strong>substitution method</strong> for solving recurrences entails two steps:</p>
+          <ol>
+            <li><strong>Guess</strong> the form of the solution.</li>
+            <li><strong>Use mathematical induction</strong> to find the constants and show that the solution works.</li>
+          </ol>
+
+          <div class="example">
+            <div class="callout-label">Detailed Proof</div>
+            <h4>Solving T(n) = 2T(⌊n/2⌋) + n</h4>
+            <p><strong>Guess:</strong> <code>T(n) = O(n log n)</code>. We need to prove <code>T(n) ≤ cn log n</code> for some constant <code>c</code>.</p>
+            <p>Assume it holds for <code>⌊n/2⌋</code>: <code>T(⌊n/2⌋) ≤ c ⌊n/2⌋ log(⌊n/2⌋)</code>.</p>
+            <p>Substitute into the recurrence:<br/>
+            <code>T(n) ≤ 2(c ⌊n/2⌋ log(⌊n/2⌋)) + n</code><br/>
+            <code>≤ cn log(n/2) + n</code><br/>
+            <code>= cn log n - cn log 2 + n</code><br/>
+            <code>= cn log n - cn + n</code><br/>
+            <code>≤ cn log n</code> (as long as <code>c ≥ 1</code>).</p>
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Trick of the Trade: Subtracting a lower-order term</div>
+            <p>Sometimes your guess is asymptotically right, but the induction fails. For example, solving <code>T(n) = 2T(n/2) + 1</code>.</p>
+            <p>If you guess <code>T(n) ≤ cn</code>, substituting yields <code>T(n) ≤ cn + 1</code>, which does NOT imply <code>T(n) ≤ cn</code>. The math fails.</p>
+            <p><strong>The Fix:</strong> Subtract a lower-order term. Guess <code>T(n) ≤ cn - d</code> where <code>d > 0</code>.</p>
+            <p>Substitute: <code>T(n) ≤ 2(c(n/2) - d) + 1 = cn - 2d + 1</code>.</p>
+            <p>We want this to be <code>≤ cn - d</code>. So we need <code>cn - 2d + 1 ≤ cn - d</code>, which simplifies to <code>d ≥ 1</code>. The math now works beautifully!</p>
+          </div>
+        </div>
+
+        <!-- Topic 4 -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Recursion-Tree Method</h2>
+          <p class="topic-subtitle">Visualizing the cost of recursive calls</p>
+          
+          <p>A <strong>recursion tree</strong> represents the cost of the subproblems at each level of the recursion. It is highly effective for generating a good guess to use in the substitution method.</p>
+
+          <div class="example">
+            <div class="callout-label">Detailed Example</div>
+            <h4>Solving T(n) = 3T(n/4) + cn²</h4>
+            <ul>
+              <li><strong>Root Level:</strong> The root cost is <code>cn²</code>.</li>
+              <li><strong>Level 1:</strong> There are 3 nodes. Each has size <code>n/4</code>, so each costs <code>c(n/4)² = cn²/16</code>. The total for this level is <code>3 × cn²/16 = (3/16)cn²</code>.</li>
+              <li><strong>Level i:</strong> The size of each node is <code>n/4ⁱ</code>. There are <code>3ⁱ</code> nodes. The total cost at level <code>i</code> is <code>3ⁱ × c(n/4ⁱ)² = (3/16)ⁱcn²</code>.</li>
+            </ul>
+            <p>Because <code>3/16 < 1</code>, the costs decrease geometrically at each level. The total cost of all levels is bounded by the sum of an infinite decreasing geometric series:</p>
+            <p><code>T(n) ≤ Σ_{i=0}^{∞} (3/16)ⁱcn² = (1 / (1 - 3/16)) cn² = (16/13) cn²</code>.</p>
+            <p>Thus, the overall time is exactly bounded by the root, yielding <strong>O(n²)</strong>.</p>
+          </div>
+        </div>
+
+        <!-- Topic 5 -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>The Master Method</h2>
+          <p class="topic-subtitle">A cookbook approach for standard recurrences</p>
+          
+          <p>The master method provides bounds for recurrences of the form:</p>
+          <pre><code>T(n) = aT(n/b) + f(n)</code></pre>
+          <p>Where <code>a ≥ 1</code>, <code>b > 1</code>, and <code>f(n)</code> is the driving function (cost of dividing/combining). We compare <code>f(n)</code> with the <em>watershed function</em> <code>n^(log_b a)</code>.</p>
+
+          <div class="definition">
+            <div class="callout-label">The Three Cases</div>
+            <ol>
+              <li><strong>Leaves dominate:</strong> If <code>f(n)</code> grows polynomially slower than the watershed function, i.e., <code>f(n) = O(n^(log_b a - ε))</code> for some <code>ε > 0</code>, then <code>T(n) = Θ(n^(log_b a))</code>.</li>
+              <li><strong>Costs are evenly distributed:</strong> If <code>f(n)</code> and the watershed function grow at the same asymptotic rate, i.e., <code>f(n) = Θ(n^(log_b a) · logᵏ n)</code>, then <code>T(n) = Θ(n^(log_b a) · logᵏ⁺¹ n)</code>.</li>
+              <li><strong>Root dominates:</strong> If <code>f(n)</code> grows polynomially faster than the watershed function, i.e., <code>f(n) = Ω(n^(log_b a + ε))</code> AND satisfies the regularity condition <code>af(n/b) ≤ cf(n)</code> for some <code>c < 1</code>, then <code>T(n) = Θ(f(n))</code>.</li>
+            </ol>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Examples</div>
+            <ul>
+              <li><strong>Case 1 (Strassen's):</strong> <code>T(n) = 7T(n/2) + n²</code>.<br/> Here <code>a=7, b=2</code>, watershed is <code>n^(log₂ 7) ≈ n²·⁸¹</code>.<br/> <code>f(n) = n²</code> is polynomially smaller than the watershed (by <code>ε ≈ 0.81</code>). Thus <code>T(n) = Θ(n^(log₂ 7))</code>.</li>
+              <li><strong>Case 2 (Merge Sort):</strong> <code>T(n) = 2T(n/2) + n</code>.<br/> Here <code>a=2, b=2</code>, watershed is <code>n^(log₂ 2) = n¹</code>.<br/> <code>f(n) = n¹</code>, which exactly matches the watershed. Thus <code>T(n) = Θ(n log n)</code>.</li>
+              <li><strong>Case 3:</strong> <code>T(n) = 3T(n/4) + n log n</code>.<br/> Here <code>a=3, b=4</code>, watershed is <code>n^(log₄ 3) ≈ n⁰·⁷⁹³</code>.<br/> <code>f(n) = n log n</code> grows polynomially faster than the watershed. Checking regularity: <code>3(n/4)log(n/4) ≤ (3/4)n log n</code>. Since <code>3/4 < 1</code>, it holds. Thus <code>T(n) = Θ(n log n)</code>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Topic 6 -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>Exercises & Solutions</h2>
+          <p class="topic-subtitle">Test your understanding</p>
+          
+          <details>
+            <summary>Practice Q1: Solve T(n) = 2T(n/4) + 1</summary>
+            <p><strong>Answer:</strong><br>
+            Using the master method: <code>a = 2, b = 4</code>.<br>
+            Watershed function: <code>n^(log₄ 2) = n^(0.5) = √n</code>.<br>
+            <code>f(n) = 1</code>, which is <code>O(n^(0.5 - ε))</code> for <code>ε = 0.5</code>. This is Case 1.<br>
+            Solution: <code>T(n) = Θ(√n)</code>.</p>
+          </details>
+
+          <details>
+            <summary>Practice Q2: Solve T(n) = 2T(n/4) + √n</summary>
+            <p><strong>Answer:</strong><br>
+            Using the master method: <code>a = 2, b = 4</code>.<br>
+            Watershed function: <code>n^(log₄ 2) = √n</code>.<br>
+            <code>f(n) = √n</code>. The driving function exactly matches the watershed function. This is Case 2 (with k=0).<br>
+            Solution: <code>T(n) = Θ(√n log n)</code>.</p>
+          </details>
+
+          <details>
+            <summary>Practice Q3: Solve T(n) = 2T(n/4) + n</summary>
+            <p><strong>Answer:</strong><br>
+            Using the master method: <code>a = 2, b = 4</code>.<br>
+            Watershed function: <code>n^(log₄ 2) = √n</code>.<br>
+            <code>f(n) = n</code>, which is <code>Ω(n^(0.5 + ε))</code> for <code>ε = 0.5</code>. Checking regularity: <code>2(n/4) ≤ cn</code>, so <code>(1/2)n ≤ cn</code> holds for <code>c = 1/2 < 1</code>. This is Case 3.<br>
+            Solution: <code>T(n) = Θ(n)</code>.</p>
+          </details>
+        </div>
+
+      </div>
+      
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">↑</button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) return h2.textContent.replace(numEl.textContent, '').trim();
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        document.getElementById("main-content").scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb) sb.classList.remove('open');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none" || !s.style.display) {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li, .nav-list > li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"));
+    </script>
+  </body>
+</html>
