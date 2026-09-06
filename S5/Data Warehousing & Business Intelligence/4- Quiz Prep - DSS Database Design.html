@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing — Quiz Prep: DSS Database Design</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!--
+    Adjust the href path to notes.css depending on where this file lives:
+      Same folder as notes.css  →  href="./notes.css"
+      One folder deep           →  href="../notes.css"
+      Two folders deep          →  href="../../notes.css"
+  -->
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR
+     - Add one .nav-section per module/lecture file
+     - Use <a class="nav-module-link" href="other-file.html"> to link between files
+     - Use <a onclick="showTopic('topic-N')"> for topics within this file
+     ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to DW.html">
+            <span class="nav-num">01</span>Introduction to DW
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- Quiz Prep - Intro to DW.html">
+            <span class="nav-num">02</span>Quiz Prep: Intro to DW
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- High Performance DSS Database Design.html">
+            <span class="nav-num">03</span>High Performance DSS Database Design
+          </a>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Quiz Prep: DSS Database Design</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')"
+                ><span class="nav-num">01</span>Database Design & Normalization</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')"
+                ><span class="nav-num">02</span>Denormalization Techniques</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Warehousing</div>
+          <h1 class="module-title">Quiz Prep: DSS Database Design</h1>
+        </div>
+
+        <!-- ── TOPIC CARD ───────────────────────────────────────
+         Copy this block for each new topic.
+         Increment id="topic-N" and the topics[] array in JS.
+         ─────────────────────────────────────────────────── -->
+        
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span> Database Design & Normalization</h2>
+          <p class="topic-subtitle">Test your knowledge on 1NF, 2NF, and 3NF</p>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What is the main requirement of the First Normal Form (1NF)?</summary>
+              <p><strong>Answer:</strong> The domain of each attribute must include only atomic (simple, indivisible) values. There should be no repeating groups or multiple domains combined into a single attribute.</p>
+            </details>
+            <details>
+              <summary>Medium: An insurance table stores policy status. A status code "L" means "lapsed" for Long-Term Disability policies, but means "free look" for Life policies. Which normal form does this violate and why?</summary>
+              <p><strong>Answer:</strong> It violates 1NF because the value's meaning is "redefined" based on another attribute's domain. The attribute is overloaded, meaning it is not atomic in its semantics.</p>
+            </details>
+            <details>
+              <summary>Medium: What is the rule for Second Normal Form (2NF)?</summary>
+              <p><strong>Answer:</strong> Every non-prime attribute must be fully functionally dependent on the entire primary key, not just a part of a composite primary key.</p>
+            </details>
+            <details>
+              <summary>Hard: A shipment table has the primary key `Shipment#`. It also contains `Customer#`, `Customer_Nm`, and `Address`. Why does this violate 3NF, and what is the fix?</summary>
+              <p><strong>Answer:</strong> It violates 3NF because `Customer_Nm` and `Address` are transitively dependent on the primary key `Shipment#` through the non-prime attribute `Customer#`. The fix is to split the table into fundamental entities: a `Shipment` table and a separate `Customer` table.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span> Denormalization Techniques</h2>
+          <p class="topic-subtitle">Pre-joins, Column Replication, and Pre-aggregation</p>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What are the three common forms of denormalization used in DSS databases?</summary>
+              <p><strong>Answer:</strong> 1) Pre-join denormalization, 2) Column replication or movement, and 3) Pre-aggregation.</p>
+            </details>
+            <details>
+              <summary>Medium: When applying pre-join denormalization between a Sales Header and Sales Detail table, what happens to the overall raw data size?</summary>
+              <p><strong>Answer:</strong> The storage requirements typically increase significantly because the header information (e.g., store ID, date) is redundantly replicated for every single line item in the detail table.</p>
+            </details>
+            <details>
+              <summary>Medium: Why might a database designer choose to replicate a `customer_id` from a header table down into a deeply nested transaction detail table?</summary>
+              <p><strong>Answer:</strong> To avoid a costly multi-table join and to facilitate table co-location, ensuring that all transactions for a given customer are stored on the same disk partitions, which drastically speeds up customer-centric queries.</p>
+            </details>
+            <details>
+              <summary>Hard: Why is it stated that "Aggregates should never replace detailed data" in a Data Warehouse?</summary>
+              <p><strong>Answer:</strong> While pre-aggregation provides huge performance gains for standard, pre-defined queries, ad-hoc discovery and sophisticated drill-down analyses will always require the raw, detailed data. Deleting the details removes the flexibility of the DSS.</p>
+            </details>
+            <details>
+              <summary>Hard: What are the primary tradeoffs that must be quantified when considering any denormalization technique?</summary>
+              <p><strong>Answer:</strong> Every denormalization decision is an engineering tradeoff between: 1) Query Performance (usually the benefit), against 2) Storage Cost, 3) Flexibility (ability to answer new types of queries), and 4) Maintenance (ETL refresh costs and data quality management).</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- Paste another topic-card here for topic-2, etc. -->
+      </div>
+      <!-- end module-container -->
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      // ── List all topic IDs in order ────────────────────────
+      const topics = ["topic-1", "topic-2"]; // add more as needed
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      
+      
+        
+      
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      // Initialise
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>

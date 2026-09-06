@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing — High Performance DSS Database Design</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!--
+    Adjust the href path to notes.css depending on where this file lives:
+      Same folder as notes.css  →  href="./notes.css"
+      One folder deep           →  href="../notes.css"
+      Two folders deep          →  href="../../notes.css"
+  -->
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR
+     - Add one .nav-section per module/lecture file
+     - Use <a class="nav-module-link" href="other-file.html"> to link between files
+     - Use <a onclick="showTopic('topic-N')"> for topics within this file
+     ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to DW.html">
+            <span class="nav-num">01</span>Introduction to DW
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- Quiz Prep - Intro to DW.html">
+            <span class="nav-num">02</span>Quiz Prep: Intro to DW
+          </a>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>High Performance DSS Database Design</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')"
+                ><span class="nav-num">01</span>Review of Normalization (Database 101)</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')"
+                ><span class="nav-num">02</span>Pre-join Denormalization</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')"
+                ><span class="nav-num">03</span>Column Replication or Movement</a
+              >
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')"
+                ><span class="nav-num">04</span>Pre-aggregation</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Quiz Prep - DSS Database Design.html">
+            <span class="nav-num">04</span>Quiz Prep: DSS Database Design
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Warehousing</div>
+          <h1 class="module-title">High Performance DSS Database Design</h1>
+        </div>
+
+        <!-- ── TOPIC CARD ───────────────────────────────────────
+         Copy this block for each new topic.
+         Increment id="topic-N" and the topics[] array in JS.
+         ─────────────────────────────────────────────────── -->
+        
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span> Review of Normalization (Database 101)</h2>
+          <p class="topic-subtitle">Revisiting 1NF, 2NF, and 3NF before breaking the rules</p>
+
+          <p>
+            Before we can start denormalizing database structures for performance in a Data Warehouse, we must first understand the rules we are breaking. A solid grasp of Third Normal Form (3NF) ensures that we denormalize deliberately as an engineering decision, rather than by accident.
+          </p>
+
+          <h3>First Normal Form (1NF)</h3>
+          <p>
+            To comply with 1NF, the domain of each attribute in a relation must include only <strong>atomic</strong> (simple, indivisible) values. You shouldn't have to "decode" attribute values based on other attributes, nor should you glue multiple values into a single string.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Atomic Value:</strong> A value that cannot be further subdivided without losing its fundamental meaning in the business context.
+          </div>
+          
+          <div class="warning-box">
+            <div class="callout-label">Common Violations of 1NF</div>
+            <ul>
+              <li><strong>Value "redefines" within an attribute:</strong> e.g., A status of "L" means "lapsed" if policy type is "LTD", but "free look" if policy type is "LIF".</li>
+              <li><strong>Multiple domains combined:</strong> e.g., Group type containing "LGE" (Large), "MED" (Medium), but also "ASO" (Administrative Services Only). Overlapping concepts mixed into one column.</li>
+              <li><strong>Repeating groups:</strong> e.g., Keeping 12 columns for Jan_Bal, Feb_Bal, etc., instead of one row per month.</li>
+            </ul>
+          </div>
+          
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Fixing Repeating Groups</h4>
+            <p>Instead of a single account record with 12 monthly balance columns (which takes ~2.04 GB for 10M accounts over 3 years), create one row for each month of balance figures. While this normalizes the design (taking ~9.72 GB), appending new rows is up to 10x faster than updating buckets, and SQL queries become much simpler and less error-prone to maintain.</p>
+          </div>
+
+          <h3>Second Normal Form (2NF)</h3>
+          <p>
+            To comply with 2NF, every non-prime attribute must be <strong>fully functionally dependent</strong> on the entire primary key. This applies to tables with composite primary keys.
+          </p>
+          <p>
+            A typical violation is when attributes describe only a <em>part</em> of the primary key. For instance, in an `Employee_x_Project` table with PK `(SSN, Project_Id)`, storing the `Employee_Nm` or `Project_Nm` violates 2NF because `Employee_Nm` only depends on `SSN`. The fix is to split the table into fundamental entities (`Employee`, `Project`) and an associative entity.
+          </p>
+
+          <h3>Third Normal Form (3NF)</h3>
+          <p>
+            To comply with 3NF, the table must be in 2NF, and every non-prime attribute must be <strong>non-transitively dependent</strong> on the primary key. Essentially, attributes should depend "on the key, the whole key, and nothing but the key".
+          </p>
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li><strong>1NF:</strong> Attributes must be atomic. Avoid repeating groups and overloaded meanings.</li>
+              <li><strong>2NF:</strong> No partial dependencies on a composite primary key.</li>
+              <li><strong>3NF:</strong> No transitive dependencies; non-key attributes shouldn't depend on other non-key attributes.</li>
+              <li>Normalization reduces storage redundancies and anomalies but might introduce complex joins.</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What is a repeating group and which normal form does it violate?</summary>
+              <p><strong>Answer:</strong> A repeating group occurs when multiple values for the same attribute are stored in separate columns (e.g., Q1_Sales, Q2_Sales). It violates the First Normal Form (1NF).</p>
+            </details>
+            <details>
+              <summary>Medium: Why is storing "Agent Name" inside an "Agent-Office Assignment" table (where PK is Agent_ID + Office_ID + Start_Date) a violation of 2NF?</summary>
+              <p><strong>Answer:</strong> "Agent Name" depends solely on the "Agent_ID", which is only a part of the composite primary key. This is a partial dependency, violating 2NF.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span> Pre-join Denormalization</h2>
+          <p class="topic-subtitle">Gluing tables together to avoid performance bottlenecks</p>
+
+          <p>
+            In a decision support system (DSS), we sometimes bend the rules of normalization to deliver high performance. The goal is to provide maximum performance without sacrificing flexibility, using as few resources as possible. 
+          </p>
+          
+          <p>
+            <strong>Pre-join denormalization</strong> takes tables that are frequently joined and "glues" them together into a single table physically. This avoids the performance impact of frequent joins during query execution.
+          </p>
+          
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Differences in performance (when not using indexes) depend on the RDBMS join plans available:
+            <ul>
+              <li><strong>Sort-Merge Join:</strong> Savings equal the overhead of sorting the data.</li>
+              <li><strong>Hash Join:</strong> Savings equal the recursive partitioning overhead.</li>
+              <li><strong>Nested Loop Join:</strong> Savings equal the additional I/Os related to index access.</li>
+            </ul>
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Tradeoffs</div>
+            Pre-joining usually <strong>increases storage requirements</strong> significantly. For example, pre-joining a sales header (30 bytes) with sales detail (40 bytes) across billions of records can increase the raw data size by 24% or more. Furthermore, queries that just want to count distinct sales (headers) will now require a <code>COUNT(DISTINCT sale_id)</code> on the detail table, which forces a costly sort operation.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Pre-join denormalization combines frequently joined tables into one.</li>
+              <li>It eliminates costly join overhead at runtime.</li>
+              <li>It significantly inflates storage space due to data redundancy.</li>
+              <li>It can degrade the performance of queries that only need to aggregate the "parent" table's data due to forced distinct sorts.</li>
+            </ul>
+          </div>
+          
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium: What is the primary performance penalty introduced by pre-join denormalization when counting parent entities?</summary>
+              <p><strong>Answer:</strong> Because the parent data is repeated for every child record, counting the parent entities requires a <code>COUNT(DISTINCT parent_id)</code>, which forces the database to perform a costly sort or hash operation.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span> Column Replication or Movement</h2>
+          <p class="topic-subtitle">A targeted alternative to full pre-joins</p>
+
+          <p>
+            Instead of pre-joining entire tables, we can take just the columns that are frequently accessed via large-scale joins and <strong>replicate (or move)</strong> them into the detail table(s). This is essentially a limited form of pre-join denormalization.
+          </p>
+          
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Healthcare Claim Detail</h4>
+            <p>Moving the <code>member_id</code> from the <code>claim_header</code> table down to the <code>claim_detail</code> table. This adds a few extra bytes per row on the detail table, but allows many queries to avoid joining the header table altogether just to group by member.</p>
+          </div>
+          
+          <h3>Table Co-location</h3>
+          <p>
+            Replicating columns can also facilitate <strong>co-location</strong> of commonly joined tables. For instance, by bringing <code>customer_id</code> down into a deeply nested transaction table, the RDBMS can co-locate transactions on the same disk partitions as the customer, making three-table joins execute much faster. 
+          </p>
+
+          <div class="warning-box">
+            <div class="callout-label">Considerations</div>
+            <ul>
+              <li>Scanning the transaction table will take longer because the rows are wider (e.g., adding 10% more bytes means full table scans take 10% longer).</li>
+              <li>If the replicated key changes, updates must cascade down to billions of transaction rows.</li>
+              <li>You must include the replicated key in the join condition to ensure the optimizer recognizes the co-location.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span> Pre-aggregation</h2>
+          <p class="topic-subtitle">Storing pre-computed summaries for instant access</p>
+
+          <p>
+            <strong>Pre-aggregation</strong> involves taking aggregate values that are frequently used in decision-making (e.g., sums, counts, averages) and pre-computing them into physical summary tables.
+          </p>
+          <p>
+            This can provide massive performance advantages by avoiding the on-the-fly aggregation of billions of detailed rows. However, maintaining these aggregates introduces significant overhead.
+          </p>
+          
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Pre-aggregation:</strong> The process of computing and storing aggregated metrics (like monthly sales per store) in a separate table during the ETL process, rather than calculating them at query time.
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Standardized definitions are critical! Business users must agree on exactly what the aggregate means (e.g., does "monthly" mean accounting period, calendar month, or billing cycle?). The definition must remain stable to provide value in historical analysis.
+          </div>
+
+          <h3>Maintenance Strategies</h3>
+          <p>
+            You can maintain aggregates via a <em>transactional update strategy</em> (updating the summary row whenever a detail row arrives) or a <em>re-build strategy</em> (dropping and recalculating the whole summary). The cost of updating an existing aggregate row is typically 10x higher than bulk-inserting a new detail row. Thus, an aggregate table must be queried <strong>many times per day</strong> to justify its maintenance overhead.
+          </p>
+          
+          <div class="warning-box">
+            <div class="callout-label">Critical Rule</div>
+            <strong>Aggregates should never replace detailed data.</strong> Summary tables enhance performance for pre-defined views, but detailed data is always required for drill-down, discovery-based, and ad-hoc analysis.
+          </div>
+          
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Pre-aggregation dramatically speeds up high-level dashboard queries.</li>
+              <li>Requires strict business agreement on metric definitions.</li>
+              <li>Maintenance (ETL) cost is high; only build aggregates that are heavily used.</li>
+              <li>Never delete the detailed data; summaries exist alongside details.</li>
+            </ul>
+          </div>
+          
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Hard: Compare the update cost of pre-aggregated data vs normalized detail data.</summary>
+              <p><strong>Answer:</strong> Updating an existing aggregate row is highly expensive (involving read-locks, mathematical updates, and writes, often 10x more costly) compared to simply bulk-loading/appending new rows into a normalized detail table. Therefore, aggregates are best re-built in batch if the underlying data changes frequently.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- Paste another topic-card here for topic-2, etc. -->
+      </div>
+      <!-- end module-container -->
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      // ── List all topic IDs in order ────────────────────────
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"]; // add more as needed
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      
+      
+        
+      
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      // Initialise
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>
