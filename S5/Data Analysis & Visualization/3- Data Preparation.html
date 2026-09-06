@@ -38,16 +38,7 @@
     <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()"/>
   </div>
   <ul class="nav-list" id="nav-list">
-        <li>
-          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
-            <span class="nav-num">01</span>Introduction to Data Analysis & Visualization
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
-            <span class="nav-num">02</span>Data Analysis Lifecycle
-          </a>
-        </li>
+        <!-- Current Module (Active & Expandable) -->
         <li class="nav-section">
           <div class="nav-section-title" onclick="toggleSection(this)">
             <span>Data Preparation</span><span class="chevron">▼</span>
@@ -61,30 +52,29 @@
         <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Best Practices &amp; PCS</a></li>
         <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>🎯 Quiz Prep</a></li></ul>
         </li>
+
+        <!-- Other Course Modules (Cross-File Links) -->
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
+            <span class="nav-num">01</span>Introduction to DAV
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
+            <span class="nav-num">02</span>Data Analysis Lifecycle
+          </a>
+        </li>
         <li>
           <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
             <span class="nav-num">04</span>Exploratory Data Analysis
           </a>
         </li>
-      </ul>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
-            <span class="nav-num">04</span>Exploratory Data Analysis
-          </a>
-        </li>
-      </ul>
-    </li>
-<li><a class="nav-module-link" href="./1- Introduction to Data Analysis &amp; Visualization.html"><span class="nav-num">01</span>Introduction to VDS</a></li>
-<li><a class="nav-module-link" href="./2- Data Analysis Lifecycle.html"><span class="nav-num">02</span>Data Analysis Lifecycle</a></li>
-<li><a class="nav-module-link" href="./4- Exploratory Data Analysis.html"><span class="nav-num">04</span>Exploratory Data Analysis</a></li>
         <li>
           <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
             <span class="nav-num">05</span>Evolution of Data Architecture
           </a>
         </li>
-
-</ul>
+      </ul>
     </div>
     <div id="main-content">
 <div class="module-container" id="module-3">

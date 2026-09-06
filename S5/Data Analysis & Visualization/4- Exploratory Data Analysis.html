@@ -33,9 +33,22 @@
     <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()"/>
   </div>
   <ul class="nav-list" id="nav-list">
+        <!-- Current Module (Active & Expandable) -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Exploratory Data Analysis</span><span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Three Modes of Analysis</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>The Q&amp;A Workflow</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Choosing a Visualization</a></li>
+        <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>🎯 Quiz Prep</a></li></ul>
+        </li>
+
+        <!-- Other Course Modules (Cross-File Links) -->
         <li>
           <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
-            <span class="nav-num">01</span>Introduction to Data Analysis & Visualization
+            <span class="nav-num">01</span>Introduction to DAV
           </a>
         </li>
         <li>
@@ -48,30 +61,12 @@
             <span class="nav-num">03</span>Data Preparation
           </a>
         </li>
-        <li class="nav-section">
-          <div class="nav-section-title" onclick="toggleSection(this)">
-            <span>Exploratory Data Analysis</span><span class="chevron">▼</span>
-          </div>
-          <ul class="nav-sublist">
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Three Modes of Analysis</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>The Q&amp;A Workflow</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Choosing a Visualization</a></li>
-        <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>🎯 Quiz Prep</a></li></ul>
-        </li>
-      </ul>
-        </li>
-      </ul>
-    </li>
-<li><a class="nav-module-link" href="./1- Introduction to Data Analysis &amp; Visualization.html"><span class="nav-num">01</span>Introduction to VDS</a></li>
-<li><a class="nav-module-link" href="./2- Data Analysis Lifecycle.html"><span class="nav-num">02</span>Data Analysis Lifecycle</a></li>
-<li><a class="nav-module-link" href="./3- Data Preparation.html"><span class="nav-num">03</span>Data Preparation</a></li>
         <li>
           <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
             <span class="nav-num">05</span>Evolution of Data Architecture
           </a>
         </li>
-
-</ul>
+      </ul>
     </div>
     <div id="main-content">
 <div class="module-container" id="module-4">
