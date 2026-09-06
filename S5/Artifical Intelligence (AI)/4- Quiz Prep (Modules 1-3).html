@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Artificial Intelligence — Midterm Quiz Prep</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      .quiz-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .quiz-header h2 {
+        color: var(--ac);
+        font-size: 2em;
+        margin-bottom: 10px;
+      }
+      .quiz-header p {
+        color: var(--muted);
+      }
+      .difficulty-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-right: 10px;
+      }
+      .difficulty-easy {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+      }
+      .difficulty-medium {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+      }
+      .difficulty-hard {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+      }
+      details summary {
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Artificial Intelligence</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to AI.html">
+            <span class="nav-num">01</span>Intro to AI
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- State Space Search.html">
+            <span class="nav-num">02</span>State Space Search
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Uninformed Search Algorithms.html">
+            <span class="nav-num">03</span>Uninformed Search
+          </a>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Quiz Prep</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Module 1: Introduction</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Module 2: State Space</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Module 3: Algorithms</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-intro">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence</div>
+          <h1 class="module-title">Quiz Prep (Modules 1-3)</h1>
+        </div>
+
+        <div class="quiz-header">
+          <h2>Test Your Knowledge</h2>
+          <p>Click on the questions to reveal detailed explanations. Try to answer them yourself first!</p>
+        </div>
+
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Module 1: Introduction to AI</h2>
+          
+          <div class="practice-section" style="margin-top: 20px;">
+            <details>
+              <summary><span class="difficulty-badge difficulty-easy">Easy</span> What does the acronym PEAS stand for?</summary>
+              <p><strong>Answer:</strong> Performance measure, Environment, Actuators, Sensors. It is the framework used to completely specify the task environment for an AI agent.</p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-medium">Medium</span> Explain the difference between a Model-Based Reflex Agent and a Goal-Based Agent.</summary>
+              <p><strong>Answer:</strong> A Model-Based Reflex Agent acts based on its current percept and its internal memory/model of past states (e.g. "I remember the car went into my blind spot"). A Goal-Based Agent also has an internal model, but it additionally uses goal information to project into the future ("If I take action X, will it get me closer to destination Y?"). The key difference is that goal-based agents <em>plan ahead</em>, while model-based reflex agents just react to the current (and remembered) state.</p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-hard">Hard</span> Why is a rational agent not necessarily perfect/omniscient? Give a real-world example.</summary>
+              <p><strong>Answer:</strong> Rationality is about maximizing <em>expected</em> performance based only on the <em>percepts it has received</em> and its <em>built-in knowledge</em>. Perfection requires knowing the actual outcome of all actions in advance (omniscience), which is usually impossible. <br><br><strong>Example:</strong> A rational poker-playing AI might go all-in with Four of a Kind, expecting to win 99.9% of the time based on the cards it sees. If the opponent happens to hold a Straight Flush and wins, the AI's decision was still completely rational given its information, even though the outcome was not perfect.</p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-medium">Medium</span> Define the PEAS for a robotic vacuum cleaner.</summary>
+              <p><strong>Answer:</strong><br>
+                - <strong>Performance:</strong> Amount of dirt collected, time taken, battery efficiency, not bumping into pets.<br>
+                - <strong>Environment:</strong> The room, furniture, walls, floor type.<br>
+                - <strong>Actuators:</strong> Wheels, vacuum suction motor, sweeping brushes.<br>
+                - <strong>Sensors:</strong> Bump bumper, dirt sensor, cliff sensor (to avoid falling down stairs), internal battery meter.
+              </p>
+            </details>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-2" style="display:none;">
+          <h2><span class="topic-num">2</span>Module 2: State Space Search</h2>
+          
+          <div class="practice-section" style="margin-top: 20px;">
+            <details>
+              <summary><span class="difficulty-badge difficulty-easy">Easy</span> What are the four components of a formal state space definition [N,A,S,GD]?</summary>
+              <p><strong>Answer:</strong><br>
+                <strong>N</strong> = Nodes (states)<br>
+                <strong>A</strong> = Arcs (legal moves/actions between states)<br>
+                <strong>S</strong> = Start state(s)<br>
+                <strong>GD</strong> = Goal state(s)
+              </p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-easy">Easy</span> What makes a tree different from a general graph?</summary>
+              <p><strong>Answer:</strong> A tree is a specific type of graph that contains absolutely <em>no cycles</em>. There is exactly one unique path between any pair of nodes.</p>
+            </details>
+
+            <details>
+              <summary><span class="difficulty-badge difficulty-medium">Medium</span> In Tic-Tac-Toe, why is the State Space smaller than the total number of nodes in the game tree?</summary>
+              <p><strong>Answer:</strong> The game tree branches out for every single move sequence, treating "X top-left then O center" as a different path from "O center then X top-left". However, both paths result in the exact same physical board configuration. The state space only counts unique physical configurations (states), so it is much smaller because it doesn't duplicate identical states reached through different move orders.</p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-hard">Hard</span> You are solving the Traveling Salesperson Problem (TSP) on a map with 5 cities. Assuming all cities are fully connected to each other, how many possible paths (including the return home) must be checked for an exhaustive search?</summary>
+              <p><strong>Answer:</strong> For <em>n</em> cities, the complexity is <code>(n-1)!</code>.<br>
+              Since n = 5, the number of paths is <code>4! = 4 * 3 * 2 * 1 = 24</code> paths.<br>
+              (Note: The starting city is fixed, so we have 4 choices for the first stop, 3 for the second, 2 for the third, and 1 for the final stop before returning home).</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-3" style="display:none;">
+          <h2><span class="topic-num">3</span>Module 3: Uninformed Search Algorithms</h2>
+          
+          <div class="practice-section" style="margin-top: 20px;">
+            <details>
+              <summary><span class="difficulty-badge difficulty-easy">Easy</span> What data structures do BFS and DFS use to track the frontier (NSL)?</summary>
+              <p><strong>Answer:</strong><br>
+                <strong>BFS (Breadth-First Search):</strong> Uses a Queue (FIFO - First In, First Out).<br>
+                <strong>DFS (Depth-First Search):</strong> Uses a Stack (LIFO - Last In, First Out).
+              </p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-medium">Medium</span> Compare BFS and DFS regarding Completeness and Space Complexity.</summary>
+              <p><strong>Answer:</strong><br>
+                - <strong>Completeness:</strong> BFS is complete (always finds a goal if it exists). DFS is NOT complete (can get stuck in an infinite branch).<br>
+                - <strong>Space Complexity:</strong> BFS is highly inefficient (exponential space, <code>O(b^d)</code>) because it stores entire levels in memory. DFS is highly efficient (linear space, <code>O(b*d)</code>) because it only stores the current single path.
+              </p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-medium">Medium</span> How does Iterative Deepening Search (IDS) get the "best of both worlds"?</summary>
+              <p><strong>Answer:</strong> IDS repeatedly runs DFS, incrementing the depth limit by 1 each time. Because it uses DFS under the hood, it keeps the memory requirement low (linear space). Because it checks depth 0, then depth 1, then depth 2 completely, it acts like BFS, ensuring it finds the shortest path (optimal) and never gets stuck in an infinite branch (complete).</p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-hard">Hard</span> Why is the goal test applied to a node when it is <em>selected for expansion</em> in Uniform-Cost Search, rather than when it is first generated?</summary>
+              <p><strong>Answer:</strong> Because Uniform-Cost Search evaluates paths based on varied costs, not just depth. If the algorithm generates a goal node via a path costing 100, it shouldn't immediately declare victory. There might be an unexpanded node in the queue that leads to the goal with a total cost of only 50. By waiting to test the goal until it is the absolute cheapest node <em>popped off the queue for expansion</em>, UCS guarantees it has found the mathematically cheapest path.</p>
+            </details>
+            
+            <details>
+              <summary><span class="difficulty-badge difficulty-hard">Hard</span> Describe the four tracking lists used in Backtracking search.</summary>
+              <p><strong>Answer:</strong><br>
+                1. <strong>SL (State List):</strong> The active path currently being evaluated.<br>
+                2. <strong>NSL (New State List):</strong> The frontier of nodes waiting to be evaluated (siblings of nodes on the SL).<br>
+                3. <strong>DE (Dead Ends):</strong> A "graveyard" of states that are known to lead to failure, preventing the algorithm from retrying them.<br>
+                4. <strong>CS (Current State):</strong> The exact state being looked at right now.
+              </p>
+            </details>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll('.topic-card').forEach(c => c.style.display = 'none');
+        const target = document.getElementById(id);
+        if (target) target.style.display = 'block';
+        
+        currentTopicIndex = topics.indexOf(id);
+        
+        document.querySelectorAll('.nav-sublist a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          link.classList.add('active');
+          const sublist = link.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevTitle = document.getElementById('prev-title');
+        const nextTitle = document.getElementById('next-title');
+
+        if (currentTopicIndex > 0) {
+          prevBtn.style.display = 'flex';
+          if (prevTitle) prevTitle.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          prevBtn.style.display = 'none';
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nextBtn.style.display = 'flex';
+          if (nextTitle) nextTitle.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nextBtn.style.display = 'none';
+        }
+        
+        document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(element) {
+        const sublist = element.nextElementSibling;
+        const chevron = element.querySelector('.chevron');
+        if (sublist.style.display === 'none') {
+          sublist.style.display = 'block';
+          chevron.style.transform = 'rotate(0deg)';
+        } else {
+          sublist.style.display = 'none';
+          chevron.style.transform = 'rotate(-90deg)';
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Artificial Intelligence — Uninformed Search Algorithms</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      .flex-table {
+        display: flex;
+        gap: 20px;
+        margin: 20px 0;
+      }
+      .flex-table > div {
+        flex: 1;
+        background: var(--surface);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--bd);
+      }
+      .flex-table h4 {
+        color: var(--ac);
+        margin-top: 0;
+        border-bottom: 2px solid var(--ac);
+        padding-bottom: 5px;
+      }
+      .tree-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+        overflow-x: auto;
+      }
+      .tree-level {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 30px;
+        position: relative;
+      }
+      .node {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: 2px solid var(--fg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        position: relative;
+      }
+      .node.start {
+        border-color: var(--ac);
+        background: rgba(217, 119, 87, 0.1);
+      }
+      .node.goal {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+      }
+      .node.expanded {
+        background: var(--ac);
+        color: white;
+        border-color: var(--ac);
+      }
+      .edge {
+        position: absolute;
+        top: 35px;
+        left: 50%;
+        width: 2px;
+        height: 30px;
+        background: var(--bd);
+      }
+      .edge.left {
+        transform: rotate(45deg);
+        transform-origin: top;
+      }
+      .edge.right {
+        transform: rotate(-45deg);
+        transform-origin: top;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Artificial Intelligence</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to AI.html">
+            <span class="nav-num">01</span>Intro to AI
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- State Space Search.html">
+            <span class="nav-num">02</span>State Space Search
+          </a>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Uninformed Search</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Direction of Search</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Backtracking Search</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>BFS vs DFS</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Iterative Deepening & UCS</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Quiz Prep (Modules 1-3).html">
+            <span class="nav-num">04</span>Quiz Prep
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-intro">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence</div>
+          <h1 class="module-title">Uninformed Search Algorithms</h1>
+        </div>
+
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Direction of Search</h2>
+          <p class="topic-subtitle">Choosing where to begin our graph traversal</p>
+
+          <p>
+            When searching through a state space, we have a choice of where to start: at the beginning and work forward, or at the end and work backward. These two strategies are called <strong>Data-Driven</strong> and <strong>Goal-Driven</strong> search.
+          </p>
+
+          <div class="flex-table">
+            <div>
+              <h4>Data-Driven Search</h4>
+              <p>Also known as <strong>Forward Chaining</strong>.</p>
+              <ul>
+                <li>Begins with the given facts/start state.</li>
+                <li>Applies legal moves or rules to change the state.</li>
+                <li>Generates new facts/states until a path that satisfies the goal condition is found.</li>
+              </ul>
+              <p><em>Use when:</em> The goal is poorly defined or there are many possible goals, but the starting data is clear.</p>
+            </div>
+            <div>
+              <h4>Goal-Driven Search</h4>
+              <p>Also known as <strong>Backward Chaining</strong>.</p>
+              <ul>
+                <li>Begins with the goal we want to solve.</li>
+                <li>Determines what conditions must be true to reach this goal.</li>
+                <li>These conditions become <em>subgoals</em>. The process repeats backward until the given facts of the problem are reached.</li>
+              </ul>
+              <p><em>Use when:</em> The goal is clearly defined and there is a massive amount of starting data (most of which is irrelevant).</p>
+            </div>
+          </div>
+
+          <h3>Branching Factor and Search Direction</h3>
+          <p>
+            Sometimes, the direction of search drastically changes the number of nodes we have to examine. This is determined by the <strong>Branching Factor</strong> (the average number of children a node has).
+          </p>
+          
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Finding Ancestors</h4>
+            <p>
+              If a search algorithm attempts to find out if "I" am a descendant of "Fred", it can:
+            </p>
+            <ol>
+              <li><strong>Top-down (Data-Driven, Fred → Me):</strong> Branching factor is ~3 (each couple has roughly 3 children). At level <em>n</em>, there are <code>3^n</code> nodes to check. By generation 5, that's up to 363 nodes!</li>
+              <li><strong>Bottom-up (Goal-Driven, Me → Fred):</strong> Branching factor is exactly 2 (everyone has exactly 2 parents). At level <em>n</em>, there are <code>2^n</code> nodes. By generation 5, that's only 62 nodes!</li>
+            </ol>
+            <p><strong>Conclusion:</strong> If free to choose, search in the direction with the <em>smaller average branching factor</em>.</p>
+          </div>
+          
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium: You are designing a medical diagnosis AI. You have thousands of possible symptoms (facts) and a set of 20 possible diseases (goals). Should you use forward or backward chaining?</summary>
+              <p><strong>Answer:</strong> Backward Chaining (Goal-Driven). It's more efficient to pick a disease (goal) and work backward to see if the patient's symptoms match the required conditions, rather than starting with a headache (fact) and blindly generating thousands of possible medical outcomes.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-2" style="display:none;">
+          <h2><span class="topic-num">2</span>Backtracking Search</h2>
+          <p class="topic-subtitle">The foundation of all graph search algorithms</p>
+
+          <p>
+            <strong>Backtracking Search</strong> is a fundamental algorithm. It begins at the start state and pursues a path down the tree until it either reaches a goal or a "dead end." If it hits a dead end, it <em>backtracks</em> to the most recent node that has unexamined siblings and tries a different branch.
+          </p>
+
+          <h3>The Four Tracking Lists</h3>
+          <p>
+            To prevent infinite loops and efficiently search the graph, backtrack uses four lists:
+          </p>
+
+          <ul>
+            <li><strong>SL (State List):</strong> Lists the states in the <em>current path</em> being tried. If a goal is found, SL contains the solution path!</li>
+            <li><strong>NSL (New State List):</strong> Contains nodes awaiting evaluation (the "fringe" or "frontier"). These are nodes whose descendants haven't been searched yet.</li>
+            <li><strong>DE (Dead Ends):</strong> Lists states whose descendants have failed to contain a goal. Prevents the algorithm from retrying known useless paths.</li>
+            <li><strong>CS (Current State):</strong> The state currently being evaluated (always the most recently added state to SL).</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Preventing Loops:</strong> Before adding a newly generated child node to NSL, the algorithm explicitly checks if it is already in SL, NSL, or DE. If it is, it discards it to prevent cycles!
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Backtracking Trace Run</h4>
+            <p>Suppose we have a simple tree starting at A, where A has children B,C,D. B has children E,F. E has children H,I. C has children G.</p>
+            <table style="width:100%; text-align:left; border-collapse: collapse; margin-top: 10px;">
+              <tr style="border-bottom: 2px solid var(--bd);"><th>Iteration</th><th>CS (Current)</th><th>SL (State List)</th><th>NSL (New State List)</th><th>DE (Dead Ends)</th></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>0</td><td>A</td><td>[A]</td><td>[A]</td><td>[ ]</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>1</td><td>B</td><td>[B A]</td><td>[B C D A]</td><td>[ ]</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>2</td><td>E</td><td>[E B A]</td><td>[E F B C D A]</td><td>[ ]</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>3</td><td>H</td><td>[H E B A]</td><td>[H I E F B C D A]</td><td>[ ]</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>4 (H is leaf)</td><td>I</td><td>[I E B A]</td><td>[I E F B C D A]</td><td>[H]</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>5 (I is leaf)</td><td>F</td><td>[F B A]</td><td>[F B C D A]</td><td>[E I H]</td></tr>
+              <tr><td>6</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+            </table>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Backtracking dives deep, hits a dead end, and reverses back to try another path.</li>
+              <li>It relies on <code>SL</code> to track the path, <code>NSL</code> for pending nodes, and <code>DE</code> to remember failures.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-3" style="display:none;">
+          <h2><span class="topic-num">3</span>Breadth-First vs Depth-First Search</h2>
+          <p class="topic-subtitle">The two classic uninformed search strategies</p>
+
+          <p>
+            While backtracking gives us the basic mechanism (lists of nodes), we still have to decide the <em>order</em> in which we examine the nodes in the NSL (the frontier).
+          </p>
+
+          <div class="flex-table">
+            <div>
+              <h4>Breadth-First Search (BFS)</h4>
+              <p><strong>Structure:</strong> Queue (FIFO - First In, First Out)</p>
+              <p><strong>Behavior:</strong> Examines all nodes at level <em>n</em> before proceeding to level <em>n+1</em>. It explores the graph layer by layer.</p>
+              <div class="example" style="margin-top: 15px;">
+                <strong>Trace Example (Iteration 6):</strong>
+                <div class="tree-container" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                  <div class="tree-level">
+                    <div class="node expanded">A<div class="edge left"></div><div class="edge right"></div></div>
+                  </div>
+                  <div class="tree-level">
+                    <div class="node expanded">B<div class="edge left"></div><div class="edge right"></div></div>
+                    <div class="node expanded">C<div class="edge left"></div><div class="edge right"></div></div>
+                  </div>
+                  <div class="tree-level">
+                    <div class="node expanded">D</div><div class="node expanded">E</div>
+                    <div class="node start">F</div><div class="node start">G</div>
+                  </div>
+                  <p style="font-size: 12px; margin: 0; text-align:center;">
+                    <span style="display:inline-block; width:10px; height:10px; background:var(--ac); border-radius:50%; margin-right:5px;"></span> Closed (Expanded)
+                    <span style="display:inline-block; width:10px; height:10px; background:rgba(217, 119, 87, 0.1); border: 2px solid var(--ac); border-radius:50%; margin:0 5px 0 15px;"></span> Open (Fringe)
+                  </p>
+                </div>
+              </div>
+              <ul>
+                <li><strong>Complete:</strong> Yes! It will always find a solution if one exists.</li>
+                <li><strong>Optimal:</strong> Yes! It will always find the <em>shortest</em> path to the goal node (assuming all step costs are equal).</li>
+                <li><strong>Space Complexity:</strong> Exponential. It must keep all nodes of the current level in memory. Space is a massive problem for BFS.</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Depth-First Search (DFS)</h4>
+              <p><strong>Structure:</strong> Stack (LIFO - Last In, First Out)</p>
+              <p><strong>Behavior:</strong> Gets quickly into a deep search space. It follows a single branch all the way down before backtracking.</p>
+              <div class="example" style="margin-top: 15px;">
+                <strong>Trace Example (Iteration 6):</strong>
+                <div class="tree-container" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                  <div class="tree-level">
+                    <div class="node expanded">A<div class="edge left"></div><div class="edge right"></div></div>
+                  </div>
+                  <div class="tree-level">
+                    <div class="node expanded">B<div class="edge left"></div><div class="edge right"></div></div>
+                    <div class="node start">C</div>
+                  </div>
+                  <div class="tree-level">
+                    <div class="node expanded">D<div class="edge left"></div></div><div class="node start">E</div>
+                  </div>
+                  <div class="tree-level">
+                    <div class="node expanded">H</div>
+                  </div>
+                  <p style="font-size: 12px; margin: 0; text-align:center;">
+                    DFS goes deep down the left branch first!
+                  </p>
+                </div>
+              </div>
+              <ul>
+                <li><strong>Complete:</strong> No! If it goes down an infinite branch without a goal, it will never terminate.</li>
+                <li><strong>Optimal:</strong> No! It might find a deep, convoluted solution even if a simpler one exists at a higher level on a different branch.</li>
+                <li><strong>Space Complexity:</strong> Linear. Highly efficient memory usage, only storing the current path.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Exponential Explosion</div>
+            Exponential-complexity search problems (like BFS) cannot be solved for large instances. If a tree has a branching factor of 10, searching to depth 12 with BFS would require 1 Petabyte of memory and 13 days of compute time!
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Which algorithm guarantees the shortest path (fewest edges) to the goal?</summary>
+              <p><strong>Answer:</strong> Breadth-First Search (BFS), because it checks every node at depth 1, then depth 2, etc. It cannot physically reach a goal at depth 5 without having first verified no goal exists at depth 4.</p>
+            </details>
+            <details>
+              <summary>Medium: You are navigating a maze using an AI. Which algorithm is more memory efficient to use?</summary>
+              <p><strong>Answer:</strong> Depth-First Search (DFS). It only needs to store the current path it's walking down, requiring linear space <code>O(b*d)</code>, whereas BFS would need to store the entire frontier of the search, requiring exponential space <code>O(b^d)</code>.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-4" style="display:none;">
+          <h2><span class="topic-num">4</span>Iterative Deepening & Uniform-Cost Search</h2>
+          <p class="topic-subtitle">Upgrading our search algorithms</p>
+
+          <h3>Iterative Deepening Search (IDS)</h3>
+          <p>
+            We want the <em>optimality and completeness</em> of BFS, but the <em>memory efficiency</em> of DFS. <strong>Iterative Deepening Search</strong> provides an excellent compromise.
+          </p>
+
+          <p><strong>How it works:</strong></p>
+          <ol>
+            <li>Run a DFS with a depth limit of 0. If goal found, stop.</li>
+            <li>Run a DFS with a depth limit of 1. If goal found, stop.</li>
+            <li>Run a DFS with a depth limit of 2. If goal found, stop.</li>
+            <li>Repeat, increasing the limit by 1 each time.</li>
+          </ol>
+
+          <div class="example">
+            <div class="callout-label">Visualizing Iterative Deepening</div>
+            <div style="display:flex; justify-content:space-between; text-align:center; gap: 10px; margin-top: 15px;">
+              <div>
+                <strong>Limit = 0</strong>
+                <div class="tree-container" style="margin:5px 0;">
+                  <div class="tree-level"><div class="node expanded">A</div></div>
+                </div>
+              </div>
+              <div>
+                <strong>Limit = 1</strong>
+                <div class="tree-container" style="margin:5px 0;">
+                  <div class="tree-level"><div class="node expanded" style="margin-bottom:15px;">A<div class="edge left" style="height:15px; top:35px;"></div><div class="edge right" style="height:15px; top:35px;"></div></div></div>
+                  <div class="tree-level" style="gap:15px;"><div class="node expanded">B</div><div class="node expanded">C</div></div>
+                </div>
+              </div>
+              <div>
+                <strong>Limit = 2</strong>
+                <div class="tree-container" style="margin:5px 0;">
+                  <div class="tree-level"><div class="node expanded" style="margin-bottom:15px;">A<div class="edge left" style="height:15px; top:35px;"></div><div class="edge right" style="height:15px; top:35px;"></div></div></div>
+                  <div class="tree-level" style="gap:15px; margin-bottom:15px;"><div class="node expanded">B<div class="edge left" style="height:15px; top:35px;"></div></div><div class="node expanded">C</div></div>
+                  <div class="tree-level" style="gap:15px;"><div class="node expanded">D</div></div>
+                </div>
+              </div>
+            </div>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">Notice how the search restarts from 'A' at every iteration, but ventures one layer deeper each time.</p>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Doesn't revisiting nodes waste time?</strong> Yes, but surprisingly little! Because the tree grows exponentially, the vast majority of nodes are at the deepest level. The overhead of re-searching the shallow top nodes is mathematically insignificant compared to searching the new, massive bottom layer.
+          </div>
+
+          <h3>Uniform-Cost Search (UCS)</h3>
+          <p>
+            BFS assumes every move (arc) costs exactly the same (e.g., 1). But in the real world (like the Traveling Salesperson Problem), travelling from City A to City B might cost 50km, while City A to City C costs 200km.
+          </p>
+          
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Uniform-Cost Search:</strong> Instead of expanding the shallowest node, UCS expands the node with the <em>lowest cumulative path cost</em> <code>g(n)</code>.
+          </div>
+
+          <p><strong>How it works:</strong></p>
+          <ul>
+            <li><strong>Structure:</strong> A Priority Queue ordered by cumulative path cost.</li>
+            <li>It expands in "cost contours" rather than depth contours.</li>
+            <li>The goal test is applied <em>when a node is selected for expansion</em>, not when it is first generated (because a cheaper path to that node might be found later!).</li>
+            <li><strong>Optimality:</strong> Yes, UCS is guaranteed to find the optimal (cheapest) path as long as all step costs are non-negative.</li>
+          </ul>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Uniform-Cost Search Trace</h4>
+            <p>Consider navigating from Sibiu to Bucharest.</p>
+            <table style="width:100%; text-align:left; border-collapse: collapse; margin-top: 10px;">
+              <tr style="border-bottom: 2px solid var(--bd);"><th>Step</th><th>Fringe (Priority Queue)</th><th>Action</th></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>1</td><td>[Sibiu: 0]</td><td>Expand Sibiu</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>2</td><td>[Rimnicu: 80, Fagaras: 99]</td><td>Expand Rimnicu</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>3</td><td>[Fagaras: 99, Pitesti: 177]</td><td>Expand Fagaras</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>4</td><td>[Pitesti: 177, Bucharest: 310]</td><td>Expand Pitesti</td></tr>
+              <tr style="border-bottom: 1px solid var(--bd);"><td>5</td><td>[Bucharest: 278, Bucharest: 310]</td><td>Expand Bucharest (Cost 278) -> Goal!</td></tr>
+            </table>
+            <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">Note: A sub-optimal path to Bucharest (Cost 310) was found at step 4, but UCS correctly waited and expanded Pitesti to discover the cheaper path (Cost 278).</p>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li><strong>IDS:</strong> Combines BFS optimality with DFS memory efficiency by repeatedly running depth-limited DFS.</li>
+              <li><strong>UCS:</strong> The cheapest-first search. Uses a priority queue to guarantee the lowest cost path in graphs with varying arc weights.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll('.topic-card').forEach(c => c.style.display = 'none');
+        const target = document.getElementById(id);
+        if (target) target.style.display = 'block';
+        
+        currentTopicIndex = topics.indexOf(id);
+        
+        document.querySelectorAll('.nav-sublist a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          link.classList.add('active');
+          const sublist = link.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevTitle = document.getElementById('prev-title');
+        const nextTitle = document.getElementById('next-title');
+
+        if (currentTopicIndex > 0) {
+          prevBtn.style.display = 'flex';
+          if (prevTitle) prevTitle.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          prevBtn.style.display = 'none';
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nextBtn.style.display = 'flex';
+          if (nextTitle) nextTitle.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nextBtn.style.display = 'none';
+        }
+        
+        document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(element) {
+        const sublist = element.nextElementSibling;
+        const chevron = element.querySelector('.chevron');
+        if (sublist.style.display === 'none') {
+          sublist.style.display = 'block';
+          chevron.style.transform = 'rotate(0deg)';
+        } else {
+          sublist.style.display = 'none';
+          chevron.style.transform = 'rotate(-90deg)';
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Artificial Intelligence — State Space Search</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      .tree-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+        overflow-x: auto;
+      }
+      .tree-level {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 30px;
+        position: relative;
+      }
+      .tic-tac-board {
+        display: grid;
+        grid-template-columns: repeat(3, 20px);
+        grid-template-rows: repeat(3, 20px);
+        gap: 2px;
+        background: #444;
+        border: 2px solid #555;
+        border-radius: 4px;
+        padding: 2px;
+      }
+      .tic-tac-cell {
+        background: #2a2a2a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+      }
+      .tree-edge {
+        position: absolute;
+        width: 2px;
+        background: var(--ac);
+        z-index: -1;
+      }
+      .graph-diagram {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background: var(--surface);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        margin: 15px 0;
+      }
+      .graph-node {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--ac);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Artificial Intelligence</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to AI.html">
+            <span class="nav-num">01</span>Intro to AI
+          </a>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>State Space Search</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>States and State Spaces</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Formal Definition & Graph Theory</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Examples: Tic-Tac-Toe & TSP</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Uninformed Search Algorithms.html">
+            <span class="nav-num">03</span>Uninformed Search
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Quiz Prep (Modules 1-3).html">
+            <span class="nav-num">04</span>Quiz Prep
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-intro">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence</div>
+          <h1 class="module-title">State Space Search</h1>
+        </div>
+
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>States and State Spaces</h2>
+          <p class="topic-subtitle">How AI views the world as a series of connected states</p>
+
+          <p>
+            Many problems in AI involve answering questions like: Is there a guaranteed solution? Will the search loop infinitely? Is the solution optimal? To systematically answer these, AI frames problems using a <strong>State Space Search</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>State:</strong> A snapshot of the world or the problem at a specific moment in time.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>State Space:</strong> The complete set of all possible states that can be reached from the initial state through any sequence of valid actions.
+          </div>
+
+          <h3>Why use State Spaces?</h3>
+          <p>
+            By mapping out a problem as a state space, we transform decision-making into a mathematical search problem. The AI doesn't need to "understand" the nuances of a game; it just needs to find a path from the <em>Initial State</em> to the <em>Goal State</em>.
+          </p>
+          
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>The Tic-Tac-Toe State Space</h4>
+            <p>
+              Imagine a blank 3x3 board. This is our <strong>Initial State</strong>. When you place an 'X', the board transitions into a new state. Every legal move generates a branch to a new state. The collection of every possible board configuration (win, lose, draw, or mid-game) forms the Tic-Tac-Toe state space!
+            </p>
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>State Space vs Game Tree Size</strong><br />
+            Students often think the number of states equals the number of nodes in the game tree. This is false! A game tree can have identical nodes (e.g., reaching the same board configuration through a different sequence of moves). The State Space only counts unique states.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>A State represents a distinct configuration of the problem.</li>
+              <li>A State Space contains all possible distinct states.</li>
+              <li>Problem-solving in AI is largely about navigating through this state space efficiently.</li>
+            </ul>
+          </div>
+          
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What is the initial state in a game of Chess?</summary>
+              <p><strong>Answer:</strong> The standard setup of the 32 pieces on the 8x8 board before any moves are made.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-2" style="display:none;">
+          <h2><span class="topic-num">2</span>Formal Definition & Graph Theory</h2>
+          <p class="topic-subtitle">Translating state spaces into math</p>
+
+          <p>
+            To program a computer to solve a problem, we must formally define the state space using graph theory concepts.
+          </p>
+
+          <h3>Formal Definition of State Space [N,A,S,GD]</h3>
+          <p>A State Space is represented as a four-tuple:</p>
+          <ul>
+            <li><strong>N:</strong> The set of nodes or states of the graph.</li>
+            <li><strong>A:</strong> The set of arcs (links/edges) between nodes, representing legal moves or actions.</li>
+            <li><strong>S:</strong> A nonempty subset of N containing the start state(s).</li>
+            <li><strong>GD:</strong> A nonempty subset of N containing the goal state(s).</li>
+          </ul>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Solution Path:</strong> A sequence of arcs (a path) through the graph that starts at a node in <strong>S</strong> and ends at a node in <strong>GD</strong>.
+          </div>
+
+          <h3>Graph Theory Concepts</h3>
+          <p>
+            State spaces are almost always visualized and manipulated as graphs or trees. Here are the core definitions you need to know:
+          </p>
+
+          <table style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>Definition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Graph</strong></td>
+                <td>A collection of nodes connected by arcs.</td>
+              </tr>
+              <tr>
+                <td><strong>Directed Graph</strong></td>
+                <td>A graph where arcs have a specific direction (you can go A → B, but not necessarily B → A).</td>
+              </tr>
+              <tr>
+                <td><strong>Parent & Child</strong></td>
+                <td>If an arc goes from N1 to N2, N1 is the parent and N2 is the child.</td>
+              </tr>
+              <tr>
+                <td><strong>Rooted Graph</strong></td>
+                <td>A graph with a unique node (the root) from which all paths originate. (e.g., the empty board in a game).</td>
+              </tr>
+              <tr>
+                <td><strong>Leaf (Tip) Node</strong></td>
+                <td>A node with no children (e.g., a finished game board).</td>
+              </tr>
+              <tr>
+                <td><strong>Cycle (Loop)</strong></td>
+                <td>A path that visits the same node more than once.</td>
+              </tr>
+              <tr>
+                <td><strong>Tree</strong></td>
+                <td>A specific type of graph where there is exactly <em>one</em> unique path between any two nodes. By definition, trees contain no cycles.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>Expert Systems and Graphs:</strong> In rule-based expert systems, nodes represent our <em>knowledge</em> of a problem at a stage, and arcs represent the application of an <code>IF...THEN...</code> rule to generate new knowledge.
+          </div>
+          
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>State Space = [Nodes, Arcs, Start States, Goal States].</li>
+              <li>A graph is made of nodes (states) and arcs (actions).</li>
+              <li>Trees are cycle-free graphs with unique paths.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="topic-card" id="topic-3" style="display:none;">
+          <h2><span class="topic-num">3</span>Examples: Tic-Tac-Toe & TSP</h2>
+          <p class="topic-subtitle">Applying state spaces to classic problems</p>
+
+          <p>
+            Let's look at how we represent classic AI problems using the State Space concepts we just learned.
+          </p>
+
+          <h3>1. Tic-Tac-Toe</h3>
+          <p>
+            We represent the state as a 3x3 array where each cell is empty (0), nought (1), or cross (2). 
+            The rules dictate that players alternate turns, placing their mark on an empty space.
+          </p>
+          
+          <div class="tree-container">
+            <div class="tree-level">
+              <div class="tic-tac-board">
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+              </div>
+            </div>
+            <div style="font-size: 24px; color: var(--ac); margin-bottom: 10px;">↓ (First Move Options)</div>
+            <div class="tree-level">
+              <div class="tic-tac-board">
+                <div class="tic-tac-cell">X</div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+              </div>
+              <div class="tic-tac-board">
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell">X</div><div class="tic-tac-cell"></div>
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+              </div>
+              <div class="tic-tac-board">
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell">X</div><div class="tic-tac-cell"></div>
+                <div class="tic-tac-cell"></div><div class="tic-tac-cell"></div><div class="tic-tac-cell"></div>
+              </div>
+              <div style="color:#aaa; font-style:italic; display:flex; align-items:center;">... (9 total)</div>
+            </div>
+          </div>
+          
+          <p>
+            By level 4 of this tree, it widens to 3,024 nodes! While the tree explodes in size, the state space is smaller because there are multiple ways to reach the exact same board configuration (e.g. playing Top-Left then Center vs Center then Top-Left results in identical states).
+          </p>
+
+          <h3>2. The Traveling Salesperson Problem (TSP)</h3>
+          <p>
+            <strong>Problem:</strong> Given a map of cities and the distances between them, find the path with the minimum distance that visits every city exactly once and returns to the starting city.
+          </p>
+
+          <p>
+            <strong>State Space Representation:</strong>
+          </p>
+          <ul>
+            <li><strong>Nodes (N):</strong> Represent a set of visited cities and the current location.</li>
+            <li><strong>Arcs (A):</strong> Labeled with a weight indicating the distance/cost of traveling between connected cities.</li>
+            <li><strong>Start State (S):</strong> A home city with no other cities visited.</li>
+            <li><strong>Goal State (GD):</strong> A state where the path contains a complete circuit (all cities visited and returned to home) with minimum cost.</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="callout-label">Insoluble Variations</div>
+            If cities are not always reachable directly from each other (e.g., to get from A to B you must go through C, but you've already visited C), there might be NO solution for that specific map!
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">The Complexity Nightmare</div>
+            Exhaustive search is often impossible! There are 9! paths in tic-tac-toe. 10<sup>40</sup> paths in Checkers, and 10<sup>120</sup> paths in Chess! TSP has a complexity of (n-1)! cost-weighted paths. This is why we need smart <strong>Search Algorithms</strong>.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Tic-Tac-Toe state spaces are smaller than their game trees due to identical states.</li>
+              <li>TSP requires finding an optimal cost path in a massive factorial-complexity state space.</li>
+              <li>Exhaustive search is infeasible for non-trivial problems.</li>
+            </ul>
+          </div>
+          
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium: What is the maximum depth of a Tic-Tac-Toe game tree?</summary>
+              <p><strong>Answer:</strong> 9 levels deep. There are 9 empty squares on the initial board, and one square is filled per turn. Therefore, the board is full (leaf node) at level 9 at the latest.</p>
+            </details>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll('.topic-card').forEach(c => c.style.display = 'none');
+        const target = document.getElementById(id);
+        if (target) target.style.display = 'block';
+        
+        currentTopicIndex = topics.indexOf(id);
+        
+        document.querySelectorAll('.nav-sublist a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          link.classList.add('active');
+          const sublist = link.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevTitle = document.getElementById('prev-title');
+        const nextTitle = document.getElementById('next-title');
+
+        if (currentTopicIndex > 0) {
+          prevBtn.style.display = 'flex';
+          if (prevTitle) prevTitle.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          prevBtn.style.display = 'none';
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nextBtn.style.display = 'flex';
+          if (nextTitle) nextTitle.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nextBtn.style.display = 'none';
+        }
+        
+        document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(element) {
+        const sublist = element.nextElementSibling;
+        const chevron = element.querySelector('.chevron');
+        if (sublist.style.display === 'none') {
+          sublist.style.display = 'block';
+          chevron.style.transform = 'rotate(0deg)';
+        } else {
+          sublist.style.display = 'none';
+          chevron.style.transform = 'rotate(-90deg)';
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      // Initialise
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>
