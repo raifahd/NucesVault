@@ -103,7 +103,37 @@
           
           <p>As organizations collect more data, the systems used to store, query, and aggregate this data have evolved significantly. Over the last few decades, we've transitioned from strict, structured storage to flexible, massive-scale systems, finally arriving at a hybrid model known as the Data Lakehouse.</p>
           
-          <img src="data_architecture_evolution.jpg" alt="Evolution of Data Architecture Diagram" class="diagram-img" />
+          <div style="display: flex; gap: 20px; align-items: stretch; margin: 30px 0;">
+            <div style="flex: 1; padding: 20px; background: rgba(217,119,87,0.1); border: 1px solid var(--ac); border-radius: 12px; text-align: center;">
+              <h4 style="color: var(--ac); margin-top: 0;">Data Warehouse</h4>
+              <p style="font-size: 0.9em; opacity: 0.8;">(Past)</p>
+              <ul style="text-align: left; font-size: 0.9em;">
+                <li>Structured Data (SQL)</li>
+                <li>Schema-on-Write</li>
+                <li>ACID Compliance</li>
+              </ul>
+            </div>
+            <div style="display: flex; align-items: center; font-size: 24px; color: #888;">→</div>
+            <div style="flex: 1; padding: 20px; background: rgba(59,130,246,0.1); border: 1px solid var(--exp-bd); border-radius: 12px; text-align: center;">
+              <h4 style="color: var(--exp-bd); margin-top: 0;">Data Lake</h4>
+              <p style="font-size: 0.9em; opacity: 0.8;">(Present)</p>
+              <ul style="text-align: left; font-size: 0.9em;">
+                <li>All Data (Unstructured)</li>
+                <li>Schema-on-Read</li>
+                <li>Massively Scalable</li>
+              </ul>
+            </div>
+            <div style="display: flex; align-items: center; font-size: 24px; color: #888;">→</div>
+            <div style="flex: 1; padding: 20px; background: rgba(16,185,129,0.1); border: 1px solid var(--def-bd); border-radius: 12px; text-align: center;">
+              <h4 style="color: var(--def-bd); margin-top: 0;">Lakehouse</h4>
+              <p style="font-size: 0.9em; opacity: 0.8;">(Future / Ideal)</p>
+              <ul style="text-align: left; font-size: 0.9em;">
+                <li>Open Formats</li>
+                <li>ACID Transactions</li>
+                <li>Unified Platform</li>
+              </ul>
+            </div>
+          </div>
 
           <h3>1. Data Warehouses</h3>
           <p>Data warehouses are purpose-built to aggregate and process large amounts of <strong>structured data</strong> quickly. They rely on relational databases to provide strong transaction protections and include management features like backup, recovery, indexes, and partitioning.</p>
@@ -164,7 +194,43 @@
           
           <p>With the Lakehouse providing a unified storage platform, organizations need a design pattern to logically organize their data pipelines. The <strong>Medallion Architecture</strong> utilizes three layers—Bronze, Silver, and Gold—to progressively refine datasets from raw ingestion to business-ready insights.</p>
 
-          <img src="medallion_architecture.jpg" alt="Medallion Architecture Diagram" class="diagram-img" />
+          <div style="display: flex; gap: 15px; margin: 30px 0;">
+            <div style="flex: 1; padding: 20px; background: rgba(217,119,87,0.1); border: 2px solid var(--ac); border-radius: 12px; position: relative;">
+              <h4 style="color: var(--ac); margin-top: 0; text-align: center;">Bronze Layer</h4>
+              <div style="text-align: center; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 10px;">Raw Data</div>
+              <ul style="font-size: 0.85em; padding-left: 20px; margin: 0;">
+                <li>Original structure</li>
+                <li>Immutable</li>
+                <li>Historical archive</li>
+              </ul>
+            </div>
+            <div style="display: flex; align-items: center; flex-direction: column; justify-content: center; font-size: 0.8em; color: #888;">
+              <div>Validate</div>
+              <div style="font-size: 24px;">→</div>
+            </div>
+            <div style="flex: 1; padding: 20px; background: rgba(59,130,246,0.1); border: 2px solid var(--exp-bd); border-radius: 12px;">
+              <h4 style="color: var(--exp-bd); margin-top: 0; text-align: center;">Silver Layer</h4>
+              <div style="text-align: center; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 10px;">Clean Data</div>
+              <ul style="font-size: 0.85em; padding-left: 20px; margin: 0;">
+                <li>Filtered & Standardized</li>
+                <li>Schema Enforced</li>
+                <li>Source-Aligned</li>
+              </ul>
+            </div>
+            <div style="display: flex; align-items: center; flex-direction: column; justify-content: center; font-size: 0.8em; color: #888;">
+              <div>Aggregate</div>
+              <div style="font-size: 24px;">→</div>
+            </div>
+            <div style="flex: 1; padding: 20px; background: rgba(234,179,8,0.1); border: 2px solid #eab308; border-radius: 12px;">
+              <h4 style="color: #eab308; margin-top: 0; text-align: center;">Gold Layer</h4>
+              <div style="text-align: center; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 10px;">Business-Level</div>
+              <ul style="font-size: 0.85em; padding-left: 20px; margin: 0;">
+                <li>Modeled for BI</li>
+                <li>Aggregated & Enriched</li>
+                <li>Star Schema / OBT</li>
+              </ul>
+            </div>
+          </div>
 
           <p>It is crucial to think of these layers as <strong>logical</strong>, not strictly physical. A single logical layer might span across several physical storage zones depending on the complexity of the data sources.</p>
 
