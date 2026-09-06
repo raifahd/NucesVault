@@ -54,6 +54,17 @@
           <p class="topic-subtitle">A straightforward approach vs Divide-and-Conquer</p>
           
           <p>Multiplying two <code>n × n</code> matrices <code>A</code> and <code>B</code> gives an <code>n × n</code> matrix <code>C</code> where each element <code>c_ij</code> is the sum of <code>n</code> pairwise products.</p>
+          
+          <pre><code>SQUARE-MATRIX-MULTIPLY(A, B)
+1  n = A.rows
+2  let C be a new n × n matrix
+3  for i = 1 to n
+4      for j = 1 to n
+5          c_ij = 0
+6          for k = 1 to n
+7              c_ij = c_ij + a_ik · b_kj
+8  return C</code></pre>
+
           <p>The standard triply nested <code>for</code> loop takes <strong>Θ(n³)</strong> time because there are three loops, each running exactly <code>n</code> times.</p>
 
           <h3>Divide-and-Conquer Matrix Multiplication</h3>

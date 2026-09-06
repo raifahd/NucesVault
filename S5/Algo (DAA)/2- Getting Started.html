@@ -161,7 +161,34 @@
               <li><strong>Conquer:</strong> Sort the two subsequences recursively using merge sort.</li>
               <li><strong>Combine:</strong> Merge the two sorted subsequences to produce the sorted answer.</li>
             </ul>
-            <p>The <code>MERGE(A, p, q, r)</code> procedure takes two sorted subarrays <code>A[p : q]</code> and <code>A[q+1 : r]</code> and merges them in <strong>Θ(n)</strong> time by repeatedly selecting the smallest unpicked element from the two subarrays.</p>
+            
+            <pre><code>MERGE-SORT(A, p, r)
+1  if p < r
+2      q = ⌊(p + r) / 2⌋
+3      MERGE-SORT(A, p, q)
+4      MERGE-SORT(A, q + 1, r)
+5      MERGE(A, p, q, r)</code></pre>
+
+            <p>The <code>MERGE(A, p, q, r)</code> procedure takes two sorted subarrays <code>A[p : q]</code> and <code>A[q+1 : r]</code> and merges them in <strong>Θ(n)</strong> time.</p>
+            <pre><code>MERGE(A, p, q, r)
+1  n₁ = q - p + 1
+2  n₂ = r - q
+3  let L[1..n₁ + 1] and R[1..n₂ + 1] be new arrays
+4  for i = 1 to n₁
+5      L[i] = A[p + i - 1]
+6  for j = 1 to n₂
+7      R[j] = A[q + j]
+8  L[n₁ + 1] = ∞
+9  R[n₂ + 1] = ∞
+10 i = 1
+11 j = 1
+12 for k = p to r
+13     if L[i] ≤ R[j]
+14         A[k] = L[i]
+15         i = i + 1
+16     else 
+17         A[k] = R[j]
+18         j = j + 1</code></pre>
           </div>
 
           <h3>Analyzing Divide-and-Conquer Algorithms</h3>

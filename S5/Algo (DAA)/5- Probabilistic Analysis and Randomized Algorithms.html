@@ -65,6 +65,35 @@
           
           <h3>Probabilistic Analysis</h3>
           <p>We often use probability to analyze the <strong>average-case running time</strong> (or expected cost). This assumes something about the distribution of the inputs. For the hiring problem, we assume the applicants come in a <em>random order</em> (a uniform random permutation).</p>
+
+          <h3>Practice Questions</h3>
+          <details>
+            <summary><strong>Easy:</strong> What is the worst-case cost of the HIRE-ASSISTANT algorithm?</summary>
+            <div class="details-content">
+              <p>In the worst case, every candidate is better than the previous one, meaning we hire everyone. The cost is exactly <strong>O(cₕ · n)</strong> where <code>cₕ</code> is the hiring cost.</p>
+            </div>
+          </details>
+          <details>
+            <summary><strong>Medium:</strong> Why is the average-case analysis important for the Hiring Problem?</summary>
+            <div class="details-content">
+              <p>Because the worst-case scenario (candidates strictly increasing in quality) is rare in practice. By assuming a uniform random permutation of candidates, the expected cost drops to <strong>O(cₕ ln n)</strong>, giving a more realistic measure of performance.</p>
+            </div>
+          </details>
+          <details>
+            <summary><strong>Hard:</strong> In the worst-case scenario, what is the exact number of times we hire a new assistant in `HIRE-ASSISTANT`, and why?</summary>
+            <div class="details-content">
+              <p>In the worst-case scenario, we hire exactly <strong>n</strong> times. This happens when the candidates arrive in strictly increasing order of quality, meaning each candidate interviewed is better than the previous `best`. Thus, the algorithm hires a new candidate in every single iteration of the loop.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Summary: The Hiring Problem</h4>
+            <ul>
+              <li><strong>Worst-case:</strong> O(n) hiring cost when candidates arrive sorted in increasing order of quality.</li>
+              <li><strong>Probabilistic Analysis:</strong> Analyzes expected cost assuming a uniform random distribution of inputs.</li>
+              <li><strong>Expected-case:</strong> O(ln n) hiring cost, a massive improvement over the worst case.</li>
+            </ul>
+          </div>
         </div>
 
         <!-- Topic 2 -->
@@ -91,6 +120,37 @@
             <code>Σ_{i=1}^{n} (1/i) = ln n + O(1)</code>.</p>
             <p>Therefore, the expected hiring cost is <strong>O(cₕ ln n)</strong>, which is a massive improvement over the worst-case <code>O(n)</code>.</p>
           </div>
+
+          <h3>Practice Questions</h3>
+          <details>
+            <summary><strong>Easy:</strong> What are the only two possible values for an Indicator Random Variable?</summary>
+            <div class="details-content">
+              <p><strong>0</strong> (if the event does not occur) and <strong>1</strong> (if the event occurs).</p>
+            </div>
+          </details>
+          <details>
+            <summary><strong>Medium:</strong> State Lemma 5.1 and explain why it's useful.</summary>
+            <div class="details-content">
+              <p>Lemma 5.1 states that the expected value of an indicator random variable for an event A is equal to the probability of A occurring: <code>E[X_A] = Pr{A}</code>. It is useful because it allows us to convert probabilities into expectations, which are easier to sum using linearity of expectation.</p>
+            </div>
+          </details>
+          <details>
+            <summary><strong>Hard:</strong> Using indicator random variables, find the expected number of heads when flipping a biased coin (probability of heads = p) n times.</summary>
+            <div class="details-content">
+              <p>Let <code>X_i</code> be the indicator random variable that the <code>i</code>-th flip is heads. <code>E[X_i] = Pr{heads} = p</code>.</p>
+              <p>The total number of heads is <code>X = Σ X_i</code>.</p>
+              <p>By linearity of expectation, <code>E[X] = E[Σ X_i] = Σ E[X_i] = Σ p = n * p</code>.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Summary: Indicator Random Variables</h4>
+            <ul>
+              <li><strong>Definition:</strong> Variables that map events to 1 (occurred) or 0 (did not occur).</li>
+              <li><strong>Core Property:</strong> The expected value equals the probability of the event occurring (<code>E[X] = Pr{Event}</code>).</li>
+              <li><strong>Linearity of Expectation:</strong> Allows breaking down complex expected values into sums of simpler indicator variables.</li>
+            </ul>
+          </div>
         </div>
 
         <!-- Topic 3 -->
@@ -115,6 +175,35 @@
               <li><strong>Maintenance:</strong> During the <code>i</code>-th iteration, we want to form an <code>i</code>-permutation <code>⟨x₁, ..., xᵢ⟩</code>. By the loop invariant, the probability that the first <code>i - 1</code> elements are <code>⟨x₁, ..., xᵢ₋₁⟩</code> is <code>(n - i + 1)! / n!</code>. The algorithm then chooses <code>xᵢ</code> randomly from the remaining <code>n - i + 1</code> elements. Thus, the probability of selecting exactly <code>xᵢ</code> is <code>1 / (n - i + 1)</code>.<br>
               Multiplying these gives: <code>((n - i + 1)! / n!) * (1 / (n - i + 1)) = (n - i)! / n!</code>. The invariant holds for the next iteration.</li>
               <li><strong>Termination:</strong> When the loop terminates, <code>i = n + 1</code>. The probability that <code>A[1:n]</code> contains a specific <code>n</code>-permutation is <code>(n - (n + 1) + 1)! / n! = 0! / n! = 1 / n!</code>. Thus, it produces a uniform random permutation.</li>
+            </ul>
+          </div>
+
+          <h3>Practice Questions</h3>
+          <details>
+            <summary><strong>Easy:</strong> What is the difference between probabilistic analysis and a randomized algorithm?</summary>
+            <div class="details-content">
+              <p>Probabilistic analysis assumes the input is drawn from a random distribution. A randomized algorithm enforces randomness by using a random number generator (like shuffling the input), making its performance independent of the input order.</p>
+            </div>
+          </details>
+          <details>
+            <summary><strong>Medium:</strong> Why is `RANDOM(i, n)` used instead of `RANDOM(1, n)` in the `RANDOMLY-PERMUTE` algorithm?</summary>
+            <div class="details-content">
+              <p>If we swapped with `RANDOM(1, n)`, the total number of possible outcomes would be <code>n^n</code>, which is not divisible by <code>n!</code>, meaning not all permutations would be equally likely. By choosing from the remaining unshuffled elements (`i` to `n`), there are exactly <code>n!</code> possible paths, creating a uniform permutation.</p>
+            </div>
+          </details>
+          <details>
+            <summary><strong>Hard:</strong> Prove that after the first iteration (i=1) of `RANDOMLY-PERMUTE`, the probability that `A[1]` contains any specific element from the original array is exactly `1/n`.</summary>
+            <div class="details-content">
+              <p>In the first iteration, `i = 1`. The algorithm executes `swap A[1] with A[RANDOM(1, n)]`. The function `RANDOM(1, n)` returns each integer from 1 to `n` with equal probability `1/n`. Therefore, the element originally at any position `k` (where `1 ≤ k ≤ n`) has exactly a `1/n` chance of being swapped into `A[1]`. Thus, `A[1]` contains each element with uniform probability `1/n`.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Summary: Randomized Algorithms</h4>
+            <ul>
+              <li><strong>Control over Randomness:</strong> Algorithms force their own randomness (e.g., shuffling inputs) rather than hoping for a good input distribution.</li>
+              <li><strong>Expected Running Time:</strong> Performance metric for randomized algorithms, independent of specific input arrangements.</li>
+              <li><strong>Uniform Random Permutation:</strong> Achieved in O(n) time using the <code>RANDOMLY-PERMUTE</code> algorithm.</li>
             </ul>
           </div>
         </div>
@@ -154,6 +243,34 @@
             <p><strong>Lower bound Ω(lg n):</strong> If we partition the flips into blocks of size <code>s = ⌊(lg n)/2⌋</code>, the probability a block is NOT all heads is <code>1 - 1/√n</code>. The probability that NONE of the blocks are all heads is <code>(1 - 1/√n)^(n/s) ≤ e^{-(2n/lg n)/√n} = O(1/n)</code>. Thus, with high probability, at least one block is all heads, yielding an expected length of <strong>Ω(lg n)</strong>.</p>
           </div>
 
+          <h3>Practice Questions</h3>
+          <details>
+            <summary><strong>Easy:</strong> How many people are needed to have a >50% chance of a shared birthday?</summary>
+            <div class="details-content">
+              <p>Only <strong>23 people</strong>.</p>
+            </div>
+          </details>
+          <details>
+            <summary><strong>Medium:</strong> In the balls and bins problem, what is the expected number of tosses to hit every bin at least once?</summary>
+            <div class="details-content">
+              <p>The expected number of tosses is <strong>b ln b + O(b)</strong>, which is also known as the Coupon Collector's limit.</p>
+            </div>
+          </details>
+          <details>
+            <summary><strong>Hard:</strong> Explain intuitively why the longest streak of heads in n coin flips is expected to be Θ(lg n).</summary>
+            <div class="details-content">
+              <p>The probability of getting a streak of length `k` is `(1/2)^k`. We have about `n` starting positions. For a streak to be likely to appear once, we need `n * (1/2)^k ≈ 1`. Solving for `k`, we get `2^k ≈ n`, which means `k ≈ lg n`.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Summary: Classic Probabilistic Examples</h4>
+            <ul>
+              <li><strong>Birthday Paradox:</strong> Counter-intuitively small group (23 people) needed for a >50% chance of a shared birthday due to the number of pairs growing quadratically.</li>
+              <li><strong>Balls and Bins:</strong> Demonstrates the coupon collector's problem, requiring O(b ln b) tosses to fill all bins.</li>
+              <li><strong>Streaks:</strong> In n independent trials, the longest expected run of identical outcomes is bounded around Θ(lg n).</li>
+            </ul>
+          </div>
         </div>
 
       </div>
