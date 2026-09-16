@@ -1,0 +1,1551 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Analysis &amp; Visualization — Distributed Data Processing &amp; Apache Spark</title>
+    <meta name="description" content="Detailed notes on MapReduce, Distributed File Systems, DAGs, Hadoop, Apache Spark architecture, RDDs, DataFrames, transformations, actions, and the shift from single-machine to distributed computing." />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      /* ── Diagram styles ───────────────────────────────────── */
+      .arch-diagram {
+        display: flex;
+        gap: 0;
+        align-items: stretch;
+        margin: 28px 0;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--bd);
+      }
+      .arch-layer {
+        flex: 1;
+        padding: 20px 16px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        position: relative;
+      }
+      .arch-layer::after {
+        content: "→";
+        position: absolute;
+        right: -14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.5rem;
+        color: var(--mt);
+        z-index: 2;
+      }
+      .arch-layer:last-child::after { display: none; }
+      .arch-layer .layer-icon { font-size: 2rem; }
+      .arch-layer h4 { margin: 0; font-size: 0.9rem; font-weight: 700; }
+      .arch-layer p { margin: 0; font-size: 0.78rem; color: var(--mt); line-height: 1.4; }
+
+      .flow-diagram {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 24px 0;
+        padding: 20px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 12px;
+        border: 1px solid var(--bd);
+      }
+      .flow-box {
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+        min-width: 100px;
+        flex-shrink: 0;
+      }
+      .flow-arrow {
+        font-size: 1.4rem;
+        color: var(--mt);
+        flex-shrink: 0;
+      }
+      .flow-box.input    { background: rgba(217,119,87,0.15); border: 2px solid var(--ac); color: var(--ac); }
+      .flow-box.process  { background: rgba(59,130,246,0.12); border: 2px solid var(--exp-bd); color: var(--exp-bd); }
+      .flow-box.output   { background: rgba(16,185,129,0.12); border: 2px solid var(--def-bd); color: var(--def-bd); }
+      .flow-box.shuffle  { background: rgba(139,92,246,0.12); border: 2px solid var(--qst-bd); color: var(--qst-bd); }
+      .flow-box.warn     { background: rgba(234,179,8,0.1);   border: 2px solid #eab308; color: #eab308; }
+
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 24px 0;
+      }
+      .compare-card {
+        padding: 20px;
+        border-radius: 12px;
+      }
+      .compare-card h4 { margin-top: 0; font-size: 1rem; }
+      .compare-card ul { margin: 0; padding-left: 18px; font-size: 0.88rem; line-height: 1.8; }
+      .compare-card.left  { background: rgba(59,130,246,0.08);  border: 2px solid var(--exp-bd); }
+      .compare-card.right { background: rgba(217,119,87,0.08);  border: 2px solid var(--ac); }
+
+      .spark-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 24px 0;
+      }
+      .spark-layer {
+        padding: 14px 20px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .spark-layer .sl-icon { font-size: 1.3rem; }
+      .spark-layer .sl-label { flex: 1; }
+      .spark-layer .sl-desc { font-size: 0.76rem; font-weight: 400; color: var(--mt); }
+      .sl-1 { background: rgba(217,119,87,0.12); border: 1px solid var(--ac); }
+      .sl-2 { background: rgba(59,130,246,0.10); border: 1px solid var(--exp-bd); }
+      .sl-3 { background: rgba(16,185,129,0.10); border: 1px solid var(--def-bd); }
+      .sl-4 { background: rgba(139,92,246,0.10); border: 1px solid var(--qst-bd); }
+      .sl-5 { background: rgba(234,179,8,0.08);  border: 1px solid #eab308; }
+
+      .dag-container {
+        margin: 24px 0;
+        padding: 24px;
+        background: rgba(0,0,0,0.25);
+        border-radius: 14px;
+        border: 1px solid var(--bd);
+      }
+      .dag-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .dag-node {
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-align: center;
+        min-width: 110px;
+      }
+      .dag-arrow-down {
+        text-align: center;
+        font-size: 1.4rem;
+        color: var(--mt);
+        margin: 2px 0;
+      }
+      .dn-orange { background: rgba(217,119,87,0.18); border: 2px solid var(--ac); color: var(--ac); }
+      .dn-blue   { background: rgba(59,130,246,0.14); border: 2px solid var(--exp-bd); color: var(--exp-bd); }
+      .dn-green  { background: rgba(16,185,129,0.14); border: 2px solid var(--def-bd); color: var(--def-bd); }
+      .dn-purple { background: rgba(139,92,246,0.14); border: 2px solid var(--qst-bd); color: var(--qst-bd); }
+      .dn-gold   { background: rgba(234,179,8,0.12);  border: 2px solid #eab308; color: #eab308; }
+
+      .quiz-q {
+        margin-bottom: 14px;
+      }
+      .quiz-q details {
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .quiz-q details summary {
+        padding: 14px 18px;
+        cursor: pointer;
+        font-weight: 500;
+        background: rgba(255,255,255,0.02);
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 0.2s;
+      }
+      .quiz-q details summary:hover { background: var(--hv); }
+      .quiz-q details[open] summary { background: rgba(217,119,87,0.08); border-bottom: 1px solid var(--bd); }
+      .quiz-q .answer {
+        padding: 16px 18px;
+        border-left: 4px solid var(--ac);
+        background: rgba(217,119,87,0.04);
+      }
+      .diff-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+      }
+      .diff-easy   { background: rgba(16,185,129,0.2); color: var(--def-bd); }
+      .diff-medium { background: rgba(234,179,8,0.2);  color: #eab308; }
+      .diff-hard   { background: rgba(239,68,68,0.2);  color: #ef4444; }
+      .diff-tricky { background: rgba(139,92,246,0.2); color: var(--qst-bd); }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Analysis &amp; Visualization</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <!-- Active Module (expandable) -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 6 — Distributed Processing &amp; Spark</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')">
+                <span class="nav-num">01</span>Why Distributed Computing?
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                <span class="nav-num">02</span>MapReduce &amp; DFS
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                <span class="nav-num">03</span>DAGs &amp; Hadoop
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')">
+                <span class="nav-num">04</span>Single vs. Distributed Paradigm
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-5')">
+                <span class="nav-num">05</span>Apache Spark — Deep Dive
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-6')">
+                <span class="nav-num">06</span>🎯 Quiz &amp; Review
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Other Course Modules (Cross-File Links) -->
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to Data Analysis &amp; Visualization.html">
+            <span class="nav-num">01</span>Introduction to DAV
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
+            <span class="nav-num">02</span>Data Analysis Lifecycle
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Data Preparation.html">
+            <span class="nav-num">03</span>Data Preparation
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
+            <span class="nav-num">04</span>Exploratory Data Analysis
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
+            <span class="nav-num">05</span>Evolution of Data Architecture
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Analysis &amp; Visualization</div>
+          <h1 class="module-title">Module 6 — Distributed Data Processing &amp; Apache Spark</h1>
+          <p class="topic-subtitle">Based on <em>Learning Spark, 2nd Edition</em> — Chapters 1, 2 &amp; 3</p>
+        </div>
+
+        <!-- TOPIC 1: Why Distributed Computing? -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Why Distributed Computing?</h2>
+          <p class="topic-subtitle">The hardware wall that forced a paradigm shift</p>
+
+          <p>
+            For decades, the answer to "my program is too slow" was simple: <strong>buy a faster CPU</strong>.
+            Processors kept doubling in speed every two years (Moore's Law). But around <strong>2005</strong>,
+            physicists hit a wall — you can only push electrons through silicon so fast before you melt the chip.
+            Clock speeds plateaued. The only way forward was <em>more cores</em> — and eventually,
+            <em>more machines</em>. This is the origin story of modern distributed computing.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Distributed Computing:</strong> A model where a computational task is split across multiple
+            interconnected machines (nodes), each working on a part of the problem simultaneously. The results
+            are combined to produce a final answer. Think of it as 1,000 people each solving one piece of a
+            million-piece puzzle simultaneously, rather than one person doing it alone.
+          </div>
+
+          <h3>The Big Data Problem — The 3 Vs</h3>
+          <p>Modern data sources (social media, IoT sensors, logs, genomics) produce data at scales that
+          simply cannot fit on a single machine. Big Data is characterized by three dimensions:</p>
+
+          <div class="compare-grid">
+            <div class="compare-card left">
+              <h4 style="color: var(--exp-bd);">📊 Yesterday's Data</h4>
+              <ul>
+                <li>Megabytes → Gigabytes</li>
+                <li>Fits on a single hard drive</li>
+                <li>Single-machine SQL databases</li>
+                <li>Nightly batch processing</li>
+                <li>Structured relational data</li>
+              </ul>
+            </div>
+            <div class="compare-card right">
+              <h4 style="color: var(--ac);">🌊 Today's Data (Big Data)</h4>
+              <ul>
+                <li>Terabytes → Petabytes → Exabytes</li>
+                <li>Distributed across thousands of disks</li>
+                <li>Distributed engines (Spark, Flink)</li>
+                <li>Real-time streaming + batch</li>
+                <li>Structured + Semi + Unstructured</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>The 3 Vs of Big Data:</strong>
+            <ul style="margin-top: 10px;">
+              <li><strong>Volume:</strong> The sheer <em>amount</em> of data generated (terabytes/day from a single social platform).</li>
+              <li><strong>Velocity:</strong> The <em>speed</em> at which data arrives (real-time stock ticks, live sensor streams).</li>
+              <li><strong>Variety:</strong> The <em>diversity</em> of data formats (JSON logs, images, videos, structured tables).</li>
+            </ul>
+          </div>
+
+          <h3>Scale-Up vs. Scale-Out</h3>
+          <p>The key insight that enabled modern Big Data processing was using <strong>commodity hardware</strong>
+          — cheap, off-the-shelf machines — instead of expensive supercomputers. Instead of one $10M server,
+          you buy 1,000 $10K servers and coordinate them with software. This is called <strong>horizontal scaling
+          (scale-out)</strong> as opposed to <strong>vertical scaling (scale-up)</strong>.</p>
+
+          <table>
+            <tr>
+              <th>Aspect</th>
+              <th>Scale-Up (Vertical)</th>
+              <th>Scale-Out (Horizontal)</th>
+            </tr>
+            <tr>
+              <td><strong>Approach</strong></td>
+              <td>Bigger, more powerful single machine</td>
+              <td>More machines working together</td>
+            </tr>
+            <tr>
+              <td><strong>Cost</strong></td>
+              <td>Exponentially expensive</td>
+              <td>Cheap commodity hardware</td>
+            </tr>
+            <tr>
+              <td><strong>Fault Tolerance</strong></td>
+              <td>Single point of failure</td>
+              <td>Redundant — node failures are routine</td>
+            </tr>
+            <tr>
+              <td><strong>Elasticity</strong></td>
+              <td>Hard to add/remove capacity</td>
+              <td>Add/remove nodes dynamically</td>
+            </tr>
+            <tr>
+              <td><strong>Example</strong></td>
+              <td>Oracle RAC, IBM mainframe</td>
+              <td>Hadoop cluster, Spark on cloud</td>
+            </tr>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Key Insight</div>
+            In a distributed cluster, <strong>node failures are not exceptions — they are expected</strong>.
+            At scale, if you have 10,000 machines and each has a 0.1% daily failure rate, you expect
+            <em>10 machines to fail every day</em>. The system must be designed to tolerate this gracefully
+            without losing data or crashing computations.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>CPU clock speed plateaued ~2005, forcing a shift to parallel and distributed computing.</li>
+              <li>Big Data (3 Vs: Volume, Velocity, Variety) cannot be processed on a single machine.</li>
+              <li>Horizontal scaling (commodity clusters) is cheaper and more fault-tolerant than vertical scaling.</li>
+              <li>Distributed systems treat node failures as routine events, not exceptional errors.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 2: MapReduce & DFS -->
+        <div class="topic-card" id="topic-2" style="display:none;">
+          <h2><span class="topic-num">2</span>MapReduce &amp; Distributed File Systems</h2>
+          <p class="topic-subtitle">Google's 2004 blueprint that changed data engineering forever</p>
+
+          <p>
+            In 2004, Google published a landmark paper describing <strong>MapReduce</strong> — a programming
+            model for processing massive datasets across thousands of machines. That same year they published
+            the <strong>Google File System (GFS)</strong>, describing how to reliably store petabytes of data
+            across cheap hardware. Together, these two ideas became the foundation of the entire Big Data ecosystem.
+          </p>
+
+          <h3>Distributed File Systems (DFS)</h3>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Distributed File System (DFS):</strong> A file system that stores data across multiple
+            networked machines but presents a single unified namespace to users and applications. Files are
+            split into fixed-size <em>blocks</em> (e.g., 128 MB in HDFS) and distributed across nodes, with
+            each block replicated (usually 3x) for fault tolerance.
+          </div>
+
+          <!-- DFS Architecture Diagram -->
+          <div class="dag-container">
+            <p style="text-align:center; font-weight:600; color:var(--ac); margin-bottom: 16px;">HDFS Architecture — NameNode + DataNodes</p>
+            <div class="dag-row">
+              <div class="dag-node dn-orange" style="min-width:200px;">
+                🗂️ NameNode (Master)<br>
+                <span style="font-size:0.72rem; font-weight:400;">Stores ONLY metadata: which blocks live on which DataNodes. No actual file data here.</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↕ metadata lookups (clients ask "where is block X?")</div>
+            <div class="dag-row">
+              <div class="dag-node dn-blue">💾 DataNode 1<br><span style="font-size:0.72rem; font-weight:400;">Blocks A, D, G</span></div>
+              <div class="dag-node dn-blue">💾 DataNode 2<br><span style="font-size:0.72rem; font-weight:400;">Blocks A, B, E</span></div>
+              <div class="dag-node dn-blue">💾 DataNode 3<br><span style="font-size:0.72rem; font-weight:400;">Blocks B, C, F</span></div>
+              <div class="dag-node dn-blue">💾 DataNode 4<br><span style="font-size:0.72rem; font-weight:400;">Blocks C, D, G</span></div>
+            </div>
+            <p style="text-align:center; margin-top: 14px; font-size:0.8rem; color:var(--mt);">
+              Block A is stored on DataNodes 1 and 2 (2x replication shown). If DataNode 1 fails, Block A is still readable from DataNode 2.
+            </p>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Three Core DFS Properties</div>
+            <ul>
+              <li><strong>Block Replication:</strong> Each block stored on multiple nodes (default 3x in HDFS). Fault-tolerant storage.</li>
+              <li><strong>Data Locality:</strong> Move compute TO the data (not data to compute). Processing runs on the node holding the block — no costly network transfer.</li>
+              <li><strong>Write Once, Read Many (WORM):</strong> Files are written once and read many times. HDFS is optimized for large sequential reads, not random writes.</li>
+            </ul>
+          </div>
+
+          <h3>The MapReduce Programming Model</h3>
+          <p>
+            MapReduce breaks any large computation into two phases: a <strong>Map</strong> phase and a
+            <strong>Reduce</strong> phase. The key insight is that these phases are embarrassingly parallelizable
+            — each mapper and reducer can run completely independently on different machines.
+          </p>
+
+          <!-- MapReduce Flow Diagram -->
+          <div class="flow-diagram">
+            <div class="flow-box input">📄 Input Data<br><span style="font-size:0.72rem;">Split into blocks</span></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box process">🗺️ Map Phase<br><span style="font-size:0.72rem;">Each record → (key, value)</span></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box shuffle">🔀 Shuffle &amp; Sort<br><span style="font-size:0.72rem;">Group by key</span></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box warn">⚙️ Reduce Phase<br><span style="font-size:0.72rem;">Aggregate per key</span></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box output">✅ Output<br><span style="font-size:0.72rem;">Written to DFS</span></div>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Map Function:</strong> Takes an input key-value pair and produces a set of intermediate
+            key-value pairs. <em>Intuition: Apply a transformation to every single record, independently.</em>
+            <br><br>
+            <strong>Reduce Function:</strong> Takes all intermediate values for the same key and merges
+            them. <em>Intuition: Aggregate/summarize all records sharing a property.</em>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Classic Example: Word Count</div>
+            <h4>Counting word frequencies across millions of documents</h4>
+            <pre><code>-- Input (each line is a record) --
+"the quick brown fox"
+"the fox jumped"
+
+-- MAP phase: each word becomes ("word", 1) --
+Mapper 1: ("the", 1), ("quick", 1), ("brown", 1), ("fox", 1)
+Mapper 2: ("the", 1), ("fox", 1), ("jumped", 1)
+
+-- SHUFFLE phase: group all values by key across all mappers --
+"brown"  → [1]
+"fox"    → [1, 1]
+"jumped" → [1]
+"quick"  → [1]
+"the"    → [1, 1]
+
+-- REDUCE phase: sum values for each key --
+"brown"  → 1
+"fox"    → 2
+"jumped" → 1
+"quick"  → 1
+"the"    → 2</code></pre>
+            <p>This scales to billions of documents — just add more mappers on more machines.</p>
+          </div>
+
+          <h3>Why MapReduce Was Eventually Replaced</h3>
+
+          <div class="warning-box">
+            <div class="callout-label">The Disk I/O Problem — MapReduce's Fatal Flaw</div>
+            Every MapReduce job writes intermediate results to <strong>HDFS (disk)</strong> after the shuffle.
+            For iterative algorithms (ML training with 100+ iterations): each iteration reads from disk,
+            processes, writes to disk, and the next reads again. 100 iterations = 200 disk I/O operations
+            on intermediate data. Disk is 100-1000x slower than RAM. Spark eliminates this by keeping
+            intermediate data <strong>in memory (RAM)</strong>.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Other MapReduce Limitations</div>
+            <ul>
+              <li><strong>Two-phase rigidity:</strong> Complex algorithms must be awkwardly chained into multiple Map→Reduce jobs.</li>
+              <li><strong>No native streaming:</strong> Inherently batch-oriented; real-time processing requires a separate system.</li>
+              <li><strong>Verbose API:</strong> Even simple operations require hundreds of lines of Java boilerplate.</li>
+              <li><strong>No in-memory caching:</strong> Frequently-accessed datasets re-read from disk on every job.</li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li><strong>DFS</strong> splits files into replicated blocks across nodes — fault-tolerant distributed storage.</li>
+              <li><strong>Data locality</strong> (move compute to data) is a core performance principle in distributed systems.</li>
+              <li><strong>MapReduce</strong> = Map → Shuffle → Reduce. Embarrassingly parallel, simple model.</li>
+              <li>MapReduce's fatal flaw: intermediate data written to disk after every phase — catastrophic for iterative workloads.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 3: DAGs & Hadoop -->
+        <div class="topic-card" id="topic-3" style="display:none;">
+          <h2><span class="topic-num">3</span>DAGs &amp; Hadoop</h2>
+          <p class="topic-subtitle">How execution plans are represented and the full Hadoop ecosystem</p>
+
+          <h3>Directed Acyclic Graphs (DAGs)</h3>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Directed Acyclic Graph (DAG):</strong> A graph where nodes represent operations and
+            edges represent data dependencies. <em>Directed</em> = edges have a direction (data flows forward).
+            <em>Acyclic</em> = no cycles — no circular dependencies. The engine sees the <em>entire execution
+            plan</em> before running anything, enabling global optimizations impossible in MapReduce's rigid
+            two-phase model.
+          </div>
+
+          <!-- DAG Diagram -->
+          <div class="dag-container">
+            <p style="text-align:center; font-weight:600; color:var(--ac); margin-bottom: 16px;">
+              Example DAG: <code>filter → join → groupBy → count</code>
+            </p>
+            <div class="dag-row">
+              <div class="dag-node dn-orange">📂 Read CSV (sales)</div>
+              <div class="dag-node dn-orange">📂 Read JSON (products)</div>
+            </div>
+            <div class="dag-arrow-down">↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↓</div>
+            <div class="dag-row">
+              <div class="dag-node dn-blue">🔍 filter(year=2024)</div>
+              <div class="dag-node dn-blue">🏷️ select(id, category)</div>
+            </div>
+            <div class="dag-arrow-down">↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↓</div>
+            <div class="dag-row">
+              <div class="dag-node dn-purple" style="min-width:240px;">🔗 join(sales.productId = products.id)</div>
+            </div>
+            <div class="dag-arrow-down">↓</div>
+            <div class="dag-row">
+              <div class="dag-node dn-green">📊 groupBy(category)</div>
+            </div>
+            <div class="dag-arrow-down">↓</div>
+            <div class="dag-row">
+              <div class="dag-node dn-gold">✅ count() → Write Results</div>
+            </div>
+            <p style="text-align:center; margin-top:14px; font-size:0.8rem; color:var(--mt);">
+              The engine can optimize: push filter before join (smaller join input), fuse consecutive narrow ops, prune unread partitions.
+            </p>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">DAG Optimizations the Engine Can Apply</div>
+            <ul>
+              <li><strong>Predicate pushdown:</strong> Apply filters as early as possible (before joins) to reduce data size entering expensive operations.</li>
+              <li><strong>Stage fusion:</strong> Combine consecutive narrow transformations into a single execution stage — no intermediate serialization.</li>
+              <li><strong>Partition pruning:</strong> Skip reading partitions not needed by the query entirely.</li>
+            </ul>
+          </div>
+
+          <h3>Apache Hadoop — The Full Stack</h3>
+          <p>
+            Hadoop was the open-source implementation of Google's GFS + MapReduce papers, created by
+            Doug Cutting at Yahoo! in 2006. It became the dominant Big Data platform for nearly a decade.
+          </p>
+
+          <!-- Hadoop Stack -->
+          <div class="spark-stack">
+            <div class="spark-layer sl-1">
+              <span class="sl-icon">🛠️</span>
+              <div class="sl-label">Hive / Pig / HBase (Higher-Level Tools)</div>
+              <div class="sl-desc">SQL-like queries (Hive), scripting language (Pig), NoSQL column storage (HBase)</div>
+            </div>
+            <div class="spark-layer sl-2">
+              <span class="sl-icon">🗺️</span>
+              <div class="sl-label">MapReduce (Execution Engine)</div>
+              <div class="sl-desc">Parallelizes computations using Map + Shuffle + Reduce phases across the cluster</div>
+            </div>
+            <div class="spark-layer sl-3">
+              <span class="sl-icon">⚙️</span>
+              <div class="sl-label">YARN (Resource Manager)</div>
+              <div class="sl-desc">Negotiates and allocates CPU / RAM resources to jobs running on the cluster</div>
+            </div>
+            <div class="spark-layer sl-4">
+              <span class="sl-icon">💾</span>
+              <div class="sl-label">HDFS (Hadoop Distributed File System)</div>
+              <div class="sl-desc">Splits files into 128 MB blocks, replicates 3x across DataNodes</div>
+            </div>
+            <div class="spark-layer sl-5">
+              <span class="sl-icon">🖥️</span>
+              <div class="sl-label">Commodity Hardware Cluster</div>
+              <div class="sl-desc">Hundreds to thousands of standard x86 servers interconnected via network switch</div>
+            </div>
+          </div>
+
+          <table>
+            <tr>
+              <th>Component</th>
+              <th>Role</th>
+              <th>Analogy</th>
+            </tr>
+            <tr>
+              <td><strong>HDFS NameNode</strong></td>
+              <td>Master storing file-to-block metadata</td>
+              <td>Library card catalog</td>
+            </tr>
+            <tr>
+              <td><strong>HDFS DataNode</strong></td>
+              <td>Worker storing actual data blocks</td>
+              <td>Library shelves</td>
+            </tr>
+            <tr>
+              <td><strong>YARN ResourceManager</strong></td>
+              <td>Cluster-wide CPU/RAM allocator</td>
+              <td>HR department (assigns workers to jobs)</td>
+            </tr>
+            <tr>
+              <td><strong>YARN NodeManager</strong></td>
+              <td>Per-machine resource manager</td>
+              <td>Local supervisor on each node</td>
+            </tr>
+            <tr>
+              <td><strong>MR ApplicationMaster</strong></td>
+              <td>Manages lifecycle of one MR job</td>
+              <td>Project manager for a single job</td>
+            </tr>
+          </table>
+
+          <div class="warning-box">
+            <div class="callout-label">Hadoop's Achilles Heel</div>
+            <ul>
+              <li>All intermediate data written to HDFS (disk) → 10-100x slower than in-memory processing.</li>
+              <li>No support for streaming data — batch processing only.</li>
+              <li>Very complex to program (deep Java expertise needed even for simple tasks).</li>
+              <li>Poor support for iterative ML algorithms.</li>
+            </ul>
+            Hadoop MapReduce is now largely replaced by <strong>Apache Spark</strong> as the de-facto distributed engine, though HDFS and YARN remain popular.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>A <strong>DAG</strong> represents a computation as a graph of operations, enabling the engine to optimize the full plan before executing.</li>
+              <li><strong>Hadoop</strong> = HDFS (storage) + MapReduce (compute) + YARN (resource management).</li>
+              <li>DAG-based engines are fundamentally more flexible and optimizable than MapReduce's rigid two-phase model.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 4: Paradigm Shift -->
+        <div class="topic-card" id="topic-4" style="display:none;">
+          <h2><span class="topic-num">4</span>Single Machine vs. Distributed — Paradigm Shift</h2>
+          <p class="topic-subtitle">How your mental model must change when writing distributed code</p>
+
+          <p>
+            Moving from single-machine programming (Python scripts, SQL on a laptop) to distributed
+            computing isn't just about using different tools — it requires a fundamentally different
+            <em>mental model</em>. Things that "just work" on one machine become nuanced challenges at scale.
+          </p>
+
+          <div class="compare-grid">
+            <div class="compare-card left">
+              <h4 style="color: var(--exp-bd);">🖥️ Single Machine Thinking</h4>
+              <ul>
+                <li>Data fits in memory / one disk</li>
+                <li>Sequential or multi-threaded execution</li>
+                <li>Shared memory between threads</li>
+                <li>Failures are rare — restart and retry</li>
+                <li>Latency: nanoseconds (cache) to ms (disk)</li>
+                <li>One log file, one stack trace</li>
+                <li>Ordering is deterministic</li>
+              </ul>
+            </div>
+            <div class="compare-card right">
+              <h4 style="color: var(--ac);">🌐 Distributed Thinking</h4>
+              <ul>
+                <li>Data partitioned across many nodes</li>
+                <li>Massively parallel execution</li>
+                <li>No shared memory — network messaging</li>
+                <li>Node failures happen daily — must self-heal</li>
+                <li>Latency: milliseconds to seconds (network)</li>
+                <li>Logs from 1000s of executors</li>
+                <li>Ordering is non-deterministic by default</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Key Paradigm Shifts Explained</h3>
+
+          <h4>1. Data Partitioning Instead of Looping</h4>
+          <p>On a single machine, you iterate over data with a <code>for</code> loop. In a distributed system,
+          data is <strong>partitioned</strong> across nodes. Each node processes its own partition simultaneously.
+          You write transformations that apply to <em>one partition</em>; the engine applies it to all partitions in parallel.</p>
+
+          <div class="example">
+            <div class="callout-label">Paradigm Shift — Single Machine vs. Spark</div>
+            <h4>Filtering a 1 TB dataset</h4>
+            <pre><code># Single Machine (Pandas) — sequential, crashes if file > RAM
+import pandas as pd
+df = pd.read_csv("huge_file.csv")          # FAILS if 1TB file
+result = df[df["country"] == "PK"]
+
+# Distributed (PySpark) — 1000 machines each filter their partition
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.getOrCreate()
+df = spark.read.csv("hdfs://huge_file.csv")   # lazy — reads nothing yet
+result = df.filter(df["country"] == "PK")     # lazy — builds a DAG node
+result.show()                                 # ACTION — triggers full execution</code></pre>
+          </div>
+
+          <h4>2. Shuffles — The Distributed Bottleneck</h4>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Shuffle:</strong> The process of redistributing data across partitions — sending data
+            over the network so records with the same key end up on the same node. Triggered by:
+            <code>groupBy</code>, <code>join</code>, <code>orderBy</code>, <code>distinct</code>.
+            Shuffles are the most expensive operation in distributed systems — minimize them!
+          </div>
+
+          <h4>3. Fault Tolerance via Lineage</h4>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Lineage (RDD Lineage):</strong> The recorded sequence of transformations applied to
+            create a dataset. If a partition is lost (executor crash), Spark re-executes only the lineage
+            transformations needed to rebuild that specific partition — not the entire job. This is Spark's
+            primary fault tolerance mechanism, as opposed to data replication.
+          </div>
+
+          <h4>4. Lazy Evaluation</h4>
+          <p>Spark doesn't execute transformations immediately. It builds a DAG of the full computation plan.
+          Only when you trigger an <strong>action</strong> does execution begin — enabling Catalyst to 
+          optimize the entire plan holistically before any byte of data is moved.</p>
+
+          <div class="flow-diagram">
+            <div class="flow-box input">Transformation 1<br><span style="font-size:0.7rem;">read → filter</span></div>
+            <div class="flow-arrow">+</div>
+            <div class="flow-box process">Transformation 2<br><span style="font-size:0.7rem;">join → select</span></div>
+            <div class="flow-arrow">+</div>
+            <div class="flow-box shuffle">Transformation 3<br><span style="font-size:0.7rem;">groupBy → agg</span></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box output">ACTION<br><span style="font-size:0.7rem;">.count() triggers ALL</span></div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">The Big Mental Shift — Declarative over Imperative</div>
+            Stop thinking procedurally ("do step 1, then step 2"). Think declaratively: "describe the
+            transformation I want, let Spark figure out how to execute it efficiently." DataFrames are
+            declarative (SQL-like). RDDs are imperative (you specify each step manually). This is why
+            DataFrames allow global optimization while RDDs don't.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Distributed systems partition data; operations run in parallel on each partition simultaneously.</li>
+              <li><strong>Shuffles</strong> (cross-partition data movement) are the most expensive operations — minimize them.</li>
+              <li>Fault tolerance is handled via <strong>lineage</strong> — Spark recomputes lost partitions without full restart.</li>
+              <li><strong>Lazy evaluation</strong>: transformations build a plan; only actions trigger execution, enabling global optimization.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 5: Apache Spark Deep Dive -->
+        <div class="topic-card" id="topic-5" style="display:none;">
+          <h2><span class="topic-num">5</span>Apache Spark — A Closer Look</h2>
+          <p class="topic-subtitle">Architecture, abstractions, transformations, actions, and the execution model</p>
+
+          <p>
+            Apache Spark was born at UC Berkeley's AMPLab in 2009 and open-sourced in 2010. Its core
+            innovation: <strong>keep intermediate data in RAM between computation steps</strong> instead of
+            writing to disk. This made it up to 100x faster than Hadoop MapReduce for iterative algorithms
+            and interactive queries. It also unified five previously separate systems into one engine.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Apache Spark:</strong> A unified, open-source analytics engine for large-scale data
+            processing. Provides in-memory distributed computation with a unified API for batch, streaming,
+            SQL, machine learning, and graph processing — all on one cluster runtime.
+          </div>
+
+          <h3>Spark's Unified Stack</h3>
+          <div class="spark-stack">
+            <div class="spark-layer sl-1">
+              <span class="sl-icon">🗣️</span>
+              <div class="sl-label">Spark SQL / DataFrames / Datasets</div>
+              <div class="sl-desc">Structured data processing — SQL queries, schema enforcement, Catalyst optimizer, Tungsten engine</div>
+            </div>
+            <div class="spark-layer sl-2">
+              <span class="sl-icon">🌊</span>
+              <div class="sl-label">Structured Streaming</div>
+              <div class="sl-desc">Real-time stream processing using the same DataFrame API (micro-batch or continuous processing)</div>
+            </div>
+            <div class="spark-layer sl-3">
+              <span class="sl-icon">🤖</span>
+              <div class="sl-label">MLlib (Machine Learning)</div>
+              <div class="sl-desc">Distributed ML algorithms: classification, regression, clustering, recommendation, pipelines</div>
+            </div>
+            <div class="spark-layer sl-4">
+              <span class="sl-icon">🕸️</span>
+              <div class="sl-label">GraphX / GraphFrames</div>
+              <div class="sl-desc">Distributed graph processing — PageRank, connected components, triangle counting</div>
+            </div>
+            <div class="spark-layer sl-5">
+              <span class="sl-icon">⚡</span>
+              <div class="sl-label">Spark Core (RDDs + Execution Engine + Scheduler)</div>
+              <div class="sl-desc">Foundation: task scheduling, memory management, fault recovery, shuffle management, cluster communication</div>
+            </div>
+          </div>
+
+          <h3>Cluster Architecture</h3>
+          <div class="dag-container">
+            <p style="text-align:center; font-weight:600; color:var(--ac); margin-bottom:16px;">Spark Cluster Architecture</p>
+            <div class="dag-row">
+              <div class="dag-node dn-orange" style="min-width:220px;">
+                👤 Driver Program<br>
+                <span style="font-size:0.72rem; font-weight:400;">Your code runs here. Contains SparkSession. Builds the DAG and coordinates execution.</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↕ negotiates resources with</div>
+            <div class="dag-row">
+              <div class="dag-node dn-purple" style="min-width:220px;">
+                🏗️ Cluster Manager<br>
+                <span style="font-size:0.72rem; font-weight:400;">YARN / Kubernetes / Standalone / Mesos. Allocates cluster cores and RAM to the Spark application.</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↕ launches executor processes on</div>
+            <div class="dag-row">
+              <div class="dag-node dn-blue">⚙️ Executor 1<br><span style="font-size:0.72rem; font-weight:400;">Runs tasks. Caches partitions in RAM.</span></div>
+              <div class="dag-node dn-blue">⚙️ Executor 2<br><span style="font-size:0.72rem; font-weight:400;">Runs tasks. Caches partitions in RAM.</span></div>
+              <div class="dag-node dn-blue">⚙️ Executor 3<br><span style="font-size:0.72rem; font-weight:400;">Runs tasks. Caches partitions in RAM.</span></div>
+              <div class="dag-node dn-blue">⚙️ Executor N<br><span style="font-size:0.72rem; font-weight:400;">Runs tasks. Caches partitions in RAM.</span></div>
+            </div>
+            <p style="text-align:center; margin-top:14px; font-size:0.8rem; color:var(--mt);">
+              Each Executor runs on a separate worker node. Tasks within an executor run in threads, one thread per partition.
+            </p>
+          </div>
+
+          <table>
+            <tr>
+              <th>Component</th>
+              <th>Role</th>
+              <th>Key Fact</th>
+            </tr>
+            <tr>
+              <td><strong>Driver</strong></td>
+              <td>Runs user code, creates SparkSession, builds DAG</td>
+              <td>One per application. OOM here kills the whole job.</td>
+            </tr>
+            <tr>
+              <td><strong>SparkSession</strong></td>
+              <td>Single entry point to Spark since 2.0</td>
+              <td>Replaces SparkContext, SQLContext, HiveContext</td>
+            </tr>
+            <tr>
+              <td><strong>Cluster Manager</strong></td>
+              <td>Allocates cluster resources to Spark</td>
+              <td>YARN (Hadoop), Kubernetes, or Spark Standalone</td>
+            </tr>
+            <tr>
+              <td><strong>Executor</strong></td>
+              <td>Runs tasks, stores cached data in RAM</td>
+              <td>One per worker node; dies when application ends</td>
+            </tr>
+            <tr>
+              <td><strong>Task</strong></td>
+              <td>Smallest unit of work — processes one partition</td>
+              <td>Number of tasks = number of partitions (per stage)</td>
+            </tr>
+          </table>
+
+          <h3>RDDs vs. DataFrames</h3>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>RDD (Resilient Distributed Dataset):</strong> Spark's lowest-level abstraction. An
+            immutable, partitioned collection of records distributed across cluster nodes. "Resilient"
+            because it uses lineage for fault recovery. RDDs give fine-grained control but are opaque
+            to the Catalyst optimizer — it cannot optimize them.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>DataFrame:</strong> A distributed collection of data organized into named, typed columns —
+            like a SQL table, but potentially billions of rows across a cluster. DataFrames use Catalyst and
+            Tungsten, making them significantly faster than raw RDDs for most structured workloads.
+          </div>
+
+          <div class="compare-grid">
+            <div class="compare-card left">
+              <h4 style="color: var(--exp-bd);">RDD</h4>
+              <ul>
+                <li>Low-level, unstructured records</li>
+                <li>Full manual control</li>
+                <li>Type-safe in Scala/Java</li>
+                <li>No schema, no optimizer</li>
+                <li>Use for: custom serialization, legacy code, complex UDFs</li>
+              </ul>
+            </div>
+            <div class="compare-card right">
+              <h4 style="color: var(--ac);">DataFrame / Dataset</h4>
+              <ul>
+                <li>High-level, named columns</li>
+                <li>Catalyst optimizer + Tungsten engine</li>
+                <li>Python / R / Scala / Java support</li>
+                <li>Schema-aware, SQL-queryable</li>
+                <li>Use for: SQL, ETL pipelines, ML, analytics</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip — Always Prefer DataFrames</div>
+            In modern Spark (2.x+), <strong>always prefer DataFrames over RDDs</strong> unless you have a
+            specific reason. DataFrames use Catalyst which generates code often faster than hand-written RDD
+            code. The optimizer understands join/filter semantics and can reorder them. RDD operations are
+            opaque black boxes to the optimizer — it cannot improve them.
+          </div>
+
+          <h3>Transformations vs. Actions</h3>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Transformation:</strong> An operation that returns a new DataFrame/RDD. <em>Lazy</em> —
+            adds a step to the logical plan, nothing executes. Examples: <code>filter()</code>,
+            <code>select()</code>, <code>groupBy()</code>, <code>join()</code>, <code>withColumn()</code>.
+            <br><br>
+            <strong>Action:</strong> An operation that triggers the actual DAG computation. Returns a result
+            to the driver or writes to storage. Examples: <code>show()</code>, <code>count()</code>,
+            <code>collect()</code>, <code>write()</code>, <code>first()</code>, <code>take(n)</code>.
+          </div>
+
+          <table>
+            <tr>
+              <th>Operation</th>
+              <th>What it does</th>
+              <th>Type</th>
+            </tr>
+            <tr>
+              <td><code>filter() / where()</code></td>
+              <td>Keep rows matching condition</td>
+              <td>Narrow Transformation (no shuffle)</td>
+            </tr>
+            <tr>
+              <td><code>select() / drop()</code></td>
+              <td>Choose or remove columns</td>
+              <td>Narrow Transformation</td>
+            </tr>
+            <tr>
+              <td><code>withColumn()</code></td>
+              <td>Add or transform a column</td>
+              <td>Narrow Transformation</td>
+            </tr>
+            <tr>
+              <td><code>groupBy().agg()</code></td>
+              <td>Group rows by key, aggregate values</td>
+              <td>Wide Transformation (shuffle!)</td>
+            </tr>
+            <tr>
+              <td><code>join()</code></td>
+              <td>Join two DataFrames on a key</td>
+              <td>Wide Transformation (shuffle!)</td>
+            </tr>
+            <tr>
+              <td><code>orderBy() / sort()</code></td>
+              <td>Sort all rows globally</td>
+              <td>Wide Transformation (shuffle!)</td>
+            </tr>
+            <tr>
+              <td><code>distinct()</code></td>
+              <td>Remove duplicate rows</td>
+              <td>Wide Transformation (shuffle!)</td>
+            </tr>
+            <tr>
+              <td><code>cache() / persist()</code></td>
+              <td>Store DataFrame in memory after first compute</td>
+              <td>Optimization hint</td>
+            </tr>
+            <tr>
+              <td><code>show() / count() / collect()</code></td>
+              <td>Trigger full DAG execution, return result</td>
+              <td>Action</td>
+            </tr>
+          </table>
+
+          <div class="warning-box">
+            <div class="callout-label">Narrow vs. Wide — Critical Distinction</div>
+            <ul>
+              <li><strong>Narrow Transformation:</strong> Output partition depends on exactly ONE input partition. No network transfer. Fast (runs locally per node). Example: <code>filter</code>, <code>select</code>, <code>map</code>.</li>
+              <li><strong>Wide Transformation (Shuffle):</strong> Output partition may depend on MULTIPLE input partitions from DIFFERENT nodes. Requires network transfer. Creates a new Stage boundary. Example: <code>groupBy</code>, <code>join</code>, <code>orderBy</code>.</li>
+            </ul>
+            Spark divides the DAG into <strong>Stages</strong> at each shuffle boundary. Within a stage, all tasks run fully in parallel. Between stages, data must be shuffled over the network — a synchronization barrier.
+          </div>
+
+          <h3>Jobs → Stages → Tasks</h3>
+          <div class="dag-container">
+            <p style="text-align:center; font-weight:600; color:var(--ac); margin-bottom:16px;">Spark Execution Hierarchy</p>
+            <div class="dag-row">
+              <div class="dag-node dn-orange" style="min-width:300px;">
+                🎬 Application — One SparkSession lifetime<br>
+                <span style="font-size:0.72rem; font-weight:400;">Contains all jobs submitted during app's life</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↓ each Action creates one</div>
+            <div class="dag-row">
+              <div class="dag-node dn-blue" style="min-width:280px;">
+                📋 Job — One Action call<br>
+                <span style="font-size:0.72rem; font-weight:400;">Each <code>.count()</code> or <code>.write()</code> = one Job</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↓ divided at shuffle boundaries into</div>
+            <div class="dag-row">
+              <div class="dag-node dn-purple">📦 Stage A<br><span style="font-size:0.72rem; font-weight:400;">Before shuffle — all narrow ops</span></div>
+              <div class="dag-node dn-purple">📦 Stage B<br><span style="font-size:0.72rem; font-weight:400;">After shuffle — more narrow ops</span></div>
+            </div>
+            <div class="dag-arrow-down">↓ each stage contains one Task per partition</div>
+            <div class="dag-row">
+              <div class="dag-node dn-green" style="font-size:0.78rem;">Task<br>Partition 0</div>
+              <div class="dag-node dn-green" style="font-size:0.78rem;">Task<br>Partition 1</div>
+              <div class="dag-node dn-green" style="font-size:0.78rem;">Task<br>Partition 2</div>
+              <div class="dag-node dn-green" style="font-size:0.78rem;">…<br>Partition N</div>
+            </div>
+            <p style="text-align:center; margin-top:14px; font-size:0.8rem; color:var(--mt);">
+              One task = one partition = one executor thread. All tasks in a stage run in parallel across the cluster.
+            </p>
+          </div>
+
+          <h3>Catalyst Optimizer Pipeline</h3>
+          <p>When you write a DataFrame query, Spark doesn't execute it directly. It goes through a sophisticated
+          optimization pipeline before a single byte of data is touched:</p>
+
+          <div class="flow-diagram" style="flex-direction:column; align-items:stretch; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="flow-box input" style="min-width:200px; flex-shrink:0;">1. Unresolved Logical Plan</div>
+              <div style="font-size:0.8rem; color:var(--mt);">→ Catalog resolves table/column names and types</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="flow-box process" style="min-width:200px; flex-shrink:0;">2. Resolved Logical Plan</div>
+              <div style="font-size:0.8rem; color:var(--mt);">→ Catalyst applies rule-based optimizations (predicate pushdown, constant folding)</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="flow-box shuffle" style="min-width:200px; flex-shrink:0;">3. Optimized Logical Plan</div>
+              <div style="font-size:0.8rem; color:var(--mt);">→ Physical planning: generate multiple candidate physical strategies</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="flow-box warn" style="min-width:200px; flex-shrink:0;">4. Physical Plans</div>
+              <div style="font-size:0.8rem; color:var(--mt);">→ Cost model picks the best plan (e.g., broadcast join vs. sort-merge join)</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="flow-box output" style="min-width:200px; flex-shrink:0;">5. Execute!</div>
+              <div style="font-size:0.8rem; color:var(--mt);">→ Tungsten generates optimized JVM bytecode. Runs on cluster.</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">PySpark — Complete Example</div>
+            <h4>Full SparkSession workflow (Learning Spark Chapters 2 &amp; 3 style)</h4>
+            <pre><code>from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, count, avg
+
+# 1. Create a SparkSession — single entry point
+spark = SparkSession.builder \
+    .appName("FlightAnalysis") \
+    .config("spark.executor.memory", "4g") \
+    .getOrCreate()
+
+# 2. Read CSV into a DataFrame (LAZY — no data is read yet)
+df = spark.read \
+    .option("header", True) \
+    .option("inferSchema", True) \
+    .csv("hdfs:///data/flights.csv")
+
+# 3. Inspect schema (this triggers a small scan for type inference)
+df.printSchema()
+# root
+#  |-- date: string
+#  |-- airline: string
+#  |-- origin: string
+#  |-- dest: string
+#  |-- delay: integer
+
+# 4. Chain LAZY transformations — NOTHING RUNS YET
+result = (
+    df
+    .filter(col("delay") > 0)                    # narrow: filter within partition
+    .select("airline", "origin", "dest", "delay") # narrow: drop columns
+    .groupBy("airline")                            # wide: SHUFFLE by airline
+    .agg(
+        count("*").alias("total_flights"),
+        avg("delay").alias("avg_delay_min")
+    )
+    .orderBy(col("avg_delay_min").desc())          # wide: SHUFFLE for global sort
+)
+
+# 5. .show() is an ACTION — triggers full DAG execution NOW
+result.show(10)
+
+# 6. Cache a heavy DataFrame used multiple times
+df.cache()    # after next action, df is stored in RAM on all executors
+
+# 7. Write results (also an ACTION)
+result.write.mode("overwrite").parquet("hdfs:///output/airline_stats")
+
+# Clean up
+df.unpersist()  # free the RAM</code></pre>
+          </div>
+
+          <h3>Language Support</h3>
+          <table>
+            <tr>
+              <th>Language</th>
+              <th>Performance</th>
+              <th>Best For</th>
+            </tr>
+            <tr>
+              <td><strong>Scala</strong></td>
+              <td>Fastest (native JVM)</td>
+              <td>Production ETL pipelines, library development</td>
+            </tr>
+            <tr>
+              <td><strong>Java</strong></td>
+              <td>Fast (native JVM)</td>
+              <td>Enterprise Java integration</td>
+            </tr>
+            <tr>
+              <td><strong>Python (PySpark)</strong></td>
+              <td>Near-native with DataFrames</td>
+              <td>Data science, ML, prototyping (most popular)</td>
+            </tr>
+            <tr>
+              <td><strong>R (SparkR)</strong></td>
+              <td>Good with DataFrames</td>
+              <td>Statistical analysis for R users</td>
+            </tr>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">PySpark Performance Nuance</div>
+            With <strong>DataFrame/SQL operations</strong>, Python and Scala have nearly identical performance
+            — both compile to the same JVM bytecode via Tungsten. The gap appears only with <strong>Python UDFs</strong>:
+            each UDF call serializes rows from JVM to Python process and back — 10-100x overhead.
+            Solution: use <strong>Pandas UDFs (vectorized)</strong> which batch-serialize entire columns
+            using Apache Arrow, amortizing the overhead across thousands of rows.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Spark stores intermediate data <strong>in RAM</strong> — up to 100x faster than Hadoop MapReduce for iterative workloads.</li>
+              <li>Unified stack: SQL, Streaming, MLlib, GraphX — one engine replaces five separate systems.</li>
+              <li><strong>DataFrames</strong> are preferred: schema-aware, Catalyst-optimized, language-agnostic.</li>
+              <li>Transformations = lazy (build plan). Actions = trigger execution. Wide transformations cause shuffles.</li>
+              <li>Catalyst rewrites your logical plan into an optimized physical plan before execution.</li>
+              <li>Hierarchy: <strong>Application → Job (per action) → Stage (per shuffle boundary) → Task (per partition)</strong>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 6: Quiz & Review -->
+        <div class="topic-card" id="topic-6" style="display:none;">
+          <h2><span class="topic-num">6</span>🎯 Quiz &amp; Review</h2>
+          <p class="topic-subtitle">12 questions across 5 sections — Easy, Medium, Hard, and Tricky</p>
+
+          <p>Try to answer each question before expanding the solution. Pay close attention to the tricky questions — they test conceptual depth, not just recall.</p>
+
+          <!-- Section A -->
+          <h3 style="margin-top:32px; color:var(--ac);">📌 Section A: Distributed Computing Fundamentals</h3>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-easy">Easy</span> What are the "3 Vs" of Big Data? Give a real-world example of each.</summary>
+              <div class="answer">
+                <p><strong>Answer:</strong></p>
+                <ul>
+                  <li><strong>Volume:</strong> Enormous amount of data. Example: Facebook generates ~4 petabytes of new data per day from posts, likes, and messages.</li>
+                  <li><strong>Velocity:</strong> Speed at which new data arrives. Example: Twitter processes ~6,000 tweets per second; financial exchanges process millions of trades per second.</li>
+                  <li><strong>Variety:</strong> Different types and formats of data. Example: A hospital has structured EHR records (SQL tables), semi-structured doctor's notes (JSON), and unstructured MRI scans (images) — all needing different processing pipelines.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-easy">Easy</span> Why did physical limits of CPUs around 2005 force the adoption of distributed computing?</summary>
+              <div class="answer">
+                <p><strong>Answer:</strong> Around 2005, CPU manufacturers hit the <em>power wall</em> — increasing clock speeds further caused excessive heat generation. Electrons moving through transistors at higher frequencies produce heat that can't be safely dissipated. This caused clock speeds to plateau. Moore's Law continued but in the form of <strong>more cores per chip</strong>, not faster cores. For truly massive data processing, even multi-core chips on a single machine are insufficient — requiring multiple interconnected machines (distributed computing).</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-medium">Medium</span> Compare horizontal (scale-out) vs. vertical (scale-up) scaling. When would you prefer each?</summary>
+              <div class="answer">
+                <p><strong>Vertical scaling</strong> (upgrade one machine): Better for workloads that are hard to parallelize — single-threaded legacy apps, databases with complex transactions that can't be sharded. Simpler architecture but exponentially expensive and creates a single point of failure.</p>
+                <p><strong>Horizontal scaling</strong> (add more machines): Better for workloads that can be naturally partitioned — web requests, batch data processing, ML training. Cheaper, fault-tolerant, elastic (add/remove nodes dynamically). Requires software designed to work across machines.</p>
+                <p><em>Rule of thumb:</em> In the Big Data regime (TBs+), horizontal scaling is essentially mandatory — no single machine can hold the data, let alone process it efficiently.</p>
+              </div>
+            </details>
+          </div>
+
+          <!-- Section B -->
+          <h3 style="margin-top:32px; color:var(--ac);">📌 Section B: MapReduce &amp; Distributed File Systems</h3>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-easy">Easy</span> In MapReduce, what is the role of the Shuffle phase, and which two phases does it connect?</summary>
+              <div class="answer">
+                <p><strong>Answer:</strong> The Shuffle phase sits between the <strong>Map</strong> phase and the <strong>Reduce</strong> phase. Its role is to collect all intermediate key-value pairs from all mappers across all machines, sort them by key, and group all values with the same key together. This ensures each reducer receives all values for its assigned keys — which may have come from many different mappers on different machines. Without the shuffle, no reducer would have complete data for any key.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-medium">Medium</span> Explain "data locality" in HDFS. Why is moving compute to data more efficient than moving data to compute?</summary>
+              <div class="answer">
+                <p><strong>Answer:</strong> Data locality means <strong>scheduling computation on the node that already holds the data block</strong>. In HDFS, each 128 MB block is stored on a specific DataNode. If the processing task is scheduled on that same DataNode, no data moves over the network — it's read from local disk into local RAM.</p>
+                <p>The alternative (moving data to compute): sending 128 MB over a 1 Gbps network takes ~1 second per block. With millions of blocks and thousands of tasks, this would saturate the network and slow every job catastrophically. Local disk I/O is typically 3-10x faster than network I/O in a cluster. Hence: "move the code to the data, not the data to the code."</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-hard">Hard</span> A MapReduce ML training loop runs 200 iterations. How many disk operations occur on intermediate data? Why does this make MapReduce unsuitable for ML?</summary>
+              <div class="answer">
+                <p><strong>Answer:</strong> Per iteration: Map reads input (1 disk read), writes intermediate output (1 disk write), Reduce reads intermediate (1 disk read), writes final output (1 disk write) = 4 disk I/Os per iteration.</p>
+                <p>For 200 iterations: <strong>200 × 4 = 800 disk I/O operations</strong> on intermediate model data.</p>
+                <p><strong>Why this is disastrous for ML:</strong></p>
+                <ul>
+                  <li>Disk I/O is 100-1000x slower than RAM.</li>
+                  <li>Between iterations, you need current model parameters in memory. MapReduce must write/read them to/from disk every time.</li>
+                  <li>Spark solves this by keeping the training dataset and model state <strong>cached in RAM</strong> across all 200 iterations — only 1 initial disk read, 1 final write. The 198 intermediate iterations read from RAM at memory speed.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <!-- Section C -->
+          <h3 style="margin-top:32px; color:var(--ac);">📌 Section C: DAGs &amp; Hadoop</h3>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-easy">Easy</span> What does DAG stand for? What do nodes and edges represent in a Spark execution DAG?</summary>
+              <div class="answer">
+                <p><strong>DAG = Directed Acyclic Graph.</strong></p>
+                <ul>
+                  <li><strong>Nodes</strong>: operations/transformations (e.g., <code>filter</code>, <code>groupBy</code>, <code>join</code>).</li>
+                  <li><strong>Edges</strong>: data dependencies — edge from A to B means "B depends on A's output; data flows A → B".</li>
+                  <li><strong>Directed</strong>: edges have direction (data flows forward only).</li>
+                  <li><strong>Acyclic</strong>: no cycles — a computation cannot depend on its own output. Guarantees the computation can always terminate.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span> YARN in Hadoop and Spark's Cluster Manager play similar roles but are NOT the same thing. Explain the difference and how they interact when running Spark on Hadoop.</summary>
+              <div class="answer">
+                <p><strong>YARN</strong> is Hadoop's general-purpose cluster resource manager. It manages the <em>entire cluster's</em> CPU and memory, allocating containers to any application type — not just Spark. It's cluster-level infrastructure.</p>
+                <p><strong>Spark's Cluster Manager</strong> is the component <em>within Spark</em> that communicates with whatever underlying resource manager exists. Spark supports YARN, Kubernetes, Mesos, or its own Standalone mode.</p>
+                <p><strong>When running Spark on Hadoop:</strong> Spark submits via <code>--master yarn</code>. YARN allocates JVM containers on worker nodes. Spark starts its Executor processes inside those YARN containers. YARN handles <em>resource allocation</em>; Spark handles <em>task scheduling and execution</em> within its allocated resources. They operate at different abstraction levels — YARN is the infrastructure, Spark is the application layer.</p>
+              </div>
+            </details>
+          </div>
+
+          <!-- Section D -->
+          <h3 style="margin-top:32px; color:var(--ac);">📌 Section D: Single vs. Distributed Paradigm</h3>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-medium">Medium</span> What is lazy evaluation in Spark? What triggers actual execution, and what are the benefits of laziness?</summary>
+              <div class="answer">
+                <p><strong>Lazy evaluation</strong>: Spark does <em>not</em> execute transformations (<code>filter</code>, <code>select</code>, <code>groupBy</code>) when called. Each one adds a step to an internal logical plan. No data processing happens.</p>
+                <p>Execution is triggered only by an <strong>action</strong>: <code>.show()</code>, <code>.count()</code>, <code>.collect()</code>, <code>.write()</code>, <code>.first()</code>, <code>.take(n)</code>.</p>
+                <p><strong>Benefits:</strong></p>
+                <ul>
+                  <li><strong>Global optimization:</strong> Catalyst has the complete plan and can reorder operations (e.g., push filters before joins to reduce data early).</li>
+                  <li><strong>Stage fusion:</strong> Consecutive narrow transformations fused into one pass — avoids intermediate materializations.</li>
+                  <li><strong>Early termination:</strong> <code>take(10)</code> stops processing after finding 10 rows — doesn't scan the whole dataset.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span> A developer writes <code>df.count(); df.count()</code>. How many times does Spark actually process the data, and how do you fix it?</summary>
+              <div class="answer">
+                <p><strong>Answer:</strong> Spark processes the data <strong>twice</strong> — once per <code>.count()</code> action. Each action independently re-executes the full DAG from scratch (reading storage, applying all transformations, computing the result). The two calls have no awareness of each other.</p>
+                <p><strong>Fix — use <code>.cache()</code>:</strong></p>
+                <pre><code>df.cache()   # Mark DataFrame to store in RAM after first computation
+df.count()   # First action: computes + stores result partitions in memory
+df.count()   # Second action: reads from RAM — no recomputation!
+df.unpersist()  # Free RAM when done</code></pre>
+                <p>After <code>cache()</code>, the first action materializes the DataFrame into executor RAM. All subsequent actions read from RAM. Critical for DataFrames used in multiple downstream operations (e.g., fed into two different joins or filters).</p>
+              </div>
+            </details>
+          </div>
+
+          <!-- Section E -->
+          <h3 style="margin-top:32px; color:var(--ac);">📌 Section E: Apache Spark — Deep Dive</h3>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-medium">Medium</span> Explain narrow vs. wide transformations with two examples each. What happens at the cluster level for each?</summary>
+              <div class="answer">
+                <p><strong>Narrow Transformation:</strong> Output partition depends on exactly ONE input partition. No network transfer needed.</p>
+                <ul>
+                  <li><code>filter()</code>: each executor filters rows in its own partition — no other partition needed.</li>
+                  <li><code>select()</code>: each executor drops columns in its own partition.</li>
+                </ul>
+                <p>At cluster level: each executor operates independently on its partition. Zero coordination between executors.</p>
+                <p><strong>Wide Transformation (Shuffle):</strong> Output partition may need data from MULTIPLE input partitions on DIFFERENT nodes.</p>
+                <ul>
+                  <li><code>groupBy().agg()</code>: all rows with the same key must be on the same executor — data from all partitions flows over the network.</li>
+                  <li><code>join()</code>: matching rows from both DataFrames must be co-located on the same executor.</li>
+                </ul>
+                <p>At cluster level: all executors write their shuffle output to local disk, then other executors fetch the data they need over the network. Creates a <em>stage boundary</em> — a synchronization barrier where all Stage N tasks must complete before Stage N+1 begins. Wide transformations are the primary performance bottleneck in most Spark jobs.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-hard">Hard</span> If a Spark executor crashes and loses 3 of 10 cached partitions, what exactly does Spark do to recover? How does this differ from HDFS's fault tolerance approach?</summary>
+              <div class="answer">
+                <p><strong>Spark's Lineage-Based Recovery:</strong></p>
+                <ol>
+                  <li>Scheduler detects executor failure via heartbeat timeout.</li>
+                  <li>Identifies which 3 partitions are missing.</li>
+                  <li>Walks the lineage DAG for each lost partition back to the original source (e.g., a Parquet file on HDFS).</li>
+                  <li>Schedules those 3 partition tasks on surviving executors, re-applying all lineage transformations to regenerate them.</li>
+                  <li>The other 7 partitions are unaffected and continue.</li>
+                </ol>
+                <p><strong>HDFS Replication vs. Spark Lineage:</strong></p>
+                <ul>
+                  <li><strong>HDFS replication</strong>: Proactive, eager fault tolerance. Stores 3 copies of every block before failures occur. On node failure, NameNode detects under-replication and re-replicates from surviving copies — instant recovery, no recomputation. Cost: 3x storage overhead.</li>
+                  <li><strong>Spark lineage</strong>: Reactive, lazy fault tolerance. No extra copies stored. On failure, recomputes lost partitions from scratch. Storage-efficient but recovery time increases with lineage length.</li>
+                </ul>
+                <p>Trade-off: HDFS gives instant recovery with no recomputation cost but 3x storage. Spark lineage is memory-efficient but recovery requires recomputing. For very long lineages, use <code>.checkpoint()</code> to save to HDFS and break the lineage, capping maximum recovery cost.</p>
+              </div>
+            </details>
+          </div>
+
+          <!-- Overall Summary Box -->
+          <div class="summary-box" style="margin-top:40px;">
+            <h4>📚 Module 6 — Master Summary</h4>
+            <ul>
+              <li>Distributed computing arose from the Big Data 3 Vs (Volume, Velocity, Variety) and the ~2005 CPU clock speed plateau.</li>
+              <li>Scale-out (horizontal) with commodity hardware is cheaper and more fault-tolerant than scale-up (vertical).</li>
+              <li>DFS splits files into replicated blocks. Data locality = run compute on the node holding the block.</li>
+              <li>MapReduce: Map → Shuffle → Reduce. Parallelizable but disk-bound between every phase — catastrophic for iterative ML.</li>
+              <li>DAGs represent the full computation as a graph, enabling global optimizations: predicate pushdown, stage fusion, partition pruning.</li>
+              <li>Hadoop = HDFS + MapReduce + YARN. Still used for storage/resources; Spark has replaced MapReduce as compute engine.</li>
+              <li>Key paradigm shift: partitioned data, parallel execution, shuffles as bottleneck, lineage-based fault recovery, lazy evaluation.</li>
+              <li>Spark keeps intermediate data in RAM — up to 100x faster than MapReduce for iterative algorithms.</li>
+              <li>Unified Spark stack: SQL/DataFrames, Structured Streaming, MLlib, GraphX — one engine for everything.</li>
+              <li>DataFrames &gt; RDDs: Catalyst-optimized, schema-aware, multi-language. Always prefer DataFrames.</li>
+              <li>Transformations are lazy (build plan). Actions trigger execution. Narrow = no shuffle. Wide = shuffle (expensive).</li>
+              <li>Catalyst optimization pipeline: Unresolved → Resolved → Optimized Logical Plan → Physical Plan → Execute.</li>
+              <li>Hierarchy: Application → Job (per Action) → Stage (per shuffle boundary) → Task (per partition).</li>
+            </ul>
+          </div>
+        </div>
+        <!-- end topic-6 -->
+
+      </div>
+      <!-- end module-container -->
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })"
+    >
+      ↑
+    </button>
+
+    <script>
+      const topics = ["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) return h2.textContent.replace(numEl.textContent, '').trim();
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        document.getElementById("main-content").scrollTo({ top: 0, behavior: "smooth" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling, c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach(
+          (i) => (i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none")
+        );
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"));
+    </script>
+  </body>
+</html>
