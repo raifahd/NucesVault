@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing &amp; BI — OLAP Implementation Techniques</title>
+    <meta name="description" content="Comprehensive study notes for OLAP Implementation Techniques in Data Warehousing &amp; BI — covering OLAP framework, MOLAP, ROLAP, HOLAP, DOLAP, star schema design, and aggregate tables." />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">&#9776;</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing &amp; BI</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics&#8230;" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Introduction to DW.html"><span class="nav-mod-num">01</span>Introduction to DW</a></li>
+        <li><a class="nav-module-link" href="./3- High Performance DSS Database Design.html"><span class="nav-mod-num">03</span>Logical &amp; Physical Data Modeling</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>OLAP Implementation Techniques</span><span class="chevron">&#9660;</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>OLAP Framework &amp; Decision Support</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Multidimensional Analysis &amp; Cubes</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>OLAP Operations</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>MOLAP vs ROLAP vs HOLAP vs DOLAP</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Star Schema &amp; Aggregate Tables</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Topic Summary &amp; Practice Questions</a></li>
+          </ul>
+        </li>
+        <li><a class="nav-module-link" href="./6- Dimensional Modeling.html"><span class="nav-mod-num">06</span>Dimensional Modeling</a></li>
+        <li><a class="nav-module-link" href="./7- Solved Sample Midterm.html"><span class="nav-mod-num">07</span>Solved Sample Midterm</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Warehousing &amp; Business Intelligence &#8212; Week 4</div>
+          <h1 class="module-title">OLAP Implementation Techniques</h1>
+        </div>
+
+        <!-- TOPIC 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>OLAP Framework &amp; Decision Support</h2>
+          <p class="topic-subtitle">Why traditional tools fail and why OLAP is the answer &#8212; the case for multidimensional analytical processing</p>
+          <p>Data warehouses are built to answer strategic questions. But storing data is only half the problem &#8212; <em>querying</em> it efficiently and flexibly is the other half. For decades, organisations tried to use report writers, ad-hoc SQL tools, and spreadsheets for this. Each one failed in a different way. <strong>Online Analytical Processing (OLAP)</strong> is the purpose-built solution for the analytical layer of a data warehouse architecture.</p>
+
+          <h3>Why Traditional Tools Fail</h3>
+          <ul>
+            <li><strong>Report writers:</strong> Provide formatted outputs from predefined queries. They cannot drill down into lower levels of dimension hierarchies, rotate rows and columns, or provide aggregate navigation. Once a report is formatted and run, the presentation is fixed.</li>
+            <li><strong>Spreadsheets:</strong> Useful for &#8220;what-if&#8221; analysis and can perform some aggregations. But cumbersome for four or more dimensions &#8212; you cannot intuitively display four-dimensional data on a two-dimensional page. Complex analyses still generate massive system overhead.</li>
+            <li><strong>SQL query tools:</strong> SQL vocabulary is &#8220;ill-suited for analyzing data and exploring relationships.&#8221; Even basic comparisons are difficult. Time-series analysis, cross-dimensional calculations, and complex aggregations require intricate SQL that is error-prone and slow. Each analysis session involves numerous consecutive queries, each likely invoking full table scans, multiple joins, aggregations, groupings, and sorting.</li>
+          </ul>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>OLAP (Online Analytical Processing):</strong> A category of software tools and system architectures that enable analysts, executives, and managers to gain useful insights from data by supporting multidimensional analysis, drill-down and roll-up within each dimension, complex mathematical calculations and formulas, fast response times for highly interactive analysis sessions, and sophisticated presentation of result sets. The term was introduced by <strong>Dr. E. F. Codd</strong> (inventor of the relational model) in his paper <em>&#8220;Providing On-Line Analytical Processing to User Analysts.&#8221;</em>
+          </div>
+
+          <h3>OLAP: Basic Virtues (Per Textbook Ch. 15)</h3>
+          <ul>
+            <li>Enables analysts, executives, and managers to gain useful insights</li>
+            <li>Can reorganise metrics along several dimensions and allow data to be viewed from different perspectives</li>
+            <li>Supports multidimensional analysis</li>
+            <li>Is able to drill down or roll up within each dimension</li>
+            <li>Is capable of applying mathematical formulas and calculations to measures</li>
+            <li>Provides fast response, facilitating &#8220;speed-of-thought&#8221; analysis</li>
+            <li>Complements the use of other information delivery techniques such as data mining</li>
+            <li>Improves the comprehension of result sets through visual presentations using graphs and charts</li>
+            <li>Can be implemented on the Web</li>
+            <li>Designed for highly interactive analysis</li>
+          </ul>
+
+          <h3>OLAP vs. OLTP: The Fundamental Contrast</h3>
+          <table>
+            <thead>
+              <tr><th>Characteristic</th><th>OLTP Systems</th><th>Data Warehouse / OLAP</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Analytical capabilities</td><td>Very low</td><td>Moderate to high</td></tr>
+              <tr><td>Data for a single session</td><td>Very limited</td><td>Small to medium size</td></tr>
+              <tr><td>Size of result set</td><td>Small</td><td>Large</td></tr>
+              <tr><td>Response time</td><td>Very fast (sub-second)</td><td>Fast to moderate</td></tr>
+              <tr><td>Data granularity</td><td>Detail only</td><td>Detail and summary</td></tr>
+              <tr><td>Data currency</td><td>Current only</td><td>Current and historical</td></tr>
+              <tr><td>Access method</td><td>Predefined only</td><td>Predefined and ad hoc</td></tr>
+              <tr><td>Basic motivation</td><td>Collect and input data</td><td>Provide information</td></tr>
+              <tr><td>Data model</td><td>Designed for data updates</td><td>Designed for queries</td></tr>
+              <tr><td>Optimisation</td><td>For transactions</td><td>For analysis</td></tr>
+              <tr><td>Update frequency</td><td>Very frequent (real-time)</td><td>Generally read-only (periodic batch)</td></tr>
+              <tr><td>Scope of user interaction</td><td>Single transactions</td><td>Throughout data content</td></tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            This table is a favourite in past papers. Know at least 5&#8211;6 differences. Key contrast: OLTP <em>puts data in</em> (collect and input); DW/OLAP <em>gets information out</em> (provide information). OLTP optimised for transactions; DW optimised for analysis.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What problem does OLAP solve that SQL query tools cannot?</summary>
+              <p><strong>Answer:</strong> SQL is &#8220;ill-suited for analyzing data and exploring relationships.&#8221; Complex analysis&#8212;time-series comparisons, cross-dimensional calculations, multi-level aggregations&#8212;requires intricate SQL that is error-prone and expensive. OLAP abstracts this complexity, presenting data as multidimensional cubes and allowing analysts to drill down, roll up, and slice data interactively at &#8220;speed of thought&#8221; without writing SQL.</p>
+            </details>
+            <details>
+              <summary>Medium: Distinguish between OLTP and OLAP on four dimensions. Use exact textbook terminology.</summary>
+              <p><strong>Answer (four key distinctions):</strong></p>
+              <ul>
+                <li><strong>Basic motivation:</strong> OLTP &#8212; &#8220;Collect and input data&#8221;; OLAP &#8212; &#8220;Provide information.&#8221;</li>
+                <li><strong>Data model:</strong> OLTP &#8212; &#8220;Design for data updates&#8221;; OLAP &#8212; &#8220;Design for queries.&#8221;</li>
+                <li><strong>Update frequency:</strong> OLTP &#8212; &#8220;Very frequent&#8221;; OLAP &#8212; &#8220;Generally read-only.&#8221;</li>
+                <li><strong>Data granularity:</strong> OLTP &#8212; &#8220;Detail only&#8221;; OLAP &#8212; &#8220;Detail and summary.&#8221;</li>
+              </ul>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 2 -->
+        <div class="topic-card" id="topic-2" style="display:none">
+          <h2><span class="topic-num">2</span>Multidimensional Analysis &amp; Cubes</h2>
+          <p class="topic-subtitle">Dimensions, facts, hypercubes, and how OLAP represents data for analysis</p>
+
+          <p>At the heart of OLAP is the idea that business data can be modelled as a <strong>multidimensional space</strong>. Instead of rows and columns, you think in terms of <em>dimensions</em> (the axes of analysis) and <em>facts</em> (the numeric measures at the intersection of dimensions).</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Dimension:</strong> A business perspective or viewpoint used to analyse measures. Each dimension has a set of attributes organised in one or more hierarchies. Examples: Product (Product Name &#8594; Sub-category &#8594; Category &#8594; Department), Time (Date &#8594; Month &#8594; Quarter &#8594; Year), Store (Store Name &#8594; City &#8594; Region &#8594; Country).
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Fact / Measure:</strong> A numeric, quantifiable value stored in the fact table at the intersection of dimensions. Examples: Sales Amount, Units Sold, Profit Margin. Facts are the metrics analysts want to analyse <em>along</em> dimensions.
+          </div>
+
+          <h3>The Cube Metaphor</h3>
+          <p>With three dimensions (Product, Time, Store), data can be visualised as a three-dimensional cube: X-axis = Products, Y-axis = Time, Z-axis = Stores. Any single cell holds a metric &#8212; e.g., Coats sold in January at the New York store = 550. On a screen, two dimensions appear as rows and columns; the third as a &#8220;page.&#8221;</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Hypercube:</strong> A general metaphor for representing multidimensional data with more than three dimensions. In a <strong>Multidimensional Domain Structure (MDS)</strong> diagram, each dimension is shown as a straight line (axis). Four, five, or six lines form a hypercube representation. Display problem solved by combining dimensions: e.g., for 4 dimensions, Page = Store, Rows = Time, Columns = Product &#215; Metrics combined.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Four-Dimensional Display (Textbook Fig. 15-9)</h4>
+            <p>Dimensions: Store, Time, Product, Metrics (Fixed Cost, Variable Cost, Direct Sales, etc.)</p>
+            <pre>PAGE:    Store Dimension    (showing New York Store)
+ROWS:    Time Dimension     (Jan, Feb, Mar, ...)
+COLUMNS: Product x Metrics  (Hats:Sales, Hats:Cost, Coats:Sales, Coats:Cost, ...)
+
+New York Store
+           Hats:Sales  Hats:Cost  Coats:Sales  Coats:Cost
+Jan           450        350          550         450
+Feb           380        280          460         360
+Mar           400        310          480         410</pre>
+          </div>
+
+          <h3>General Features of OLAP Systems (Textbook Fig. 15-4)</h3>
+          <table>
+            <thead><tr><th>Feature Category</th><th>Specific Capabilities</th></tr></thead>
+            <tbody>
+              <tr><td>Multidimensional analysis</td><td>Consistent performance; fast response for interactive queries</td></tr>
+              <tr><td>Navigation</td><td>Drill-down and roll-up; navigation in/out of details; slice-and-dice / rotation</td></tr>
+              <tr><td>Multiple view modes</td><td>Easy scalability; time intelligence (year-to-date, fiscal period)</td></tr>
+              <tr><td>Powerful calculations</td><td>Cross-dimensional calculations; pre-calculation / pre-consolidation; derived data values</td></tr>
+              <tr><td>Drill-through</td><td>Drill-through across dimensions or to detail data</td></tr>
+              <tr><td>Presentation</td><td>Sophisticated displays; collaborative decision making; alert technology</td></tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            The textbook emphasises &#8220;speed-of-thought analysis&#8221; &#8212; OLAP must respond fast enough that analysts can follow an idea with consecutive queries without waiting. This requires pre-computation (MOLAP) or excellent indexing (ROLAP).
+          </div>
+        </div>
+
+        <!-- TOPIC 3 -->
+        <div class="topic-card" id="topic-3" style="display:none">
+          <h2><span class="topic-num">3</span>OLAP Operations</h2>
+          <p class="topic-subtitle">Drill-down, roll-up, drill-through, drill-across, slice-and-dice, pivot &#8212; with examples</p>
+
+          <p>OLAP systems expose a set of analytical operations that analysts use interactively. Understanding each operation precisely &#8212; and how it differs from the others &#8212; is a recurring exam topic.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Drill-Down:</strong> Moving from a summary level to a more detailed level within a dimension hierarchy. Technically, drill-down is a <em>further selection</em> of fact table rows &#8212; it narrows the selection. Example: Total sales by state &#8594; sales by zip code within California.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Roll-Up:</strong> The opposite of drill-down &#8212; moving from detail to a higher summary level within a hierarchy. Technically, roll-up is an <em>expanding</em> of the fact table row selection. Example: Sales by zip code &#8594; sales by state.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Drill-Through:</strong> Navigating from summary-level OLAP data all the way to the underlying <em>individual raw records</em> in the data warehouse. Drill-through escapes the cube entirely to fetch the raw rows. Example: A spike in returns in March &#8594; drill-through to see the 47 individual return transactions.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Drill-Across:</strong> Querying data across two or more separate fact tables (subject areas) that share a common dimension (a <em>conformed dimension</em>). Example: Analysing sales alongside inventory levels across the same product/time dimensions &#8212; these come from two different fact tables.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Slice-and-Dice:</strong> Selecting a &#8220;slice&#8221; of the data cube by fixing the value of one or more dimensions (slice), then selecting sub-ranges along multiple remaining dimensions simultaneously (dice) to produce a smaller sub-cube. Example: Slice on Store = New York and Time = Q1-2024; then dice on product sub-category within that segment.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Pivot (Rotate):</strong> Re-orienting the presentation of data by switching dimensions on the axes. Example: Swapping rows (Time) and columns (Product) so products appear as rows and months as columns. The underlying data does not change &#8212; only the presentation.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            Students confuse <strong>drill-down</strong> with <strong>drill-through</strong>. Drill-down stays <em>within the cube/dimension hierarchy</em> (e.g., Category &#8594; Sub-Category &#8594; Product). Drill-through breaks <em>out of the cube</em> and retrieves raw transaction rows from the warehouse. Also, <strong>drill-across</strong> crosses <em>separate fact tables</em>, not dimension hierarchy levels.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>A Typical OLAP Session (Textbook Fig. 15-3)</h4>
+            <p><strong>Step 1:</strong> High-level summary by product line (Clothing $12.8M, Electronics $16M, Video $21.2M, ...Total $87.5M)</p>
+            <p><strong>Step 2 &#8212; Drill-down:</strong> Break totals out by year (1998, 1999, 2000)</p>
+            <p><strong>Step 3 &#8212; Pivot:</strong> Rotate columns to rows so Year appears as rows, Product Line as columns</p>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium [Past Paper 2017]: Briefly discuss drill-across and slice-and-dice. Give an example for each.</summary>
+              <p><strong>Drill-across:</strong> An OLAP operation that queries data across two or more separate fact tables sharing common (conformed) dimensions. Enables integrated analysis of different business processes. <em>Example:</em> A retailer has separate fact tables for Sales and Inventory. Drill-across asks: &#8220;For the top-10 selling products in Q1, what was the average inventory level?&#8221; &#8212; crossing the Sales and Inventory fact tables using common Product and Time dimensions.</p>
+              <p><strong>Slice-and-dice:</strong> Slice = fix a dimension value to extract a &#8220;plane&#8221; of the cube. Dice = restrict ranges along multiple remaining dimensions, producing a sub-cube. <em>Example:</em> Slice on Store = &#8220;New York.&#8221; Then dice on Product Category = &#8220;Electronics&#8221; AND Time = &#8220;Q2&#8221; to see only Q2 Electronics sales in New York.</p>
+            </details>
+            <details>
+              <summary>Hard: Explain the difference between drill-down and drill-through. When would you use each?</summary>
+              <p><strong>Drill-down</strong> navigates <em>within</em> the cube&#8217;s dimensional hierarchy to a lower level of granularity. Data remains within the OLAP engine&#8217;s structure (pre-computed or dynamically aggregated). Use when you want to go from &#8220;total sales by country&#8221; to &#8220;sales by city&#8221; to &#8220;sales by store&#8221; &#8212; still aggregating fact table rows at different hierarchy levels.</p>
+              <p><strong>Drill-through</strong> escapes the cube entirely and fetches individual raw rows from the underlying data warehouse or operational sources. Used when even the lowest dimension hierarchy level is still a summary and you need to see the actual transaction records. Example: A spike in customer returns in March at Store X &#8594; drill-through to retrieve and inspect the 47 individual return transactions. ROLAP supports drill-through more easily than MOLAP.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 4 -->
+        <div class="topic-card" id="topic-4" style="display:none">
+          <h2><span class="topic-num">4</span>MOLAP vs ROLAP vs HOLAP vs DOLAP</h2>
+          <p class="topic-subtitle">Physical implementation architectures for OLAP &#8212; choosing the right model</p>
+
+          <p>Once you decide to implement OLAP in your data warehouse, you must choose a <em>physical architecture</em>. There are four implementation models, each reflecting a different way to store and serve multidimensional data.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>MOLAP (Multidimensional OLAP):</strong> OLAP implemented using specialised proprietary multidimensional database management systems (MDBMSs / MDDBs). Data is extracted from the relational data warehouse and stored in <em>large multidimensional arrays</em> (hypercubes). Cubes are pre-calculated and pre-fabricated. The OLAP engine resides on a special server; data is presented from the MDDB, not from the relational warehouse directly. Architecture: 3-tier (RDBMS server &#8594; MOLAP Engine + MDDB &#8594; Desktop Client).
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>ROLAP (Relational OLAP):</strong> OLAP features provided against the relational database directly. Data stays as rows and columns in the relational model. An analytical server creates <em>virtual multidimensional cubes on the fly</em> via complex SQL &#8212; no pre-fabricated cubes stored. A semantic metadata layer maps business dimensions to relational tables. True ROLAP: (1) supports all basic OLAP features, (2) stores data relationally, (3) supports aggregation. Architecture: 3-tier (RDBMS server &#8594; Analytical Server with OLAP Services &#8594; Desktop Client).
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>HOLAP (Hybrid OLAP):</strong> Combines strengths of ROLAP and MOLAP. Summary/aggregate data stored in MDDBs (MOLAP-style) for fast response; detailed data remains in the relational warehouse (ROLAP-style). Users get sub-second response for summary queries, drill-through to detail from the relational warehouse.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>DOLAP (Desktop OLAP):</strong> A variation of ROLAP for portability. Multidimensional datasets are created and transferred to the user&#8217;s <em>desktop machine</em>. Only DOLAP software needed on that machine. Local analysis on the small downloaded cube; user queries server only when additional data is needed. Also called <em>local hypercubing</em>. DOLAP flow: (1) User issues a query; (2) Results stored in a small local MDDB; (3) User analyses locally; (4) If more data needed, query server again.
+          </div>
+
+          <h3>ROLAP vs. MOLAP &#8212; Comprehensive Comparison</h3>
+          <table>
+            <thead><tr><th>Attribute</th><th>ROLAP</th><th>MOLAP</th></tr></thead>
+            <tbody>
+              <tr><td>Data storage</td><td>Relational tables in warehouse; no separate cube store</td><td>Proprietary MDDB (multidimensional arrays); data extracted from warehouse</td></tr>
+              <tr><td>Cube creation</td><td>Virtual cubes created on the fly by the analytical server</td><td>Pre-fabricated, pre-calculated cubes stored in MDDB</td></tr>
+              <tr><td>Query mechanism</td><td>Complex SQL generated and sent to relational DBMS</td><td>Proprietary language to MDBMS; high-speed matrix data retrieval</td></tr>
+              <tr><td>Query performance</td><td>Moderate &#8212; limited by SQL complexity and relational joins</td><td>Fast &#8212; pre-consolidated data, no join overhead</td></tr>
+              <tr><td>Data volume</td><td>Very large volumes supported &#8212; all data in relational warehouse</td><td>Moderate volumes &#8212; MDDBs have scalability limits</td></tr>
+              <tr><td>Summary data</td><td>Detailed and light summary data available</td><td>Summary from MDDB; detailed via drill-through to warehouse</td></tr>
+              <tr><td>Standardisation</td><td>Standard SQL; many tools available</td><td>Lacks standardisation &#8212; each vendor has its own client interface</td></tr>
+              <tr><td>Sparsity handling</td><td>Handled naturally (missing rows = no data)</td><td>Special sparse matrix technology required for null cells</td></tr>
+              <tr><td>Drill-through</td><td>Easy &#8212; data already in relational warehouse</td><td>Requires separate access to relational warehouse</td></tr>
+              <tr><td>Drill-across</td><td>Easy if conformed dimensions exist</td><td>Not always easy &#8212; cube boundaries can prevent cross-cube queries</td></tr>
+              <tr><td>Calculation library</td><td>Limited &#8212; SQL weak in complex calculations and time series</td><td>Large library of functions for complex calculations</td></tr>
+              <tr><td>Best for</td><td>Very large data volumes; standard tools; drill-through needs</td><td>Faster response; intensive, complex multi-dimensional analysis</td></tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Textbook Fig. 15-18: ROLAP vs. MOLAP choice chart has two axes &#8212; <em>Query Performance</em> (vertical) and <em>Complexity of Analysis</em> (horizontal). MOLAP dominates for high performance and high complexity; ROLAP covers large data volumes and ad-hoc drill-through. On a real exam: <em>very fast response</em> + <em>complex multi-dimensional queries</em> + <em>pre-defined aggregates</em> &#8594; MOLAP. <em>Very large data</em> + <em>ad hoc drill-through</em> + <em>standard tools</em> &#8594; ROLAP.
+          </div>
+
+          <h3>MOLAP Implementation Considerations</h3>
+          <ol>
+            <li><strong>Lack of standardisation:</strong> Each MOLAP vendor tool has its own client interface &#8212; no universal standard (unlike SQL). Vendor lock-in is a real risk.</li>
+            <li><strong>Scalability:</strong> OLAP is generally good for handling summary data, but not good for volumes of detailed data. MDDBs grow exponentially as dimensions are added. Sparsity problem: not all cells will have data (e.g., closed-Sunday store has null sales for all Sundays) &#8212; dense storage of sparse arrays is very wasteful. MOLAP uses sparse matrix technology to manage this.</li>
+          </ol>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Textbook: &#8220;For some ROLAP tools, the multidimensional representation of data in a STAR schema arrangement is a prerequisite.&#8221; This is why OLAP and dimensional modeling go hand-in-hand. A properly designed star schema is the foundation for efficient ROLAP.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Choosing MOLAP vs. ROLAP: Three Scenarios</h4>
+            <p><strong>Scenario A &#8212; Executive Dashboard:</strong> CEO needs a pre-defined dashboard showing weekly revenue by product line, region, and quarter. Queries are always the same, data volumes are moderate, sub-second response required. &#8594; <strong>MOLAP</strong>: Pre-calculated cubes deliver sub-second response. Limited query variety means no need for ad-hoc SQL flexibility.</p>
+            <p><strong>Scenario B &#8212; Analyst Deep Dive:</strong> Data analyst needs to explore hundreds of millions of transaction records, write complex ad-hoc queries, and drill through to individual transaction detail for auditing. &#8594; <strong>ROLAP</strong>: Data volumes too large for MDDB; drill-through to relational warehouse essential; ad-hoc SQL capability needed.</p>
+            <p><strong>Scenario C &#8212; Mixed Use:</strong> Executives want fast dashboards; analysts want drill-through detail. &#8594; <strong>HOLAP</strong>: Summaries in MDDB for executives; detail in relational warehouse for analysts.</p>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium [Past Paper 2023]: What are Partitioned Cubes? When would you use them in MOLAP?</summary>
+              <p><strong>Partitioned cubes</strong> are a technique in MOLAP where the multidimensional database is physically divided into separate, smaller sub-cubes (partitions) rather than stored as one monolithic cube. Each partition covers a specific slice of data (e.g., by time period: one partition per year). Use partitioned cubes when:</p>
+              <ul>
+                <li>The overall cube is too large to fit in memory or on a single server</li>
+                <li>You want to rebuild only the relevant partition during batch updates (not the entire cube)</li>
+                <li>Data access patterns are time-partitioned (users mostly query the current year &#8212; only that partition needs fast storage)</li>
+                <li>You want to balance storage across multiple MDDB servers</li>
+              </ul>
+            </details>
+            <details>
+              <summary>Medium [Past Paper 2017]: What is the concept of a virtual cube? When would you consider forming one?</summary>
+              <p>A <strong>virtual cube</strong> is a logical view of multidimensional data that appears as a cube to the user but is not physically stored as a pre-calculated cube. The OLAP engine constructs it dynamically from underlying relational data at query time. In ROLAP, all cubes are effectively virtual cubes.</p>
+              <p>Consider a virtual cube when: (1) Data volume is too large to pre-aggregate into a physical MDDB; (2) Query patterns are too unpredictable (ad hoc) to justify pre-building specific cube structures; (3) You need to combine data from multiple source systems without copying data into a separate MDDB.</p>
+            </details>
+            <details>
+              <summary>Hard: A company has 50 million customer records and needs to analyse purchase patterns across 5 dimensions. They also need drill-through to individual transactions. Which OLAP model? What limitations would the other models have?</summary>
+              <p><strong>Recommended: ROLAP</strong> (or HOLAP as a secondary option).</p>
+              <p><strong>Why ROLAP:</strong> (1) Data volume is massive &#8212; 50M customers across multiple dimensions = potentially billions of fact rows. MDDB cannot handle this scale. (2) Drill-through to individual transaction records is inherently a relational warehouse operation. (3) 5 dimensions creates a very sparse hypercube; ROLAP handles sparsity naturally.</p>
+              <p><strong>Why not MOLAP:</strong> (1) MDDBs have scalability limits for this data volume. (2) Lack of standardisation &#8212; vendor lock-in. (3) Drill-through requires a separate RDBMS connection anyway. (4) Sparsity problem at this scale.</p>
+              <p><strong>Why not DOLAP:</strong> 50 million customer records cannot be downloaded to a desktop machine.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 5 -->
+        <div class="topic-card" id="topic-5" style="display:none">
+          <h2><span class="topic-num">5</span>Star Schema Design &amp; Aggregate Fact Tables</h2>
+          <p class="topic-subtitle">Designing the star schema for OLAP &#8212; base fact tables, aggregate tables, cardinality estimation</p>
+
+          <p>The star schema is the relational design that enables ROLAP and serves as the source for MOLAP cubes. The schema design &#8212; particularly the <em>grain</em> of the fact table and <em>aggregate tables</em> &#8212; critically affects OLAP performance.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Grain (Data Granularity):</strong> The level of detail in the fact table &#8212; exactly what one row represents. A base fact table should be at the <em>lowest natural grain</em> of all its dimensions. Example: &#8220;One row per product, per store, per day&#8221; is lower grain than &#8220;one row per product category, per city, per month.&#8221;
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Formula</div>
+            <strong>Max Fact Table Rows = D&#8321; &#215; D&#8322; &#215; D&#8323; &#215; &#8230;</strong> where each D&#7522; is the number of distinct values at the grain level of that dimension. Actual row count will be lower for sparse fact tables.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Cardinality Estimation [Past Paper 2017 Style]</h4>
+            <p>Given: 10,000 products (200 sub-categories, 10 categories), 100 stores (10 cities, 2 countries), 2 years (&#8776;730 days). Grain: one row per product per store per day.</p>
+            <p><strong>Max base fact rows:</strong> 10,000 &#215; 100 &#215; 730 = <strong>730,000,000 rows</strong></p>
+            <p><strong>Query 1 (5 products, 3 stores, 1 month &#8776;30 days):</strong> 5 &#215; 3 &#215; 30 = <strong>450 rows</strong></p>
+            <p><strong>Query 2 (1 sub-category = 10,000/200 = 50 products, 1 store, 1 month):</strong> 50 &#215; 1 &#215; 30 = <strong>1,500 rows</strong></p>
+            <p><strong>Query 3 (1 category = 1,000 products, 1 city = 10 stores, 1 month):</strong> 1,000 &#215; 10 &#215; 30 = <strong>300,000 rows</strong></p>
+            <p><strong>Query 4 (1 category = 1,000 products, 1 country = 100 stores, 1 year = 365 days):</strong> 1,000 &#215; 100 &#215; 365 = <strong>36,500,000 rows</strong></p>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Aggregate Fact Table:</strong> A fact table that stores pre-computed summary data at a <em>higher</em> level of granularity than the base fact table. Exists <em>alongside</em> (never replaces) the base fact table. Dramatically reduces the number of rows that must be scanned for common query patterns.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Aggregate Table Savings [Past Paper 2017 Style]</h4>
+            <p>Create an aggregate table at grain: <strong>sub-category &#215; store &#215; month</strong>.</p>
+            <p><strong>Aggregate table size:</strong> 200 &#215; 100 &#215; 24 = <strong>480,000 rows</strong> (vs. 730M in base)</p>
+            <p><strong>Query 2 from aggregate:</strong> 1 &#215; 1 &#215; 1 = <strong>1 row</strong> (vs. 1,500 from base) &#10003;</p>
+            <p><strong>Query 3 from aggregate (1 category=10 sub-cats, 1 city=10 stores, 1 month):</strong> 10 &#215; 10 &#215; 1 = <strong>100 rows</strong> (vs. 300,000) &#10003;</p>
+            <p><strong>Query 4 from aggregate (10 sub-cats, 100 stores, 12 months):</strong> 10 &#215; 100 &#215; 12 = <strong>12,000 rows</strong> (vs. 36.5M) &#10003;</p>
+          </div>
+
+          <h3>Star Schema Advantages for OLAP</h3>
+          <ol>
+            <li><strong>Simple join paths:</strong> &#8220;Irrespective of the complexity of the query, every query is simply executed first by selecting rows from the dimension tables using the filters based on the query parameters and then finding the corresponding fact table rows.&#8221; No intermediary maze.</li>
+            <li><strong>Easy to understand:</strong> Matches how business users think &#8212; measures in centre, dimensions around it.</li>
+            <li><strong>Optimises navigation:</strong> Drill-down = further selection of fact table rows; roll-up = expanding the selection.</li>
+            <li><strong>Performance techniques:</strong> STARjoin (high-speed, single-pass, parallelisable, multi-table join) and STARindex (specialised index on fact table foreign keys to accelerate joins).</li>
+            <li><strong>ROLAP prerequisite:</strong> &#8220;For some ROLAP tools, the multidimensional representation of data in a STAR schema arrangement is a prerequisite.&#8221;</li>
+          </ol>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>Aggregate tables do NOT replace base detail data.</strong> From Brobst (Handout 2) and textbook: &#8220;Summary values should <em>not</em> replace the detailed data in the decision support environment. Ad-hoc and more sophisticated queries are almost guaranteed to require the detailed data for drill-through and discovery based analysis.&#8221;
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium [Past Paper 2023 style]: Dimensions: Semester (12, 6 academic years), Course (400, 10 schools), Student (5000, 5 batches). Grain: one row per student per course per semester. Estimate base fact table and two aggregate tables.</summary>
+              <p><strong>Base fact table:</strong> 12 &#215; 400 &#215; 5,000 = <strong>24,000,000 rows</strong></p>
+              <p><strong>Aggregate Table 1</strong> (grain: semester &#215; offering school &#215; batch): 12 &#215; 10 &#215; 5 = <strong>600 rows</strong></p>
+              <p><strong>Aggregate Table 2</strong> (grain: semester &#215; batch): 12 &#215; 5 = <strong>60 rows</strong></p>
+              <p><strong>Student Dimension:</strong> Star schema = 5,000 rows (batch attrs denormalised in). Snowflake = 5,000 student rows + 5 batch rows = 5,005 total. (Exam answer for &#8220;star vs. snowflake rows&#8221;: Star = 5,000; Snowflake = 5,005.)</p>
+            </details>
+            <details>
+              <summary>Hard [Past Paper 2018 style]: Identify full-additive, semi-additive, and non-additive facts in a registration fact table with facts: GPA, LetterGrade, RegistrationCount (always=1).</summary>
+              <p><strong>RegistrationCount (always=1):</strong> Fully additive &#8212; can be meaningfully summed across all dimensions (e.g., total registrations by school, by semester, by batch).</p>
+              <p><strong>GPA:</strong> Semi-additive &#8212; can be averaged (AVG) across students/courses/semesters, but cannot be meaningfully summed (SUM of GPAs has no business meaning). Additive within some dimensions but not others.</p>
+              <p><strong>LetterGrade:</strong> Non-additive &#8212; a categorical/ordinal attribute. Cannot be aggregated with SUM or AVG in any meaningful way. You can COUNT occurrences of a specific grade (COUNT WHERE LetterGrade = &#8216;A&#8217;), but this is not a direct aggregation of the fact itself.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 6: Summary -->
+        <div class="topic-card" id="topic-6" style="display:none">
+          <h2><span class="topic-num">6</span>Topic Summary &amp; Additional Practice</h2>
+          <p class="topic-subtitle">Dense recap of every key definition, distinction, and formula for the morning of the exam</p>
+
+          <div class="summary-box">
+            <h4>OLAP Implementation Techniques &#8212; Complete Key Takeaways</h4>
+            <ul>
+              <li><strong>OLAP exists because</strong> report writers, SQL, and spreadsheets cannot handle multidimensional, hierarchical, speed-of-thought analysis at scale</li>
+              <li><strong>Dr. E. F. Codd</strong> coined &#8220;OLAP&#8221;; core virtues: multidimensional analysis, drill-down/roll-up, complex calculations, fast response</li>
+              <li><strong>Hypercube</strong> = general model for 3+ dimensional data; MDS diagrams represent each dimension as a straight line</li>
+              <li><strong>Operations:</strong> Drill-down (further row selection = more detail), Roll-up (expand selection = higher summary), Drill-through (exit cube &#8594; raw rows in warehouse), Drill-across (cross multiple fact tables via conformed dimensions), Slice (fix one dimension value), Dice (restrict ranges on multiple dimensions simultaneously), Pivot (rotate display axes)</li>
+              <li><strong>MOLAP:</strong> Data in proprietary MDDB (pre-built arrays); fast response; moderate data volumes; limited standardisation; sparse matrix technology; OLAP engine on special server</li>
+              <li><strong>ROLAP:</strong> Data stays in relational warehouse; analytical server creates virtual cubes on-the-fly via complex SQL; handles very large volumes; easy drill-through; star schema often a prerequisite</li>
+              <li><strong>HOLAP:</strong> Summaries in MDDB + detail in RDBMS = best of both worlds</li>
+              <li><strong>DOLAP:</strong> Variation of ROLAP; datasets downloaded to desktop machine; local analysis; good for mobile users</li>
+              <li><strong>Base fact cardinality formula:</strong> D&#8321; &#215; D&#8322; &#215; &#8230; &#215; D&#7522; (product of grain-level cardinalities)</li>
+              <li><strong>Aggregate fact table:</strong> Pre-summarised at coarser grain; exists <em>alongside</em> (never replacing) base; size = product of coarser dimension cardinalities</li>
+              <li><strong>Additive types:</strong> Fully additive (SUM across all dims), Semi-additive (SUM on some dims only &#8212; e.g., GPA &#8594; use AVG), Non-additive (categorical &#8212; e.g., LetterGrade, percentages)</li>
+              <li><strong>MOLAP concern 1:</strong> Lack of standardisation (vendor lock-in)</li>
+              <li><strong>MOLAP concern 2:</strong> Scalability &#8212; good for summary data, not large detail volumes</li>
+              <li><strong>Star schema + OLAP:</strong> Simple join paths, STARjoin + STARindex performance techniques, required prerequisite for many ROLAP tools</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Additional Practice Questions</div>
+            <details>
+              <summary>Hard [Application]: Identify each OLAP operation: (1) Manager sees total revenue by product category. (2) Clicks Electronics to see revenue by product model. (3) Changes view to show revenue by quarter instead of product. (4) Sets filter to show only European stores. (5) Clicks $2.3M to view the individual transactions.</summary>
+              <p><strong>Step 1:</strong> Initial query &#8212; high-level summary (no specific OLAP operation)</p>
+              <p><strong>Step 2:</strong> <em>Drill-down</em> &#8212; from Category level to Product Model level within the Product dimension hierarchy.</p>
+              <p><strong>Step 3:</strong> <em>Pivot (Rotate)</em> &#8212; switching the analysis dimension from Product to Time (quarters), re-orienting the axes.</p>
+              <p><strong>Step 4:</strong> <em>Slice</em> &#8212; fixing the Store dimension to &#8220;Europe&#8221; creates a slice through the cube.</p>
+              <p><strong>Step 5:</strong> <em>Drill-through</em> &#8212; exiting the cube and retrieving individual raw transaction rows from the underlying data warehouse.</p>
+            </details>
+            <details>
+              <summary>Hard [Application]: Financial firm: 2M accounts, 20 transaction types, 5 years daily data (1825 days). Analysts query "Total transaction volume by type by quarter." (a) Max base fact table size? (b) Aggregate table design and size? (c) Recommended OLAP model?</summary>
+              <p><strong>(a) Base fact table max rows:</strong> 2,000,000 &#215; 20 &#215; 1,825 = <strong>73 billion rows</strong> (sparse in practice)</p>
+              <p><strong>(b) Aggregate table</strong> grain: transaction_type &#215; quarter. Size = 20 &#215; (5 years &#215; 4 quarters) = 20 &#215; 20 = <strong>400 rows</strong>. Reduces query scan from billions to 400 rows.</p>
+              <p><strong>(c) MOLAP</strong> (or HOLAP): Query pattern is pre-defined and narrow (always &#8220;by type by quarter&#8221;). Pre-calculating these specific aggregations in an MDDB gives sub-second response on a 400-cell cube. Since analysts never need individual detail, drill-through is unnecessary. However, the raw data volume (73B rows) is too large for MOLAP; HOLAP is most realistic: aggregate cube in MDDB for standard queries, raw data in relational warehouse for rare drill-through.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <button id="prev-btn" onclick="goPrev()">
+            <div><span class="btn-label">&#8592; Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+          </button>
+          <button id="next-btn" onclick="goNext()">
+            <div><span class="btn-label">Next &#8594;</span><span class="btn-title" id="next-title">Topic</span></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">&#8593;</button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6"];
+      let currentTopicIndex = 0;
+      function getTopicTitle(id) {
+        const link = document.querySelector(".nav-sublist a[onclick*=\"'" + id + "'\"]") || document.querySelector(".nav-sublist a[onclick*='\"" + id + "\"']");
+        if (link) { const n = link.querySelector(".nav-num"); return n ? link.textContent.replace(n.textContent, "").trim() : link.textContent.replace(/^\d+\s*/, "").trim(); }
+        const card = document.getElementById(id);
+        if (card) { const h2 = card.querySelector("h2"); if (h2) { const n = h2.querySelector(".topic-num"); return n ? h2.textContent.replace(n.textContent, "").trim() : h2.textContent.replace(/^\d+\s*/, "").trim(); } }
+        return "Topic";
+      }
+      function toggleSidebar() { const sb = document.getElementById("sidebar"), bd = document.getElementById("sidebar-backdrop"); if (sb) sb.classList.toggle("open"); if (bd) bd.classList.toggle("active"); }
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach(c => c.style.display = "none");
+        const t = document.getElementById(id); if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+        document.querySelectorAll(".nav-sublist a").forEach(a => a.classList.remove("active"));
+        const lk = document.querySelector(".nav-sublist a[onclick*=\"'" + id + "'\"]") || document.querySelector(".nav-sublist a[onclick*='\"" + id + "\"']");
+        if (lk) { lk.classList.add("active"); const sl = lk.closest(".nav-sublist"); if (sl && sl.style.display === "none") { sl.style.display = "block"; const ch = sl.previousElementSibling ? sl.previousElementSibling.querySelector(".chevron") : null; if (ch) ch.style.transform = "rotate(0deg)"; } }
+        const pb = document.getElementById("prev-btn"), nb = document.getElementById("next-btn"), pt = document.getElementById("prev-title"), nt = document.getElementById("next-title");
+        if (currentTopicIndex > 0) { pb.style.display = "flex"; if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]); } else { pb.style.display = "none"; }
+        if (currentTopicIndex < topics.length - 1) { nb.style.display = "flex"; if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]); } else { nb.style.display = "none"; }
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.innerWidth <= 768) { const sb = document.getElementById("sidebar"), bd = document.getElementById("sidebar-backdrop"); if (sb) sb.classList.remove("open"); if (bd) bd.classList.remove("active"); }
+      }
+      function goPrev() { if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]); }
+      function goNext() { if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]); }
+      function toggleSection(el) { const s = el.nextElementSibling, c = el.querySelector(".chevron"); if (s.style.display === "none") { s.style.display = "block"; c.style.transform = "rotate(0deg)"; } else { s.style.display = "none"; c.style.transform = "rotate(-90deg)"; } }
+      function filterContent() { const q = document.getElementById("search-input").value.toLowerCase(); document.querySelectorAll(".nav-sublist li").forEach(i => i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none"); }
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content"), bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => bb.style.display = mc.scrollTop > 300 ? "flex" : "none");
+    </script>
+  </body>
+</html>

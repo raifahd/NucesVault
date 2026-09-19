@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing &amp; BI &#8212; Dimensional Modeling</title>
+    <meta name="description" content="Comprehensive study notes for Dimensional Modeling in DW&amp;BI &#8212; covering STAR schema principles, fact and dimension table design, surrogate vs natural keys, slowly changing dimensions, snowflake schema, aggregate tables, and ROLAP physical design." />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">&#9776;</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing &amp; BI</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics&#8230;" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Introduction to DW.html"><span class="nav-mod-num">01</span>Introduction to DW</a></li>
+        <li><a class="nav-module-link" href="./3- High Performance DSS Database Design.html"><span class="nav-mod-num">03</span>Logical &amp; Physical Data Modeling</a></li>
+        <li><a class="nav-module-link" href="./5- OLAP Implementation Techniques.html"><span class="nav-mod-num">05</span>OLAP Implementation Techniques</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Dimensional Modeling</span><span class="chevron">&#9660;</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Principles of Dimensional Modeling</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Fact Tables &#8212; Deep Dive</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Dimension Tables &#8212; Deep Dive</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Natural vs. Surrogate Keys</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Slowly Changing Dimensions (SCD)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Snowflake Schema vs. Star Schema</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>Physical Design for ROLAP</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-8')"><span class="nav-num">08</span>Topic Summary &amp; Practice Questions</a></li>
+          </ul>
+        </li>
+        <li><a class="nav-module-link" href="./7- Solved Sample Midterm.html"><span class="nav-mod-num">07</span>Solved Sample Midterm</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Warehousing &amp; Business Intelligence &#8212; Weeks 5&#8211;6</div>
+          <h1 class="module-title">Dimensional Modeling</h1>
+        </div>
+
+        <!-- TOPIC 1: Principles -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Principles of Dimensional Modeling</h2>
+          <p class="topic-subtitle">What dimensional modeling is, why it exists, and how it differs from E-R modeling</p>
+
+          <p>Dimensional modeling is the data design methodology used to build the data warehouse&#8217;s analytical layer. It produces the <strong>STAR schema</strong> &#8212; the most important structural concept in data warehousing. Understanding <em>why</em> dimensional modeling was chosen over entity-relationship modeling is the foundation of this topic.</p>
+
+          <h3>Why Not Entity-Relationship (E-R) Modeling?</h3>
+          <p>E-R modeling is the standard for operational (OLTP) systems because:</p>
+          <ul>
+            <li>OLTP systems capture details of individual events or transactions</li>
+            <li>OLTP systems focus on individual events (micro-level transactions)</li>
+            <li>Data consistency, non-redundancy, and efficient data storage are critical</li>
+            <li>E-R modeling removes data redundancy and ensures data consistency</li>
+          </ul>
+          <p>These are the <em>wrong goals</em> for a data warehouse. A DW is meant to answer questions on overall business process performance, reveal business trends, and allow managers to analyse measures along many dimensions. <strong>E-R modeling is not suitable for the data warehouse; dimensional modeling is appropriate.</strong></p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Dimensional Modeling:</strong> A data design technique optimised for data warehouses that captures critical business measures (facts) and organises them so they can be viewed along multiple business dimensions. It produces intuitive schemas that are query-centric, optimised for analysis, and easy for business users to understand. The resulting structure is called a <strong>STAR schema</strong>.
+          </div>
+
+          <h3>Comparing E-R Modeling vs. Dimensional Modeling</h3>
+          <table>
+            <thead><tr><th>Aspect</th><th>E-R Modeling (OLTP)</th><th>Dimensional Modeling (DW)</th></tr></thead>
+            <tbody>
+              <tr><td>Focus</td><td>Individual events/transactions</td><td>How managers view the business</td></tr>
+              <tr><td>Purpose</td><td>Run the business (operational)</td><td>Analyse the business (analytical)</td></tr>
+              <tr><td>Data redundancy</td><td>Removed (3NF normalisation)</td><td>Accepted (dimension tables denormalised)</td></tr>
+              <tr><td>Data consistency</td><td>Critical concern</td><td>Handled at ETL stage</td></tr>
+              <tr><td>Structure</td><td>Many tables, many joins</td><td>Few tables (fact + dimensions), simple joins</td></tr>
+              <tr><td>Query style</td><td>Predefined, narrow</td><td>Ad hoc, broad, multidimensional</td></tr>
+              <tr><td>User type</td><td>Clerks, operational staff</td><td>Analysts, managers, executives</td></tr>
+              <tr><td>Result</td><td>Normalised relational schema</td><td>Star/snowflake schema</td></tr>
+            </tbody>
+          </table>
+
+          <h3>The STAR Schema: Core Concept</h3>
+          <p>The STAR schema consists of:</p>
+          <ul>
+            <li>A central <strong>fact table</strong> containing business metrics (measures)</li>
+            <li>Several <strong>dimension tables</strong> surrounding the fact table, each in a one-to-many relationship with it</li>
+          </ul>
+          <p>The arrangement looks like a star &#8212; fact table at the core, dimension tables along the spikes. This arrangement ensures every dimension table has an equal, direct relationship with the fact table, meaning every dimension can participate equally in any query.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>STAR Schema:</strong> A relational model used as the data design for a data warehouse, consisting of a fact table in the centre with dimension tables arranged around it in a star formation. The dimensional model is <em>not</em> a normalised model &#8212; the dimension tables are purposely denormalised. The model must be query-centric, provide the best data access, and allow drilling down or rolling up along dimension hierarchies.
+          </div>
+
+          <h3>Criteria for a Dimensional Model (Textbook Ch. 10)</h3>
+          <ul>
+            <li>The model should provide the best data access</li>
+            <li>The whole model must be query-centric</li>
+            <li>It must be optimised for queries and analyses</li>
+            <li>The model must show that the dimension tables interact with the fact table</li>
+            <li>It should be structured in such a way that every dimension can interact equally with the fact table</li>
+            <li>The model should allow drilling down or rolling up along dimension hierarchies</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            The STAR schema is eminently suitable for data warehousing because it is: (1) <strong>easy for users to understand</strong> &#8212; business users intuitively grasp a fact table surrounded by dimension tables; (2) <strong>optimises navigation</strong> &#8212; simple, direct join paths from dimension to fact; (3) <strong>most suitable for query processing</strong>; (4) <strong>enables specific performance schemes</strong> like STARjoin and STARindex.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy [Past Paper 2023]: How does a snowflake schema differ from a star schema? Name one advantage and one disadvantage of the star schema.</summary>
+              <p><strong>Snowflake schema vs. star schema:</strong> In a star schema, the dimension tables are denormalised &#8212; all attributes of a dimension (including its hierarchy levels) are stored flat in a single table. In a snowflake schema, dimension tables are <em>normalised</em> &#8212; the hierarchy levels are broken out into separate tables, linked to the dimension table via foreign keys. This removes redundancy from dimension tables.</p>
+              <p><strong>One advantage of star schema:</strong> Simple join paths &#8212; every dimension table has a direct, single-hop relationship with the fact table, making queries faster and easier to write.</p>
+              <p><strong>One disadvantage of star schema:</strong> Data redundancy in dimension tables &#8212; the denormalised dimension tables repeat hierarchical data (e.g., Region Description repeated for every store in that region), increasing storage cost and risk of inconsistency if not managed properly during ETL.</p>
+            </details>
+            <details>
+              <summary>Medium: Why is the entity-relationship modeling technique not suitable for the data warehouse? How is dimensional modeling different?</summary>
+              <p>E-R modeling is designed for OLTP systems that focus on individual micro-level transactions, where data consistency and non-redundancy are paramount. It removes data redundancy through normalisation, producing many tables joined by complex relationships. This is ideal for recording events but terrible for analytics &#8212; every query requires many joins, which is slow and complex for ad-hoc multidimensional analysis.</p>
+              <p>Dimensional modeling is designed for the data warehouse&#8217;s analytical goals. It accepts some denormalisation to produce simple, intuitive schemas. The DW&#8217;s focus is on how managers view the business &#8212; analysing measures along multiple dimensions &#8212; not on recording individual transactions. Dimensional modeling &#8220;captures critical measures, views along dimensions, [and is] intuitive to business users.&#8221; The STAR schema enables fast, flexible query patterns impossible in a heavily normalised E-R schema.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 2: Fact Tables -->
+        <div class="topic-card" id="topic-2" style="display:none">
+          <h2><span class="topic-num">2</span>Fact Tables &#8212; Deep Dive</h2>
+          <p class="topic-subtitle">Structure, types of facts, grain, sparsity, degenerate dimensions, and factless fact tables</p>
+
+          <p>The fact table is the heart of a STAR schema. It contains the numeric business measures that analysts want to study, along with foreign keys that link to each dimension table. Understanding the fact table deeply &#8212; its grain, its types of facts, and its edge cases &#8212; is essential for both design and exam questions.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Fact Table:</strong> The central table in a STAR schema that contains the business metrics or measurements (facts) along with foreign keys to each surrounding dimension table. The fact table is &#8220;deep&#8221; &#8212; it has a very large number of rows, each representing one observation at the grain level. The primary key of a fact table is typically a concatenated key composed of all the foreign keys from the dimension tables.
+          </div>
+
+          <h3>Types of Facts (Measures)</h3>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Fully Additive Measure:</strong> A fact that can be meaningfully summed (aggregated with SUM) across <em>all</em> dimensions. Example: Sales Amount &#8212; you can sum it by product, by store, by time, or by any combination. Most revenue and quantity measures are fully additive.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Semi-Additive Measure:</strong> A fact that can be summed along <em>some</em> dimensions but not others. Example: Account Balance &#8212; you can sum balances across accounts (makes sense: total deposits), but summing balances across time periods does not make sense (you do not want to add Monday&#8217;s balance to Tuesday&#8217;s balance &#8212; they are the same money). Inventory levels are another classic semi-additive measure.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Non-Additive Measure:</strong> A fact that cannot be meaningfully summed across <em>any</em> dimension. Examples: Ratios (e.g., profit margin percentage &#8212; you cannot add percentages meaningfully), categorical attributes used as facts (e.g., letter grades). Non-additive measures require specialised aggregation like weighted averages.
+          </div>
+
+          <h3>Grain</h3>
+          <p>The grain of the fact table defines exactly what one row represents. The most important principle: <strong>base fact tables must be at the lowest natural levels of all corresponding dimensions</strong>. This provides maximum flexibility for drill-down and supports the finest-grained queries.</p>
+          <p>Advantages of lowest-grain fact tables:</p>
+          <ul>
+            <li>Users can drill down to the lowest level of detail without going to the operational systems</li>
+            <li>Queries for drill-down and roll-up can be performed efficiently</li>
+            <li>Granular fact tables serve as natural destinations for current operational data extracted frequently</li>
+            <li>Data mining applications need details at the lowest grain</li>
+            <li>&#8220;Graceful extensions&#8221; &#8212; adding new attributes/dimensions often requires no changes to the fact table rows</li>
+          </ul>
+
+          <h3>Sparse Fact Tables</h3>
+          <p>Not all combinations of dimension values have corresponding fact table rows. If a store is closed on holidays, there are no sales transactions for those dates. The fact table &#8220;has gaps&#8221; &#8212; it is sparse. This is normal and expected. The maximum cardinality formula gives the theoretical maximum; actual row count is lower for sparse tables.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Degenerate Dimension:</strong> An attribute that is not a measure/fact and does not belong to any dimension table, but is kept in the fact table because it is useful for certain analyses. Typically these are reference/transaction numbers from the operational systems (e.g., order_number, invoice_number, order_line_number). They are called &#8220;degenerate&#8221; because they are dimension attributes with no corresponding dimension table. Example: In an order-line fact table, the order_number is a degenerate dimension &#8212; needed to calculate &#8220;average products per order&#8221; but not descriptive enough to warrant its own dimension table.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Factless Fact Table:</strong> A fact table that contains only foreign keys (the concatenated primary key) with no actual numeric measures. It represents events or coverage &#8212; the very presence of a row indicates the event occurred. Example: A student attendance tracking fact table with dimensions Student, Course, Date, Room, Professor &#8212; attendance is recorded by the presence of a row (attendance=1 every row, so why store it?). Another example: A promotion coverage fact table tracking which products were covered by which promotions in which stores.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Additive Classification Exercise</h4>
+            <p>Registration fact table: GPA, LetterGrade, RegistrationCount (always=1)</p>
+            <ul>
+              <li><strong>RegistrationCount:</strong> Fully additive &#8212; SUM gives total registrations by any dimension combination</li>
+              <li><strong>GPA:</strong> Semi-additive &#8212; AVG makes sense across students/courses/semesters; SUM does not</li>
+              <li><strong>LetterGrade:</strong> Non-additive &#8212; categorical; cannot SUM or AVG. COUNT where LetterGrade = &#8216;A&#8217; is valid but not a direct aggregation of the fact</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium [Past Paper 2017/2018]: What is the concept of a factless fact table? Give an example.</summary>
+              <p>A <strong>factless fact table</strong> is a fact table that does not contain any numeric measures &#8212; it consists only of foreign key references to dimension tables. The presence of a row in the table represents an event or a relationship. It is used when the business needs to track events where no obvious measurement exists, or where the measurement would always be 1 (and thus redundant).</p>
+              <p><strong>Example 1 (Event tracking):</strong> A student attendance fact table with dimension keys for Student, Course, Date, Room, and Professor. Each row records that a student attended a particular course in a particular room with a particular professor on a particular date. No numeric fact is needed &#8212; the row&#8217;s existence is the fact.</p>
+              <p><strong>Example 2 (Coverage tracking):</strong> A promotion coverage fact table recording which products were on promotion in which stores on which dates &#8212; tracking opportunity rather than a measured outcome.</p>
+            </details>
+            <details>
+              <summary>Easy: What is a degenerate dimension? Give an example of when you would use one.</summary>
+              <p>A <strong>degenerate dimension</strong> is an attribute from the operational source system that is neither a numeric fact nor descriptive enough to belong to a dimension table, but is stored in the fact table because it is useful for certain analyses. These are typically transaction reference numbers.</p>
+              <p><strong>Example:</strong> In a retail sales fact table, the <code>order_number</code> and <code>order_line_number</code> are degenerate dimensions. They are not measures (not numeric business metrics) and do not have enough attributes to form their own dimension table. But they are kept in the fact table because analysts may need to calculate &#8220;average number of line items per order&#8221; &#8212; which requires linking line items to order numbers.</p>
+            </details>
+            <details>
+              <summary>Hard: A dimension table is "wide"; the fact table is "deep." Explain both statements and discuss the implications for query performance.</summary>
+              <p><strong>"Dimension table is wide":</strong> A dimension table has a <em>large number of columns (attributes)</em> but relatively few rows. For example, a product dimension might have 100+ attributes (name, category, brand, colour, weight, package size, etc.) across perhaps 100,000 products. It is wide because all hierarchy levels and descriptive attributes are denormalised into a single flat table.</p>
+              <p><strong>"Fact table is deep":</strong> A fact table has a <em>very large number of rows</em> but few columns (just foreign keys + numeric measures). For a retail chain with 10,000 products, 100 stores, and 5 years of daily data, the fact table can have billions of rows.</p>
+              <p><strong>Query performance implications:</strong> Wide dimension tables are small in terms of row count, so filtering them (e.g., finding products in a specific category) is fast regardless of width. The fact table is the bottleneck &#8212; queries that must scan billions of rows are expensive. This is why STARjoin (single-pass multi-table join), STARindex (index on fact table foreign keys), and aggregate fact tables (pre-computed summaries) are critical for OLAP performance.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 3: Dimension Tables -->
+        <div class="topic-card" id="topic-3" style="display:none">
+          <h2><span class="topic-num">3</span>Dimension Tables &#8212; Deep Dive</h2>
+          <p class="topic-subtitle">Hierarchies, categories, conformed dimensions, and large/rapidly-changing dimensions</p>
+
+          <p>Dimension tables are the &#8220;who, what, when, where, and why&#8221; of the STAR schema. They provide the context and filtering criteria for queries on the fact table. Each dimension table attribute can serve as a constraint or filter in queries, and each attribute has an equal chance to participate.</p>
+
+          <h3>Dimension Table Characteristics</h3>
+          <ul>
+            <li><strong>Wide:</strong> Many attributes (columns), representing all levels of the dimension&#8217;s hierarchy plus descriptive attributes</li>
+            <li><strong>Shallow (relatively few rows):</strong> Compared to the fact table &#8212; a product dimension might have 100,000 rows vs. billions of fact table rows</li>
+            <li><strong>Denormalised:</strong> All hierarchy levels are stored flat in one table (this is the key difference from E-R normalised schemas)</li>
+            <li><strong>Has a generated primary key (surrogate key):</strong> Not the operational system&#8217;s natural key</li>
+          </ul>
+
+          <h3>Hierarchies in Dimension Tables</h3>
+          <p>A dimension&#8217;s hierarchy represents the levels at which data can be drilled-down or rolled-up. For the Time dimension: Date &#8594; Week &#8594; Month &#8594; Quarter &#8594; Year. For the Product dimension: Product &#8594; Sub-Category &#8594; Category &#8594; Department. All hierarchy levels are stored as columns in the dimension table (in a star schema).</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Category:</strong> A level in a dimension hierarchy that groups lower-level members. For example, in a product dimension: Category = &#8220;Electronics&#8221; groups Sub-Categories like &#8220;Laptops,&#8221; &#8220;Tablets,&#8221; &#8220;Phones.&#8221; Categories enable roll-up analysis.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Conformed Dimension:</strong> A dimension table that is defined consistently and used identically across multiple fact tables and potentially multiple data marts. A conformed dimension enables <em>drill-across</em> operations &#8212; queries that span multiple fact tables. Example: A Time dimension defined consistently across a Sales fact table, an Inventory fact table, and a Shipping fact table. Without conformed dimensions, comparing data from different fact tables is impossible.
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong>&#8220;Conforming the dimension&#8221;</strong> is a past-paper question (2017 Q2a). Conforming means defining a dimension (its attributes, keys, and values) identically across all subject areas in the data warehouse. Importance: (1) enables drill-across analysis; (2) creates a &#8220;single version of truth&#8221; &#8212; all subject areas agree on what &#8220;customer,&#8221; &#8220;product,&#8221; or &#8220;time&#8221; means; (3) reduces data inconsistency.
+          </div>
+
+          <h3>Large Dimensions</h3>
+          <p>A dimension is &#8220;large&#8221; if it is very deep (many rows) or very wide (many attributes). Large dimensions call for special considerations:</p>
+          <ul>
+            <li>Customer dimensions can have 20+ million rows with 150+ attributes</li>
+            <li>Product dimensions can have 100,000+ variations with 100+ attributes</li>
+            <li>Special challenges: populating large dimensions, browse performance for unconstrained dimensions, handling type 2 slowly changing dimensions that add rows over time</li>
+          </ul>
+
+          <h3>Multiple Hierarchies</h3>
+          <p>Large dimensions often have multiple hierarchies. For example, a Product dimension in a large retailer may have one hierarchy for Marketing (Product &#8594; Brand &#8594; Category &#8594; Department) and a completely different hierarchy for Finance (Product &#8594; Cost Centre &#8594; Division &#8594; Hemisphere). Both hierarchies live within the same dimension table.</p>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium [Past Paper 2017]: What is meant by conforming the dimension? Why is this important in a data warehouse?</summary>
+              <p><strong>Conforming a dimension</strong> means defining it consistently and using it identically across multiple fact tables, data marts, and subject areas. A conformed dimension has the same attribute names, definitions, and values regardless of which fact table it appears in.</p>
+              <p><strong>Why important:</strong></p>
+              <ul>
+                <li><strong>Enables drill-across queries</strong> &#8212; if the Time dimension is defined consistently, you can query the Sales fact table and the Inventory fact table together over the same time periods and compare the results meaningfully.</li>
+                <li><strong>Creates a single version of truth</strong> &#8212; all business units agree on how &#8220;customer,&#8221; &#8220;product,&#8221; or &#8220;store&#8221; is defined. This eliminates the problem of different departments reporting different numbers for the same metric.</li>
+                <li><strong>Reduces redundancy and inconsistency</strong> &#8212; one definition is maintained, not multiple slightly different definitions per subject area.</li>
+              </ul>
+            </details>
+            <details>
+              <summary>Easy: What are hierarchies and categories in a dimension table?</summary>
+              <p><strong>Hierarchies</strong> are the levels of granularity within a dimension along which data can be drilled down (to more detail) or rolled up (to higher summary). Example: Time hierarchy &#8212; Date &#8594; Month &#8594; Quarter &#8594; Year. Product hierarchy &#8212; Product &#8594; Sub-Category &#8594; Category &#8594; Department.</p>
+              <p><strong>Categories</strong> are specific levels within a hierarchy that group dimension members. Categories enable roll-up analysis. Example: In a product dimension, &#8220;Electronics&#8221; is a category that groups products like Laptops, Tablets, and Phones. All attributes at all levels of the hierarchy are stored as columns in the dimension table (in a star schema).</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 4: Surrogate Keys -->
+        <div class="topic-card" id="topic-4" style="display:none">
+          <h2><span class="topic-num">4</span>Natural vs. Surrogate Keys</h2>
+          <p class="topic-subtitle">Why operational system keys fail in a DW, and how surrogate keys solve the problem</p>
+
+          <p>Key design is one of the most critical decisions in dimensional modeling. Using the wrong type of key in dimension tables causes subtle but serious problems with historical data integrity. This topic explains the problem with natural (production system) keys and why surrogate keys are the universal solution.</p>
+
+          <h3>The Problem with Natural Keys</h3>
+          <p>Consider using the operational system&#8217;s product code as the primary key of the product dimension table. The product code might be an 8-position code where two positions indicate the warehouse and two positions denote the product category &#8212; these are <strong>built-in meanings.</strong></p>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <strong>Two specific reasons natural keys fail in dimension tables (from textbook):</strong>
+            <ol>
+              <li><strong>Keys change meaning:</strong> If a product moves to a different warehouse, its 8-position code changes &#8212; even though it&#8217;s the same product. Now the data warehouse has two different key values for the same product, making historical aggregations across the change date incorrect.</li>
+              <li><strong>Key reuse:</strong> Some companies reassign the keys of discontinued customers or products to new ones. If the operational customer number is used as the DW primary key, the same number might map to two completely different customers &#8212; corrupting historical analysis of the old customer.</li>
+            </ol>
+          </div>
+
+          <h3>Two Principles for Dimension Table Keys (Textbook)</h3>
+          <ol>
+            <li><strong>Avoid built-in meanings in the primary key of dimension tables.</strong> If the key encodes business information (warehouse location, product category, etc.), changes to that business information will change the key &#8212; causing the problems above.</li>
+            <li><strong>Do not use production system keys as primary keys for dimension tables.</strong> Production keys are designed for OLTP systems, not for the DW&#8217;s need for stable, history-preserving identifiers.</li>
+          </ol>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Surrogate Key:</strong> A <em>system-generated sequence number</em> used as the primary key for a dimension table in the data warehouse. Surrogate keys have <em>no built-in meanings</em> &#8212; they are arbitrary integers assigned by the DW system. The operational system&#8217;s natural key is kept as an additional non-key attribute in the dimension table for traceability but is not the primary key. Surrogate keys are mapped to production system keys in the ETL process.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Natural Key (Production Key / Source Key):</strong> The primary key used in the operational source system to identify an entity. Natural keys often have encoded meanings (e.g., product codes, employee numbers). They are kept as <em>non-key attributes</em> in dimension tables for reference but should not serve as the dimension table&#8217;s primary key.
+          </div>
+
+          <h3>Foreign Keys in the Fact Table</h3>
+          <p>Each dimension table is in a one-to-many relationship with the fact table. The primary key of each dimension table must be a foreign key in the fact table. Three options for the fact table&#8217;s primary key:</p>
+          <ol>
+            <li>Single compound primary key (sum of all foreign key lengths) + separate foreign keys &#8212; increases table size</li>
+            <li><strong>Concatenated primary key = concatenation of all dimension surrogate keys</strong> (most common in practice &#8212; Option 2). Foreign keys themselves <em>are</em> the primary key, no extra columns needed.</li>
+            <li>Generated primary key independent of dimension keys + separate foreign keys &#8212; also increases table size</li>
+          </ol>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            In practice, <strong>Option 2 (concatenated key = all FK surrogate keys)</strong> is used most often. This enables you to easily relate fact table rows to dimension table rows without extra columns. For a student exam example: a Registration fact table with SemesterKey + CourseKey + StudentKey as composite PK (all three are also FKs) is the standard design.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium [Past Paper 2018 style]: The student dimension has StudentID as the natural key. How many rows reside in the student dimension for Star schema vs. Snowflake schema, given 500,000 students and 25 batches?</summary>
+              <p><strong>Star schema:</strong> The student dimension is denormalised &#8212; all batch attributes (BatchID, BatchDescription) are stored directly in the student table. The student dimension has <strong>500,000 rows</strong> (one per student, with batch attributes repeated for all students in the same batch).</p>
+              <p><strong>Snowflake schema:</strong> The batch information is broken out into a separate Batch table. So: Student table = 500,000 rows + Batch table = 25 rows = <strong>500,025 total rows</strong> across both tables. (For the exam, the key point is: star = 500,000, snowflake = 500,000 + 25 = 500,025.)</p>
+            </details>
+            <details>
+              <summary>Hard: Why should you never use a production system key as the primary key of a dimension table? Give two specific reasons from the textbook.</summary>
+              <p><strong>Reason 1 &#8212; Built-in meanings cause key changes:</strong> Production system keys often encode business information. Example: a product code with positions indicating the storage warehouse. If the product moves to a different warehouse, the code changes. Now the same physical product has two different keys in the data warehouse &#8212; one for data before the change, one for data after. Aggregating historical data across this change becomes incorrect because the system treats them as different products.</p>
+              <p><strong>Reason 2 &#8212; Key reuse:</strong> Some companies reassign old keys of discontinued entities to new ones. Example: a customer number for a customer who left the company 3 years ago is reassigned to a new customer. If that natural key is the DW primary key, the same key value now refers to two completely different customers &#8212; corrupting any historical analysis that involves both customers&#8217; data under the same key.</p>
+              <p><strong>Solution:</strong> Use surrogate keys (system-generated sequence numbers) with no built-in meaning. Keep the natural key as a non-key attribute for reference. The ETL process maps natural keys to surrogate keys during the load.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 5: SCD -->
+        <div class="topic-card" id="topic-5" style="display:none">
+          <h2><span class="topic-num">5</span>Slowly Changing Dimensions (SCD)</h2>
+          <p class="topic-subtitle">How to handle changes to dimension attributes over time &#8212; the three SCD types</p>
+
+          <p>Dimension tables are relatively stable compared to fact tables, but they are not static. A customer&#8217;s address changes. A product moves to a different category. An employee changes departments. How you handle these changes determines whether your historical reports remain accurate. This is the problem of <strong>Slowly Changing Dimensions (SCD)</strong>.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Slowly Changing Dimension (SCD):</strong> A dimension table whose attribute values change over time, but change infrequently (slowly) rather than with every transaction. The term distinguishes these from rapidly changing dimensions. The key challenge: when a dimension attribute changes, how do you preserve the correct historical context for past fact table rows that reference the old value?
+          </div>
+
+          <h3>Type 1 SCD &#8212; Overwrite</h3>
+          <p>Simply overwrite the old attribute value with the new value. No history is preserved.</p>
+          <ul>
+            <li>Method: Update the existing dimension row with the new value</li>
+            <li>History: Lost &#8212; the old value is gone forever</li>
+            <li>Use when: The change represents a correction of an error, not a real business event. Example: fixing a misspelled product name.</li>
+            <li>Existing fact table rows now appear as if the attribute always had the new value</li>
+            <li>Existing queries automatically get the new value with no changes needed</li>
+          </ul>
+
+          <h3>Type 2 SCD &#8212; Add New Row</h3>
+          <p>Create a new dimension row with the changed attribute value and a new surrogate key. The old row is preserved.</p>
+          <ul>
+            <li>Method: Insert a new dimension row with a new surrogate key and the new attribute value</li>
+            <li>History: Fully preserved &#8212; both old and new values coexist in the dimension table</li>
+            <li>Old fact table rows still reference the old dimension row (via the old surrogate key) &#8212; they retain the old attribute values</li>
+            <li>New fact table rows reference the new dimension row (new surrogate key) &#8212; they get the new attribute values</li>
+            <li>Use when: The change is a real business event and you need to preserve history accurately. Example: A customer moves from Chicago to New York &#8212; you want sales before the move attributed to Chicago, sales after attributed to New York.</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Type 2 SCD is why <strong>surrogate keys</strong> are essential. The natural key (e.g., CustomerID = 1234) is the same for both the old and new dimension rows, but the surrogate keys are different. The fact table rows use the surrogate key, so they naturally preserve the correct historical context without any special logic.
+          </div>
+
+          <h3>Type 3 SCD &#8212; Add New Attribute (Column)</h3>
+          <p>Add a new column (&#8220;old value&#8221; column) to the dimension table for the affected attribute.</p>
+          <ul>
+            <li>Method: Push the existing value to an &#8220;old_attribute&#8221; column; put the new value in the &#8220;current_attribute&#8221; column. Optionally add a &#8220;current effective date&#8221; column.</li>
+            <li>History: Only the most recent change is preserved (the &#8220;old&#8221; and &#8220;current&#8221; values)</li>
+            <li>The key of the row is NOT affected; no new dimension row is needed</li>
+            <li>Existing queries automatically switch to the &#8220;current&#8221; value</li>
+            <li>Queries needing the &#8220;old&#8221; value must be revised to use the &#8220;old_attribute&#8221; column</li>
+            <li>Use when: The change is predictable (one &#8220;soft&#8221; change at a time), and you need to compare current vs. prior values. Example: A product being reclassified from one department to another, where you want to report by both old and new department classifications.</li>
+          </ul>
+
+          <table>
+            <thead><tr><th>Attribute</th><th>Type 1</th><th>Type 2</th><th>Type 3</th></tr></thead>
+            <tbody>
+              <tr><td>Method</td><td>Overwrite existing row</td><td>Insert new row + new surrogate key</td><td>Add &#8220;old value&#8221; column</td></tr>
+              <tr><td>History preserved?</td><td>No</td><td>Yes (fully)</td><td>Partially (only one prior value)</td></tr>
+              <tr><td>Dimension table rows affected</td><td>1 row updated</td><td>New row inserted</td><td>1 row updated</td></tr>
+              <tr><td>Fact table rows affected</td><td>All old rows now appear with new value</td><td>Old rows keep old value, new rows get new value</td><td>Old rows visible via &#8220;old&#8221; column</td></tr>
+              <tr><td>Best for</td><td>Correcting errors</td><td>Tracking real business events with full history</td><td>One-time &#8220;soft&#8221; reclassifications</td></tr>
+            </tbody>
+          </table>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            Students often mix up Type 1 and Type 3. Key distinction: Type 1 <strong>overwrites</strong> the old value &#8212; it is gone. Type 3 <strong>preserves</strong> the old value in a new column. Also, Type 2 adds a new <em>row</em>; Types 1 and 3 update an <em>existing row</em>. Also note: Type 3 only works well for a <em>single</em> change &#8212; if the attribute changes again, you need an &#8220;older&#8221; column or a more sophisticated approach.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Medium: Describe slowly changing dimensions. What are the three types? Explain each.</summary>
+              <p><strong>Slowly changing dimensions (SCD)</strong> are dimension tables whose attribute values change over time but infrequently. The challenge is how to handle these changes while preserving the correct historical context for past fact table rows.</p>
+              <p><strong>Type 1 (Overwrite):</strong> Simply overwrite the old attribute value with the new value. No history is preserved. Best for correcting data errors where the old value was never correct. All historical fact table rows now appear to have always had the new value.</p>
+              <p><strong>Type 2 (Add New Row):</strong> Insert a new dimension row with a new surrogate key and the new attribute value. The old row is preserved. Old fact table rows continue to reference the old row (old surrogate key), preserving historical accuracy. New fact rows reference the new row. Best for real business events (e.g., customer address change, product category reclassification) where you need full history.</p>
+              <p><strong>Type 3 (Add New Column):</strong> Add an &#8220;old_attribute&#8221; column to the existing dimension row. Move the current value to &#8220;old_attribute&#8221; and place the new value in &#8220;current_attribute.&#8221; Preserves only the most recent prior value. Best for one-time predictable reclassifications where you need to compare old vs. current classification.</p>
+            </details>
+            <details>
+              <summary>Hard: Compare Type 2 and Type 3 SCD. In what scenario would Type 2 be mandatory (Type 3 insufficient)?</summary>
+              <p><strong>Key differences:</strong> Type 2 inserts a new row with a new surrogate key, fully preserving all prior attribute history. Type 3 adds a new column to the existing row, preserving only the single most recent prior value.</p>
+              <p><strong>Scenario where Type 2 is mandatory:</strong> A national retail chain has a customer who has lived in three different cities over 5 years: Chicago (2018-2020), New York (2020-2022), Dallas (2022-present). The marketing team wants to analyse each period&#8217;s sales by the customer&#8217;s location at the time of purchase.</p>
+              <p>Type 3 only stores &#8220;old&#8221; and &#8220;current&#8221; city &#8212; it can distinguish Chicago vs. New York (if the last change was Chicago&#8594;New York), but it loses Dallas (the third state). It also loses the <em>timing</em> of changes, so you cannot accurately attribute sales to the correct city based on when they occurred.</p>
+              <p>Type 2 creates three dimension rows (all with CustomerID=1234 as natural key but different surrogate keys), each covering one period. Fact table rows link to the correct period&#8217;s row via the surrogate key, so sales in 2019 are attributed to Chicago, 2021 to New York, and 2023 to Dallas &#8212; automatically and accurately.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 6: Snowflake vs Star -->
+        <div class="topic-card" id="topic-6" style="display:none">
+          <h2><span class="topic-num">6</span>Snowflake Schema vs. Star Schema</h2>
+          <p class="topic-subtitle">Normalising dimension tables &#8212; when it helps and when it hurts</p>
+
+          <p>The star schema&#8217;s dimension tables are denormalised &#8212; all hierarchy levels stored in one table. The <strong>snowflake schema</strong> takes these dimension tables and normalises them, breaking out the hierarchy levels into separate tables linked by foreign keys. This trade-off has significant implications.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Snowflake Schema:</strong> A variant of the star schema in which one or more dimension tables are normalised (broken into multiple related tables). The resulting shape resembles a snowflake &#8212; the central fact table connects to dimension tables, which in turn connect to sub-dimension tables. Example: Instead of one Product dimension table with (ProductKey, ProductName, SubCategory, Category, Department), a snowflake schema would have: Product table (ProductKey, ProductName, SubCategoryKey) &#8594; SubCategory table (SubCategoryKey, SubCategoryName, CategoryKey) &#8594; Category table (CategoryKey, CategoryName, Department). Each level is a separate table.
+          </div>
+
+          <h3>Star Schema vs. Snowflake Schema</h3>
+          <table>
+            <thead><tr><th>Attribute</th><th>Star Schema</th><th>Snowflake Schema</th></tr></thead>
+            <tbody>
+              <tr><td>Dimension structure</td><td>Denormalised (flat, single table per dimension)</td><td>Normalised (hierarchy levels broken into separate tables)</td></tr>
+              <tr><td>Data redundancy</td><td>Higher (hierarchy values repeated for each member)</td><td>Lower (hierarchy tables normalised)</td></tr>
+              <tr><td>Storage</td><td>More storage for dimension tables</td><td>Less storage for dimension tables</td></tr>
+              <tr><td>Number of dimension rows</td><td>One row per lowest-level member (e.g., 5,000 students)</td><td>One row per lowest-level member + separate higher-level tables (e.g., 5,000 + 5 batches = 5,005)</td></tr>
+              <tr><td>Join complexity</td><td>Simple &#8212; one join per dimension to reach any level</td><td>Complex &#8212; must join through multiple dimension tables to reach hierarchy tops</td></tr>
+              <tr><td>Query performance</td><td>Faster &#8212; fewer joins</td><td>Slower &#8212; more joins required for hierarchy navigation</td></tr>
+              <tr><td>Ease of understanding</td><td>Easier for users</td><td>More complex for users and query tools</td></tr>
+              <tr><td>OLAP tool compatibility</td><td>Wide &#8212; most ROLAP tools prefer star</td><td>Limited &#8212; some tools have difficulty with multi-level dimension joins</td></tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            In practice, the <strong>star schema is almost always preferred</strong> for data warehouses despite the redundancy. The storage savings of snowflaking are small compared to the massive size of the fact table, while the performance cost (more joins per query) and usability cost (harder for business users) are real and significant. The textbook recommends star schema as the default design.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Exam Scenario: Star vs. Snowflake Row Count</h4>
+            <p>Given: 5,000 students, 5 batches.</p>
+            <p><strong>Star schema Student dimension:</strong> 5,000 rows (BatchID and BatchDescription stored as columns in each student&#8217;s row &#8212; repeated for all 1,000 students in the same batch)</p>
+            <p><strong>Snowflake schema:</strong> Student table = 5,000 rows (with BatchKey as FK) + Batch table = 5 rows = <strong>5,005 total rows</strong></p>
+            <p>This is the exact calculation tested in Past Paper 2018 Q5.</p>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What is a snowflake schema? How does it differ from a star schema?</summary>
+              <p>A <strong>snowflake schema</strong> is a variant of the star schema where dimension tables are normalised &#8212; hierarchy levels are broken out into separate child dimension tables rather than stored flat in one wide dimension table. The fact table still sits at the centre, but some of its neighbouring dimension tables are themselves connected to further sub-dimension tables.</p>
+              <p><strong>Key difference from star schema:</strong> In a star schema, all hierarchy levels of a dimension are denormalised into one table. Example: a Product table with all of (ProductName, SubCategory, Category, Department) in one row. In a snowflake, Category is broken out into a separate Category table, Department into a separate Department table, etc. The result requires more joins to answer hierarchy-based queries.</p>
+            </details>
+            <details>
+              <summary>Hard: You are designing a data warehouse for a university. The Student dimension has 500,000 students and 25 batches. How many rows would reside in the Student dimension for Star schema vs. Snowflake schema? Justify your answer.</summary>
+              <p><strong>Star schema (denormalised):</strong> The Student dimension is a single flat table containing all student attributes including BatchID and BatchDescription. Every student row contains the complete batch information. So the Student dimension table has exactly <strong>500,000 rows</strong> &#8212; one per student &#8212; with batch attributes repeated for all students in the same batch.</p>
+              <p><strong>Snowflake schema (normalised):</strong> The batch information is broken out into a separate Batch table. The Student table has 500,000 rows (each with a BatchKey foreign key) and the Batch table has 25 rows. Total rows across both tables: <strong>500,000 + 25 = 500,025 rows</strong>. However, when we say &#8220;how many rows in the Student dimension,&#8221; the fact table still only joins to the Student table (500,000 rows) &#8212; the Batch table is a second-level sub-dimension. So the exact answer depends on whether the question asks for the primary dimension table rows (500,000 either way for student) or the total rows across all dimension-level tables (500,025 for snowflake).</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 7: Physical Design for ROLAP -->
+        <div class="topic-card" id="topic-7" style="display:none">
+          <h2><span class="topic-num">7</span>Physical Design for ROLAP Deployment</h2>
+          <p class="topic-subtitle">Drawing star schemas, aggregate fact tables, and multiple star families</p>
+
+          <p>ROLAP deployment requires the physical design of the star schema in a relational database. This means defining the exact tables, keys (primary and foreign), facts, and aggregate tables that will be created. This is the most practical skill tested in past papers &#8212; drawing a star schema diagram with all keys and relationships.</p>
+
+          <h3>Designing a Star Schema: Step-by-Step</h3>
+          <ol>
+            <li><strong>Identify the business process to measure</strong> (e.g., sales, registrations, shipments)</li>
+            <li><strong>Determine the grain</strong> &#8212; what does one row represent? (e.g., one sale per product per store per day)</li>
+            <li><strong>Identify the business dimensions</strong> &#8212; the perspectives for analysis (Product, Time, Store, Promotion, Customer)</li>
+            <li><strong>Form the fact table</strong> &#8212; one foreign key per dimension + the numeric measures</li>
+            <li><strong>Form each dimension table</strong> &#8212; one primary key (surrogate) + all attributes including all hierarchy levels</li>
+            <li><strong>Mark relationships</strong> &#8212; each dimension is in a one-to-many (1:M) relationship with the fact table</li>
+            <li><strong>Design aggregate tables</strong> for common high-level query patterns</li>
+          </ol>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>University Registration Star Schema [Past Paper 2018/2023 Style]</h4>
+            <pre>
+SEMESTER DIM               COURSE DIM                STUDENT DIM
+-----------                ----------                -----------
+SemesterKey (PK)           CourseKey (PK)            StudentKey (PK)
+SemDescription             CourseDescription         StudentID (natural key)
+AcademicYearID             SchoolID                  StudentDescription
+AcademicYearDescription    SchoolDescription         BatchID
+                                                     BatchDescription
+
+                  REGISTRATION (Base Fact Table)
+                  --------------------------------
+                  SemesterKey (PK, FK)
+                  CourseKey (PK, FK)
+                  StudentKey (PK, FK)
+                  GPA
+                  LetterGrade
+                  RegistrationCount (always = 1)
+
+            AGGREGATE FACT TABLE 1             AGGREGATE FACT TABLE 2
+            (Query: Avg GPA by Sem x School x Batch)  (Query: Avg GPA by Sem x Batch)
+            ---------------------             ----------------------
+            SemesterKey (PK, FK)              SemesterKey (PK, FK)
+            SchoolID (PK, from Course dim)    BatchID (PK, from Student dim)
+            BatchID (PK, from Student dim)    AvgGPA
+            AvgGPA
+            TotalRegistrations
+
+Sizes:
+  Base fact:       12 x 400 x 5,000 = 24,000,000 rows
+  Agg table 1:     12 x 10 x 5 = 600 rows
+  Agg table 2:     12 x 5 = 60 rows</pre>
+          </div>
+
+          <h3>Families of Stars</h3>
+          <p>A data warehouse typically contains multiple star schemas &#8212; one per major business process (Sales, Inventory, Shipments, Returns). When these star schemas share conformed dimensions, they form a <strong>family of stars</strong>. The shared dimensions enable drill-across queries that analyse data across multiple subject areas simultaneously.</p>
+
+          <h3>STARjoin and STARindex</h3>
+          <ul>
+            <li><strong>STARjoin:</strong> A high-speed, single-pass, parallelisable, multi-table join. It can join more than two tables in a single operation. This special scheme boosts query performance for star schema queries.</li>
+            <li><strong>STARindex:</strong> A specialised index on one or more foreign keys of the fact table. These indexes speed up joins between dimension tables and the fact table by quickly locating matching fact rows for any dimension combination.</li>
+          </ul>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Hard [Past Paper 2017 style]: Design a star schema with a base fact table and aggregate fact table for: 10,000 products (200 sub-categories, 10 categories), 100 stores (10 cities, 2 countries), 2 years of daily sales. Show primary keys, foreign keys, and relationships.</summary>
+              <pre>PRODUCT DIM          STORE DIM           TIME DIM
+-----------          ---------           --------
+ProductKey (PK)      StoreKey (PK)       TimeKey (PK)
+ProductName          StoreName           Date
+SubCategoryID        SubCategoryID       DayOfWeek
+SubCategoryDesc      CityID              Month
+CategoryID           CityName            Quarter
+CategoryDesc         CountryID           Year
+                     CountryName
+
+              SALES FACT (Base)
+              -----------------
+              ProductKey (PK, FK)
+              StoreKey (PK, FK)
+              TimeKey (PK, FK)
+              SalesAmount
+              UnitsSold
+              Cost
+
+Max cardinality: 10,000 x 100 x 730 = 730,000,000 rows
+
+AGGREGATE FACT TABLE (grain: sub-category x store x month)
+-----------
+SubCategoryID (PK)
+StoreKey (PK, FK)
+MonthKey (PK from Time dim)
+TotalSalesAmount
+TotalUnitsSold
+
+Size: 200 x 100 x 24 = 480,000 rows</pre>
+            </details>
+            <details>
+              <summary>Medium: Discuss the major design issues that need to be addressed before proceeding with data design for a DW.</summary>
+              <ul>
+                <li><strong>Grain definition:</strong> What exactly does one row in the fact table represent? This must be decided at the lowest natural level of all dimensions.</li>
+                <li><strong>Fact identification:</strong> What numeric measures (fully additive, semi-additive, non-additive) will be stored in the fact table?</li>
+                <li><strong>Dimension identification:</strong> What are the business perspectives for analysis (product, time, customer, store, etc.)?</li>
+                <li><strong>Hierarchy design:</strong> What levels exist within each dimension? How will users drill-down and roll-up?</li>
+                <li><strong>Key design:</strong> What type of primary keys for dimension tables (surrogate vs. natural)? How will surrogate keys be managed and mapped to natural keys?</li>
+                <li><strong>Slowly changing dimensions:</strong> How will changes to dimension attributes be handled (Type 1, 2, or 3)?</li>
+                <li><strong>Aggregate strategy:</strong> What pre-defined query patterns warrant aggregate fact tables?</li>
+                <li><strong>Star vs. snowflake:</strong> Should any dimensions be normalised into snowflake sub-tables?</li>
+              </ul>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 8: Summary -->
+        <div class="topic-card" id="topic-8" style="display:none">
+          <h2><span class="topic-num">8</span>Topic Summary &amp; Practice Questions</h2>
+          <p class="topic-subtitle">Dense recap of every key definition, distinction, and formula &#8212; for exam morning review</p>
+
+          <div class="summary-box">
+            <h4>Dimensional Modeling &#8212; Complete Key Takeaways</h4>
+            <ul>
+              <li><strong>Dimensional modeling</strong> is the data design technique for DW &#8212; produces the STAR schema; E-R modeling is for OLTP, not suitable for DW</li>
+              <li><strong>STAR schema</strong>: fact table at centre, dimension tables surrounding it; each dim in 1:M relationship with fact; dimension tables are purposely denormalised</li>
+              <li><strong>Fact table</strong>: &#8220;deep&#8221; (billions of rows); contains numeric measures + foreign keys; primary key = concatenation of all FKs (surrogate keys)</li>
+              <li><strong>Dimension table</strong>: &#8220;wide&#8221; (many attributes, all hierarchy levels); relatively few rows; primary key = surrogate key</li>
+              <li><strong>Fully additive</strong>: SUM across all dimensions (e.g., SalesAmount, RegistrationCount)</li>
+              <li><strong>Semi-additive</strong>: SUM along some dims only (e.g., GPA &#8594; use AVG; Inventory balance &#8594; sum across accounts OK, across time NOT OK)</li>
+              <li><strong>Non-additive</strong>: Cannot meaningfully SUM or AVG (e.g., LetterGrade, profit margin %)</li>
+              <li><strong>Factless fact table</strong>: Only foreign keys, no measures &#8212; tracks events or coverage by row presence</li>
+              <li><strong>Degenerate dimension</strong>: Reference number (order#, invoice#) kept in fact table; not a measure; no corresponding dim table</li>
+              <li><strong>Surrogate key</strong>: System-generated sequence number; no built-in meaning; used as PK for dimension tables; mapped to natural key via ETL</li>
+              <li><strong>Natural key must NOT be PK</strong> because: (1) built-in meanings cause key changes; (2) keys get reused for different entities</li>
+              <li><strong>Conformed dimension</strong>: Defined consistently across multiple fact tables; enables drill-across; creates single version of truth</li>
+              <li><strong>SCD Type 1</strong>: Overwrite &#8212; no history preserved; use for error corrections</li>
+              <li><strong>SCD Type 2</strong>: New row + new surrogate key &#8212; full history preserved; use for real business events</li>
+              <li><strong>SCD Type 3</strong>: New column (&#8220;old value&#8221;) &#8212; one prior value preserved; use for one-time soft reclassifications</li>
+              <li><strong>Snowflake schema</strong>: Normalised dimension tables (sub-tables per hierarchy level); less redundancy; more joins; slower queries; star preferred in practice</li>
+              <li><strong>Star rows vs. snowflake rows</strong>: Star = one row per lowest-level entity (e.g., 5,000 students); Snowflake = 5,000 + 25 batches = 5,025 total</li>
+              <li><strong>Aggregate fact table</strong>: Pre-summarised at coarser grain; alongside base (never replacing); size = product of coarser cardinalities</li>
+              <li><strong>STARjoin</strong>: High-speed single-pass parallelisable multi-table join for star schemas</li>
+              <li><strong>STARindex</strong>: Specialised index on fact table foreign keys to accelerate dimension-fact joins</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Additional Exam-Style Practice</div>
+            <details>
+              <summary>Hard [Design]: A bank has accounts, and wants to track monthly balances by account, by customer segment, and by branch. Accounts: 2 million, Customer segments: 50, Branches: 500, Time: 5 years monthly (60 months). Design the star schema, identify fact additive types, estimate base fact size, and design one aggregate table.</summary>
+              <pre>
+ACCOUNT DIM          SEGMENT DIM          BRANCH DIM           TIME DIM
+-----------          -----------          ----------           --------
+AccountKey (PK)      SegmentKey (PK)      BranchKey (PK)       TimeKey (PK)
+AccountID (NK)       SegmentName          BranchID (NK)        Month
+CustomerName         SegmentDesc          BranchName           Quarter
+AccountType                               City                 Year
+OpenDate                                 Region
+
+              MONTHLY_BALANCE FACT (Base)
+              ---------------------------
+              AccountKey (PK, FK)
+              SegmentKey (PK, FK)
+              BranchKey (PK, FK)
+              TimeKey (PK, FK)
+              MonthEndBalance  [SEMI-ADDITIVE]
+              Transactions     [FULLY ADDITIVE]
+              InterestRate     [NON-ADDITIVE]
+
+Base fact cardinality: 2,000,000 x 60 = 120,000,000 rows
+(Note: segment and branch come FROM the account dim hierarchy,
+ not multiplied separately if grain is per-account-per-month)
+
+AGGREGATE FACT TABLE (grain: segment x branch x month):
+SegmentKey (PK, FK)
+BranchKey (PK, FK)
+TimeKey (PK, FK)  [month level]
+AvgBalance
+TotalTransactions
+Size: 50 x 500 x 60 = 1,500,000 rows</pre>
+              <p><strong>Additive classification:</strong></p>
+              <ul>
+                <li><strong>MonthEndBalance:</strong> Semi-additive &#8212; can SUM across accounts (total deposits in a branch), but NOT across time (you cannot add January&#8217;s balance to February&#8217;s &#8212; that&#8217;s the same money).</li>
+                <li><strong>Transactions (count):</strong> Fully additive &#8212; total transactions can be summed across accounts, branches, months.</li>
+                <li><strong>InterestRate:</strong> Non-additive &#8212; a ratio; cannot be summed or averaged meaningfully across different account types/sizes.</li>
+              </ul>
+            </details>
+            <details>
+              <summary>Medium: In what situations would you use each type of SCD? Give a real-world example for each.</summary>
+              <p><strong>Type 1 (Overwrite):</strong> Use when the change represents a correction of an error, not a real business event. Example: A customer&#8217;s name was entered as &#8220;Jon Smith&#8221; when it should be &#8220;John Smith.&#8221; This was never correct &#8212; overwrite and pretend the correct name always existed.</p>
+              <p><strong>Type 2 (New Row):</strong> Use when the change is a real business event and preserving history is critical. Example: A customer moves from Chicago to Los Angeles. Sales from 2018-2022 should be attributed to Chicago; sales from 2022 onward to Los Angeles. Type 2 creates a new dimension row for the Los Angeles address with a new surrogate key, while the old Chicago row remains &#8212; old fact rows still point to Chicago.</p>
+              <p><strong>Type 3 (New Column):</strong> Use for predictable, one-time reclassifications where you need to compare old and new. Example: A company reorganises its product lines, moving products between categories. You want to report performance under both the old and the new category structure simultaneously. A &#8220;previous_category&#8221; and &#8220;current_category&#8221; column in the Product dim allows this &#8212; but only handles one reorganisation (if another reorganisation happens, you&#8217;d need a more sophisticated approach).</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <button id="prev-btn" onclick="goPrev()">
+            <div><span class="btn-label">&#8592; Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+          </button>
+          <button id="next-btn" onclick="goNext()">
+            <div><span class="btn-label">Next &#8594;</span><span class="btn-title" id="next-title">Topic</span></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">&#8593;</button>
+
+    <script>
+      const topics = ["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6","topic-7","topic-8"];
+      let currentTopicIndex = 0;
+      function getTopicTitle(id) {
+        const link = document.querySelector(".nav-sublist a[onclick*=\"'" + id + "'\"]") || document.querySelector(".nav-sublist a[onclick*='\"" + id + "\"']");
+        if (link) { const n = link.querySelector(".nav-num"); return n ? link.textContent.replace(n.textContent, "").trim() : link.textContent.replace(/^\d+\s*/, "").trim(); }
+        const card = document.getElementById(id);
+        if (card) { const h2 = card.querySelector("h2"); if (h2) { const n = h2.querySelector(".topic-num"); return n ? h2.textContent.replace(n.textContent, "").trim() : h2.textContent.replace(/^\d+\s*/, "").trim(); } }
+        return "Topic";
+      }
+      function toggleSidebar() { const sb = document.getElementById("sidebar"), bd = document.getElementById("sidebar-backdrop"); if (sb) sb.classList.toggle("open"); if (bd) bd.classList.toggle("active"); }
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach(c => c.style.display = "none");
+        const t = document.getElementById(id); if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+        document.querySelectorAll(".nav-sublist a").forEach(a => a.classList.remove("active"));
+        const lk = document.querySelector(".nav-sublist a[onclick*=\"'" + id + "'\"]") || document.querySelector(".nav-sublist a[onclick*='\"" + id + "\"']");
+        if (lk) { lk.classList.add("active"); const sl = lk.closest(".nav-sublist"); if (sl && sl.style.display === "none") { sl.style.display = "block"; const ch = sl.previousElementSibling ? sl.previousElementSibling.querySelector(".chevron") : null; if (ch) ch.style.transform = "rotate(0deg)"; } }
+        const pb = document.getElementById("prev-btn"), nb = document.getElementById("next-btn"), pt = document.getElementById("prev-title"), nt = document.getElementById("next-title");
+        if (currentTopicIndex > 0) { pb.style.display = "flex"; if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]); } else { pb.style.display = "none"; }
+        if (currentTopicIndex < topics.length - 1) { nb.style.display = "flex"; if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]); } else { nb.style.display = "none"; }
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.innerWidth <= 768) { const sb = document.getElementById("sidebar"), bd = document.getElementById("sidebar-backdrop"); if (sb) sb.classList.remove("open"); if (bd) bd.classList.remove("active"); }
+      }
+      function goPrev() { if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]); }
+      function goNext() { if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]); }
+      function toggleSection(el) { const s = el.nextElementSibling, c = el.querySelector(".chevron"); if (s.style.display === "none") { s.style.display = "block"; c.style.transform = "rotate(0deg)"; } else { s.style.display = "none"; c.style.transform = "rotate(-90deg)"; } }
+      function filterContent() { const q = document.getElementById("search-input").value.toLowerCase(); document.querySelectorAll(".nav-sublist li").forEach(i => i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none"); }
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content"), bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => bb.style.display = mc.scrollTop > 300 ? "flex" : "none");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing &amp; BI &#8212; Solved Sample Midterm</title>
+    <meta name="description" content="Solved sample mid-term paper for Data Warehousing &amp; BI &#8212; covering all four mid-exam topics with worked solutions drawn from past papers (2017, 2018, 2023)." />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">&#9776;</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing &amp; BI</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics&#8230;" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Introduction to DW.html"><span class="nav-mod-num">01</span>Introduction to DW</a></li>
+        <li><a class="nav-module-link" href="./3- High Performance DSS Database Design.html"><span class="nav-mod-num">03</span>Logical &amp; Physical Data Modeling</a></li>
+        <li><a class="nav-module-link" href="./5- OLAP Implementation Techniques.html"><span class="nav-mod-num">05</span>OLAP Implementation Techniques</a></li>
+        <li><a class="nav-module-link" href="./6- Dimensional Modeling.html"><span class="nav-mod-num">06</span>Dimensional Modeling</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Solved Sample Midterm</span><span class="chevron">&#9660;</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Sample Paper &amp; Instructions</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Q1 &#8212; Short Answer (15 pts)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Q2 &#8212; Star Schema Design (10 pts)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Q3 &#8212; Cardinality &amp; Aggregation (8 pts)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Q4 &#8212; Pre-Join Denormalization (7 pts)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Past Paper Analysis &amp; Watchlist</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Warehousing &amp; Business Intelligence &#8212; Exam Prep</div>
+          <h1 class="module-title">Solved Sample Mid-Term Paper</h1>
+        </div>
+
+        <!-- TOPIC 1: Sample Paper -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Sample Paper &amp; Instructions</h2>
+          <p class="topic-subtitle">A synthesised mid-exam paper drawn from the style of Fall 2017, Fall 2018, and Fall 2023 papers</p>
+
+          <div class="note-box">
+            <div class="callout-label">About This Paper</div>
+            This is a <strong>synthesised sample examination</strong> designed to cover all four mid-exam scope topics (Weeks 1&#8211;6):
+            <ol>
+              <li>Overview and Concepts (Ch 1, 2, 3)</li>
+              <li>Logical and Physical Data Modeling (Handout 2)</li>
+              <li>OLAP Implementation Techniques (Ch 15)</li>
+              <li>Dimensional Modeling (Ch 10, 11)</li>
+            </ol>
+            Questions are styled after the actual past papers (Fall 2017, Fall 2018, Fall 2023). Attempt each question before revealing the worked solution.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Exam Instructions</div>
+            <ul>
+              <li><strong>Duration:</strong> 60 minutes</li>
+              <li><strong>Total Marks:</strong> 40</li>
+              <li><strong>All questions are compulsory</strong></li>
+              <li>Show all working, reasoning, and steps &#8212; no credit for unsupported answers</li>
+              <li>A calculator may be used for cardinality calculations</li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <h4>Question Overview</h4>
+            <ul>
+              <li><strong>Q1 (15 marks):</strong> Short answer &#8212; 5 sub-questions on all 4 topics (3 marks each)</li>
+              <li><strong>Q2 (10 marks):</strong> Star schema design with base + aggregate fact tables</li>
+              <li><strong>Q3 (8 marks):</strong> Cardinality estimation and aggregate table query sizing</li>
+              <li><strong>Q4 (7 marks):</strong> Pre-join denormalization: storage calculation</li>
+            </ul>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Navigate to each question topic using the sidebar. Attempt the question, then click the &#8220;Show Worked Solution&#8221; details block to check your answer. Pay special attention to the <strong>exact terminology</strong> from the textbook &#8212; examiners award marks based on keyword matching.
+          </div>
+        </div>
+
+        <!-- TOPIC 2: Q1 Short Answer -->
+        <div class="topic-card" id="topic-2" style="display:none">
+          <h2><span class="topic-num">2</span>Q1 &#8212; Short Answer (15 marks)</h2>
+          <p class="topic-subtitle">Five 3-mark sub-questions covering all four mid-exam topics</p>
+
+          <div class="example">
+            <div class="callout-label">Question Paper</div>
+            <p><strong>Q1 (15 points). Give appropriate answers to the following questions very briefly:</strong></p>
+            <p><strong>(a)</strong> What is the main difference between a dependent data mart and an independent data mart? (3 marks)</p>
+            <p><strong>(b)</strong> Differentiate between pre-join denormalization and column replication denormalization techniques. (3 marks)</p>
+            <p><strong>(c)</strong> Briefly describe the following OLAP analytical operations: Drill-down, Drill-across, and Slice-and-dice. (3 marks)</p>
+            <p><strong>(d)</strong> What is the concept of a factless fact table? Give an example. (3 marks)</p>
+            <p><strong>(e)</strong> How does a snowflake schema differ from a star schema? Name one advantage and one disadvantage of the star schema. (3 marks)</p>
+          </div>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q1(a): Dependent vs. Independent Data Mart</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Dependent data mart:</strong> A data mart that receives its data from the central enterprise data warehouse. The DW is built first; the data mart draws its data from the DW. This ensures consistency &#8212; the data mart&#8217;s data is cleansed, transformed, and integrated at the DW level before being passed down. All dependent data marts in an organisation will have a consistent view of the data.</p>
+              <p><strong>Independent data mart:</strong> A data mart built without a central enterprise data warehouse. Data is extracted directly from the operational source systems and loaded into the data mart. There is no shared, central data repository. Multiple independent data marts tend to produce inconsistent data &#8212; different marts may use different definitions, transformations, and cleansing rules, leading to &#8220;data silos&#8221; and reports that do not reconcile.</p>
+              <p><strong>Key difference:</strong> Dependent data marts get their data from the central DW (ensuring consistency and a single version of truth); independent data marts get data directly from operational sources (cheaper to build but prone to inconsistency across the enterprise).</p>
+              <p><em>Reference: Ch. 2 &#8212; DW Architecture and Data Marts</em></p>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q1(b): Pre-Join vs. Column Replication Denormalization</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Pre-join denormalization:</strong> A physical data modeling technique that eliminates a join between two frequently joined tables by merging them into a single combined table. The join is performed once during the ETL load process, and the denormalized combined table is stored in the DSS database. This eliminates the runtime join overhead at query time, improving query performance significantly for queries that would otherwise always join the two tables.</p>
+              <p><em>Example:</em> SALES and SALES_DETAIL are always joined in queries. Pre-join denormalization merges them into SALES_COMBINED, eliminating the join at query time.</p>
+              <p><strong>Column replication (column movement) denormalization:</strong> A technique where selected columns from a parent table are copied (replicated) into a child table to avoid a join for queries that only need those specific columns. Unlike pre-join denormalization, the full parent table is not merged &#8212; only the most frequently needed columns are replicated.</p>
+              <p><em>Example:</em> A query always joins PRODUCT to SALES_DETAIL just to get PRODUCT_CATEGORY. Column replication adds PRODUCT_CATEGORY as a column directly in SALES_DETAIL, eliminating the join for that query.</p>
+              <p><strong>Key difference:</strong> Pre-join merges entire tables; column replication copies specific columns from a parent into a child table. Column replication is less extreme and produces a smaller storage overhead.</p>
+              <p><em>Reference: Handout 2 &#8212; Designing High Performance DSS Databases</em></p>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q1(c): Drill-Down, Drill-Across, Slice-and-Dice</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Drill-down:</strong> Moving from a higher summary level to a more detailed level within a dimension hierarchy. Technically, drill-down is a <em>further selection</em> of fact table rows &#8212; narrowing the result set to more granular data. Example: From total sales by country &#8594; total sales by city &#8594; total sales by individual store.</p>
+              <p><strong>Drill-across:</strong> Querying data across two or more separate fact tables (different business process subject areas) that share common conformed dimensions. Enables integrated multi-subject analysis. Example: Analysing Sales data alongside Inventory data across the same Product and Time dimensions &#8212; these come from two separate fact tables but the conformed dimensions allow cross-comparison.</p>
+              <p><strong>Slice-and-dice:</strong> Selecting a &#8220;slice&#8221; of the data cube by fixing the value of one dimension (Slice), then restricting ranges along multiple other dimensions simultaneously to produce a smaller sub-cube (Dice). Example: Slice on Store = &#8220;New York&#8221; (fix the Store dimension), then dice on Product Category = &#8220;Electronics&#8221; AND Time = &#8220;Q2 2024&#8221; to produce a targeted sub-cube of New York Electronics sales in Q2 2024.</p>
+              <p><em>Reference: Ch. 15 &#8212; OLAP in the Data Warehouse</em></p>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q1(d): Factless Fact Table</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p>A <strong>factless fact table</strong> is a fact table that does not contain any numeric measures. It consists only of the concatenated primary key (foreign keys to dimension tables). The presence of a row in the factless fact table represents that a business event occurred, or that a particular relationship/coverage exists.</p>
+              <p>Factless fact tables arise in two situations:</p>
+              <ol>
+                <li><strong>Event tracking:</strong> When the business wants to record that an event happened, but there is no natural numeric measurement. Example: A <em>student attendance</em> fact table with keys for Student, Course, Date, Room, and Professor &#8212; each row records that a student attended that course. Attendance could be coded as &#8220;1&#8221; in every row, but that is redundant; the row&#8217;s presence is the fact.</li>
+                <li><strong>Coverage tracking:</strong> Recording which combinations of dimensions are &#8220;eligible&#8221; without a transaction. Example: A <em>promotion coverage</em> fact table recording which products are covered by which promotions in which stores &#8212; tracking possibility, not actuals.</li>
+              </ol>
+              <p><em>Reference: Ch. 10 &#8212; Principles of Dimensional Modeling</em></p>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q1(e): Snowflake vs. Star Schema</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Snowflake schema vs. star schema:</strong> In a <em>star schema</em>, dimension tables are denormalised &#8212; all attributes including all hierarchy levels are stored flat in a single table per dimension. In a <em>snowflake schema</em>, dimension tables are normalised &#8212; hierarchy levels are broken out into separate sub-dimension tables connected by foreign keys, creating a snowflake-like structure. The fact table still sits at the centre, but dimension tables now have their own child tables.</p>
+              <p><em>Example:</em> In a star schema, the Product dimension has one table with (ProductKey, ProductName, SubCategory, Category, Department). In a snowflake, this becomes: Product &#8594; SubCategory &#8594; Category &#8594; Department as four separate tables.</p>
+              <p><strong>One advantage of the star schema:</strong> Simpler join paths &#8212; every dimension table has a direct, single-hop relationship to the fact table. Queries are faster because they involve fewer joins.</p>
+              <p><strong>One disadvantage of the star schema:</strong> Data redundancy &#8212; the denormalised dimension tables repeat higher-level hierarchy values for every lower-level member (e.g., the same Category and Department description is stored in every product row in that category), increasing storage cost and requiring ETL to ensure consistency.</p>
+              <p><em>Reference: Ch. 10, 11 &#8212; Dimensional Modeling; Ch. 15 &#8212; OLAP</em></p>
+            </div>
+          </details>
+        </div>
+
+        <!-- TOPIC 3: Q2 Star Schema -->
+        <div class="topic-card" id="topic-3" style="display:none">
+          <h2><span class="topic-num">3</span>Q2 &#8212; Star Schema Design (10 marks)</h2>
+          <p class="topic-subtitle">Drawing a complete star schema with base and aggregate fact tables</p>
+
+          <div class="example">
+            <div class="callout-label">Question Paper</div>
+            <p><strong>Q2 (10 points). Consider the following hospital case study:</strong></p>
+            <p>A hospital wants to analyse patient admissions. The grain of the fact table is one row per patient per diagnosis per admission. The dimensions are:</p>
+            <ul>
+              <li>Patient (PatientID, PatientName, Gender, AgeGroup, Insurance, City, Region)</li>
+              <li>Diagnosis (DiagnosisCode, DiagnosisDescription, Category, Severity)</li>
+              <li>Doctor (DoctorID, DoctorName, Specialization, Department)</li>
+              <li>Time (AdmissionDate, Month, Quarter, Year)</li>
+            </ul>
+            <p>Facts to track: LengthOfStay (in days), TreatmentCost, AdmissionCount (always = 1).</p>
+            <p>The following queries are made most frequently:</p>
+            <ul>
+              <li>Query 1: Average length of stay by Diagnosis Category by Region by Quarter</li>
+              <li>Query 2: Total treatment cost by Doctor Department by Year</li>
+            </ul>
+            <p><strong>(a)</strong> Draw a star schema including the base fact table and two aggregate fact tables for the above requirements. Show primary keys, foreign keys, and all relationships. (7 marks)</p>
+            <p><strong>(b)</strong> Identify the full-additive, semi-additive, and non-additive facts in the base fact table, with justification. (3 marks)</p>
+          </div>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q2(a): Star Schema Design</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <h4>Base Fact Table (Grain: Patient &#215; Diagnosis &#215; Doctor &#215; Time)</h4>
+              <pre>
+PATIENT DIM               DIAGNOSIS DIM
+-----------               -------------
+PatientKey (PK)           DiagnosisKey (PK)
+PatientID (NK)            DiagnosisCode (NK)
+PatientName               DiagnosisDescription
+Gender                    Category
+AgeGroup                  Severity
+Insurance
+City
+Region
+
+DOCTOR DIM               TIME DIM
+----------               --------
+DoctorKey (PK)           TimeKey (PK)
+DoctorID (NK)            AdmissionDate
+DoctorName               Month
+Specialization           Quarter
+Department               Year
+
+           ADMISSION FACT (Base Fact Table)
+           ---------------------------------
+           PatientKey    (PK, FK to Patient Dim)
+           DiagnosisKey  (PK, FK to Diagnosis Dim)
+           DoctorKey     (PK, FK to Doctor Dim)
+           TimeKey       (PK, FK to Time Dim)
+           LengthOfStay  (numeric measure, days)
+           TreatmentCost (numeric measure)
+           AdmissionCount (always = 1)
+
+Relationships: Each dimension table is in a one-to-many (1:M) relationship
+with the base fact table. Each dimension table row can correspond to many
+fact table rows, but each fact table row corresponds to exactly one row
+in each dimension table.
+
+           AGGREGATE FACT TABLE 1
+           (Query 1: Avg LOS by Diagnosis Category x Region x Quarter)
+           -----------------------------------------
+           DiagCategoryKey (PK, FK from Diagnosis Dim - or use Category directly)
+           RegionKey       (PK, derived from Patient Dim)
+           QuarterKey      (PK, derived from Time Dim)
+           AvgLengthOfStay
+           TotalAdmissions
+
+           AGGREGATE FACT TABLE 2
+           (Query 2: Total Treatment Cost by Doctor Department x Year)
+           -----------------------------------------
+           DeptKey         (PK, from Doctor Dim - Department field)
+           YearKey         (PK, from Time Dim - Year field)
+           TotalTreatmentCost
+           TotalAdmissions</pre>
+              <p><strong>Note on Aggregate Table Design:</strong> For aggregate tables, the dimension attributes are pulled up to the coarser level. For Agg Table 1, instead of full Patient dimension, only Region is needed; instead of full Diagnosis dimension, only Category is needed; instead of full Time dimension, only Quarter is needed.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q2(b): Additive Classification</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <table>
+                <thead><tr><th>Fact</th><th>Type</th><th>Justification</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>AdmissionCount (always=1)</td>
+                    <td><strong>Fully Additive</strong></td>
+                    <td>Can be meaningfully summed across all dimensions. SUM gives total number of admissions by any combination of patient, diagnosis, doctor, or time period. No dimension restriction on SUM.</td>
+                  </tr>
+                  <tr>
+                    <td>TreatmentCost</td>
+                    <td><strong>Fully Additive</strong></td>
+                    <td>Can be meaningfully summed across all dimensions. Total treatment cost by department, by diagnosis category, by year, or any combination is a valid and meaningful business metric.</td>
+                  </tr>
+                  <tr>
+                    <td>LengthOfStay (days)</td>
+                    <td><strong>Semi-Additive</strong></td>
+                    <td>Can be summed across patients (total patient-days in a department), but averaging (AVG) is more meaningful than summing for most analytical purposes (average stay by diagnosis). Importantly, summing across time periods may be misleading &#8212; if the same patient has multiple admissions, adding their stays across time is valid, but averaging gives more insight. Classify as semi-additive because it cannot be aggregated the same way across all dimension combinations without careful consideration.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="note-box">
+                <div class="callout-label">Note</div>
+                Some instructors classify LengthOfStay as fully additive (you can meaningfully sum total patient-days). The key point for the exam: it is <strong>not non-additive</strong> (it is numeric) and Query 1 asks for <em>average</em> (AVG), suggesting semi-additive is the safer answer. Always state your justification clearly.
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- TOPIC 4: Q3 Cardinality -->
+        <div class="topic-card" id="topic-4" style="display:none">
+          <h2><span class="topic-num">4</span>Q3 &#8212; Cardinality &amp; Aggregation (8 marks)</h2>
+          <p class="topic-subtitle">Estimating fact table sizes and query row counts &#8212; the classic numerical question</p>
+
+          <div class="example">
+            <div class="callout-label">Question Paper</div>
+            <p><strong>Q3 (8 points). Consider the following retail sales data warehouse:</strong></p>
+            <p>Dimensions and their cardinalities:</p>
+            <ul>
+              <li>Product: 8,000 products, 160 sub-categories (50 products per sub-category), 16 categories, 4 departments</li>
+              <li>Store: 80 stores, 8 cities, 4 regions, 2 countries</li>
+              <li>Time: 3 years of daily data (1,095 days, 36 months, 12 quarters)</li>
+            </ul>
+            <p>Grain: one fact row per product per store per day.</p>
+            <p><strong>(a)</strong> What is the potential cardinality (maximum rows) of the base fact table? (1 mark)</p>
+            <p><strong>(b)</strong> Estimate the number of rows of the fact table retrieved for the following queries from the base fact table: (4 marks)</p>
+            <table>
+              <thead><tr><th>Query</th><th>Product</th><th>Store</th><th>Time</th></tr></thead>
+              <tbody>
+                <tr><td>Q1</td><td>1 category</td><td>1 store</td><td>1 month</td></tr>
+                <tr><td>Q2</td><td>1 sub-category</td><td>1 city</td><td>1 quarter</td></tr>
+                <tr><td>Q3</td><td>1 department</td><td>1 region</td><td>1 year</td></tr>
+                <tr><td>Q4</td><td>10 products</td><td>1 country</td><td>6 months</td></tr>
+              </tbody>
+            </table>
+            <p><strong>(c)</strong> You create an aggregate fact table at the grain: sub-category &#215; city &#215; month. How many rows does this aggregate table have? Re-estimate the row counts for Queries Q2, Q3, and Q4 using the aggregate table. (3 marks)</p>
+          </div>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q3(a): Maximum Cardinality</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Base fact table max cardinality:</strong></p>
+              <p>Grain = one row per product per store per day</p>
+              <p>= 8,000 products &#215; 80 stores &#215; 1,095 days = <strong>700,800,000 rows</strong> (~700.8 million)</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q3(b): Query Row Counts from Base Fact Table</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Dimension member conversions (derive lower-level count from higher-level):</strong></p>
+              <ul>
+                <li>1 category = 8,000 / 16 = <strong>500 products</strong></li>
+                <li>1 sub-category = 8,000 / 160 = <strong>50 products</strong></li>
+                <li>1 department = 8,000 / 4 = <strong>2,000 products</strong></li>
+                <li>1 city = 80 / 8 = <strong>10 stores</strong></li>
+                <li>1 region = 80 / 4 = <strong>20 stores</strong></li>
+                <li>1 country = 80 / 2 = <strong>40 stores</strong></li>
+                <li>1 month &#8776; 30 days; 1 quarter &#8776; 91 days; 1 year = 365 days; 6 months &#8776; 182 days</li>
+              </ul>
+              <table>
+                <thead><tr><th>Query</th><th>Products</th><th>Stores</th><th>Days</th><th>Rows Retrieved</th></tr></thead>
+                <tbody>
+                  <tr><td>Q1 (1 category, 1 store, 1 month)</td><td>500</td><td>1</td><td>30</td><td>500 &#215; 1 &#215; 30 = <strong>15,000</strong></td></tr>
+                  <tr><td>Q2 (1 sub-cat, 1 city, 1 quarter)</td><td>50</td><td>10</td><td>91</td><td>50 &#215; 10 &#215; 91 = <strong>45,500</strong></td></tr>
+                  <tr><td>Q3 (1 dept, 1 region, 1 year)</td><td>2,000</td><td>20</td><td>365</td><td>2,000 &#215; 20 &#215; 365 = <strong>14,600,000</strong></td></tr>
+                  <tr><td>Q4 (10 products, 1 country, 6 months)</td><td>10</td><td>40</td><td>182</td><td>10 &#215; 40 &#215; 182 = <strong>72,800</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q3(c): Aggregate Table Design and Query Row Counts</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Aggregate table grain: sub-category &#215; city &#215; month</strong></p>
+              <p><strong>Aggregate table size:</strong> 160 sub-categories &#215; 8 cities &#215; 36 months = <strong>46,080 rows</strong></p>
+              <p>(Compare to 700.8M in the base &#8212; a 15,000&#215; reduction in stored rows!)</p>
+
+              <p><strong>Re-estimate query row counts from the aggregate table:</strong></p>
+              <p>New dimension cardinalities at aggregate grain:</p>
+              <ul>
+                <li>1 sub-category = <strong>1 sub-category row</strong> in agg table</li>
+                <li>1 category = 160/16 = <strong>10 sub-categories</strong> in agg table</li>
+                <li>1 department = 160/4 = <strong>40 sub-categories</strong> in agg table</li>
+                <li>1 city = <strong>1 city row</strong> in agg table</li>
+                <li>1 region = 8/4 = <strong>2 cities</strong> in agg table</li>
+                <li>1 country = 8/2 = <strong>4 cities</strong> in agg table</li>
+                <li>10 products &#8211; cannot be answered from sub-category aggregate (we don&#8217;t have product-level detail); must use base table. Mark as &#8220;N/A &#8212; base table required&#8221;</li>
+                <li>1 quarter = <strong>3 months</strong> in agg table</li>
+                <li>1 year = <strong>12 months</strong> in agg table</li>
+                <li>6 months = <strong>6 months</strong> in agg table</li>
+              </ul>
+
+              <table>
+                <thead><tr><th>Query</th><th>Sub-cats</th><th>Cities</th><th>Months</th><th>Rows from Agg Table</th><th>Rows from Base</th></tr></thead>
+                <tbody>
+                  <tr><td>Q2 (1 sub-cat, 1 city, 1 quarter)</td><td>1</td><td>1</td><td>3</td><td>1 &#215; 1 &#215; 3 = <strong>3</strong></td><td>45,500</td></tr>
+                  <tr><td>Q3 (1 dept=40 sub-cats, 1 region=2 cities, 1 year=12 months)</td><td>40</td><td>2</td><td>12</td><td>40 &#215; 2 &#215; 12 = <strong>960</strong></td><td>14,600,000</td></tr>
+                  <tr><td>Q4 (10 products, 1 country, 6 months)</td><td colspan="3">N/A &#8212; product-level query; aggregate table at sub-category grain cannot answer</td><td>Use base: <strong>72,800</strong></td><td>72,800</td></tr>
+                </tbody>
+              </table>
+              <p><strong>Key insight:</strong> Q2 drops from 45,500 rows to just 3 rows &#8212; a 15,166&#215; reduction. Q3 drops from 14.6M to 960 &#8212; a 15,208&#215; reduction. Q4 cannot use the aggregate table and must still hit the base fact table.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- TOPIC 5: Q4 Pre-Join Denorm -->
+        <div class="topic-card" id="topic-5" style="display:none">
+          <h2><span class="topic-num">5</span>Q4 &#8212; Pre-Join Denormalization (7 marks)</h2>
+          <p class="topic-subtitle">Calculate storage cost of pre-join denormalization &#8212; the quantitative design question</p>
+
+          <div class="example">
+            <div class="callout-label">Question Paper</div>
+            <p><strong>Q4 (7 points). Consider the following normalized data structure:</strong></p>
+            <pre>ORDERS(OrderID, CustomerID, OrderDate, StoreID, ...)
+ORDER_DETAIL(DetailID, OrderID, ProductID, Quantity, UnitPrice, ...)</pre>
+            <p>Assumptions:</p>
+            <ul>
+              <li>There are 1 million orders in ORDERS and 8 million rows in ORDER_DETAIL</li>
+              <li>Record length of both ORDERS and ORDER_DETAIL is the same: 120 bytes</li>
+              <li>Each column in both tables (including PK/FK columns) is the same size: 12 bytes</li>
+            </ul>
+            <p>Most frequent query: <code>SELECT * FROM ORDERS O JOIN ORDER_DETAIL D ON O.OrderID = D.OrderID</code></p>
+            <p><strong>(a)</strong> Identify the performance problem with this query and explain why pre-join denormalization would help. (2 marks)</p>
+            <p><strong>(b)</strong> Show the denormalized data structure (which columns go where). (2 marks)</p>
+            <p><strong>(c)</strong> Evaluate the additional storage cost (as a percentage) for the denormalized data structure compared to the original two-table structure. (3 marks)</p>
+          </div>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q4(a): Performance Problem</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Performance problem:</strong> The query joins 1 million ORDERS rows to 8 million ORDER_DETAIL rows on OrderID. In a DSS/DW environment, this join is performed at query time every time the query runs. This requires:</p>
+              <ul>
+                <li>Scanning all 1,000,000 rows of ORDERS</li>
+                <li>Scanning all 8,000,000 rows of ORDER_DETAIL</li>
+                <li>Performing a join operation to match rows on OrderID</li>
+                <li>Sorting and merging the results</li>
+              </ul>
+              <p>For a DSS environment where this is a frequently run analytical query, this join overhead significantly increases query response time, undermining the &#8220;speed-of-thought&#8221; analytical requirement.</p>
+              <p><strong>Why pre-join denormalization helps:</strong> Pre-join denormalization performs the join once during the ETL load process and stores the combined (joined) result as a single flat table. At query time, no join is needed &#8212; the query simply scans the single flat table. This eliminates all join overhead for this frequent query pattern.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q4(b): Denormalized Structure</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Pre-join denormalization approach:</strong> Merge ORDERS into ORDER_DETAIL. For each row in ORDER_DETAIL, the corresponding ORDERS attributes are copied in. The resulting ORDERS_COMBINED table contains:</p>
+              <pre>
+ORDERS_COMBINED(
+  -- From ORDER_DETAIL:
+  DetailID, OrderID, ProductID, Quantity, UnitPrice, [other ORDER_DETAIL columns]
+  -- From ORDERS (columns replicated for each ORDER_DETAIL row):
+  CustomerID, OrderDate, StoreID, [other ORDERS columns]
+)
+
+Row count: 8,000,000 rows (same as ORDER_DETAIL -- one ORDERS row expands
+           into all its matching ORDER_DETAIL rows; the average order has
+           8,000,000 / 1,000,000 = 8 detail lines per order)
+</pre>
+              <p>Note: The ORDERS table&#8217;s primary key (OrderID) is still present as a column in ORDERS_COMBINED but is no longer a FK reference &#8212; its data is embedded directly in each row.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>&#10003; Show Worked Solution &#8212; Q4(c): Additional Storage Cost Calculation</summary>
+            <div class="example">
+              <div class="callout-label">Worked Solution</div>
+              <p><strong>Step 1: Determine number of columns in each table.</strong></p>
+              <p>Record length = 120 bytes; each column = 12 bytes. So columns per table = 120 / 12 = <strong>10 columns per table</strong>.</p>
+
+              <p><strong>Step 2: Calculate original storage.</strong></p>
+              <ul>
+                <li>ORDERS: 1,000,000 rows &#215; 120 bytes = <strong>120,000,000 bytes</strong> (120 MB)</li>
+                <li>ORDER_DETAIL: 8,000,000 rows &#215; 120 bytes = <strong>960,000,000 bytes</strong> (960 MB)</li>
+                <li>Total original: 120,000,000 + 960,000,000 = <strong>1,080,000,000 bytes</strong> (1,080 MB)</li>
+              </ul>
+
+              <p><strong>Step 3: Calculate denormalized table storage.</strong></p>
+              <p>ORDERS_COMBINED merges ORDERS columns into ORDER_DETAIL rows. The merged table has ORDER_DETAIL&#8217;s columns plus ORDERS&#8217; non-redundant columns.</p>
+              <p>Note: OrderID is already in ORDER_DETAIL (as the FK), so we do not need to add it again from ORDERS. Therefore: additional columns from ORDERS = 10 - 1 (OrderID already present) = <strong>9 new columns replicated</strong>.</p>
+              <p>New record length = (10 + 9) columns &#215; 12 bytes = 19 &#215; 12 = <strong>228 bytes per row</strong></p>
+              <p>ORDERS_COMBINED: 8,000,000 rows &#215; 228 bytes = <strong>1,824,000,000 bytes</strong></p>
+
+              <p><strong>Step 4: Calculate storage overhead.</strong></p>
+              <p>Denormalized total = 1,824,000,000 bytes (ORDERS_COMBINED replaces both original tables for this query pattern)</p>
+              <p>Additional storage = 1,824,000,000 &#8212; 1,080,000,000 = <strong>744,000,000 bytes</strong></p>
+              <p>Additional storage % = (744,000,000 / 1,080,000,000) &#215; 100 = <strong>68.89%</strong> &#8776; <strong>69% additional storage</strong></p>
+
+              <div class="note-box">
+                <div class="callout-label">Pro Tip</div>
+                Some variations of this question (like Past Paper 2017 Q1) ask you to keep the original tables alongside the denormalized one (for queries that don&#8217;t need the join). In that case: total storage = original tables + denormalized table = 1,080 MB + 1,824 MB &#8212; but additional cost = 1,824 MB. Read the question carefully to know if both are kept or if the originals are replaced.
+                <br/><br/>
+                The <strong>exact Past Paper 2017 Q1 setup</strong> had: 2M sales, 20M details, 100 bytes each, 10 bytes/column = 10 columns each. OrderID column already in DETAIL = 9 new columns from SALES. New record = 190 bytes. New table = 20M &#215; 190 = 3,800 MB. Original = 2M &#215; 100 + 20M &#215; 100 = 2,200 MB. Additional = (3,800 - 2,200) / 2,200 &#215; 100 = <strong>72.7% additional</strong>.
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- TOPIC 6: Past Paper Analysis -->
+        <div class="topic-card" id="topic-6" style="display:none">
+          <h2><span class="topic-num">6</span>Past Paper Analysis &amp; Watchlist</h2>
+          <p class="topic-subtitle">Topic coverage from all available past papers &#8212; patterns and out-of-scope items</p>
+
+          <div class="definition">
+            <div class="callout-label">In-Scope Topics Summary</div>
+            <strong>All the following question types appeared in at least one past paper and are within the Weeks 1&#8211;6 mid-exam scope:</strong>
+          </div>
+
+          <h3>Past Paper Coverage Map</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Question Type</th>
+                <th>2017</th>
+                <th>2018</th>
+                <th>2023</th>
+                <th>Topic</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Pre-join denormalization + storage calculation</td><td>&#10003; Q1</td><td>&#8212;</td><td>&#10003; Q1b</td><td>Physical Data Modeling</td></tr>
+              <tr><td>Conformed dimensions</td><td>&#10003; Q2a</td><td>&#8212;</td><td>&#8212;</td><td>Dimensional Modeling</td></tr>
+              <tr><td>Drill-across + slice-and-dice</td><td>&#10003; Q2b</td><td>&#8212;</td><td>&#10003; Q1c</td><td>OLAP Operations</td></tr>
+              <tr><td>Virtual cube / MOLAP features</td><td>&#10003; Q2c</td><td>&#8212;</td><td>&#10003; Q1d</td><td>OLAP Implementation</td></tr>
+              <tr><td>Factless fact table</td><td>&#10003; Q2d</td><td>&#10003; Q1d</td><td>&#8212;</td><td>Dimensional Modeling</td></tr>
+              <tr><td>Dependent vs. independent data mart</td><td>&#8212;</td><td>&#10003; Q1a</td><td>&#10003; Q1a</td><td>Overview &amp; Concepts (Ch. 2)</td></tr>
+              <tr><td>Degenerate dimensions</td><td>&#8212;</td><td>&#10003; Q1b</td><td>&#8212;</td><td>Dimensional Modeling</td></tr>
+              <tr><td>Data sources for DW</td><td>&#8212;</td><td>&#10003; Q1c</td><td>&#8212;</td><td>Overview &amp; Concepts (Ch. 1)</td></tr>
+              <tr><td>Star schema cardinality estimation</td><td>&#10003; Q3</td><td>&#8212;</td><td>&#10003; Q3</td><td>Dimensional Modeling</td></tr>
+              <tr><td>Query row count from base fact table</td><td>&#10003; Q4</td><td>&#8212;</td><td>&#8212;</td><td>OLAP / Dimensional Modeling</td></tr>
+              <tr><td>Aggregate fact table &#8212; design + row estimates</td><td>&#10003; Q5</td><td>&#10003; Q4</td><td>&#10003; Q3</td><td>Dimensional Modeling</td></tr>
+              <tr><td>Star schema drawing with PKs, FKs, relationships</td><td>&#10003; Q6</td><td>&#10003; Q2</td><td>&#10003; Q2</td><td>Dimensional Modeling</td></tr>
+              <tr><td>Additive / semi-additive / non-additive facts</td><td>&#8212;</td><td>&#10003; Q3</td><td>&#8212;</td><td>Dimensional Modeling</td></tr>
+              <tr><td>Star vs. snowflake schema rows</td><td>&#8212;</td><td>&#10003; Q5</td><td>&#10003; Q1e (implied)</td><td>Dimensional Modeling</td></tr>
+              <tr><td>Partitioned cubes (MOLAP)</td><td>&#8212;</td><td>&#8212;</td><td>&#10003; Q1d</td><td>OLAP Implementation</td></tr>
+              <tr><td>Column replication denormalization</td><td>&#8212;</td><td>&#8212;</td><td>&#10003; Q1b</td><td>Physical Data Modeling</td></tr>
+            </tbody>
+          </table>
+
+          <div class="warning-box">
+            <div class="callout-label">Out-of-Scope Watchlist</div>
+            <p>The following topics appeared in past papers but are <strong>outside the Weeks 1&#8211;6 mid-exam scope</strong>. Do not spend time on these for the mid-term:</p>
+            <ul>
+              <li><strong>ETL pipeline design</strong> (extraction, transformation, loading details) &#8212; appears in later weeks</li>
+              <li><strong>Data quality and metadata management</strong> &#8212; typically later in the course</li>
+              <li><strong>Data mining techniques</strong> &#8212; separate portion of the course (DW&amp;DM course)</li>
+              <li><strong>Physical indexes (B-tree, bitmap)</strong> &#8212; typically covered in physical design later; basic STARindex is in scope</li>
+              <li><strong>DW project management / lifecycle methodology</strong> &#8212; if covered after Week 6</li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <h4>High-Priority Items for the Mid-Exam (based on past paper frequency)</h4>
+            <ul>
+              <li><strong>Star schema design with ALL keys:</strong> Appeared in EVERY past paper. Must be able to draw from scratch given a scenario.</li>
+              <li><strong>Cardinality estimation formula:</strong> D&#8321; &#215; D&#8322; &#215; &#8230; Appeared in every paper. Must be fast and accurate.</li>
+              <li><strong>Aggregate fact table:</strong> Design + row count. Every paper. Know the grain &#8594; size formula.</li>
+              <li><strong>OLAP operations (especially drill-across, slice-and-dice, virtual cube):</strong> 2 out of 3 papers.</li>
+              <li><strong>Factless fact table:</strong> 2 out of 3 papers.</li>
+              <li><strong>Pre-join denormalization + storage calculation:</strong> 2 out of 3 papers. Know the formula.</li>
+              <li><strong>Dependent vs. independent data mart:</strong> 2 out of 3 papers.</li>
+              <li><strong>Additive / semi-additive / non-additive:</strong> At least once. Know the classification rules.</li>
+              <li><strong>Star vs. snowflake row count:</strong> At least once. Know: Star = n, Snowflake = n + m (where m = rows in sub-dimension).</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Final 5-Minute Review Drill</div>
+            <details>
+              <summary>Quick fire: What formula gives the maximum rows in a base fact table?</summary>
+              <p>Max rows = D&#8321; &#215; D&#8322; &#215; &#8230; &#215; D&#7522; (product of the cardinalities at the grain level of each dimension)</p>
+            </details>
+            <details>
+              <summary>Quick fire: What is the difference between MOLAP and ROLAP in one sentence each?</summary>
+              <p><strong>MOLAP:</strong> Data is stored in proprietary multidimensional arrays (MDDBs); pre-calculated cubes are served from a special OLAP server, delivering fast response for complex analysis.</p>
+              <p><strong>ROLAP:</strong> Data remains in relational tables in the warehouse; an analytical server creates virtual cubes on the fly by translating user queries into complex SQL directed at the relational DBMS.</p>
+            </details>
+            <details>
+              <summary>Quick fire: What are the three SCD types in one line each?</summary>
+              <p><strong>Type 1:</strong> Overwrite &#8212; no history kept; for error corrections.</p>
+              <p><strong>Type 2:</strong> New row + new surrogate key &#8212; full history kept; for real business events.</p>
+              <p><strong>Type 3:</strong> New column (&#8220;old value&#8221;) &#8212; one prior value kept; for one-time reclassifications.</p>
+            </details>
+            <details>
+              <summary>Quick fire: What is a surrogate key and why do we use it?</summary>
+              <p>A surrogate key is a system-generated sequence number used as the primary key of a dimension table. It has no built-in meaning. We use it because natural/production keys often have embedded meanings that change over time, or they get reused for different entities &#8212; both of which corrupt historical analysis. Surrogate keys remain stable regardless of operational system changes.</p>
+            </details>
+            <details>
+              <summary>Quick fire: Fact table is "deep"; dimension table is "wide." What does this mean?</summary>
+              <p><strong>Fact table is &#8220;deep&#8221;:</strong> Very many rows (billions), few columns (just FK columns + numeric measures).</p>
+              <p><strong>Dimension table is &#8220;wide&#8221;:</strong> Very many columns (all hierarchy levels and descriptive attributes, potentially 100+), relatively few rows (thousands to millions).</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <button id="prev-btn" onclick="goPrev()">
+            <div><span class="btn-label">&#8592; Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+          </button>
+          <button id="next-btn" onclick="goNext()">
+            <div><span class="btn-label">Next &#8594;</span><span class="btn-title" id="next-title">Topic</span></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">&#8593;</button>
+
+    <script>
+      const topics = ["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6"];
+      let currentTopicIndex = 0;
+      function getTopicTitle(id) {
+        const link = document.querySelector(".nav-sublist a[onclick*=\"'" + id + "'\"]") || document.querySelector(".nav-sublist a[onclick*='\"" + id + "\"']");
+        if (link) { const n = link.querySelector(".nav-num"); return n ? link.textContent.replace(n.textContent, "").trim() : link.textContent.replace(/^\d+\s*/, "").trim(); }
+        const card = document.getElementById(id);
+        if (card) { const h2 = card.querySelector("h2"); if (h2) { const n = h2.querySelector(".topic-num"); return n ? h2.textContent.replace(n.textContent, "").trim() : h2.textContent.replace(/^\d+\s*/, "").trim(); } }
+        return "Topic";
+      }
+      function toggleSidebar() { const sb = document.getElementById("sidebar"), bd = document.getElementById("sidebar-backdrop"); if (sb) sb.classList.toggle("open"); if (bd) bd.classList.toggle("active"); }
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach(c => c.style.display = "none");
+        const t = document.getElementById(id); if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+        document.querySelectorAll(".nav-sublist a").forEach(a => a.classList.remove("active"));
+        const lk = document.querySelector(".nav-sublist a[onclick*=\"'" + id + "'\"]") || document.querySelector(".nav-sublist a[onclick*='\"" + id + "\"']");
+        if (lk) { lk.classList.add("active"); const sl = lk.closest(".nav-sublist"); if (sl && sl.style.display === "none") { sl.style.display = "block"; const ch = sl.previousElementSibling ? sl.previousElementSibling.querySelector(".chevron") : null; if (ch) ch.style.transform = "rotate(0deg)"; } }
+        const pb = document.getElementById("prev-btn"), nb = document.getElementById("next-btn"), pt = document.getElementById("prev-title"), nt = document.getElementById("next-title");
+        if (currentTopicIndex > 0) { pb.style.display = "flex"; if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]); } else { pb.style.display = "none"; }
+        if (currentTopicIndex < topics.length - 1) { nb.style.display = "flex"; if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]); } else { nb.style.display = "none"; }
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.innerWidth <= 768) { const sb = document.getElementById("sidebar"), bd = document.getElementById("sidebar-backdrop"); if (sb) sb.classList.remove("open"); if (bd) bd.classList.remove("active"); }
+      }
+      function goPrev() { if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]); }
+      function goNext() { if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]); }
+      function toggleSection(el) { const s = el.nextElementSibling, c = el.querySelector(".chevron"); if (s.style.display === "none") { s.style.display = "block"; c.style.transform = "rotate(0deg)"; } else { s.style.display = "none"; c.style.transform = "rotate(-90deg)"; } }
+      function filterContent() { const q = document.getElementById("search-input").value.toLowerCase(); document.querySelectorAll(".nav-sublist li").forEach(i => i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none"); }
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content"), bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => bb.style.display = mc.scrollTop > 300 ? "flex" : "none");
+    </script>
+  </body>
+</html>
