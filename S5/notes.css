@@ -755,10 +755,9 @@ details strong {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 48px;
-  padding-top: 24px;
-  padding-bottom: 8px;
   border-top: 1px solid var(--bd);
+  padding: 24px 0 8px;
+  margin-top: 48px;
   gap: 16px;
 }
 .bottom-nav button {
@@ -767,13 +766,13 @@ details strong {
   background: var(--sb);
   color: var(--mt);
   border: 1px solid var(--bd);
-  padding: 12px 18px;
+  padding: 12px 20px;
   border-radius: 10px;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s;
   max-width: 48%;
-  min-width: 140px;
+  min-width: 150px;
 }
 .bottom-nav button .btn-label {
   font-size: 0.62rem;
@@ -797,6 +796,8 @@ details strong {
 .bottom-nav button:hover {
   border-color: var(--ac);
   background: var(--hv);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 .bottom-nav button:hover .btn-label {
   color: var(--ac);
@@ -810,7 +811,6 @@ details strong {
 }
 #next-btn {
   align-items: flex-end;
-  margin-left: auto;
 }
 #next-btn div {
   text-align: right;
@@ -903,6 +903,7 @@ details strong {
   .bottom-nav {
     flex-direction: column-reverse;
     gap: 12px;
+    padding: 12px 0 16px;
   }
   .bottom-nav button {
     max-width: 100%;
@@ -911,8 +912,5 @@ details strong {
   }
   .bottom-nav button div {
     text-align: center !important;
-  }
-  #next-btn {
-    margin-left: 0;
   }
 }
