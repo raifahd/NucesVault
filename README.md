@@ -45,8 +45,8 @@ NucesVault/
 ### Option 1: Clone the Entire Repository (Recommended)
 
 ```bash
-git clone https://github.com/raifahd/NucesVault.git
-cd NucesVault
+git clone https://github.com/TahaImran1/Sem-5-notes.git
+cd Sem-5-notes
 ```
 > Double-click any `index.html` file inside the course directories to open it instantly in your default web browser.
 
@@ -54,7 +54,7 @@ cd NucesVault
 
 #### Artificial Intelligence (AI)
 ```bash
-curl -O https://raw.githubusercontent.com/raifahd/NucesVault/main/S5/Artifical%20Intelligence%20(AI)/index.html
+curl -O https://raw.githubusercontent.com/TahaImran1/Sem-5-notes/main/S5/Artifical%20Intelligence%20(AI)/index.html
 ```
 
 #### Data Warehousing & Business Intelligence (DW & BI)

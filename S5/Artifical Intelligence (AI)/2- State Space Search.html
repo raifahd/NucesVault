@@ -72,6 +72,114 @@
         position: absolute;
       }
     </style>
+  
+    <style>
+      .exam-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: monospace;
+      }
+      .exam-badge.gold {
+        background: rgba(240, 169, 78, 0.15);
+        color: #f0a94e;
+        border: 1px solid rgba(240, 169, 78, 0.35);
+      }
+      .exam-badge.purple {
+        background: rgba(179, 133, 240, 0.15);
+        color: #b385f0;
+        border: 1px solid rgba(179, 133, 240, 0.35);
+      }
+      .exam-badge.cyan {
+        background: rgba(79, 163, 227, 0.15);
+        color: #4fa3e3;
+        border: 1px solid rgba(79, 163, 227, 0.35);
+      }
+      .exam-badge.green {
+        background: rgba(79, 191, 139, 0.15);
+        color: #4fbf8b;
+        border: 1px solid rgba(79, 191, 139, 0.35);
+      }
+      .exam-card {
+        background: #18181b;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 22px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s ease;
+      }
+      .exam-card:hover {
+        border-color: rgba(217, 119, 87, 0.45);
+      }
+      .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .exam-title {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+      }
+      .exam-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .solution-box {
+        background: #141c24;
+        border: 1px solid #234563;
+        border-left: 4px solid #4fa3e3;
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin: 16px 0;
+      }
+      .solution-box h5 {
+        color: #4fa3e3;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .math-box {
+        font-family: monospace;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-left: 3px solid #facc15;
+        margin: 12px 0;
+        color: #facc15;
+        line-height: 1.6;
+      }
+      .protip-box {
+        background: rgba(240, 169, 78, 0.08);
+        border: 1px solid rgba(240, 169, 78, 0.3);
+        border-left: 4px solid #f0a94e;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+      }
+      .protip-box h4 {
+        color: #f0a94e;
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+      }
+    </style>
   </head>
   <body>
     <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
@@ -107,16 +215,32 @@
             <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>States and State Spaces</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Formal Definition & Graph Theory</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Examples: Tic-Tac-Toe & TSP</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">★</span>Mid-1 Solved Questions (2016–2026)</a></li>
           </ul>
         </li>
         <li>
           <a class="nav-module-link" href="./3- Uninformed Search Algorithms.html">
-            <span class="nav-num">03</span>Uninformed Search
+            <span class="nav-num">03</span>Uninformed Search (UCS)
           </a>
         </li>
         <li>
-          <a class="nav-module-link" href="./4- Quiz Prep (Modules 1-3).html">
-            <span class="nav-num">04</span>Quiz Prep
+          <a class="nav-module-link" href="./4- Informed & Heuristic Search.html">
+            <span class="nav-num">04</span>Informed Search &amp; Hill Climbing
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./5- A-Star Search & Properties.html">
+            <span class="nav-num">05</span>A* Search &amp; Properties
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./6- Adversarial Search & Game Playing.html">
+            <span class="nav-num">06</span>Adversarial Search (Minimax)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./7- Exam & Quiz Prep (Lectures 1-9).html">
+            <span class="nav-num">07</span>Exam &amp; Quiz Prep
           </a>
         </li>
       </ul>
@@ -357,7 +481,188 @@
 
       </div>
 
-      <div class="bottom-nav">
+      
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">★</span>FAST Mid-1 Exam Solved Questions (2016–2026)</h2>
+          <p class="topic-subtitle">Authentic Sessional-I Questions on State Space Formulation, Branching Factors &amp; Search Tree Growth</p>
+
+          <div class="summary-box" style="margin-top: 16px;">
+            <h4>Exam Scope &amp; Weight</h4>
+            <p>Formulating a problem as a formal <strong>State Space</strong> is a guaranteed 10–15 mark question in FAST Mid-1 exams. The questions test your ability to specify minimal state vectors, write exact transition rules, determine branching factors, and calculate tree node expansions for BFS and DFS.</p>
+          </div>
+
+          <!-- EXAM QUESTION 1 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Sessional-I • March 2025</span>
+                <span class="exam-badge purple">Question 2 (15 Marks)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 1: The Formal Two-Variable State Space Search (Water Jug)</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">SP-2025 Exam</span>
+                <span class="exam-badge green">Official Faculty Scheme</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> Two integer variables X and Y have capacities 4 and 3 respectively (X &isin; [0,4], Y &isin; [0,3]). Initially, both are (0,0). The allowed operations are:</p>
+            <ul>
+              <li><code>S1</code>: Set X to 4 (Fill X).</li>
+              <li><code>S2</code>: Set Y to 3 (Fill Y).</li>
+              <li><code>Z1</code>: Set X to 0 if X &ne; 0 (Empty X).</li>
+              <li><code>Z2</code>: Set Y to 0 if Y &ne; 0 (Empty Y).</li>
+              <li><code>T1</code>: Transfer as much as possible from X to Y until Y is full or X is empty.</li>
+              <li><code>T2</code>: Transfer as much as possible from Y to X until X is full or Y is empty.</li>
+            </ul>
+
+            <div class="solution-box">
+              <h5>Official Exam Solution &amp; Working</h5>
+              
+              <p><strong>Part a) BFS Tree &amp; Nodes Expanded to reach target (2, 0):</strong></p>
+              <div class="math-box">
+Root: (0, 0)
+Level 1: (4, 0) via S1,  (0, 3) via S2
+Level 2 from (4, 0): (4, 3) via S2,  (1, 3) via T1
+Level 2 from (0, 3): (3, 0) via T2
+Level 3: (1, 0) via Z2 from (1, 3); (3, 3) via S2 from (3, 0)
+Level 4: (0, 1) via T1 from (1, 0); (4, 2) via T2 from (3, 3)
+Level 5: (4, 1) via S1 from (0, 1); (0, 2) via Z1 from (4, 2)
+Level 6: (2, 3) via T1 from (4, 1); (2, 0) via T2 from (0, 2) -> GOAL!
+              </div>
+              <p><strong>Minimum and Maximum Nodes Expanded by BFS:</strong></p>
+              <ul>
+                <li><strong>11 or 12 nodes</strong> if the search terminates <em>early on generation</em> (when the goal state is inserted into the queue).</li>
+                <li><strong>12 or 13 nodes</strong> if the search terminates <em>on expansion</em> (when the goal state is popped off the queue).</li>
+                <li><em>(Both ranges were officially accepted by course instructors in the SP-2025 grading key!)</em></li>
+              </ul>
+
+              <p style="margin-top: 14px;"><strong>Part b) Minimum Nodes Expanded by Depth First Search (DFS):</strong></p>
+              <p><strong>Answer: 6 nodes.</strong> If DFS prioritizes the branch leading along the shortest path, it expands exactly the 6 states along the solution path without backtracking.</p>
+
+              <p style="margin-top: 14px;"><strong>Part c) Optimal Solution Path Found:</strong></p>
+              <div class="math-box">
+(0, 0) --S2--> (0, 3) --T2--> (3, 0) --S2--> (3, 3) --T2--> (4, 2) --Z1--> (0, 2) --T2--> (2, 0)
+Using alternate operation symbols: F2 &rarr; T2 &rarr; F2 &rarr; T2 &rarr; E1 &rarr; T2
+              </div>
+
+              <p style="margin-top: 14px;"><strong>Part d) Heuristic Admissibility Analysis:</strong></p>
+              <p>Consider a candidate heuristic estimating moves to reach (2,0). If h(0, 2) = 4, is h admissible?</p>
+              <p><strong>Answer: NOT ADMISSIBLE.</strong> State (0, 2) is exactly <strong>1 single move</strong> (T2) away from the goal (2, 0). Since h(0, 2) = 4 &gt; 1, the heuristic overestimates the actual cost to reach the goal. By definition, an admissible heuristic must never overestimate: h(n) &le; h*(n). Therefore, h is inadmissible.</p>
+            </div>
+          </div>
+
+          <!-- EXAM QUESTION 2 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Sessional-I • Feb 2024</span>
+                <span class="exam-badge purple">Question 1a (State Representation)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 2: "Solve-It Felix" Minimal State Space Formulation</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">SP-2024 Exam</span>
+                <span class="exam-badge green">5 Marks</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> "Solve-It Felix" is a puzzle played on an M &times; N grid of cells. Agent Felix starts at (0,0) and needs to reach the exit cell containing the key. Felix can move {Up, Down, Left, Right}, but some cell boundaries are permanently locked walls that block entry. How would you formally represent the state of this puzzle so it can be used by a search algorithm? <em>(Hint: Think about the minimum necessary information needed at any point during execution)</em>.</p>
+
+            <div class="solution-box">
+              <h5>Official FAST Model Answer</h5>
+              <p><strong>Minimal State Vector:</strong></p>
+              <div class="math-box">State = (r, c)  where r &isin; [0, M-1] and c &isin; [0, N-1]</div>
+              <p><strong>Why only (r, c) is needed in the state:</strong></p>
+              <ul>
+                <li>The positions of the locked boundary walls and the destination key are <strong>static and invariant</strong> throughout the entire episode.</li>
+                <li>They belong to the <em>problem description / environment definition</em>, NOT the dynamic state representation.</li>
+                <li>Storing the wall layout or key position inside the state vector would be redundant and waste memory, multiplying hash comparison overhead.</li>
+              </ul>
+              <p><strong>Formal Formulation Summary:</strong></p>
+              <ul>
+                <li><strong>Initial State:</strong> (r<sub>start</sub>, c<sub>start</sub>)</li>
+                <li><strong>Actions(s):</strong> {Up, Down, Left, Right} filtered by: destination within grid bounds AND no locked wall on the crossed boundary.</li>
+                <li><strong>Transition Model:</strong> Result((r, c), Right) = (r, c + 1), Result((r, c), Down) = (r + 1, c), etc.</li>
+                <li><strong>Goal Test:</strong> Is (r, c) == (r<sub>key</sub>, c<sub>key</sub>)?</li>
+                <li><strong>Path Cost:</strong> 1 per move (unit step cost).</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- EXAM QUESTION 3 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Fall 2017</span>
+                <span class="exam-badge purple">Problem 1a (Branching &amp; State Space Size)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 3: The 15-Puzzle Formal Mathematical Analysis</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">CS401 NUCES</span>
+                <span class="exam-badge green">High-Yield Theory</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> The 15-puzzle consists of a 4 &times; 4 frame containing fifteen numbered square tiles and one blank space. On average, 24 steps are needed to solve a puzzle optimally. Derive the <strong>average branching factor</strong> and calculate the theoretical number of states explored by uninformed search at depth d = 24.</p>
+
+            <div class="solution-box">
+              <h5>Step-by-Step Derivation</h5>
+              <p><strong>1. Average Branching Factor Calculation:</strong> The blank space can be moved into adjacent tiles:</p>
+              <ul>
+                <li><strong>4 Corner Cells:</strong> Blank has 2 legal moves &rarr; 4 &times; 2 = 8 moves.</li>
+                <li><strong>8 Edge (Non-Corner) Cells:</strong> Blank has 3 legal moves &rarr; 8 &times; 3 = 24 moves.</li>
+                <li><strong>4 Center Cells:</strong> Blank has 4 legal moves &rarr; 4 &times; 4 = 16 moves.</li>
+              </ul>
+              <div class="math-box">
+Average Branching Factor b = (8 + 24 + 16) / 16 = 48 / 16 = 3.0
+              </div>
+              <p><strong>2. Size of State Space:</strong> Total permutations of 16 items is 16!. However, exactly half of all permutations are mathematically unreachable (parity invariant for sliding tiles):</p>
+              <div class="math-box">
+Reachable State Space Size = 16! / 2 &asymp; 1.046 &times; 10<sup>13</sup> states
+              </div>
+              <p><strong>3. Search Tree Nodes at Solution Depth d = 24:</strong></p>
+              <div class="math-box">
+Tree Search Node Count &asymp; b<sup>d</sup> = 3<sup>24</sup> &asymp; 282,429,536,481 (&asymp; 2.82 &times; 10<sup>11</sup> nodes)
+              </div>
+              <p><strong>Conclusion:</strong> Pure blind search (tree search without cycle prevention) requires expanding over 282 billion nodes, making uninformed tree search physically impossible without graph search and heuristic guidance.</p>
+            </div>
+          </div>
+
+          <!-- EXAM QUESTION 4 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Spring 2023</span>
+                <span class="exam-badge purple">Question 1 (Multi-Goal State Representation)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 4: Pacman Grid Maze — When Is Position Insufficient?</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">SP-2023 Exam</span>
+                <span class="exam-badge green">State Space Pitfall</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> Pacman navigates an N &times; M grid maze to eat all food dots. A student defines the state space simply as Pacman's current coordinates: <code>State = (x, y)</code>. Explain why this formulation is critically flawed and provide the correct state representation.</p>
+
+            <div class="solution-box">
+              <h5>Model Solution</h5>
+              <p><strong>Why (x, y) is FLAWED:</strong></p>
+              <p>If the state is only <code>(x, y)</code>, the agent cannot distinguish whether it is visiting cell <code>(x, y)</code> for the first time (when a food dot is present) or returning to it later (after the food dot was already eaten). Furthermore, the goal test cannot verify if <em>all</em> food dots have been consumed!</p>
+              <p><strong>Correct Minimal State Formulation:</strong></p>
+              <div class="math-box">
+State = (x, y, FoodBitmask)
+where FoodBitmask is a boolean tuple of length K indicating the status of each of the K food dots.
+              </div>
+              <p><strong>Total State Space Size:</strong> |S| = N &times; M &times; 2<sup>K</sup>. This proves that each additional dot doubles the search state space!</p>
+            </div>
+          </div>
+
+          <div class="protip-box">
+            <h4>FAST Mid-1 Exam Pro-Tips for State Space Formulation</h4>
+            <ol>
+              <li><strong>Minimal State vs Environmental Invariants:</strong> Never include fixed walls, goal locations, or room dimensions inside the state tuple unless they dynamically change. State is strictly for dynamic information.</li>
+              <li><strong>Check Goal Test Feasibility:</strong> Ask yourself: "Can my GoalTest(state) function return true/false using ONLY the variables inside this state?" If not, your state is missing variables!</li>
+              <li><strong>Water Jug Node Expansion Counts:</strong> In BFS, always specify whether you are counting nodes expanded upon <em>generation</em> (push to frontier) or upon <em>expansion</em> (pop from queue). FAST faculty give full marks when this distinction is stated.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+<div class="bottom-nav">
         <button id="prev-btn" onclick="goPrev()">
           <div>
             <span class="btn-label">← Previous</span>
@@ -384,7 +689,7 @@
     </button>
 
     <script>
-      const topics = ["topic-1", "topic-2", "topic-3"];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
       let currentTopicIndex = 0;
 
       function getTopicTitle(id) {

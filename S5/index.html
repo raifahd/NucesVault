@@ -170,17 +170,29 @@
         font-size: 0.82rem;
         font-weight: 700;
       }
-      .lecture-title-text {
-        font-size: 0.95rem;
-        font-weight: 500;
+      .lecture-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
       }
-      .lecture-arrow {
+      .lecture-desc {
+        font-size: 0.76rem;
         color: var(--mt);
-        font-size: 0.9rem;
-        transition: transform 0.2s ease, color 0.2s ease;
+        font-weight: 400;
+        line-height: 1.35;
       }
-      .lecture-link:hover .lecture-arrow {
+      .course-hub-link {
+        font-size: 0.78rem;
+        font-weight: 600;
         color: var(--ac);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: transform 0.2s ease;
+      }
+      .course-hub-link:hover {
+        text-decoration: underline;
         transform: translateX(3px);
       }
       .no-results {
@@ -289,17 +301,25 @@
       </div>
 
       <!-- Artificial Intelligence -->
-      <div class="course-section" data-course="Artificial Intelligence AI">
+      <div class="course-section" data-course="Artificial Intelligence AI CS-3005 Agents PEAS State Space Search Luger BFS DFS IDS UCS Uniform Cost Hill Climbing A* Heuristics Admissibility Monotonicity Nim Minimax Alpha-Beta">
         <div class="course-header">
-          <h2 class="course-title">Artificial Intelligence (AI)</h2>
-          <span class="course-count">4 Modules</span>
+          <div>
+            <h2 class="course-title">Artificial Intelligence (AI)</h2>
+            <div style="margin-top: 4px;">
+              <a href="Artifical Intelligence (AI)/index.html" class="course-hub-link">Open Dedicated AI Course Portal &rarr;</a>
+            </div>
+          </div>
+          <span class="course-count">7 Modules</span>
         </div>
         <ul class="lecture-list">
           <li class="lecture-item">
             <a href="Artifical Intelligence (AI)/1- Introduction to AI.html" class="lecture-link">
               <div class="lecture-left">
                 <span class="lecture-num">01</span>
-                <span class="lecture-title-text">Introduction to AI</span>
+                <div class="lecture-meta">
+                  <span class="lecture-title-text">Introduction to AI &amp; Intelligent Agents (Lec 1 &amp; 2)</span>
+                  <span class="lecture-desc">Rational Agents, PEAS Framework, 6 Environment Dimensions, 4 Agent Architectures</span>
+                </div>
               </div>
               <span class="lecture-arrow">&rarr;</span>
             </a>
@@ -308,7 +328,10 @@
             <a href="Artifical Intelligence (AI)/2- State Space Search.html" class="lecture-link">
               <div class="lecture-left">
                 <span class="lecture-num">02</span>
-                <span class="lecture-title-text">State Space Search</span>
+                <div class="lecture-meta">
+                  <span class="lecture-title-text">State Space Representation &amp; Formulation (Lec 3)</span>
+                  <span class="lecture-desc">Formal 5-Tuple Problem Definition, Graph Theory, Tic-Tac-Toe &amp; TSP State Spaces</span>
+                </div>
               </div>
               <span class="lecture-arrow">&rarr;</span>
             </a>
@@ -317,16 +340,58 @@
             <a href="Artifical Intelligence (AI)/3- Uninformed Search Algorithms.html" class="lecture-link">
               <div class="lecture-left">
                 <span class="lecture-num">03</span>
-                <span class="lecture-title-text">Uninformed Search Algorithms</span>
+                <div class="lecture-meta">
+                  <span class="lecture-title-text">Uninformed Search: Backtracking, BFS, DFS, IDS &amp; UCS (Lec 4, 5, 6)</span>
+                  <span class="lecture-desc">Luger Backtracking (SL/NSL/CS/DE), Queue/Stack Search, IDS Linear Space, UCS Romanian Map</span>
+                </div>
               </div>
               <span class="lecture-arrow">&rarr;</span>
             </a>
           </li>
           <li class="lecture-item">
-            <a href="Artifical Intelligence (AI)/4- Quiz Prep (Modules 1-3).html" class="lecture-link">
+            <a href="Artifical Intelligence (AI)/4- Informed & Heuristic Search.html" class="lecture-link">
               <div class="lecture-left">
                 <span class="lecture-num">04</span>
-                <span class="lecture-title-text">Quiz Prep (Modules 1-3)</span>
+                <div class="lecture-meta">
+                  <span class="lecture-title-text">Informed &amp; Heuristic Search: Hill Climbing &amp; Best-First (Lec 7)</span>
+                  <span class="lecture-desc">Heuristic Philosophy, Hill Climbing Pathologies (Local Maxima, Ridges, Plateaus), Best-First Search</span>
+                </div>
+              </div>
+              <span class="lecture-arrow">&rarr;</span>
+            </a>
+          </li>
+          <li class="lecture-item">
+            <a href="Artifical Intelligence (AI)/5- A-Star Search & Properties.html" class="lecture-link">
+              <div class="lecture-left">
+                <span class="lecture-num">05</span>
+                <div class="lecture-meta">
+                  <span class="lecture-title-text">A* Search: Admissibility, Monotonicity &amp; Heuristic Properties (Lec 8)</span>
+                  <span class="lecture-desc">Algorithm A vs A*, Proof of Admissibility, Consistency, Closed-Node Reopening, 8-Puzzle Lab</span>
+                </div>
+              </div>
+              <span class="lecture-arrow">&rarr;</span>
+            </a>
+          </li>
+          <li class="lecture-item">
+            <a href="Artifical Intelligence (AI)/6- Adversarial Search & Game Playing.html" class="lecture-link">
+              <div class="lecture-left">
+                <span class="lecture-num">06</span>
+                <div class="lecture-meta">
+                  <span class="lecture-title-text">Adversarial Search &amp; Game Playing: Minimax &amp; Alpha-Beta (Lec 9 &amp; 10)</span>
+                  <span class="lecture-desc">Two-Player Zero-Sum Games, Nim-7 Game Tree, Minimax, Alpha-Beta Cutoffs, Horizon Effect</span>
+                </div>
+              </div>
+              <span class="lecture-arrow">&rarr;</span>
+            </a>
+          </li>
+          <li class="lecture-item">
+            <a href="Artifical Intelligence (AI)/7- Exam & Quiz Prep (Lectures 1-9).html" class="lecture-link">
+              <div class="lecture-left">
+                <span class="lecture-num">07</span>
+                <div class="lecture-meta">
+                  <span class="lecture-title-text">Master Exam &amp; Quiz Prep Hub (Lectures 1–9)</span>
+                  <span class="lecture-desc">35+ High-Yield Tricky Questions, Proof Worksheets, Algorithm Traps &amp; Master Cheat Sheet</span>
+                </div>
               </div>
               <span class="lecture-arrow">&rarr;</span>
             </a>

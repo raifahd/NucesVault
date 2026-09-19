@@ -19,7 +19,7 @@
 
 | Course | Code | Topics Covered | Status |
 |:---|:---:|:---|:---:|
-| **[Artificial Intelligence](./Artifical%20Intelligence%20(AI)/1-%20Introduction%20to%20AI.html)** | `CS-3005` | AI Agents, PEAS Framework, Agent Architectures, Rationality | ![Active](https://img.shields.io/badge/Active-4fbf8b?style=flat-square) |
+| **[Artificial Intelligence](./Artifical%20Intelligence%20(AI)/index.html)** | `AI-2002` / `CS-3005` | 7 Modules: Agents, State Space, Luger Backtrack, UCS, Hill Climbing, A* Search, Minimax & Alpha-Beta, Master Exam Prep | ![Active](https://img.shields.io/badge/Active-4fbf8b?style=flat-square) |
 | **[Data Analysis & Visualization](./Data%20Analysis%20&%20Visualization/1-%20Introduction%20to%20Data%20Analysis%20&%20Visualization.html)** | `DS-3001` | Analysis Lifecycle, Data Preparation, EDA, Visual Principles | ![Active](https://img.shields.io/badge/Active-4fbf8b?style=flat-square) |
 | **[Data Warehousing & BI](./Data%20Warehousing%20&%20Business%20Intelligence/1-%20Introduction%20to%20DW.html)** | `CS-3006` | DW Architecture, ETL Pipelines, Staging, Data Marts, Quiz Bank | ![Active](https://img.shields.io/badge/Active-4fbf8b?style=flat-square) |
 | **[Technical & Business Writing](./Technical%20Business%20Writing%20(TBW)/1-%20Technical%20Communication%20in%20the%20Workplace.html)** | `SS-2003` | Rhetorical Situation, "You" Attitude, ABC Format, Culture, Ethics | ![Active](https://img.shields.io/badge/Active-4fbf8b?style=flat-square) |

@@ -9,6 +9,153 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../notes.css" />
+  
+    <style>
+      .exam-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: monospace;
+      }
+      .exam-badge.gold {
+        background: rgba(240, 169, 78, 0.15);
+        color: #f0a94e;
+        border: 1px solid rgba(240, 169, 78, 0.35);
+      }
+      .exam-badge.purple {
+        background: rgba(179, 133, 240, 0.15);
+        color: #b385f0;
+        border: 1px solid rgba(179, 133, 240, 0.35);
+      }
+      .exam-badge.cyan {
+        background: rgba(79, 163, 227, 0.15);
+        color: #4fa3e3;
+        border: 1px solid rgba(79, 163, 227, 0.35);
+      }
+      .exam-badge.green {
+        background: rgba(79, 191, 139, 0.15);
+        color: #4fbf8b;
+        border: 1px solid rgba(79, 191, 139, 0.35);
+      }
+      .exam-card {
+        background: #18181b;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 22px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s ease;
+      }
+      .exam-card:hover {
+        border-color: rgba(217, 119, 87, 0.45);
+      }
+      .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .exam-title {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+      }
+      .exam-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .solution-box {
+        background: #141c24;
+        border: 1px solid #234563;
+        border-left: 4px solid #4fa3e3;
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin: 16px 0;
+      }
+      .solution-box h5 {
+        color: #4fa3e3;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .peas-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 16px;
+      }
+      .peas-table th, .peas-table td {
+        border: 1px solid var(--bd);
+        padding: 10px 14px;
+        text-align: left;
+        font-size: 0.9rem;
+      }
+      .peas-table th {
+        background: rgba(217, 119, 87, 0.12);
+        color: var(--ac);
+        font-weight: 600;
+      }
+      .peas-table td strong {
+        color: #facc15;
+      }
+      .env-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+        margin: 14px 0;
+      }
+      .env-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 12px 14px;
+      }
+      .env-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--ac);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .env-value {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 4px;
+      }
+      .env-desc {
+        font-size: 0.82rem;
+        color: var(--mt);
+        line-height: 1.5;
+      }
+      .protip-box {
+        background: rgba(240, 169, 78, 0.08);
+        border: 1px solid rgba(240, 169, 78, 0.3);
+        border-left: 4px solid #f0a94e;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+      }
+      .protip-box h4 {
+        color: #f0a94e;
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+      }
+    </style>
   </head>
   <body>
     <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
@@ -37,6 +184,7 @@
             <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>The PEAS Framework</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Agent Architecture & Types</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Approaches to AI</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">★</span>Mid-1 Solved Questions (2016–2026)</a></li>
           </ul>
         </li>
         <li>
@@ -46,12 +194,27 @@
         </li>
         <li>
           <a class="nav-module-link" href="./3- Uninformed Search Algorithms.html">
-            <span class="nav-num">03</span>Uninformed Search
+            <span class="nav-num">03</span>Uninformed Search (UCS)
           </a>
         </li>
         <li>
-          <a class="nav-module-link" href="./4- Quiz Prep (Modules 1-3).html">
-            <span class="nav-num">04</span>Quiz Prep
+          <a class="nav-module-link" href="./4- Informed & Heuristic Search.html">
+            <span class="nav-num">04</span>Informed Search &amp; Hill Climbing
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./5- A-Star Search & Properties.html">
+            <span class="nav-num">05</span>A* Search &amp; Properties
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./6- Adversarial Search & Game Playing.html">
+            <span class="nav-num">06</span>Adversarial Search (Minimax)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./7- Exam & Quiz Prep (Lectures 1-9).html">
+            <span class="nav-num">07</span>Exam &amp; Quiz Prep
           </a>
         </li>
       </ul>
@@ -386,8 +549,8 @@
             <strong>Answer:</strong> Because a rational agent will optimize
             whatever performance measure you give it. If you give a vacuum agent
             a measure of "amount of dirt cleaned", it might dump its own dirt
-            back onto the floor just to clean it up again and inflate its score!
-            A well-defined measure (e.g., "cleanliness of floor minus energy
+            back onto the&&rfloor;; just to clean it up again and inflate its score!
+            A well-defined measure (e.g., "cleanliness of&&rfloor;; minus energy
             used") aligns the AI's goals with human desires.
           </p>
         </details>
@@ -689,6 +852,233 @@
         </details>
       </div>
       </div>
+      
+      <div class="topic-card" id="topic-5">
+        <h2><span class="topic-num">★</span>FAST Mid-1 Exam Solved Questions (2016–2026)</h2>
+        <p class="topic-subtitle">Authentic Sessional-I Questions on Agents, PEAS Framework &amp; Environment Classification</p>
+
+        <div class="summary-box" style="margin-top: 16px;">
+          <h4>Why These Questions Matter for Mid-1</h4>
+          <p>Every single FAST NUCES Mid-1 exam starts with or includes a <strong>system design problem</strong> requiring a rigorous <strong>PEAS description</strong> and a <strong>6-dimensional environment classification</strong>. Minor imprecisions (e.g., claiming a game is episodic or confusing continuous with discrete) consistently cost students full marks. Study these verified model solutions carefully!</p>
+        </div>
+
+        <!-- EXAM QUESTION 1 -->
+        <div class="exam-card">
+          <div class="exam-header">
+            <div>
+              <span class="exam-badge gold">FAST Sessional-I • Feb 2026</span>
+              <span class="exam-badge purple">CLO 1: AI Agent Formulation</span>
+              <h3 class="exam-title" style="margin-top: 8px;">Question 1: Autonomous Warehouse Delivery Robot</h3>
+            </div>
+            <div class="exam-meta">
+              <span class="exam-badge cyan">Sessional 1 (2026)</span>
+              <span class="exam-badge green">Full Marks Guide</span>
+            </div>
+          </div>
+          <p><strong>Problem Statement:</strong> An autonomous delivery robot operates in a warehouse represented as a 2D grid ([0,4] &times; [0,3]). The robot must navigate from start (0,0) to destination (4,3) while avoiding fixed obstacle shelves at (1,1), (2,1), (2,2), (0,3). Specify the complete <strong>PEAS</strong> formulation and classify the robot's environment along all standard dimensions with formal justification.</p>
+
+          <div class="solution-box">
+            <h5>Model Solution &amp; Exam Scheme</h5>
+            <p><strong>1. PEAS Specification:</strong></p>
+            <table class="peas-table">
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Warehouse Robot Specification</th>
+                  <th>Instructor Evaluation Criteria</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Performance Measure</strong></td>
+                  <td>Minimize travel time/distance, zero collisions with obstacles or warehouse personnel, 100% successful package deliveries without damage, and minimize battery/energy consumption.</td>
+                  <td>Must include both task completion (delivery) and safety/cost penalties.</td>
+                </tr>
+                <tr>
+                  <td><strong>Environment</strong></td>
+                  <td>2D warehouse floor grid (5 &times; 4 cells), designated obstacle racks/shelves, loading dock (0,0), and drop-off bay (4,3).</td>
+                  <td>Must specify spatial bounds and key environmental entities.</td>
+                </tr>
+                <tr>
+                  <td><strong>Actuators</strong></td>
+                  <td>Electric drive motors for wheel propulsion (forward, reverse), steering mechanism for left/right turns and diagonal shifts, robotic package lifter/gripper, and status signal lights/beeper.</td>
+                  <td>Must distinguish physical movement from manipulation/communication.</td>
+                </tr>
+                <tr>
+                  <td><strong>Sensors</strong></td>
+                  <td>Wheel encoders / odometry (for position estimation), front/side LIDAR or ultrasonic obstacle distance sensors, downward floor-grid sensor, package weight scale, and battery level monitor.</td>
+                  <td>Sensors provide the percept stream needed to determine state (x, y).</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p style="margin-top: 18px;"><strong>2. Environment Dimensions Classification:</strong></p>
+            <div class="env-grid">
+              <div class="env-item">
+                <div class="env-label">Observability</div>
+                <div class="env-value">Fully Observable (Idealized) / Partially Observable (Physical)</div>
+                <div class="env-desc">If the robot relies solely on local onboard LIDAR, shelves occlude lines-of-sight (Partially Observable). If connected to an overhead warehouse ceiling camera tracking system, it is Fully Observable.</div>
+              </div>
+              <div class="env-item">
+                <div class="env-label">Determinism</div>
+                <div class="env-value">Deterministic (Grid Model) / Stochastic (Physical)</div>
+                <div class="env-desc">In the formal graph model, moving East always results in x+1. In physical reality, floor dust and wheel slip make motion stochastic. Always state your assumption!</div>
+              </div>
+              <div class="env-item">
+                <div class="env-label">Episodic vs Sequential</div>
+                <div class="env-value">Sequential (Crucial Exam Point!)</div>
+                <div class="env-desc">Every single navigational decision affects future locations, remaining battery, and available paths. Decisions cannot be treated as independent isolated episodes.</div>
+              </div>
+              <div class="env-item">
+                <div class="env-label">Static vs Dynamic</div>
+                <div class="env-value">Static (Fixed Racks) / Semidynamic (Thinking Timer)</div>
+                <div class="env-desc">The obstacles do not move while the robot deliberates its path. If human warehouse workers or moving forklifts are present, the environment becomes Dynamic.</div>
+              </div>
+              <div class="env-item">
+                <div class="env-label">Discrete vs Continuous</div>
+                <div class="env-value">Discrete (State Grid)</div>
+                <div class="env-desc">The problem formulation models positions as discrete integer coordinates (x, y) &isin; [0,4] &times; [0,3] with atomic discrete steps {Orthogonal, Diagonal}.</div>
+              </div>
+              <div class="env-item">
+                <div class="env-label">Single vs Multi-Agent</div>
+                <div class="env-value">Single-Agent</div>
+                <div class="env-desc">No other active maximizing/minimizing agents or opponents exist in this warehouse sector. Obstacles are passive physical constraints.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXAM QUESTION 2 -->
+        <div class="exam-card">
+          <div class="exam-header">
+            <div>
+              <span class="exam-badge gold">FAST Mid-I • Fall 2018</span>
+              <span class="exam-badge purple">Problem 2 (Optimizing Agents)</span>
+              <h3 class="exam-title" style="margin-top: 8px;">Question 2: 0-1 Knapsack Intelligent Automated Agent</h3>
+            </div>
+            <div class="exam-meta">
+              <span class="exam-badge cyan">CS401 NUCES</span>
+              <span class="exam-badge green">Classic Mid Exam</span>
+            </div>
+          </div>
+          <p><strong>Problem Statement:</strong> An intelligent agent developed at FAST is tasked with solving the classic <strong>0-1 Knapsack Problem</strong>. The agent must select a subset from n items, each with a known weight w<sub>i</sub> and value v<sub>i</sub>, such that total weight &le; MAX_WEIGHT and total value is maximized. Formulate its PEAS and environment properties.</p>
+
+          <div class="solution-box">
+            <h5>Model Solution &amp; Exam Scheme</h5>
+            <table class="peas-table">
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Knapsack Agent Specification</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Performance Measure</strong></td>
+                  <td>&sum; v<sub>i</sub> x<sub>i</sub> subject to &sum; w<sub>i</sub> x<sub>i</sub> &le; W, where x<sub>i</sub> &isin; {0, 1}. Severe penalty if weight limit is breached.</td>
+                </tr>
+                <tr>
+                  <td><strong>Environment</strong></td>
+                  <td>Item list with fixed attribute tuples (w<sub>i</sub>, v<sub>i</sub>), capacity limit W, and candidate selection bitstring X = [x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>n</sub>].</td>
+                </tr>
+                <tr>
+                  <td><strong>Actuators</strong></td>
+                  <td>Internal state mutator: flip bit x<sub>i</sub> &isin; {0, 1} (include/exclude item) or return final optimal selection set.</td>
+                </tr>
+                <tr>
+                  <td><strong>Sensors</strong></td>
+                  <td>Memory register reading problem parameters: array of item weights, array of values, and current accumulated weight/value.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Environment Classification:</strong> <strong>Fully Observable</strong> (all item weights/values known upfront), <strong>Deterministic</strong> (adding an item deterministically updates weight/value), <strong>Static</strong> (item properties do not change during optimization), <strong>Discrete</strong> (combinatorial 0-1 choices), <strong>Single-Agent</strong> (no opponent).</p>
+          </div>
+        </div>
+
+        <!-- EXAM QUESTION 3 -->
+        <div class="exam-card">
+          <div class="exam-header">
+            <div>
+              <span class="exam-badge gold">FAST Mid-I • Fall 2017</span>
+              <span class="exam-badge purple">Problem 3 (Adversarial Agent Formulation)</span>
+              <h3 class="exam-title" style="margin-top: 8px;">Question 3: Four-In-A-Row Game Playing Agent</h3>
+            </div>
+            <div class="exam-meta">
+              <span class="exam-badge cyan">CS401 NUCES</span>
+              <span class="exam-badge green">Adversarial PEAS</span>
+            </div>
+          </div>
+          <p><strong>Problem Statement:</strong> Two players take turns dropping colored discs into a 7-column, 6-row vertically suspended grid. Discs drop to the lowest unoccupied slot in a column. The objective is to be the first to form a line of 4 discs horizontally, vertically, or diagonally. Formulate the PEAS and classify its environment.</p>
+
+          <div class="solution-box">
+            <h5>Model Solution &amp; Exam Scheme</h5>
+            <ul>
+              <li><strong>Performance Measure:</strong> Win (+1), Draw (0), Loss (-1), and minimization of search time per turn.</li>
+              <li><strong>Environment:</strong> 7 &times; 6 board grid, colored discs (e.g. Red vs Yellow), gravitational rules, and opponent.</li>
+              <li><strong>Actuators:</strong> Mechanism or software move output selecting column index c &isin; {1, 2, 3, 4, 5, 6, 7}.</li>
+              <li><strong>Sensors:</strong> Camera/vision sensor or digital board array indicating color of each cell (r, c).</li>
+            </ul>
+            <p><strong>Environment Classification:</strong></p>
+            <ul>
+              <li><strong>Fully Observable:</strong> The entire board configuration is visible to both players at all times.</li>
+              <li><strong>Deterministic:</strong> Dropping a disc into column c produces a deterministic board state governed strictly by gravity.</li>
+              <li><strong>Sequential:</strong> Current moves shape opening, midgame, and endgame tactics.</li>
+              <li><strong>Static:</strong> In standard formal play, the board state does not mutate while a player deliberates (semi-dynamic if a chess-clock runs).</li>
+              <li><strong>Discrete:</strong> Fixed 42 cell locations and 7 discrete column actions.</li>
+              <li><strong>Multi-Agent Competitive (Zero-Sum):</strong> Two rational agents maximizing opposite utility functions.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- EXAM QUESTION 4 -->
+        <div class="exam-card">
+          <div class="exam-header">
+            <div>
+              <span class="exam-badge gold">FAST Mid-I • 2016–2025</span>
+              <span class="exam-badge purple">Short Questions &amp; Conceptual Traps</span>
+              <h3 class="exam-title" style="margin-top: 8px;">Question 4: High-Frequency 2-Mark Conceptual Exam Questions</h3>
+            </div>
+            <div class="exam-meta">
+              <span class="exam-badge cyan">Repeated In Multiple Mids</span>
+              <span class="exam-badge green">Model Answers</span>
+            </div>
+          </div>
+
+          <details style="margin-bottom: 12px;">
+            <summary><strong>Q4.1: Is a Rational Agent always omniscient? Give a concrete example proving your answer.</strong></summary>
+            <div class="solution-box" style="margin-top: 10px;">
+              <p><strong>Answer:</strong> <strong>No.</strong> Rationality is NOT omniscience. An <em>omniscient</em> agent knows the actual future outcome of its actions and can act accordingly. A <em>rational</em> agent only maximizes <strong>expected performance</strong> given its percept sequence to date and its built-in knowledge base.</p>
+              <p><strong>Example:</strong> A pedestrian looks both ways, sees no traffic, and begins crossing legally. Suddenly, an unpredicted speeding car with turned-off headlights runs a red light. The pedestrian's decision to cross was completely <strong>rational</strong> (optimal given all percepts), yet the outcome was fatal. Rationality evaluates decision quality, not perfection of hindsight.</p>
+            </div>
+          </details>
+
+          <details style="margin-bottom: 12px;">
+            <summary><strong>Q4.2: Why does a Simple Reflex Agent fail in a Partially Observable Environment? What fatal pathology occurs?</strong></summary>
+            <div class="solution-box" style="margin-top: 10px;">
+              <p><strong>Answer:</strong> A Simple Reflex Agent acts solely on its <strong>current percept</strong> (f: P &rarr; A), ignoring all past history. In a partially observable environment, two completely different global world states can generate the exact same percept (called <em>perceptual aliasing</em>).</p>
+              <p>Because the agent cannot distinguish which state it is actually in, it executes the same action repeatedly, entering an <strong>infinite loop</strong> (e.g., a vacuum cleaner repeatedly turning left in an unmapped corner). To avoid this, an agent requires internal state (a <strong>Model-Based Agent</strong>) to track unobserved aspects of the world.</p>
+            </div>
+          </details>
+
+          <details style="margin-bottom: 12px;">
+            <summary><strong>Q4.3: What is the single hardest environment type for an AI agent to operate in? Why?</strong></summary>
+            <div class="solution-box" style="margin-top: 10px;">
+              <p><strong>Answer:</strong> An environment that is <strong>Partially Observable, Stochastic, Sequential, Dynamic, Continuous, and Multi-Agent</strong> (e.g., driving an autonomous taxi in rush-hour traffic).</p>
+              <p><strong>Why:</strong> The agent cannot fully observe state, actions have uncertain outcomes, past actions permanently bind future options, the world mutates while the agent deliberates, state/action spaces are uncountably infinite, and adversarial/cooperative entities introduce strategic uncertainty.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="protip-box">
+          <h4>FAST Mid-1 Exam Pro-Tips for Chapter 2</h4>
+          <ol>
+            <li><strong>Always state assumptions for Observability &amp; Determinism:</strong> If you write "Partially Observable", explain what sensor limitations cause it (e.g., sensor noise, occluded walls). FAST grading rubrics reward explicit justification.</li>
+            <li><strong>The Episodic vs Sequential Trap:</strong> Almost all interesting AI problems (navigation, games, planning) are <strong>Sequential</strong>. If an action changes the world state and that change influences future actions, it is ALWAYS sequential! Only purely independent classification/prediction tasks (like medical diagnosis per patient) are Episodic.</li>
+            <li><strong>Performance Measure vs Actuators:</strong> Never list actions inside the performance measure. The performance measure is how the agent is <em>judged by an external observer</em> (score, efficiency, speed), while actuators are the physical tools it uses to effect change.</li>
+          </ol>
+        </div>
+      </div>
+      </div>
       <div class="bottom-nav">
         <button id="prev-btn" onclick="goPrev()">
           <div>
@@ -716,7 +1106,7 @@
       ↑
     </button>
     <script>
-      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5"];
       let currentTopicIndex = 0;
 
       function getTopicTitle(id) {

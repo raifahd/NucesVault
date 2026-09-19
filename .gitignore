@@ -1,0 +1,6 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Local extraction scratch
+scripts/extracted_mid1/

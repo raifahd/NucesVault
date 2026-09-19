@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antigravity Permanent Conversations Hub</title>
+<style>
+  :root { --bg: #090d16; --card: #131b2e; --border: #223152; --text: #d8e2f0; --accent: #38bdf8; --meta: #94a3b8; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 2rem; max-width: 1200px; margin: 0 auto; line-height: 1.5; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+  h1 { color: #f8fafc; font-size: 1.8rem; margin: 0 0 0.5rem 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .status-badge { font-size: 0.85rem; padding: 4px 12px; background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid var(--accent); border-radius: 9999px; }
+  p { color: var(--meta); margin: 0; }
+  .search-box { width: 100%; padding: 14px 18px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: #fff; font-size: 1.05rem; margin-bottom: 2rem; outline: none; }
+  .search-box:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.25rem; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, border-color 0.2s; }
+  .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .badge { display: inline-block; background: rgba(56, 189, 248, 0.1); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; margin-bottom: 0.85rem; align-self: flex-start; }
+  h3 { margin: 0 0 0.75rem 0; color: #fff; font-size: 1.15rem; line-height: 1.4; }
+  .meta { font-size: 0.85rem; color: var(--meta); display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>🛡️ Antigravity Permanent Cloud Hub <span class="status-badge">☁️ Web & Git Backed</span></h1>
+    <p>All conversations permanently preserved, searchable across all workspaces, and immune to IDE resets or cache corruption.</p>
+  </header>
+  <input type="text" id="filter" class="search-box" placeholder="Search conversations by keywords, project, or topic..." oninput="filterConvos()">
+  <div class="grid" id="convoGrid">
+    
+      <a class="card" href="./FBR_Sales_Tax_Invoicing_4042cefa.md" target="_blank" data-text="chat i have a new requirement for the fbr app  a user m fbr sales tax invoicing">
+        <div>
+          <span class="badge">FBR Sales Tax Invoicing</span>
+          <h3>Chat I have a new requirement for the fbr app  A user m</h3>
+        </div>
+        <div class="meta">
+          <span>💬 35 messages</span>
+          <span>📅 2026-09-13</span>
+        </div>
+      </a>
+    
+      <a class="card" href="./POS_System__Cart__78b99f46.md" target="_blank" data-text="i purchase order when i clear a product rather then its pos system (cart)">
+        <div>
+          <span class="badge">POS System (Cart)</span>
+          <h3>I purchase order when I clear a product rather then its</h3>
+        </div>
+        <div class="meta">
+          <span>💬 74 messages</span>
+          <span>📅 2026-09-06</span>
+        </div>
+      </a>
+    
+      <a class="card" href="./Semester_5_Notes__Current__7d5fcbce.md" target="_blank" data-text="recover the conversation semester 5 notes (current)">
+        <div>
+          <span class="badge">Semester 5 Notes (Current)</span>
+          <h3>Recover the conversation</h3>
+        </div>
+        <div class="meta">
+          <span>💬 12 messages</span>
+          <span>📅 2026-09-18</span>
+        </div>
+      </a>
+    
+      <a class="card" href="./HR_Attendance_b57280fc.md" target="_blank" data-text="i have a sales force apps ecosystem consisting of mobil hr attendance">
+        <div>
+          <span class="badge">HR Attendance</span>
+          <h3>I have a sales force apps ecosystem consisting of mobil</h3>
+        </div>
+        <div class="meta">
+          <span>💬 12 messages</span>
+          <span>📅 2026-09-11</span>
+        </div>
+      </a>
+    
+      <a class="card" href="./FBR_Invoicing_d01d49e9.md" target="_blank" data-text="is the repo connected to this fbr app project fbr invoicing">
+        <div>
+          <span class="badge">FBR Invoicing</span>
+          <h3>Is the repo connected to this fbr app project</h3>
+        </div>
+        <div class="meta">
+          <span>💬 43 messages</span>
+          <span>📅 2026-09-11</span>
+        </div>
+      </a>
+    
+      <a class="card" href="./Semester_5_Notes__AI_Lectures_1-9__d291d660.md" target="_blank" data-text="clone this repo here httpsgithubcomraifahdnucesvaultgit semester 5 notes (ai lectures 1-9)">
+        <div>
+          <span class="badge">Semester 5 Notes (AI Lectures 1-9)</span>
+          <h3>Clone this repo here httpsgithubcomraifahdNucesVaultgit</h3>
+        </div>
+        <div class="meta">
+          <span>💬 20 messages</span>
+          <span>📅 2026-09-15</span>
+        </div>
+      </a>
+    
+      <a class="card" href="./POS_System_e465a275.md" target="_blank" data-text="clone this repo here install the dependencies and run t pos system">
+        <div>
+          <span class="badge">POS System</span>
+          <h3>clone this repo here install the dependencies and run t</h3>
+        </div>
+        <div class="meta">
+          <span>💬 39 messages</span>
+          <span>📅 2026-09-05</span>
+        </div>
+      </a>
+    
+  </div>
+  <script>
+    function filterConvos() {
+      const q = document.getElementById('filter').value.toLowerCase();
+      document.querySelectorAll('.card').forEach(el => {
+        el.style.display = el.getAttribute('data-text').includes(q) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

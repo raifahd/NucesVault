@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Artificial Intelligence — A* Search &amp; Properties</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      .puzzle-grid {
+        display: inline-grid;
+        grid-template-columns: repeat(3, 36px);
+        grid-template-rows: repeat(3, 36px);
+        gap: 3px;
+        background: #333;
+        border: 2px solid #555;
+        border-radius: 6px;
+        padding: 3px;
+        margin: 8px auto;
+      }
+      .puzzle-tile {
+        background: #1f2937;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        border-radius: 3px;
+      }
+      .puzzle-tile.empty {
+        background: #111827;
+        color: transparent;
+      }
+      .puzzle-tile.correct {
+        background: #065f46;
+        border: 1px solid #10b981;
+      }
+      .puzzle-tile.wrong {
+        background: #831843;
+        border: 1px solid #f43f5e;
+      }
+      .puzzle-display-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        margin: 16px 0;
+      }
+      .puzzle-card {
+        background: var(--sb);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+      }
+      .puzzle-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--ac);
+        margin-bottom: 4px;
+      }
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+      }
+      .comparison-table th, .comparison-table td {
+        border: 1px solid var(--bd);
+        padding: 10px 14px;
+        text-align: left;
+      }
+      .comparison-table th {
+        background: rgba(255,255,255,0.03);
+        color: var(--ac);
+      }
+      .proof-box {
+        background: #141c24;
+        border: 1px solid #234563;
+        border-left: 4px solid #4fa3e3;
+        border-radius: 8px;
+        padding: 18px 22px;
+        margin: 18px 0;
+      }
+      .proof-box h4 {
+        color: #4fa3e3;
+        margin-bottom: 10px;
+        font-size: 1.05rem;
+      }
+      .math-eq {
+        font-family: "Courier New", monospace;
+        background: rgba(255,255,255,0.04);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: #facc15;
+      }
+    </style>
+  
+    <style>
+      .exam-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: monospace;
+      }
+      .exam-badge.gold {
+        background: rgba(240, 169, 78, 0.15);
+        color: #f0a94e;
+        border: 1px solid rgba(240, 169, 78, 0.35);
+      }
+      .exam-badge.purple {
+        background: rgba(179, 133, 240, 0.15);
+        color: #b385f0;
+        border: 1px solid rgba(179, 133, 240, 0.35);
+      }
+      .exam-badge.cyan {
+        background: rgba(79, 163, 227, 0.15);
+        color: #4fa3e3;
+        border: 1px solid rgba(79, 163, 227, 0.35);
+      }
+      .exam-badge.green {
+        background: rgba(79, 191, 139, 0.15);
+        color: #4fbf8b;
+        border: 1px solid rgba(79, 191, 139, 0.35);
+      }
+      .exam-card {
+        background: #18181b;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 22px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s ease;
+      }
+      .exam-card:hover {
+        border-color: rgba(217, 119, 87, 0.45);
+      }
+      .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .exam-title {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+      }
+      .exam-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .solution-box {
+        background: #141c24;
+        border: 1px solid #234563;
+        border-left: 4px solid #4fa3e3;
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin: 16px 0;
+      }
+      .solution-box h5 {
+        color: #4fa3e3;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .math-box {
+        font-family: monospace;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-left: 3px solid #facc15;
+        margin: 12px 0;
+        color: #facc15;
+        line-height: 1.6;
+      }
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+        font-size: 0.88rem;
+      }
+      .trace-table th, .trace-table td {
+        border: 1px solid var(--bd);
+        padding: 8px 12px;
+        text-align: left;
+      }
+      .trace-table th {
+        background: rgba(217, 119, 87, 0.12);
+        color: var(--ac);
+        font-weight: 600;
+      }
+      .trace-table tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .protip-box {
+        background: rgba(240, 169, 78, 0.08);
+        border: 1px solid rgba(240, 169, 78, 0.3);
+        border-left: 4px solid #f0a94e;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+      }
+      .protip-box h4 {
+        color: #f0a94e;
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Artificial Intelligence</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to AI.html">
+            <span class="nav-num">01</span>Intro to AI
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- State Space Search.html">
+            <span class="nav-num">02</span>State Space Search
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Uninformed Search Algorithms.html">
+            <span class="nav-num">03</span>Uninformed Search (UCS)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Informed & Heuristic Search.html">
+            <span class="nav-num">04</span>Informed Search &amp; Hill Climbing
+          </a>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>A* Search &amp; Properties</span><span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Algorithm A &amp; Evaluation f(n)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Algorithm A* &amp; Admissibility Proof</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Monotonicity (Consistency) &amp; Proof</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Informedness &amp; Dominance Theorem</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>8-Puzzle Heuristics Case Study</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Map Navigation Trace Example</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>Summary &amp; Practice Questions</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./6- Adversarial Search & Game Playing.html">
+            <span class="nav-num">06</span>Adversarial Search (Minimax)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./7- Exam & Quiz Prep (Lectures 1-9).html">
+            <span class="nav-num">07</span>Exam &amp; Quiz Prep
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-intro">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence &bull; Lecture 8 &amp; Luger Chapter 4.2–4.3</div>
+          <h1 class="module-title">A* Search &amp; Heuristic Properties</h1>
+        </div>
+
+        <!-- TOPIC 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Algorithm A &amp; The Evaluation Function f(n)</h2>
+          <p class="topic-subtitle">Balancing historical path expenditure with future heuristic promise</p>
+
+          <p>
+            Pure greedy best-first search evaluates a node solely on its estimated remaining distance to the goal <code>h(n)</code>. While greedy search makes fast initial progress, it suffers from a major defect: <em>it is easily deceived down deep, expensive rabbit holes</em> if the heuristic continually makes deceptive, overly-optimistic promises.
+          </p>
+          <p>
+            To prevent this, <strong>Algorithm A</strong> (Luger Chapter 4.2) introduces a balanced evaluation function:
+          </p>
+
+          <div class="formula-box">
+            <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">f(n) = g(n) + h(n)</div>
+            <ul>
+              <li><strong><em>n</em>:</strong> Any candidate state encountered in the search space.</li>
+              <li><strong><code>g(n)</code>:</strong> The actual, known cost incurred so far along the path from the start state to node <em>n</em> (often measured as path cost or search depth).</li>
+              <li><strong><code>h(n)</code>:</strong> The heuristic estimate of the cost required to go from node <em>n</em> to a goal state.</li>
+              <li><strong><code>f(n)</code>:</strong> The estimated total cost of the cheapest complete solution path passing from start through node <em>n</em> to a goal.</li>
+            </ul>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition &bull; Algorithm A (Luger Section 4.3.1)</div>
+            If the Best-First Search algorithm (with <code>OPEN</code> and <code>CLOSED</code> lists) uses the evaluation function <code>f(n) = g(n) + h(n)</code>, the resulting search algorithm is called <strong>Algorithm A</strong>.
+          </div>
+
+          <h3>Why the <code>g(n)</code> Component is Crucial</h3>
+          <p>
+            The <code>g(n)</code> component serves as a mathematical anchor that gives Algorithm A a <em>breadth-first flavor</em>:
+          </p>
+          <ul>
+            <li>If the search wanders down an unproductive, deep path because <code>h(n)</code> appears low, <code>g(n)</code> continuously accumulates at every step.</li>
+            <li>Eventually, <code>g(n)</code> grows so large that <code>f(n) = g(n) + h(n)</code> becomes worse than shallower, unexpanded candidate nodes on the <code>OPEN</code> list.</li>
+            <li>Algorithm A automatically abandons the deceptive deep path and forces the search to return to shallower alternatives!</li>
+          </ul>
+
+          <div class="example">
+            <div class="callout-label">Algorithm A Behavior in the 8-Puzzle (Luger Figure 4.15 &amp; 4.16)</div>
+            <p>
+              In Step 3 of the 8-puzzle search, states <code>e</code> and <code>f</code> both have the same heuristic value <code>h=5</code> (5 tiles out of place).
+            </p>
+            <p>
+              State <code>e</code> is evaluated first at depth <code>g=2</code>, yielding <code>f(e) = 2 + 5 = 7</code>. Expanding <code>e</code> produces child <code>h</code> at depth <code>g=3</code> with 5 tiles out of place (<code>h=5</code>).
+            </p>
+            <p>
+              Even though <code>h</code> has the exact same number of misplaced tiles (<code>h=5</code>) as state <code>f</code>, <code>h</code> has a higher depth cost (<code>g=3</code>), giving <code>f(h) = 3 + 5 = 8</code>. Meanwhile, shallower node <code>f</code> sitting on <code>OPEN</code> has <code>f(f) = 2 + 5 = 7</code>.
+            </p>
+            <p>
+              The depth component <code>g(n)</code> forces Algorithm A to abandon the deep child <code>h</code> and switch directly to expand the shallower state <code>f</code>, which directly leads to the goal!
+            </p>
+          </div>
+        </div>
+
+        <!-- TOPIC 2 -->
+        <div class="topic-card" id="topic-2" style="display:none;">
+          <h2><span class="topic-num">2</span>Algorithm A* &amp; The Admissibility Theorem</h2>
+          <p class="topic-subtitle">Guaranteed minimal cost path through admissible heuristic bounds</p>
+
+          <p>
+            Does Algorithm A always find the optimal (cheapest) path? <em>Not necessarily.</em> If the heuristic <code>h(n)</code> overestimates the true remaining cost, it can prematurely dismiss an optimal path because it looked "too expensive", and instead choose a suboptimal path.
+          </p>
+          <p>
+            To guarantee that Algorithm A terminates with the <strong>optimal solution</strong>, we must constrain <code>h(n)</code> with the property of <strong>Admissibility</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition &bull; Admissibility &amp; Algorithm A* (Luger Section 4.3.1)</div>
+            <ul>
+              <li>A search algorithm is <strong>admissible</strong> if, for any graph, it always terminates in an <em>optimal (minimal cost) solution path</em> whenever a path from the start to a goal state exists.</li>
+              <li>Let <em>h<sup>*</sup>(n)</em> denote the <em>actual, true minimal cost</em> of the shortest path from node <em>n</em> to a goal.</li>
+              <li>A heuristic function <code>h(n)</code> is <strong>admissible</strong> if it never overestimates the true cost to reach the goal:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h(n) &le; h<sup>*</sup>(n)  &nbsp;   for all states  n,   and  h( Goal) = 0</div>
+              </li>
+              <li>If Algorithm A is used with an admissible heuristic <code>h(n) &le; h<sup>*</sup>(n)</code>, the algorithm is called <strong>Algorithm A*</strong> (pronounced "A-Star").</li>
+            </ul>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Fundamental Theorem of A*</div>
+            <strong>Theorem: All A* algorithms are admissible.</strong><br />
+            Any search algorithm that uses <code>f(n) = g(n) + h(n)</code> with an admissible heuristic <code>h(n) &le; h<sup>*</sup>(n)</code> is mathematically guaranteed to find the minimal cost path to a goal, if a solution exists.
+          </div>
+
+          <div class="proof-box">
+            <h4>Formal Mathematical Proof of the Admissibility of A* (Luger &amp; Nilsson 1980)</h4>
+            <p>
+              We prove this by contradiction. Suppose A* terminates at a suboptimal goal state <em>G<sub>2</sub></em> instead of an optimal goal state <em>G</em>.
+            </p>
+            <ol>
+              <li>Let <em>C<sup>*</sup></em> be the cost of the optimal path to goal <em>G</em>. Because <em>G</em> is optimal, <code>f<sup>*</sup>(G) = g<sup>*</sup>(G) = C<sup>*</sup></code>.</li>
+              <li>Because <em>G<sub>2</sub></em> is suboptimal, its path cost is strictly greater than the optimal cost:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">g(G<sub>2</sub>) > C<sup>*</sup></div>
+              </li>
+              <li>At any goal state, the remaining heuristic cost is zero: <code>h(G<sub>2</sub>) = 0</code>. Therefore:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">f(G<sub>2</sub>) = g(G<sub>2</sub>) + h(G<sub>2</sub>) = g(G<sub>2</sub>) > C<sup>*</sup></div>
+              </li>
+              <li>Now consider the optimal path from Start to <em>G</em>. Since this path exists and has not been fully explored yet, there must exist at least one unexpanded node <em>n</em> on the optimal path currently sitting on the <code>OPEN</code> list.</li>
+              <li>For this unexpanded node <em>n</em>:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">f(n) = g(n) + h(n)</div>
+              </li>
+              <li>Because <em>n</em> lies along an optimal path discovered so far, <code>g(n) = g<sup>*</sup>(n)</code>. Furthermore, because <code>h(n)</code> is admissible (<code>h(n) &le; h<sup>*</sup>(n)</code>):
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">f(n) = g<sup>*</sup>(n) + h(n) &le; g<sup>*</sup>(n) + h<sup>*</sup>(n) = f<sup>*</sup>(n)</div>
+              </li>
+              <li>Because <em>n</em> is on the optimal path to <em>G</em>, the true cost through <em>n</em> to <em>G</em> is exactly <em>C<sup>*</sup></em>:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">f(n) &le; C<sup>*</sup></div>
+              </li>
+              <li>Combining equations (3) and (7):
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">f(n) &le; C<sup>*</sup> < f(G<sub>2</sub>)</div>
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">f(n) < f(G<sub>2</sub>)</div>
+              </li>
+              <li><strong>The Contradiction:</strong> A* always selects the node from <code>OPEN</code> with the <em>lowest</em> <em>f</em> value. Since <code>f(n) < f(G<sub>2</sub>)</code>, node <em>n</em> must be selected for expansion <strong>before</strong> <em>G<sub>2</sub></em> could ever be selected!</li>
+              <li>This holds for every node along the optimal path up to and including optimal goal <em>G</em>. Therefore, A* can never select <em>G<sub>2</sub></em> while an optimal path exists on <code>OPEN</code>. A* must terminate with the optimal path <em>C<sup>*</sup></em>. <em>&#9632; (Q.E.D.)</em></li>
+            </ol>
+          </div>
+
+          <div class="altimeter-box">
+            <h4>Breadth-First Search as an A* Algorithm</h4>
+            <p>
+              Notice that standard Breadth-First Search (on graphs with uniform edge costs) is simply a special case of A* where the heuristic function is identically zero:
+              <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h(n) = 0  &nbsp;   for all  n</div>
+              Since actual remaining distance is always <em>ge 0</em>, <em>0 &le; h<sup>*</sup>(n)</em> is trivially true. Thus, BFS is an admissible A* search, which explains why BFS always finds the shallowest goal. However, because <code>h(n) = 0</code> contains zero domain knowledge, BFS explores every node blindly in all directions.
+            </p>
+          </div>
+        </div>
+
+        <!-- TOPIC 3 -->
+        <div class="topic-card" id="topic-3" style="display:none;">
+          <h2><span class="topic-num">3</span>Monotonicity (Consistency) &amp; The Reopening Theorem</h2>
+          <p class="topic-subtitle">Local admissibility and the guarantee that closed nodes never reopen</p>
+
+          <p>
+            Admissibility requires that <code>h(n)</code> is a global lower bound on the true remaining cost to the goal (<code>h(n) &le; h<sup>*</sup>(n)</code>). However, an admissible heuristic may still be "locally erratic"—it might fluctuate wildly between parent and child nodes, meaning a node could initially be reached along a suboptimal path before being rediscovered along a cheaper path later in the search.
+          </p>
+          <p>
+            This brings us to a stronger, local property: <strong>Monotonicity</strong> (also known as <strong>Consistency</strong>).
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition &bull; Monotonicity / Consistency (Luger Section 4.3.2)</div>
+            A heuristic function <em>h</em> is <strong>monotone (consistent)</strong> if:
+            <ol>
+              <li>For all states <em>n<sub>i</sub></em> and any successor state <em>n<sub>j</sub></em> of <em>n<sub>i</sub></em>:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h(n<sub>i</sub>) - h(n<sub>j</sub>) &le; c(n<sub>i</sub>, n<sub>j</sub>)</div>
+                or equivalently:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h(n<sub>i</sub>) &le; c(n<sub>i</sub>, n<sub>j</sub>) + h(n<sub>j</sub>)</div>
+                where <code>c(n<sub>i</sub>, n<sub>j</sub>)</code> is the actual step cost of traveling from <em>n<sub>i</sub></em> to <em>n<sub>j</sub></em>.
+              </li>
+              <li>The heuristic evaluation of the goal state is zero:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h( Goal) = 0</div>
+              </li>
+            </ol>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Geometric Intuition: The Triangle Inequality</div>
+            The monotonicity condition <code>h(n<sub>i</sub>) &le; c(n<sub>i</sub>, n<sub>j</sub>) + h(n<sub>j</sub>)</code> is a direct expression of the <strong>Triangle Inequality</strong> in metric spaces. Going directly from <em>n<sub>i</sub></em> to the Goal can never cost more than taking the intermediate step to <em>n<sub>j</sub></em> and then going from <em>n<sub>j</sub></em> to the Goal!
+          </div>
+
+          <div class="proof-box">
+            <h4>Mathematical Proof: Monotonicity Implies Admissibility (Lecture 8 Slide 20 &amp; Luger 4.3.2)</h4>
+            <p>
+              Let <em>(s<sub>1</sub>, s<sub>2</sub>, s<sub>3</sub>, dots, s<sub>k</sub>, s<sub>g</sub>)</em> be the sequence of states along the optimal path from any state <em>s<sub>1</sub></em> to the goal <em>s<sub>g</sub></em>. By the definition of monotonicity:
+            </p>
+            <div style="font-family:monospace; line-height: 1.8; margin: 10px 0;">
+              h(s<sub>1</sub>) - h(s<sub>2</sub>) &le; c(s<sub>1</sub>, s<sub>2</sub>)<br />
+              h(s<sub>2</sub>) - h(s<sub>3</sub>) &le; c(s<sub>2</sub>, s<sub>3</sub>)<br />
+              h(s<sub>3</sub>) - h(s<sub>4</sub>) &le; c(s<sub>3</sub>, s<sub>4</sub>)<br />
+              ...<br />
+              h(s<sub>g-1</sub>) - h(s<sub>g</sub>) &le; c(s<sub>g-1</sub>, s<sub>g</sub>)
+            </div>
+            <p>
+              Summing both sides of all inequalities, the intermediate heuristic terms cancel out telescopically:
+            </p>
+            <div class="math-eq" style="display:block; padding:8px 12px; margin: 8px 0;">
+              [h(s<sub>1</sub>) - h(s<sub>2</sub>)] + [h(s<sub>2</sub>) - h(s<sub>3</sub>)] + ... + [h(s<sub>g-1</sub>) - h(s<sub>g</sub>)] &le; &sum; c(s<sub>i</sub>, s<sub>i+1</sub>)
+            </div>
+            <p>
+              Since all intermediate terms cancel, we are left with:
+            </p>
+            <div class="math-eq" style="display:block; padding:8px 12px; margin: 8px 0;">
+              h(s<sub>1</sub>) - h(s<sub>g</sub>) &le; Cost(s<sub>1</sub>, s<sub>g</sub>)
+            </div>
+            <p>
+              Because <code>h(s<sub>g</sub>) = h(Goal) = 0</code>, this simplifies directly to:
+            </p>
+            <div class="math-eq" style="display:block; padding:8px 12px; margin: 8px 0;">
+              h(s<sub>1</sub>) &le; Cost<sup>*</sup>(s<sub>1</sub>, s<sub>g</sub>) = h<sup>*</sup>(s<sub>1</sub>)
+            </div>
+            <p>
+              Therefore, <strong>any monotonic heuristic is guaranteed to be admissible</strong>. <em>&#9632; (Q.E.D.)</em>
+            </p>
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">The Closed-Node Reopening Theorem (High Exam Importance!)</div>
+            <strong>Why does monotonicity matter in practice?</strong><br />
+            If a heuristic is monotonic, the values of <code>f(n)</code> along any path are <em>monotonically non-decreasing</em> (<code>f(n<sub>j</sub>) &ge; f(n<sub>i</sub>)</code>).
+            <p>
+              This guarantees that <strong>the first time A* selects a node <em>n</em> from the OPEN list for expansion, the algorithm has already found the optimal minimal-cost path to that node!</strong>
+            </p>
+            <p>
+              <strong>Consequence:</strong> If a state is encountered that is already on the <code>CLOSED</code> list, it can be <strong>immediately discarded</strong>. The algorithm never needs to reopen or update closed nodes! This drastically simplifies implementation and boosts execution speed.
+            </p>
+          </div>
+        </div>
+
+        <!-- TOPIC 4 -->
+        <div class="topic-card" id="topic-4" style="display:none;">
+          <h2><span class="topic-num">4</span>Informedness &amp; The Dominance Theorem</h2>
+          <p class="topic-subtitle">Quantifying heuristic quality and search pruning power</p>
+
+          <p>
+            Suppose you have two admissible heuristics, <em>h<sub>1</sub></em> and <em>h<sub>2</sub></em>. Both guarantee finding the optimal solution. How do we determine which heuristic is "better"? This is the property of <strong>Informedness</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition &bull; Informedness &amp; Dominance (Luger Section 4.3.3)</div>
+            For two admissible heuristics <em>h<sub>1</sub></em> and <em>h<sub>2</sub></em>, if:
+            <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h<sub>2</sub>(n) &ge; h<sub>1</sub>(n)  &nbsp;   for all states  n   in the search space</div>
+            and <em>h<sub>2</sub>(n) > h<sub>1</sub>(n)</em> for at least some non-goal state, then <strong>heuristic <em>h<sub>2</sub></em> is said to be more informed than <em>h<sub>1</sub></em></strong> (or <em>h<sub>2</sub></em> <em>dominates</em> <em>h<sub>1</sub></em>).
+          </div>
+
+          <h3>The Dominance Theorem</h3>
+          <p>
+            If <em>h<sub>2</sub></em> dominates <em>h<sub>1</sub></em>, then <strong>A* using <em>h<sub>2</sub></em> will never expand more nodes than A* using <em>h<sub>1</sub></em></strong> (except possibly for some nodes on the contour where <code>f(n) = C<sup>*</sup></code>).
+          </p>
+          <div class="formula-box">
+            <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">Nodes Expanded by  A<sup>*</sup>(h<sub>2</sub>) &sube; Nodes Expanded by  A<sup>*</sup>(h<sub>1</sub>)</div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Comparing Informedness Levels in the 8-Puzzle</div>
+            <p>Consider three heuristics for the 8-puzzle:</p>
+            <ul>
+              <li><code>h<sub>0</sub>(n) = 0</code> (Equivalent to Breadth-First Search).</li>
+              <li><em>h<sub>1</sub>(n)</em> = Number of tiles out of place.</li>
+              <li><em>h<sub>2</sub>(n)</em> = Sum of Manhattan distances of all tiles.</li>
+            </ul>
+            <p>
+              Because every misplaced tile is at least 1 square away from its goal position, the Manhattan distance <em>h<sub>2</sub>(n)</em> is always greater than or equal to the count of misplaced tiles <em>h<sub>1</sub>(n)</em>. Furthermore, both are strictly bounded from above by the true minimal moves <em>h<sup>*</sup>(n)</em>:
+            </p>
+            <div class="math-eq" style="display:block; padding:10px 14px; margin: 10px 0; text-align:center;">
+              h<sub>0</sub>(n) &le; h<sub>1</sub>(n) &le; h<sub>2</sub>(n) &le; h<sup>*</sup>(n)
+            </div>
+            <p>
+              Therefore, <em>h<sub>2</sub></em> dominates <em>h<sub>1</sub></em>, which in turn dominates <em>h<sub>0</sub></em>. In empirical benchmarks (Luger Figure 4.18), searching to depth 14:
+            </p>
+            <ul>
+              <li><strong>BFS (<em>h<sub>0</sub></em>):</strong> Expands over 3,000,000 nodes!</li>
+              <li><strong>A* with <em>h<sub>1</sub></em> (Misplaced):</strong> Expands approximately 540 nodes.</li>
+              <li><strong>A* with <em>h<sub>2</sub></em> (Manhattan):</strong> Expands only 130 nodes!</li>
+            </ul>
+          </div>
+
+          <div class="altimeter-box">
+            <h4>The Computational Trade-off</h4>
+            <p>
+              While more informed heuristics drastically prune the search graph, they often require more CPU cycles to calculate per state. The ideal heuristic balances <em>pruning power</em> with <em>computational overhead</em> so that total wall-clock time is minimized.
+            </p>
+          </div>
+        </div>
+
+        <!-- TOPIC 5 -->
+        <div class="topic-card" id="topic-5" style="display:none;">
+          <h2><span class="topic-num">5</span>8-Puzzle Heuristics Deep-Dive Case Study</h2>
+          <p class="topic-subtitle">Analyzing <em>h<sub>1</sub></em>, <em>h<sub>2</sub></em>, and <em>h<sub>3</sub></em> (Nilsson's Sequence Score / Reversals)</p>
+
+          <p>
+            The 8-puzzle is the premier benchmark problem in AI search literature (Luger Chapter 4.2 &amp; Lecture 8 Slides 2–7). Let us evaluate the three classic heuristics on the exact slide configurations.
+          </p>
+
+          <div class="puzzle-display-row">
+            <div class="puzzle-card">
+              <div class="puzzle-label">Start State</div>
+              <div class="puzzle-grid">
+                <div class="puzzle-tile">2</div><div class="puzzle-tile">8</div><div class="puzzle-tile">3</div>
+                <div class="puzzle-tile">1</div><div class="puzzle-tile">6</div><div class="puzzle-tile">4</div>
+                <div class="puzzle-tile">7</div><div class="puzzle-tile empty"></div><div class="puzzle-tile">5</div>
+              </div>
+            </div>
+
+            <div class="puzzle-card">
+              <div class="puzzle-label">Goal State</div>
+              <div class="puzzle-grid">
+                <div class="puzzle-tile correct">1</div><div class="puzzle-tile correct">2</div><div class="puzzle-tile correct">3</div>
+                <div class="puzzle-tile correct">8</div><div class="puzzle-tile empty"></div><div class="puzzle-tile correct">4</div>
+                <div class="puzzle-tile correct">7</div><div class="puzzle-tile correct">6</div><div class="puzzle-tile correct">5</div>
+              </div>
+            </div>
+          </div>
+
+          <h3>1. Heuristic <em>h<sub>1</sub></em>: Count of Tiles Out of Place (Hamming Distance)</h3>
+          <p>
+            Count how many numbered tiles do not occupy their designated position in the goal state. (The blank space is not counted as a tile).
+          </p>
+          <ul>
+            <li><strong>Admissibility:</strong> Since each misplaced tile requires at least 1 move to reach its goal position, <em>h<sub>1</sub>(n) &le; h<sup>*</sup>(n)</em>. Hence, <em>h<sub>1</sub></em> is admissible.</li>
+            <li><strong>Limitation:</strong> It fails to capture distance. A tile that is 1 square away receives the same penalty (1) as a tile that is across the entire board (4 squares away).</li>
+          </ul>
+
+          <h3>2. Heuristic <em>h<sub>2</sub></em>: Sum of Manhattan Distances</h3>
+          <p>
+            Sum the vertical and horizontal grid distances of each tile from its target position:
+            <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h<sub>2</sub>(n) = &sum;<sub>i=1..8</sub> (|x<sub>i</sub> - x<sub>i</sub><sup>goal</sup>| + |y<sub>i</sub> - y<sub>i</sub><sup>goal</sup>|)</div>
+          </p>
+          <ul>
+            <li><strong>Admissibility:</strong> Because tiles cannot move through other tiles or move diagonally, a tile requires at least its Manhattan distance in moves. Hence, <em>h<sub>2</sub>(n) &le; h<sup>*</sup>(n)</em>. <em>h<sub>2</sub></em> is strictly admissible and dominates <em>h<sub>1</sub></em>.</li>
+          </ul>
+
+          <h3>3. Heuristic <em>h<sub>3</sub></em>: Direct Tile Reversals &amp; Nilsson's Sequence Score</h3>
+          <p>
+            Both <em>h<sub>1</sub></em> and <em>h<sub>2</sub></em> treat tiles independently and fail to acknowledge the extreme difficulty of <strong>tile reversals</strong> (where two adjacent tiles are in reverse order of their goal positions, e.g., tiles 1 and 2 are adjacent but swapped).
+          </p>
+          <ul>
+            <li>Two reversed tiles cannot simply slide past each other on a single track. One tile must take a long, convoluted detour around the board to let the other pass!</li>
+            <li><strong>Direct Tile Reversal Heuristic:</strong> Multiply the number of direct adjacent reversals by 2 (or a small multiplier):
+              <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h(n) = Manhattan(n) + 2 &times; DirectReversals(n)</div>
+            </li>
+            <li>
+              <strong>Nilsson's Sequence Score (Luger Section 4.2):</strong> A sequence score <em>S(n)</em> checks the non-central tiles in clockwise order:
+              A tile gets a score of 2 if it is not followed by its proper successor, and the center tile scores 1 if non-empty. The heuristic is:
+              <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">h<sub>3</sub>(n) = P(n) + 3 &times; S(n)</div>
+              where <em>P(n)</em> is the Manhattan distance.
+            </li>
+          </ul>
+
+          <div class="table-container">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>State in Search Tree</th>
+                  <th><em>h<sub>1</sub></em> (Tiles Out of Place)</th>
+                  <th><em>h<sub>2</sub></em> (Sum of Distances)</th>
+                  <th>Direct Reversals &times; 2</th>
+                  <th>Combined <em>h<sub>2</sub> + 2(Rev)</em></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Child 1</strong></td>
+                  <td>5</td>
+                  <td>6</td>
+                  <td>0</td>
+                  <td>6</td>
+                </tr>
+                <tr>
+                  <td><strong>Child 2 (Most Promising)</strong></td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>0</td>
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <td><strong>Child 3</strong></td>
+                  <td>5</td>
+                  <td>6</td>
+                  <td>0</td>
+                  <td>6</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TOPIC 6 -->
+        <div class="topic-card" id="topic-6" style="display:none;">
+          <h2><span class="topic-num">6</span>Map Navigation &amp; Grid A* Example</h2>
+          <p class="topic-subtitle">Step-by-step trace of Lecture 8 Slides 16–17</p>
+
+          <p>
+            Consider finding the shortest route from <strong>City A</strong> to <strong>City E</strong> on a grid map with intermediate nodes B, C, and D. Let the evaluation function be <code>e(n) = c(n) + d'(n)</code>, where <code>c(n)</code> is the accumulated path cost from A, and <code>d'(n)</code> is the estimated grid distance to E.
+          </p>
+
+          <div class="table-container">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Step</th>
+                  <th>Selected Node (<em>n</em>)</th>
+                  <th>Accumulated Cost <code>c(n)</code></th>
+                  <th>Heuristic <code>d'(n)</code></th>
+                  <th><code>e(n) = c + d'</code></th>
+                  <th>Action &amp; OPEN Priority Queue State</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1</strong></td>
+                  <td><strong>A (Start)</strong></td>
+                  <td>0</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>Generate B and C. Both evaluate to <code>e=3</code>. Tie-break leftmost: pick <strong>B</strong>.</td>
+                </tr>
+                <tr>
+                  <td><strong>2</strong></td>
+                  <td><strong>B</strong></td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>Expand B: generates E with cost <code>c(E)=4</code>, <code>d'(E)=0 &implies; e(E)=4</code>. Put on OPEN: <code>[C(3), E_via_B(4)]</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong>3</strong></td>
+                  <td><strong>C</strong></td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                  <td>C is lowest on stack (<em>3 < 4</em>). Expand C: generates D with <code>e(D)=3</code>. OPEN: <code>[D(3), E_via_B(4)]</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong>4</strong></td>
+                  <td><strong>D</strong></td>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>3</td>
+                  <td>D has <code>e=3 < 4</code>. Expand D: generates E with cost <code>c(E)=3</code>, <code>d'(E)=0 &implies; e(E)=3</code>. OPEN: <code>[E_via_D(3), E_via_B(4)]</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong>5</strong></td>
+                  <td><strong>E (Goal)</strong></td>
+                  <td>3</td>
+                  <td>0</td>
+                  <td>3</td>
+                  <td>Node <code>E_via_D</code> (<code>e=3</code>) is selected. Goal test succeeds! <strong>Optimal path found: A &rarr; C &rarr; D &rarr; E (Total Cost: 3)</strong>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Key Takeaway</div>
+            Even though goal node <code>E_via_B</code> was generated earlier in Step 2 with cost 4, A* did not stop! Because the goal test is executed <em>at expansion</em>, the algorithm prioritized node C (<code>e=3</code>), which ultimately discovered the cheaper route through D (<code>e=3</code>), guaranteeing total path optimality.
+          </div>
+        </div>
+
+        <!-- TOPIC 7 -->
+        <div class="topic-card" id="topic-7" style="display:none;">
+          <h2><span class="topic-num">7</span>Summary &amp; Tricky Practice Questions</h2>
+          <p class="topic-subtitle">High-yield mastery check for quizzes and midterms</p>
+
+          <div class="summary-box">
+            <h4>Lecture 8 Core Formulas &amp; Properties</h4>
+            <ul>
+              <li><strong>Algorithm A:</strong> Uses <code>f(n) = g(n) + h(n)</code>. The <code>g(n)</code> depth factor forces search back to shallower paths if a branch is unproductive.</li>
+              <li><strong>Admissibility:</strong> <code>h(n) &le; h<sup>*</sup>(n)</code>. Guarantees A* returns the optimal minimal-cost path.</li>
+              <li><strong>Monotonicity (Consistency):</strong> <code>h(n<sub>i</sub>) - h(n<sub>j</sub>) &le; c(n<sub>i</sub>, n<sub>j</sub>)</code> and <code>h(Goal) = 0</code>. Monotonicity &implies; admissibility.</li>
+              <li><strong>Closed List Optimization:</strong> Under monotonic heuristics, a state selected from <code>OPEN</code> has already achieved its optimal path; <code>CLOSED</code> nodes never need reopening!</li>
+              <li><strong>Informedness:</strong> If <em>h<sub>2</sub>(n) &ge; h<sub>1</sub>(n)</em>, <em>h<sub>2</sub></em> dominates <em>h<sub>1</sub></em> and expands fewer or equal states.</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">High-Yield Exam Practice Questions</div>
+
+            <details>
+              <summary>Question 1 (Tricky): What happens to A* if <code>h(n)</code> is NOT admissible (i.e., it overestimates the cost for some nodes)?</summary>
+              <p><strong>Answer:</strong> If <code>h(n)</code> overestimates the true remaining cost, A* loses its guarantee of optimality. It may prematurely return a suboptimal solution path because the true optimal path was assigned an inflated, artificially high <em>f</em>-value and left unexpanded on the <code>OPEN</code> list.</p>
+            </details>
+
+            <details>
+              <summary>Question 2 (Conceptual): Can an admissible heuristic ever fail to be monotonic? Give an example.</summary>
+              <p><strong>Answer:</strong> Yes. A heuristic can be globally admissible (<em>h &le; h<sup>*</sup></em>) everywhere, but fail local monotonicity. For example, consider Start <em>o</em> A <em>o</em> Goal. Step costs are 1. True minimal cost from Start is 2 (<code>h<sup>*</sup>(Start)=2</code>), and from A is 1 (<code>h<sup>*</sup>(A)=1</code>). If we assign <code>h(Start) = 2</code> and <code>h(A) = 0</code>, both are <em>le h<sup>*</sup></em> (admissible). However, <code>h(Start) - h(A) = 2 - 0 = 2 > c(Start, A) = 1</code>. The difference exceeds the step cost, violating monotonicity!</p>
+            </details>
+
+            <details>
+              <summary>Question 3 (Critical Thinking): If <em>h<sub>2</sub></em> dominates <em>h<sub>1</sub></em>, does A* with <em>h<sub>2</sub></em> always run in less total execution time than A* with <em>h<sub>1</sub></em>?</summary>
+              <p><strong>Answer:</strong> Not necessarily. A* with <em>h<sub>2</sub></em> is guaranteed to expand fewer or equal <em>nodes</em>, but if computing <em>h<sub>2</sub>(n)</em> per state requires extensive CPU calculations, the total wall-clock execution time could be slower than using a simpler, slightly less informed heuristic <em>h<sub>1</sub></em>.</p>
+            </details>
+
+            <details>
+              <summary>Question 4 (Proof Review): Explain why Breadth-First Search is technically an A* algorithm, and state its dominance relationship with other heuristics.</summary>
+              <p><strong>Answer:</strong> BFS is Algorithm A with <code>h(n) = 0</code>. Since actual remaining cost <em>h<sup>*</sup>(n) &ge; 0</em>, <em>0 &le; h<sup>*</sup>(n)</em> always holds, making BFS an admissible A* search. Because any non-negative admissible heuristic satisfies <code>h(n) &ge; 0</code>, every admissible heuristic dominates BFS (<em>h<sub>0</sub> le h<sub>adm</sub> le h<sup>*</sup></em>). Hence, BFS expands an upper-bound superset of nodes compared to any informed A* algorithm.</p>
+            </details>
+          </div>
+        </div>
+
+
+        <div class="topic-card" id="topic-8">
+          <h2><span class="topic-num">★</span>FAST Mid-1 Exam Solved Questions (2016–2026)</h2>
+          <p class="topic-subtitle">Authentic Sessional-I Questions on Full A* Graph Tracing, OPEN/CLOSED List Dynamics &amp; Monotonicity Proofs</p>
+
+          <div class="summary-box" style="margin-top: 16px;">
+            <h4>Why A* Tracing Carries the Highest Exam Marks</h4>
+            <p>On every single FAST NUCES Mid-1 exam, a complete <strong>15–20 mark A* trace problem</strong> is guaranteed. Grading keys strictly evaluate: (1) correct <code>g(n)</code>, <code>h(n)</code>, and <code>f(n)</code> arithmetic, (2) strict adherence to tie-breaking rules, (3) accurate snapshot of OPEN and CLOSED lists at each expansion step, and (4) correct goal extraction from the priority queue. Below is the complete, official step-by-step trace from the <strong>Spring 2026 exam</strong>.</p>
+          </div>
+
+          <!-- EXAM QUESTION 1 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Sessional-I • Feb 2026</span>
+                <span class="exam-badge purple">Question 1 (19 Marks!) • Full Exam Problem</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 1: Full A* Search for Autonomous Robot Navigation</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">SP-2026 Exam</span>
+                <span class="exam-badge green">19 Marks Verified</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> An autonomous delivery robot operates on a 2D grid with bounds <code>x &isin; [0,4]</code> and <code>y &isin; [0,3]</code>. Start state: <code>(0,0)</code>. Goal state: <code>(4,3)</code>.</p>
+            <ul>
+              <li><strong>Movement Rules &amp; Costs:</strong> Horizontal/Vertical move &rarr; cost = 3; Diagonal move &rarr; cost = 4.</li>
+              <li><strong>Blocked Obstacle Cells:</strong> <code>(1,1), (2,1), (2,2), (0,3)</code>.</li>
+              <li><strong>Heuristic Function:</strong> Manhattan distance to goal <code>h(n) = |4 - x| + |3 - y|</code>.</li>
+              <li><strong>Tie-Breaking Rule:</strong> If two nodes have identical f(n), expand the one with <strong>smaller x-coordinate</strong>. If x-coordinates are also equal, expand the one with <strong>smaller y-coordinate</strong>.</li>
+            </ul>
+
+            <div class="solution-box">
+              <h5>Complete Step-by-Step OPEN &amp; CLOSED List Execution Table</h5>
+              <table class="trace-table">
+                <thead>
+                  <tr>
+                    <th>Step</th>
+                    <th>Node Popped (x, y)</th>
+                    <th>g(n)</th>
+                    <th>h(n)</th>
+                    <th>f(n)</th>
+                    <th>OPEN List (Priority Queue) after Expansion</th>
+                    <th>CLOSED List (Visited)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>0</strong></td>
+                    <td>— (Init)</td>
+                    <td>0</td>
+                    <td>7</td>
+                    <td>7</td>
+                    <td>[(0,0): 7]</td>
+                    <td>[]</td>
+                  </tr>
+                  <tr>
+                    <td><strong>1</strong></td>
+                    <td>(0, 0)</td>
+                    <td>0</td>
+                    <td>7</td>
+                    <td>7</td>
+                    <td>[(0,1): 9, (1,0): 9]<br><em>(Tie broken: x=0 &lt; x=1)</em></td>
+                    <td>[(0,0)]</td>
+                  </tr>
+                  <tr>
+                    <td><strong>2</strong></td>
+                    <td>(0, 1)</td>
+                    <td>3</td>
+                    <td>6</td>
+                    <td>9</td>
+                    <td>[(1,0): 9, (0,2): 11, (1,2): 11]<br><em>((1,1) blocked obstacle)</em></td>
+                    <td>(0,0), (0,1)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>3</strong></td>
+                    <td>(1, 0)</td>
+                    <td>3</td>
+                    <td>6</td>
+                    <td>9</td>
+                    <td>[(0,2): 11, (1,2): 11, (2,0): 11]<br><em>((1,1) and (2,1) blocked)</em></td>
+                    <td>(0,0), (0,1), (1,0)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>4</strong></td>
+                    <td>(0, 2)</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td>11</td>
+                    <td>[(1,2): 11, (2,0): 11, (1,3): 13]<br><em>((0,3) blocked; diagonal to (1,3) cost 6+4=10)</em></td>
+                    <td>..., (0,2)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>5</strong></td>
+                    <td>(1, 2)</td>
+                    <td>7</td>
+                    <td>4</td>
+                    <td>11</td>
+                    <td>[(2,0): 11, (1,3): 13, (2,3): 13]<br><em>((2,2) blocked; diag to (2,3) cost 7+4=11)</em></td>
+                    <td>..., (1,2)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>6</strong></td>
+                    <td>(2, 0)</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td>11</td>
+                    <td>[(1,3): 13, (2,3): 13, (3,0): 13, (3,1): 13]<br><em>((2,1) blocked; diag to (3,1) cost 6+4=10)</em></td>
+                    <td>..., (2,0)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>7</strong></td>
+                    <td>(1, 3)</td>
+                    <td>10</td>
+                    <td>3</td>
+                    <td>13</td>
+                    <td>[(2,3): 13, (3,0): 13, (3,1): 13]</td>
+                    <td>..., (1,3)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>8</strong></td>
+                    <td>(2, 3)</td>
+                    <td>11</td>
+                    <td>2</td>
+                    <td>13</td>
+                    <td>[(3,0): 13, (3,1): 13, (3,3): 15, (3,2): 17]</td>
+                    <td>..., (2,3)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>9</strong></td>
+                    <td>(3, 0)</td>
+                    <td>9</td>
+                    <td>4</td>
+                    <td>13</td>
+                    <td>[(3,1): 13, (4,0): 15, (4,1): 15, (3,3): 15]</td>
+                    <td>..., (3,0)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>10</strong></td>
+                    <td>(3, 1)</td>
+                    <td>10</td>
+                    <td>3</td>
+                    <td>13</td>
+                    <td>[(3,2): 15, (4,1): 15, (4,2): 15, (3,3): 15, (4,0): 15]<br><em>(Cheaper path to (3,2): g=10+3=13, h=2 &rarr; f=15!)</em></td>
+                    <td>..., (3,1)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>11</strong></td>
+                    <td>(3, 2)</td>
+                    <td>13</td>
+                    <td>2</td>
+                    <td>15</td>
+                    <td>[(4,1): 15, (4,2): 15, (3,3): 15, (4,0): 15, <strong>(4,3): 17</strong>]<br><em>(Diagonal move to (4,3) generated with cost 13+4=17!)</em></td>
+                    <td>..., (3,2)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>12-14</strong></td>
+                    <td>(4, 1), (4, 2), (3, 3)</td>
+                    <td>13/14</td>
+                    <td>2/1</td>
+                    <td>15</td>
+                    <td>Remaining f=15 nodes expanded. Subpaths to (4,3) have equal cost 17.</td>
+                    <td>..., (4,1), (4,2), (3,3)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>15</strong></td>
+                    <td><strong>(4, 3) [GOAL]</strong></td>
+                    <td><strong>17</strong></td>
+                    <td><strong>0</strong></td>
+                    <td><strong>17</strong></td>
+                    <td><strong>GOAL EXTRACTED FROM OPEN LIST &rarr; TERMINATE!</strong></td>
+                    <td>Goal reached!</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p style="margin-top: 16px;"><strong>Final Solution Path Found &amp; Cost:</strong></p>
+              <div class="math-box">
+Optimal Path: (0, 0) &rarr; (1, 0) &rarr; (2, 0) &rarr; (3, 1) &rarr; (3, 2) &rarr; (4, 3)
+Moves Breakdown:
+(0,0) &rarr; (1,0) : Straight East (cost = 3)
+(1,0) &rarr; (2,0) : Straight East (cost = 3)
+(2,0) &rarr; (3,1) : Diagonal North-East (cost = 4)
+(3,1) &rarr; (3,2) : Straight North (cost = 3)
+(3,2) &rarr; (4,3) : Diagonal North-East (cost = 4)
+Total Optimal Path Cost = 3 + 3 + 4 + 3 + 4 = 17
+              </div>
+            </div>
+          </div>
+
+          <!-- EXAM QUESTION 2 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Spring 2018</span>
+                <span class="exam-badge purple">Problem 1d &amp; 1f (Consistency &amp; Reopening Trap)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 2: Inconsistent Heuristics &amp; The Reopening Visited Nodes Trap</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">CS401 NUCES</span>
+                <span class="exam-badge green">Proof Problem</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> A student implements A* graph search with an error: <em>"When the algorithm visits a node n that has already been expanded (is in CLOSED), it immediately skips n without checking if the new path to n has a lower path cost g(n)."</em></p>
+            <ol>
+              <li>What is the effect of this bug on the <strong>completeness</strong> and <strong>optimality</strong> of A*?</li>
+              <li>Under what condition on the heuristic function does this buggy implementation still guarantee optimal solutions?</li>
+            </ol>
+
+            <div class="solution-box">
+              <h5>Model Solution &amp; Theoretical Proof</h5>
+              <p><strong>1. Effects on Completeness &amp; Optimality:</strong></p>
+              <ul>
+                <li><strong>Completeness: PRESERVED.</strong> The search graph is finite and the algorithm will still explore alternative paths and terminate.</li>
+                <li><strong>Optimality: DESTROYED (Suboptimal Paths May Be Returned!).</strong> If the heuristic is only <em>admissible</em> but NOT <em>consistent</em>, the first path discovered to a node n may not be the cheapest. If a cheaper path to n is found later, skipping n prevents A* from updating n's descendants, causing A* to return a suboptimal path to the goal.</li>
+              </ul>
+
+              <p style="margin-top: 14px;"><strong>2. Under what condition is the buggy algorithm guaranteed optimal?</strong></p>
+              <p><strong>Answer: When the heuristic function is CONSISTENT (MONOTONIC).</strong></p>
+              <p><strong>Proof:</strong> By the theorem of Monotonic Heuristics, if h(n) satisfies the triangle inequality <code>h(n) &le; c(n, a, n') + h(n')</code> for all edges, then along any path the values of f(n) are non-decreasing. This mathematically guarantees that:</p>
+              <div class="math-box">
+The first time any node n is selected and popped from OPEN, its path cost g(n) is already guaranteed to be optimal!
+              </div>
+              <p>Because no cheaper path to n can ever be discovered later, a consistent heuristic ensures that CLOSED nodes <em>never need to be reopened</em>! Thus, under a consistent heuristic, the student's buggy code behaves identically to optimal A*!</p>
+            </div>
+          </div>
+
+          <div class="protip-box">
+            <h4>FAST Mid-1 Exam Pro-Tips for A* Search</h4>
+            <ol>
+              <li><strong>Always Show g, h, and f explicitly:</strong> When drawing tree nodes, write <code>g + h = f</code> clearly (e.g. <code>10 + 3 = 13</code>). FAST exam keys assign 1 mark for g(n), 1 mark for h(n), and 1 mark for f(n).</li>
+              <li><strong>Do Not Stop When Goal is Placed on OPEN:</strong> Never stop search when the goal is added to the frontier! A cheaper path may still be on OPEN. You only declare success when the goal node is <strong>popped/extracted</strong> from the priority queue.</li>
+              <li><strong>Tie-Breaking Rule:</strong> Follow the specified tie-breaker strictly (e.g., smaller x first, then smaller y). A single tie-breaking mistake flips the expansion order and costs multiple marks across subsequent rows of your trace table.</li>
+            </ol>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">&larr; Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next &rarr;</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })"
+    >
+      &uarr;
+    </button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7", "topic-8"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll('.topic-card').forEach(c => c.style.display = 'none');
+        const target = document.getElementById(id);
+        if (target) target.style.display = 'block';
+        
+        currentTopicIndex = topics.indexOf(id);
+        
+        document.querySelectorAll('.nav-sublist a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          link.classList.add('active');
+          const sublist = link.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevTitle = document.getElementById('prev-title');
+        const nextTitle = document.getElementById('next-title');
+
+        if (currentTopicIndex > 0) {
+          prevBtn.style.display = 'flex';
+          if (prevTitle) prevTitle.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          prevBtn.style.display = 'none';
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nextBtn.style.display = 'flex';
+          if (nextTitle) nextTitle.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nextBtn.style.display = 'none';
+        }
+        
+        document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(element) {
+        const sublist = element.nextElementSibling;
+        const chevron = element.querySelector('.chevron');
+        if (sublist.style.display === 'none') {
+          sublist.style.display = 'block';
+          chevron.style.transform = 'rotate(0deg)';
+        } else {
+          sublist.style.display = 'none';
+          chevron.style.transform = 'rotate(-90deg)';
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+            i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content"),
+        bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>

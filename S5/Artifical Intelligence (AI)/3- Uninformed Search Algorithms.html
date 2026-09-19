@@ -10,24 +10,6 @@
     />
     <link rel="stylesheet" href="../notes.css" />
     <style>
-      .flex-table {
-        display: flex;
-        gap: 20px;
-        margin: 20px 0;
-      }
-      .flex-table > div {
-        flex: 1;
-        background: var(--surface);
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid var(--bd);
-      }
-      .flex-table h4 {
-        color: var(--ac);
-        margin-top: 0;
-        border-bottom: 2px solid var(--ac);
-        padding-bottom: 5px;
-      }
       .tree-container {
         display: flex;
         flex-direction: column;
@@ -38,50 +20,175 @@
       .tree-level {
         display: flex;
         justify-content: center;
-        gap: 30px;
-        margin-bottom: 30px;
+        gap: 25px;
+        margin-bottom: 25px;
         position: relative;
       }
       .node {
-        width: 35px;
-        height: 35px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
-        background: var(--surface);
-        border: 2px solid var(--fg);
+        background: var(--sb);
+        border: 2px solid var(--bd);
+        color: var(--tx);
         display: flex;
         justify-content: center;
         align-items: center;
         font-weight: bold;
         position: relative;
+        font-size: 0.9rem;
       }
-      .node.start {
+      .node.expanded {
         border-color: var(--ac);
-        background: rgba(217, 119, 87, 0.1);
+        background: var(--hv);
+        color: var(--ac);
       }
       .node.goal {
         border-color: #10b981;
-        background: rgba(16, 185, 129, 0.1);
+        background: #064e3b;
+        color: #fff;
       }
-      .node.expanded {
-        background: var(--ac);
-        color: white;
-        border-color: var(--ac);
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
       }
-      .edge {
-        position: absolute;
-        top: 35px;
-        left: 50%;
-        width: 2px;
-        height: 30px;
-        background: var(--bd);
+      .comparison-table th, .comparison-table td {
+        border: 1px solid var(--bd);
+        padding: 10px 14px;
+        text-align: left;
       }
-      .edge.left {
-        transform: rotate(45deg);
-        transform-origin: top;
+      .comparison-table th {
+        background: rgba(255,255,255,0.03);
+        color: var(--ac);
       }
-      .edge.right {
-        transform: rotate(-45deg);
-        transform-origin: top;
+      .ucs-box {
+        background: #162536;
+        border-left: 4px solid #4fa3e3;
+        padding: 14px 18px;
+        border-radius: 6px;
+        margin: 16px 0;
+      }
+    </style>
+  
+    <style>
+      .exam-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: monospace;
+      }
+      .exam-badge.gold {
+        background: rgba(240, 169, 78, 0.15);
+        color: #f0a94e;
+        border: 1px solid rgba(240, 169, 78, 0.35);
+      }
+      .exam-badge.purple {
+        background: rgba(179, 133, 240, 0.15);
+        color: #b385f0;
+        border: 1px solid rgba(179, 133, 240, 0.35);
+      }
+      .exam-badge.cyan {
+        background: rgba(79, 163, 227, 0.15);
+        color: #4fa3e3;
+        border: 1px solid rgba(79, 163, 227, 0.35);
+      }
+      .exam-badge.green {
+        background: rgba(79, 191, 139, 0.15);
+        color: #4fbf8b;
+        border: 1px solid rgba(79, 191, 139, 0.35);
+      }
+      .exam-card {
+        background: #18181b;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 22px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s ease;
+      }
+      .exam-card:hover {
+        border-color: rgba(217, 119, 87, 0.45);
+      }
+      .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .exam-title {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+      }
+      .exam-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .solution-box {
+        background: #141c24;
+        border: 1px solid #234563;
+        border-left: 4px solid #4fa3e3;
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin: 16px 0;
+      }
+      .solution-box h5 {
+        color: #4fa3e3;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .math-box {
+        font-family: monospace;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-left: 3px solid #facc15;
+        margin: 12px 0;
+        color: #facc15;
+        line-height: 1.6;
+      }
+      .ascii-diagram {
+        font-family: monospace;
+        background: #09090b;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 14px 0;
+        color: #4fa3e3;
+        white-space: pre;
+        overflow-x: auto;
+        font-size: 0.88rem;
+        line-height: 1.5;
+      }
+      .protip-box {
+        background: rgba(240, 169, 78, 0.08);
+        border: 1px solid rgba(240, 169, 78, 0.3);
+        border-left: 4px solid #f0a94e;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+      }
+      .protip-box h4 {
+        color: #f0a94e;
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
       }
     </style>
   </head>
@@ -117,19 +224,36 @@
         </li>
         <li class="nav-section">
           <div class="nav-section-title" onclick="toggleSection(this)">
-            <span>Uninformed Search</span>
-            <span class="chevron">▼</span>
+            <span>Uninformed Search (UCS)</span><span class="chevron">▼</span>
           </div>
           <ul class="nav-sublist">
             <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Direction of Search</a></li>
-            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Backtracking Search</a></li>
-            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>BFS vs DFS</a></li>
-            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Iterative Deepening & UCS</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Luger Backtracking Search</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>BFS vs DFS Analysis</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Depth-Limited &amp; Iterative Deepening</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Uniform Cost Search (UCS) Deep-Dive</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Uninformed Comparison Matrix &amp; Practice</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">★</span>Mid-1 Solved Questions (2016–2026)</a></li>
           </ul>
         </li>
         <li>
-          <a class="nav-module-link" href="./4- Quiz Prep (Modules 1-3).html">
-            <span class="nav-num">04</span>Quiz Prep
+          <a class="nav-module-link" href="./4- Informed & Heuristic Search.html">
+            <span class="nav-num">04</span>Informed Search &amp; Hill Climbing
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./5- A-Star Search & Properties.html">
+            <span class="nav-num">05</span>A* Search &amp; Properties
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./6- Adversarial Search & Game Playing.html">
+            <span class="nav-num">06</span>Adversarial Search (Minimax)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./7- Exam & Quiz Prep (Lectures 1-9).html">
+            <span class="nav-num">07</span>Exam &amp; Quiz Prep
           </a>
         </li>
       </ul>
@@ -138,297 +262,634 @@
     <div id="main-content">
       <div class="module-container" id="module-intro">
         <div class="module-header">
-          <div class="module-eyebrow">Artificial Intelligence</div>
+          <div class="module-eyebrow">Artificial Intelligence &bull; Lectures 4, 5, 6 &amp; Luger Chapter 3.2</div>
           <h1 class="module-title">Uninformed Search Algorithms</h1>
         </div>
 
+        <!-- TOPIC 1 -->
         <div class="topic-card" id="topic-1">
-          <h2><span class="topic-num">1</span>Direction of Search</h2>
-          <p class="topic-subtitle">Choosing where to begin our graph traversal</p>
+          <h2><span class="topic-num">1</span>Direction of Search &amp; Branching Factor</h2>
+          <p class="topic-subtitle">Choosing where to begin our graph traversal: Forward vs Backward</p>
 
           <p>
-            When searching through a state space, we have a choice of where to start: at the beginning and work forward, or at the end and work backward. These two strategies are called <strong>Data-Driven</strong> and <strong>Goal-Driven</strong> search.
+            When searching through a state space, a fundamental architectural decision is <em>where to begin</em>: starting at the given facts and moving forward, or starting at the desired goal and moving backward. In AI literature (Luger Chapter 3.2), these two directions are known as <strong>Data-Driven (Forward Chaining)</strong> and <strong>Goal-Driven (Backward Chaining)</strong> search.
           </p>
 
-          <div class="flex-table">
-            <div>
-              <h4>Data-Driven Search</h4>
-              <p>Also known as <strong>Forward Chaining</strong>.</p>
-              <ul>
-                <li>Begins with the given facts/start state.</li>
-                <li>Applies legal moves or rules to change the state.</li>
-                <li>Generates new facts/states until a path that satisfies the goal condition is found.</li>
-              </ul>
-              <p><em>Use when:</em> The goal is poorly defined or there are many possible goals, but the starting data is clear.</p>
-            </div>
-            <div>
-              <h4>Goal-Driven Search</h4>
-              <p>Also known as <strong>Backward Chaining</strong>.</p>
-              <ul>
-                <li>Begins with the goal we want to solve.</li>
-                <li>Determines what conditions must be true to reach this goal.</li>
-                <li>These conditions become <em>subgoals</em>. The process repeats backward until the given facts of the problem are reached.</li>
-              </ul>
-              <p><em>Use when:</em> The goal is clearly defined and there is a massive amount of starting data (most of which is irrelevant).</p>
-            </div>
-          </div>
-
-          <h3>Branching Factor and Search Direction</h3>
-          <p>
-            Sometimes, the direction of search drastically changes the number of nodes we have to examine. This is determined by the <strong>Branching Factor</strong> (the average number of children a node has).
-          </p>
-          
-          <div class="example">
-            <div class="callout-label">Example</div>
-            <h4>Finding Ancestors</h4>
-            <p>
-              If a search algorithm attempts to find out if "I" am a descendant of "Fred", it can:
-            </p>
-            <ol>
-              <li><strong>Top-down (Data-Driven, Fred → Me):</strong> Branching factor is ~3 (each couple has roughly 3 children). At level <em>n</em>, there are <code>3^n</code> nodes to check. By generation 5, that's up to 363 nodes!</li>
-              <li><strong>Bottom-up (Goal-Driven, Me → Fred):</strong> Branching factor is exactly 2 (everyone has exactly 2 parents). At level <em>n</em>, there are <code>2^n</code> nodes. By generation 5, that's only 62 nodes!</li>
-            </ol>
-            <p><strong>Conclusion:</strong> If free to choose, search in the direction with the <em>smaller average branching factor</em>.</p>
-          </div>
-          
-          <div class="practice-section">
-            <div class="practice-section-label">Practice Questions</div>
-            <details>
-              <summary>Medium: You are designing a medical diagnosis AI. You have thousands of possible symptoms (facts) and a set of 20 possible diseases (goals). Should you use forward or backward chaining?</summary>
-              <p><strong>Answer:</strong> Backward Chaining (Goal-Driven). It's more efficient to pick a disease (goal) and work backward to see if the patient's symptoms match the required conditions, rather than starting with a headache (fact) and blindly generating thousands of possible medical outcomes.</p>
-            </details>
-          </div>
-        </div>
-
-        <div class="topic-card" id="topic-2" style="display:none;">
-          <h2><span class="topic-num">2</span>Backtracking Search</h2>
-          <p class="topic-subtitle">The foundation of all graph search algorithms</p>
-
-          <p>
-            <strong>Backtracking Search</strong> is a fundamental algorithm. It begins at the start state and pursues a path down the tree until it either reaches a goal or a "dead end." If it hits a dead end, it <em>backtracks</em> to the most recent node that has unexamined siblings and tries a different branch.
-          </p>
-
-          <h3>The Four Tracking Lists</h3>
-          <p>
-            To prevent infinite loops and efficiently search the graph, backtrack uses four lists:
-          </p>
-
-          <ul>
-            <li><strong>SL (State List):</strong> Lists the states in the <em>current path</em> being tried. If a goal is found, SL contains the solution path!</li>
-            <li><strong>NSL (New State List):</strong> Contains nodes awaiting evaluation (the "fringe" or "frontier"). These are nodes whose descendants haven't been searched yet.</li>
-            <li><strong>DE (Dead Ends):</strong> Lists states whose descendants have failed to contain a goal. Prevents the algorithm from retrying known useless paths.</li>
-            <li><strong>CS (Current State):</strong> The state currently being evaluated (always the most recently added state to SL).</li>
-          </ul>
-
-          <div class="note-box">
-            <div class="callout-label">Pro Tip</div>
-            <strong>Preventing Loops:</strong> Before adding a newly generated child node to NSL, the algorithm explicitly checks if it is already in SL, NSL, or DE. If it is, it discards it to prevent cycles!
-          </div>
-
-          <div class="example">
-            <div class="callout-label">Example</div>
-            <h4>Backtracking Trace Run</h4>
-            <p>Suppose we have a simple tree starting at A, where A has children B,C,D. B has children E,F. E has children H,I. C has children G.</p>
-            <table style="width:100%; text-align:left; border-collapse: collapse; margin-top: 10px;">
-              <tr style="border-bottom: 2px solid var(--bd);"><th>Iteration</th><th>CS (Current)</th><th>SL (State List)</th><th>NSL (New State List)</th><th>DE (Dead Ends)</th></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>0</td><td>A</td><td>[A]</td><td>[A]</td><td>[ ]</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>1</td><td>B</td><td>[B A]</td><td>[B C D A]</td><td>[ ]</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>2</td><td>E</td><td>[E B A]</td><td>[E F B C D A]</td><td>[ ]</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>3</td><td>H</td><td>[H E B A]</td><td>[H I E F B C D A]</td><td>[ ]</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>4 (H is leaf)</td><td>I</td><td>[I E B A]</td><td>[I E F B C D A]</td><td>[H]</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>5 (I is leaf)</td><td>F</td><td>[F B A]</td><td>[F B C D A]</td><td>[E I H]</td></tr>
-              <tr><td>6</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+          <div class="table-container">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>Data-Driven Search (Forward Chaining)</th>
+                  <th>Goal-Driven Search (Backward Chaining)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Starting Point</strong></td>
+                  <td>Begins with given problem facts and initial state.</td>
+                  <td>Begins with the goal we wish to prove or achieve.</td>
+                </tr>
+                <tr>
+                  <td><strong>Transition Mechanism</strong></td>
+                  <td>Applies rules/actions forward to produce new states until a goal condition is met.</td>
+                  <td>Determines what sub-conditions must be true to reach the goal, recursively forming subgoals until facts are hit.</td>
+                </tr>
+                <tr>
+                  <td><strong>Best Used When</strong></td>
+                  <td>
+                    <ul>
+                      <li>All or most problem data is given at the start.</li>
+                      <li>There are a massive number of potential goals, but few initial facts.</li>
+                      <li>It is difficult to formulate a specific goal description.</li>
+                    </ul>
+                  </td>
+                  <td>
+                    <ul>
+                      <li>A specific, clearly formulated goal is given.</li>
+                      <li>There is an overwhelming quantity of initial data, most of which is completely irrelevant to the goal.</li>
+                      <li>Problem-solving involves diagnostic explanation.</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
 
-          <div class="summary-box">
-            <h4>Key Takeaways</h4>
+          <h3>Branching Factor &amp; Search Efficiency</h3>
+          <p>
+            The choice of search direction drastically impacts the total number of states generated. The primary mathematical determinant is the <strong>Branching Factor (<code>b</code>)</strong>—the average number of children generated by a node.
+          </p>
+
+          <div class="example">
+            <div class="callout-label">Luger's Ancestor Search Example (Luger Chapter 3.2 &amp; Lecture 4)</div>
+            <p>
+              Suppose we want to determine whether <em>"Fred is an ancestor of Me"</em>:
+            </p>
             <ul>
-              <li>Backtracking dives deep, hits a dead end, and reverses back to try another path.</li>
-              <li>It relies on <code>SL</code> to track the path, <code>NSL</code> for pending nodes, and <code>DE</code> to remember failures.</li>
+              <li><strong>Direction 1: Data-Driven (Fred &rarr; Descendants):</strong> Average human couple has roughly 3 children. Thus, the branching factor forward is <code><em>b</em> &asymp; 3</code>. Searching down 5 generations generates:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">3 + 3<sup>2</sup> + 3<sup>3</sup> + 3<sup>4</sup> + 3<sup>5</sup> = 3 + 9 + 27 + 81 + 243 = 363   descendants!</div>
+              </li>
+              <li><strong>Direction 2: Goal-Driven (Me &rarr; Ancestors):</strong> Every human being has exactly 2 biological parents. The branching factor backward is strictly <code>b = 2</code>! Searching back 5 generations generates:
+                <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">2 + 2<sup>2</sup> + 2<sup>3</sup> + 2<sup>4</sup> + 2<sup>5</sup> = 2 + 4 + 8 + 16 + 32 = 62   ancestors!</div>
+              </li>
             </ul>
+            <p><strong>Conclusion:</strong> Always choose the search direction that exhibits the <strong>smaller average branching factor</strong>!</p>
           </div>
         </div>
 
-        <div class="topic-card" id="topic-3" style="display:none;">
-          <h2><span class="topic-num">3</span>Breadth-First vs Depth-First Search</h2>
-          <p class="topic-subtitle">The two classic uninformed search strategies</p>
+        <!-- TOPIC 2 -->
+        <div class="topic-card" id="topic-2" style="display:none;">
+          <h2><span class="topic-num">2</span>Luger's Backtracking Search Algorithm</h2>
+          <p class="topic-subtitle">Systematic graph search with loop prevention and failure recovery</p>
 
           <p>
-            While backtracking gives us the basic mechanism (lists of nodes), we still have to decide the <em>order</em> in which we examine the nodes in the NSL (the frontier).
+            <strong>Backtracking Search</strong> is the foundational systematic search algorithm in AI (Luger Chapter 3.2.2). It begins at the start state and pursues a path down the tree until it either reaches a goal or a dead end. If it hits a dead end, it <em>backtracks</em> to the most recent parent node that has unexamined siblings and tries a different branch.
           </p>
 
-          <div class="flex-table">
-            <div>
-              <h4>Breadth-First Search (BFS)</h4>
-              <p><strong>Structure:</strong> Queue (FIFO - First In, First Out)</p>
-              <p><strong>Behavior:</strong> Examines all nodes at level <em>n</em> before proceeding to level <em>n+1</em>. It explores the graph layer by layer.</p>
-              <div class="example" style="margin-top: 15px;">
-                <strong>Trace Example (Iteration 6):</strong>
-                <div class="tree-container" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
-                  <div class="tree-level">
-                    <div class="node expanded">A<div class="edge left"></div><div class="edge right"></div></div>
-                  </div>
-                  <div class="tree-level">
-                    <div class="node expanded">B<div class="edge left"></div><div class="edge right"></div></div>
-                    <div class="node expanded">C<div class="edge left"></div><div class="edge right"></div></div>
-                  </div>
-                  <div class="tree-level">
-                    <div class="node expanded">D</div><div class="node expanded">E</div>
-                    <div class="node start">F</div><div class="node start">G</div>
-                  </div>
-                  <p style="font-size: 12px; margin: 0; text-align:center;">
-                    <span style="display:inline-block; width:10px; height:10px; background:var(--ac); border-radius:50%; margin-right:5px;"></span> Closed (Expanded)
-                    <span style="display:inline-block; width:10px; height:10px; background:rgba(217, 119, 87, 0.1); border: 2px solid var(--ac); border-radius:50%; margin:0 5px 0 15px;"></span> Open (Fringe)
-                  </p>
-                </div>
-              </div>
-              <ul>
-                <li><strong>Complete:</strong> Yes! It will always find a solution if one exists.</li>
-                <li><strong>Optimal:</strong> Yes! It will always find the <em>shortest</em> path to the goal node (assuming all step costs are equal).</li>
-                <li><strong>Space Complexity:</strong> Exponential. It must keep all nodes of the current level in memory. Space is a massive problem for BFS.</li>
-              </ul>
-            </div>
-            <div>
-              <h4>Depth-First Search (DFS)</h4>
-              <p><strong>Structure:</strong> Stack (LIFO - Last In, First Out)</p>
-              <p><strong>Behavior:</strong> Gets quickly into a deep search space. It follows a single branch all the way down before backtracking.</p>
-              <div class="example" style="margin-top: 15px;">
-                <strong>Trace Example (Iteration 6):</strong>
-                <div class="tree-container" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
-                  <div class="tree-level">
-                    <div class="node expanded">A<div class="edge left"></div><div class="edge right"></div></div>
-                  </div>
-                  <div class="tree-level">
-                    <div class="node expanded">B<div class="edge left"></div><div class="edge right"></div></div>
-                    <div class="node start">C</div>
-                  </div>
-                  <div class="tree-level">
-                    <div class="node expanded">D<div class="edge left"></div></div><div class="node start">E</div>
-                  </div>
-                  <div class="tree-level">
-                    <div class="node expanded">H</div>
-                  </div>
-                  <p style="font-size: 12px; margin: 0; text-align:center;">
-                    DFS goes deep down the left branch first!
-                  </p>
-                </div>
-              </div>
-              <ul>
-                <li><strong>Complete:</strong> No! If it goes down an infinite branch without a goal, it will never terminate.</li>
-                <li><strong>Optimal:</strong> No! It might find a deep, convoluted solution even if a simpler one exists at a higher level on a different branch.</li>
-                <li><strong>Space Complexity:</strong> Linear. Highly efficient memory usage, only storing the current path.</li>
-              </ul>
-            </div>
+          <h3>The Four Tracking Lists (Luger Section 3.2.2)</h3>
+          <div class="formula-box">
+            <ul>
+              <li><strong>SL (State List):</strong> Lists the states in the <em>current active path</em> being tried from the root. If a goal is found, <code>SL</code> contains the complete solution path in reverse order!</li>
+              <li><strong>NSL (New State List):</strong> Contains nodes awaiting evaluation (the search frontier/fringe). These are candidate states whose descendants have not been explored yet.</li>
+              <li><strong>CS (Current State):</strong> The specific node currently being evaluated (always the most recently added state to <code>SL</code>).</li>
+              <li><strong>DE (Dead Ends):</strong> Lists states whose descendants have completely failed to contain a goal. Prevents the algorithm from ever retrying known useless paths.</li>
+            </ul>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Cycle Prevention Rule in Luger's Backtrack</div>
+            Before adding any newly generated child node <em>c</em> to <code>NSL</code>, the algorithm checks:
+            <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">Is <em>c</em> &isin; SL &nbsp;or&nbsp; <em>c</em> &isin; NSL &nbsp;or&nbsp; <em>c</em> &isin; DE?</div>
+            If <em>c</em> is present in any of these lists, <strong>it is immediately discarded</strong>. This guarantees that the algorithm will never loop infinitely in cyclic graphs!
+          </div>
+
+          <h3>Worked Backtracking Trace Run (Luger Figure 3.12)</h3>
+          <p>Consider starting at A, where A has children B, C; B has children E, F; E has children H, I (leaves); C has Goal G.</p>
+          <div class="table-container">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Iteration</th>
+                  <th>CS (Current)</th>
+                  <th>SL (Active Path)</th>
+                  <th>NSL (Pending Frontier)</th>
+                  <th>DE (Dead Ends)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0</td>
+                  <td>A</td>
+                  <td><code>[A]</code></td>
+                  <td><code>[A]</code></td>
+                  <td><code>[]</code></td>
+                  <td>Initial state.</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>B</td>
+                  <td><code>[B, A]</code></td>
+                  <td><code>[B, C, A]</code></td>
+                  <td><code>[]</code></td>
+                  <td>Expand A &rarr; add B, C to NSL. Select B.</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>E</td>
+                  <td><code>[E, B, A]</code></td>
+                  <td><code>[E, F, B, C, A]</code></td>
+                  <td><code>[]</code></td>
+                  <td>Expand B &rarr; add E, F. Select E.</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>H</td>
+                  <td><code>[H, E, B, A]</code></td>
+                  <td><code>[H, I, E, F, B, C, A]</code></td>
+                  <td><code>[]</code></td>
+                  <td>Expand E &rarr; add H, I. Select H.</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>I</td>
+                  <td><code>[I, E, B, A]</code></td>
+                  <td><code>[I, E, F, B, C, A]</code></td>
+                  <td><code>[H]</code></td>
+                  <td>H has no children! Add H to DE; backtrack to I.</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>F</td>
+                  <td><code>[F, B, A]</code></td>
+                  <td><code>[F, B, C, A]</code></td>
+                  <td><code>[E, I, H]</code></td>
+                  <td>I is dead end! Backtrack: E is exhausted, add E to DE. Select F.</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>C</td>
+                  <td><code>[C, A]</code></td>
+                  <td><code>[C, A]</code></td>
+                  <td><code>[B, F, E, I, H]</code></td>
+                  <td>F has no children! B is exhausted. Backtrack to C!</td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td>G</td>
+                  <td><code>[G, C, A]</code></td>
+                  <td><code>[G, C, A]</code></td>
+                  <td><code>[B, F, E, I, H]</code></td>
+                  <td>Expand C &rarr; generate G. Goal test succeeds! <strong>Return Path: A &rarr; C &rarr; G</strong>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TOPIC 3 -->
+        <div class="topic-card" id="topic-3" style="display:none;">
+          <h2><span class="topic-num">3</span>BFS vs. DFS Analysis</h2>
+          <p class="topic-subtitle">Queue vs Stack, memory explosion, and structural trade-offs</p>
+
+          <p>
+            Breadth-First Search (BFS) and Depth-First Search (DFS) represent the two canonical extremes of uninformed graph exploration:
+          </p>
+
+          <div class="table-container">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Breadth-First Search (BFS)</th>
+                  <th>Depth-First Search (DFS)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Frontier Data Structure</strong></td>
+                  <td><strong>Queue (FIFO):</strong> First-In, First-Out. Children are appended to the back; shallowest node is popped from front.</td>
+                  <td><strong>Stack (LIFO):</strong> Last-In, First-Out. Children are pushed to the front/top; deepest node is popped first.</td>
+                </tr>
+                <tr>
+                  <td><strong>Exploration Order</strong></td>
+                  <td>Level by level: explores all nodes at depth <em>k</em> before any node at depth <em>k+1</em>.</td>
+                  <td>Deepest path first: plunges straight down a branch until it hits a leaf or cutoff, then backtracks.</td>
+                </tr>
+                <tr>
+                  <td><strong>Completeness</strong></td>
+                  <td><strong>Complete:</strong> Guaranteed to find a solution if one exists (provided branching factor <code>b</code> is finite).</td>
+                  <td><strong>Incomplete:</strong> On infinite graphs or graphs with cycles (without cycle checking), it can get trapped in an infinite branch and never return.</td>
+                </tr>
+                <tr>
+                  <td><strong>Optimality</strong></td>
+                  <td><strong>Optimal for uniform step costs:</strong> Always finds the shallowest goal (fewest edges).</td>
+                  <td><strong>Non-optimal:</strong> Can return a deep, convoluted path even if a 1-step solution exists on an unexamined shallow branch.</td>
+                </tr>
+                <tr>
+                  <td><strong>Time Complexity</strong></td>
+                  <td><code>O(b<sup>d</sup>)</code>, where <code>d</code> is depth of the shallowest goal.</td>
+                  <td><code>O(b<sup>m</sup>)</code>, where <code>m</code> is the maximum depth of the state space. (If <code><em>m</em> &gt;&gt; <em>d</em> (i.e., <em>m</em> is much greater than <em>d</em>)</code>, time is drastically worse).</td>
+                </tr>
+                <tr>
+                  <td><strong>Space Complexity</strong></td>
+                  <td><strong><code>O(b<sup>d</sup>)</code> (Exponential):</strong> Must store all frontier nodes at the current level simultaneously.</td>
+                  <td><strong><code>O(b &middot; m)</code> (Linear):</strong> Only needs to store the active path and unexpanded siblings along that path. Highly memory efficient!</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="warning-box">
-            <div class="callout-label">Exponential Explosion</div>
-            Exponential-complexity search problems (like BFS) cannot be solved for large instances. If a tree has a branching factor of 10, searching to depth 12 with BFS would require 1 Petabyte of memory and 13 days of compute time!
+            <div class="callout-label">The Memory Bottleneck of BFS (Exponential Explosion)</div>
+            In AI search, <strong>memory is the fatal bottleneck for BFS, not time!</strong><br />
+            Suppose branching factor <code>b = 10</code>, nodes generated at 100,000 nodes/sec, and each node requires 1,000 bytes:
+            <ul>
+              <li><strong>Depth 2:</strong> 110 nodes &rarr; 0.11 MB &rarr; 1 millisecond.</li>
+              <li><strong>Depth 6:</strong> <strong>1.1 &times; 10<sup>6</sup></strong> nodes &rarr; 1.1 GB &rarr; 11 seconds.</li>
+              <li><strong>Depth 10:</strong> <strong>1.1 &times; 10<sup>10</sup></strong> nodes &rarr; <strong>11 Terabytes of RAM</strong> &rarr; 1.3 days!</li>
+              <li><strong>Depth 12:</strong> <strong>1.1 &times; 10<sup>12</sup></strong> nodes &rarr; <strong>1 Petabyte of RAM</strong> &rarr; 130 days!</li>
+            </ul>
+            BFS exhausts available machine memory long before it runs out of CPU time.
+          </div>
+        </div>
+
+        <!-- TOPIC 4 -->
+        <div class="topic-card" id="topic-4" style="display:none;">
+          <h2><span class="topic-num">4</span>Depth-Limited Search &amp; Iterative Deepening (IDS)</h2>
+          <p class="topic-subtitle">Achieving BFS completeness and optimality with DFS linear memory</p>
+
+          <p>
+            We desire the <em>optimality and shallowest-path guarantee</em> of BFS, but cannot afford its exponential memory consumption. Conversely, DFS uses minimal memory (<code>O(b &middot; m)</code>) but is incomplete and non-optimal.
+          </p>
+          <p>
+            <strong>Iterative Deepening Search (IDS / DFS-ID)</strong> provides the optimal marriage of both algorithms (Luger Chapter 3.2.4 &amp; Lecture 5).
+          </p>
+
+          <h3>Depth-Limited Search (DLS)</h3>
+          <p>
+            DLS is simply DFS with a predefined maximum depth limit <em>l</em>. Nodes at depth <em>l</em> are treated as if they have no successors. This eliminates the infinite loop failure of DFS, but introduces incompleteness if the shallowest goal happens to lie at depth <code><em>d</em> &gt; <em>l</em></code>.
+          </p>
+
+          <h3>How Iterative Deepening Operates</h3>
+          <ol>
+            <li>Run DLS with depth limit <code>l = 0</code>. If goal found, return success.</li>
+            <li>Run DLS with depth limit <code>l = 1</code>. If goal found, return success.</li>
+            <li>Run DLS with depth limit <code>l = 2</code>. If goal found, return success.</li>
+            <li>Repeatedly increase <em>l</em> by 1 until a goal is discovered.</li>
+          </ol>
+
+          <div class="note-box">
+            <div class="callout-label">The Re-expansion Paradox: Doesn't IDS Waste Time?</div>
+            Students instinctively believe that restarting the search from the root at every iteration wastes enormous amounts of time.
+            <p>
+              <strong>The Mathematical Reality:</strong> In an exponential tree with branching factor <code>b</code>, the vast majority of nodes reside at the <em>bottom level</em>!
+            </p>
+            <ul>
+              <li>Nodes at bottom level <code>d</code> are generated <strong>1 time</strong>.</li>
+              <li>Nodes at level <code>d-1</code> are generated <strong>2 times</strong>.</li>
+              <li>Nodes at root level 1 are generated <code>d</code> times.</li>
+            </ul>
+            <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">Total Nodes in IDS = d(b) + (d-1)b<sup>2</sup> + (d-2)b<sup>3</sup> + dots + 1(b<sup>d</sup>) &asymp; O(b<sup>d</sup>)</div>
+            <p>
+              When <code>b = 10</code> and <code>d = 5</code>:
+              <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">BFS Nodes = 1 + 10 + 100 + 1,000 + 10,000 + 100,000 = 111,111</div>
+              <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">IDS Nodes = 5(10) + 4(100) + 3(1,000) + 2(10,000) + 1(100,000) = 123,450</div>
+              The overhead is only <strong>&asymp; 11%</strong>! For this negligible computational price, <strong>IDS provides BFS completeness and optimality while requiring only <code>O(b &middot; d)</code> linear memory!</strong>
+            </p>
+          </div>
+        </div>
+
+        <!-- TOPIC 5 -->
+        <div class="topic-card" id="topic-5" style="display:none;">
+          <h2><span class="topic-num">5</span>Uniform Cost Search (UCS) Deep-Dive</h2>
+          <p class="topic-subtitle">Optimal search across non-uniform edge weights &bull; FAST-NUCES Lecture 6</p>
+
+          <p>
+            BFS guarantees optimal paths only when <em>all step costs are equal</em> (e.g., each move costs 1). In real-world networks (road travel, airline routes, packet routing), different actions have radically different costs.
+          </p>
+          <p>
+            <strong>Uniform Cost Search (UCS)</strong> (also known as Dijkstra's Algorithm in graph theory) expands nodes in order of their <strong>cumulative path cost <code>g(n)</code></strong> rather than their depth.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition &bull; Uniform Cost Search (Lecture 6 Slide 2)</div>
+            Instead of expanding the shallowest node, Uniform Cost Search expands the unexpanded node <em>n</em> with the <strong>lowest path cost <code>g(n)</code></strong>.
+            <ul>
+              <li><strong>Implementation:</strong> The search frontier is maintained as a <strong>Priority Queue</strong> ordered by cumulative cost <code>g(n)</code> from the start state.</li>
+              <li><strong>Equivalence:</strong> If all step costs are identical, UCS behaves identically to Breadth-First Search.</li>
+            </ul>
+          </div>
+
+          <div class="ucs-box">
+            <h4>The Golden Rule of UCS: Goal Test Timing (Lecture 6 Slide 2 &amp; 7)</h4>
+            <p style="font-size: 1.05rem; font-weight: 700; color: #facc15;">
+              CRITICAL: In Uniform Cost Search, the Goal Test MUST be applied to a node ONLY WHEN IT IS SELECTED FOR EXPANSION, NEVER WHEN IT IS FIRST GENERATED!
+            </p>
+            <p>
+              <strong>Why?</strong> When a goal node is first generated as a child, there could still exist an unexpanded path on the frontier with a much lower cost that eventually loops around to reach the goal with a lower total cost!
+            </p>
+            <p>
+              Testing for goal at expansion guarantees that <em>whenever UCS selects node <em>n</em> for expansion, the optimal minimal-cost path to <em>n</em> has already been discovered</em>.
+            </p>
+          </div>
+
+          <h3>The Step Cost Condition: <em>&epsilon; &gt; 0</em></h3>
+          <p>
+            For UCS to be complete and optimal, every legal action must have a cost of at least some positive constant:
+            <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;"><em>c(s, a, s&prime;)</em> &ge; &epsilon; &gt; 0</div>
+            If zero-cost edges or negative costs were permitted, the algorithm could enter an infinite zero-cost loop without making progress toward the goal.
+          </p>
+
+          <h3>Complexity of UCS</h3>
+          <ul>
+            <li><strong>Worst-case Time &amp; Space Complexity:</strong>
+              <div style="text-align:center; margin:14px 0; font-size:1.15rem; font-weight:600; color:var(--ac); font-family:monospace;">O(b<sup>1 + &lfloor;C<sup>*</sup> / &epsilon;&rfloor;</sup>)</div>
+              where <em>C<sup>*</sup></em> is the cost of the optimal solution, and <em>&epsilon;</em> is the strictly positive minimum step cost.
+            </li>
+            <li>When all costs are equal (<code>&epsilon; = 1</code>), <code>&lfloor;C<sup>*</sup> / &epsilon;&rfloor; = d</code>, yielding standard BFS complexity <code>O(b<sup>d+1</sup>)</code>.</li>
+          </ul>
+
+          <h3>Worked Romanian Map Walkthrough (Lecture 6 Slide 4)</h3>
+          <p>
+            Finding route from <strong>Sibiu</strong> to <strong>Bucharest</strong>:
+          </p>
+          <ol>
+            <li>Start at Sibiu (<code>g=0</code>). Successors are <strong>Rimnicu Vilcea</strong> (<code>g=80</code>) and <strong>Fagaras</strong> (<code>g=99</code>).</li>
+            <li>Priority Queue: <code>[Rimnicu Vilcea (80), Fagaras (99)]</code>. Lowest cost is Rimnicu Vilcea.</li>
+            <li>Expand Rimnicu Vilcea: generates <strong>Pitesti</strong> with cost <code>80 + 97 = 177</code>. Queue: <code>[Fagaras (99), Pitesti (177)]</code>.</li>
+            <li>Lowest cost is now Fagaras (<code>g=99</code>). Expand Fagaras: generates <strong>Bucharest (Goal)</strong> with cost <code>99 + 211 = 310</code>.</li>
+            <li><strong>Notice:</strong> Goal Bucharest has been <em>generated</em> with cost 310, but UCS does NOT stop! Bucharest is placed on the priority queue. Queue: <code>[Pitesti (177), Bucharest_via_Fagaras (310)]</code>.</li>
+            <li>Pitesti has a lower cost (<em>177 < 310</em>)! Expand Pitesti: generates a second path to <strong>Bucharest</strong> with cost <code>177 + 101 = 278</code>!</li>
+            <li>Queue: <code>[Bucharest_via_Pitesti (278), Bucharest_via_Fagaras (310)]</code>.</li>
+            <li>Next popped node is <code>Bucharest_via_Pitesti</code> (<code>g=278</code>). Goal test succeeds!</li>
+          </ol>
+          <p><strong>Result:</strong> UCS returns optimal path Sibiu &rarr; Rimnicu Vilcea &rarr; Pitesti &rarr; Bucharest (Cost: 278), correctly rejecting the premature path through Fagaras (Cost: 310)!</p>
+
+          <h3>Solved Graph Problem from Lecture 6 Slide 6</h3>
+          <div class="formula-box">
+            <strong>Graph Specification:</strong> Start State <em>S</em>, Goal State <em>G</em>.<br />
+            <strong>Nodes Expanded in Order:</strong> <em>S &rarr; A &rarr; C &rarr; D &rarr; B &rarr; G</em><br />
+            <strong>Final Optimal Solution Path:</strong> <em>S &rarr; A &rarr; C &rarr; G</em>
+          </div>
+        </div>
+
+        <!-- TOPIC 6 -->
+        <div class="topic-card" id="topic-6" style="display:none;">
+          <h2><span class="topic-num">6</span>Uninformed Comparison Matrix &amp; Practice Questions</h2>
+          <p class="topic-subtitle">Complete review across all 5 uninformed algorithms</p>
+
+          <div class="table-container">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Frontier Data Structure</th>
+                  <th>Completeness</th>
+                  <th>Optimality</th>
+                  <th>Time Complexity</th>
+                  <th>Space Complexity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Breadth-First Search (BFS)</strong></td>
+                  <td>Queue (FIFO)</td>
+                  <td>Yes (if <code>b</code> is finite)</td>
+                  <td>Yes (for uniform step costs)</td>
+                  <td><code>O(b<sup>d</sup>)</code></td>
+                  <td><code>O(b<sup>d</sup>)</code> (Exponential)</td>
+                </tr>
+                <tr>
+                  <td><strong>Depth-First Search (DFS)</strong></td>
+                  <td>Stack (LIFO)</td>
+                  <td>No (fails in infinite/cyclic spaces)</td>
+                  <td>No</td>
+                  <td><code>O(b<sup>m</sup>)</code></td>
+                  <td><code>O(b &middot; m)</code> (Linear)</td>
+                </tr>
+                <tr>
+                  <td><strong>Depth-Limited Search (DLS)</strong></td>
+                  <td>Stack with limit <em>l</em></td>
+                  <td>No (if <code><em>d</em> &gt; <em>l</em></code>)</td>
+                  <td>No</td>
+                  <td><code>O(b<sup>l</sup>)</code></td>
+                  <td><code><code>O(b &middot; l)</code></code> (Linear)</td>
+                </tr>
+                <tr>
+                  <td><strong>Iterative Deepening (IDS)</strong></td>
+                  <td>Repeated Stack with increasing <em>l</em></td>
+                  <td>Yes (if <code>b</code> is finite)</td>
+                  <td>Yes (for uniform step costs)</td>
+                  <td><code>O(b<sup>d</sup>)</code></td>
+                  <td><code>O(b &middot; d)</code> (Linear)</td>
+                </tr>
+                <tr>
+                  <td><strong>Uniform Cost Search (UCS)</strong></td>
+                  <td>Priority Queue by <code>g(n)</code></td>
+                  <td>Yes (if step costs <em>&epsilon; &gt; 0</em>)</td>
+                  <td><strong>Yes (for general step costs)</strong></td>
+                  <td><code>O(b<sup>1 + &l&&rfloor;;;C<sup>*</sup> / &epsilon;&&rfloor;;</sup>)</code></td>
+                  <td><code>O(b<sup>1 + &l&&rfloor;;;C<sup>*</sup> / &epsilon;&&rfloor;;</sup>)</code></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="practice-section">
-            <div class="practice-section-label">Practice Questions</div>
+            <div class="practice-section-label">High-Yield Exam Practice Questions</div>
+
             <details>
-              <summary>Easy: Which algorithm guarantees the shortest path (fewest edges) to the goal?</summary>
-              <p><strong>Answer:</strong> Breadth-First Search (BFS), because it checks every node at depth 1, then depth 2, etc. It cannot physically reach a goal at depth 5 without having first verified no goal exists at depth 4.</p>
+              <summary>Question 1 (Tricky): Why will UCS fail to be complete if edge costs can be zero (<code>c(s, a, s') = 0</code>)?</summary>
+              <p><strong>Answer:</strong> If zero-cost edges exist, the algorithm can wander through an infinite chain or cycle of zero-cost actions without ever accumulating path cost. Because the priority queue continuously expands zero-cost nodes (<code>g=0</code>), it will never advance to expand nodes with positive cost that actually lead to the goal.</p>
             </details>
+
             <details>
-              <summary>Medium: You are navigating a maze using an AI. Which algorithm is more memory efficient to use?</summary>
-              <p><strong>Answer:</strong> Depth-First Search (DFS). It only needs to store the current path it's walking down, requiring linear space <code>O(b*d)</code>, whereas BFS would need to store the entire frontier of the search, requiring exponential space <code>O(b^d)</code>.</p>
+              <summary>Question 2 (Conceptual): What is the difference between the condition for BFS optimality versus UCS optimality?</summary>
+              <p><strong>Answer:</strong> BFS is optimal only when all step costs are equal (<code>c=1</code>), because it minimizes the number of edges (depth). UCS is optimal for general, variable positive step costs because it minimizes cumulative path cost <code>g(n)</code>.</p>
+            </details>
+
+            <details>
+              <summary>Question 3 (Critical Thinking): In UCS, suppose node B is on the frontier with cost 10, and a newly generated path reaches B with cost 7. What should the algorithm do?</summary>
+              <p><strong>Answer:</strong> The algorithm must update node B's cost on the priority queue to 7 and redirect B's parent pointer to the new, cheaper incoming path. Because B has not been expanded yet, its previous path is discarded in favor of the cheaper route.</p>
+            </details>
+
+            <details>
+              <summary>Question 4 (Luger Backtracking): In Luger's Backtrack, if an algorithm reaches a dead end, which list records this failure, and what happens to the State List (SL)?</summary>
+              <p><strong>Answer:</strong> The state is added to the <code>DE</code> (Dead Ends) list so that it will never be retried. The state is popped off the top of <code>SL</code>, restoring <code>SL</code> to represent the previous ancestor path before the failed decision was taken.</p>
             </details>
           </div>
         </div>
 
-        <div class="topic-card" id="topic-4" style="display:none;">
-          <h2><span class="topic-num">4</span>Iterative Deepening & Uniform-Cost Search</h2>
-          <p class="topic-subtitle">Upgrading our search algorithms</p>
 
-          <h3>Iterative Deepening Search (IDS)</h3>
-          <p>
-            We want the <em>optimality and completeness</em> of BFS, but the <em>memory efficiency</em> of DFS. <strong>Iterative Deepening Search</strong> provides an excellent compromise.
-          </p>
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">★</span>FAST Mid-1 Exam Solved Questions (2016–2026)</h2>
+          <p class="topic-subtitle">Authentic Sessional-I Questions on Early Goal Testing, Uniform Cost Search &amp; Algorithm Comparisons</p>
 
-          <p><strong>How it works:</strong></p>
-          <ol>
-            <li>Run a DFS with a depth limit of 0. If goal found, stop.</li>
-            <li>Run a DFS with a depth limit of 1. If goal found, stop.</li>
-            <li>Run a DFS with a depth limit of 2. If goal found, stop.</li>
-            <li>Repeat, increasing the limit by 1 each time.</li>
-          </ol>
+          <div class="summary-box" style="margin-top: 16px;">
+            <h4>Why This Topic is the Highest Scoring Section on Mid-1</h4>
+            <p>Every single FAST Mid-1 exam tests uninformed search mechanisms. Specifically, the <strong>"Early Goal Checking Trap"</strong> (checking goal when a node is added to the frontier vs when it is popped) is the single most celebrated question in FAST exam history (appearing in Fall 2016, Spring 2018, and Fall 2018). Master this proof and you are guaranteed 10+ marks!</p>
+          </div>
 
-          <div class="example">
-            <div class="callout-label">Visualizing Iterative Deepening</div>
-            <div style="display:flex; justify-content:space-between; text-align:center; gap: 10px; margin-top: 15px;">
+          <!-- EXAM QUESTION 1 -->
+          <div class="exam-card">
+            <div class="exam-header">
               <div>
-                <strong>Limit = 0</strong>
-                <div class="tree-container" style="margin:5px 0;">
-                  <div class="tree-level"><div class="node expanded">A</div></div>
-                </div>
+                <span class="exam-badge gold">FAST Mid-I • Fall 2016 &amp; Spring 2018</span>
+                <span class="exam-badge purple">Question 2 (10 Marks) • Hall of Fame</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 1: The "Early Goal Checking" Trap in Graph Search</h3>
               </div>
-              <div>
-                <strong>Limit = 1</strong>
-                <div class="tree-container" style="margin:5px 0;">
-                  <div class="tree-level"><div class="node expanded" style="margin-bottom:15px;">A<div class="edge left" style="height:15px; top:35px;"></div><div class="edge right" style="height:15px; top:35px;"></div></div></div>
-                  <div class="tree-level" style="gap:15px;"><div class="node expanded">B</div><div class="node expanded">C</div></div>
-                </div>
-              </div>
-              <div>
-                <strong>Limit = 2</strong>
-                <div class="tree-container" style="margin:5px 0;">
-                  <div class="tree-level"><div class="node expanded" style="margin-bottom:15px;">A<div class="edge left" style="height:15px; top:35px;"></div><div class="edge right" style="height:15px; top:35px;"></div></div></div>
-                  <div class="tree-level" style="gap:15px; margin-bottom:15px;"><div class="node expanded">B<div class="edge left" style="height:15px; top:35px;"></div></div><div class="node expanded">C</div></div>
-                  <div class="tree-level" style="gap:15px;"><div class="node expanded">D</div></div>
-                </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">Appeared in 3 Mids</span>
+                <span class="exam-badge green">Classic FAST Problem</span>
               </div>
             </div>
-            <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">Notice how the search restarts from 'A' at every iteration, but ventures one layer deeper each time.</p>
+            <p><strong>Problem Statement:</strong> In standard Graph Search, the goal test is applied when a node is <strong>popped/expanded</strong> from the priority queue. A student suggests modifying the algorithm by testing whether a node reaches the goal state <strong>as soon as it is generated (inserted into the fringe)</strong> to terminate faster.</p>
+            <ol>
+              <li>If using <code>EARLY-GOAL-CHECKING-GRAPH-SEARCH</code> with Uniform Cost Search (UCS), is the algorithm still <strong>Complete</strong>? Justify.</li>
+              <li>Will it return an <strong>Optimal</strong> solution? Justify with a concrete counterexample.</li>
+              <li>Why does BFS remain optimal with Early Goal Checking on unit costs, whereas UCS completely fails?</li>
+            </ol>
+
+            <div class="solution-box">
+              <h5>Complete Mathematical &amp; Algorithmic Proof</h5>
+
+              <p><strong>1. Completeness: TRUE.</strong></p>
+              <p>Testing for the goal early upon generation only causes the algorithm to terminate <em>earlier</em> than standard UCS. Since standard UCS is complete on finite state spaces with step costs c &ge; &epsilon; &gt; 0, early goal checking will still find a goal state if one exists and terminate. Hence, it remains complete.</p>
+
+              <p style="margin-top: 14px;"><strong>2. Optimality: FALSE (LOSES OPTIMALITY!).</strong></p>
+              <p>Early goal checking completely destroys the optimality guarantee of UCS. Below is the canonical counterexample graph:</p>
+              
+              <div class="ascii-diagram">
+         [ S ] (Start)
+        /        c=10/        c=1
+      v         v
+    [ G ]<------[ A ]
+    (Goal)  c=2
+              </div>
+
+              <p><strong>Step-by-step Trace under Early Goal Checking UCS:</strong></p>
+              <ul>
+                <li><strong>Start at S:</strong> Expand S. Generate its successors: G (with cost g=10) and A (with cost g=1).</li>
+                <li><strong>Early Goal Check on Generation:</strong> The algorithm tests G as soon as G is generated. Since G is a goal state, the algorithm <strong>immediately terminates</strong> and returns path <code>S &rarr; G</code> with cost <strong>10</strong>!</li>
+                <li><strong>The True Optimal Path:</strong> The path <code>S &rarr; A &rarr; G</code> has cost <code>1 + 2 = 3</code>!</li>
+                <li><strong>Conclusion:</strong> The algorithm returned a suboptimal solution (cost 10 instead of 3). Standard UCS would have kept G on the priority queue and expanded A first (since g(A)=1 &lt; g(G)=10), discovering the cheaper route of cost 3.</li>
+              </ul>
+
+              <p style="margin-top: 14px;"><strong>3. Why BFS is Optimal with Early Goal Check but UCS Fails:</strong></p>
+              <p>In BFS, all edge costs are uniform (c = 1). Therefore, cumulative path cost is strictly proportional to depth d (g(n) = d). The first time the goal state is generated at depth d, no shallower path to the goal can ever exist. In UCS, edge costs vary arbitrarily: a path with <strong>more edges (deeper) can have a strictly lower total cost</strong> than a path with fewer edges. Therefore, UCS must delay the goal test until a node is <em>popped from the queue</em>, which guarantees that all paths with lower cost have already been explored.</p>
+            </div>
           </div>
 
-          <div class="note-box">
-            <div class="callout-label">Pro Tip</div>
-            <strong>Doesn't revisiting nodes waste time?</strong> Yes, but surprisingly little! Because the tree grows exponentially, the vast majority of nodes are at the deepest level. The overhead of re-searching the shallow top nodes is mathematically insignificant compared to searching the new, massive bottom layer.
+          <!-- EXAM QUESTION 2 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Fall 2017</span>
+                <span class="exam-badge purple">Problem 2a (4 Points)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 2: In What Ways is Iterative Deepening Better than DFS?</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">CS401 Sessional</span>
+                <span class="exam-badge green">4-Criteria Evaluation</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> Provide a rigorous comparison between Iterative Deepening Search (IDS) and Depth-First Search (DFS) evaluated strictly against the four standard criteria used to compare search algorithms.</p>
+
+            <div class="solution-box">
+              <h5>Model Solution</h5>
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Criterion</th>
+                    <th>Depth-First Search (DFS)</th>
+                    <th>Iterative Deepening Search (IDS)</th>
+                    <th>Why IDS is Strictly Superior</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Completeness</strong></td>
+                    <td>Incomplete (can get trapped in infinite paths or cycles in infinite state spaces).</td>
+                    <td><strong>Complete</strong> (guaranteed to find goal if branching factor b is finite).</td>
+                    <td>IDS systematically increments depth limit (0, 1, 2, ...), so it can never be trapped down an infinite branch.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Time Complexity</strong></td>
+                    <td>O(b<sup>m</sup>), where m is the maximum tree depth (m can be &infin;).</td>
+                    <td><strong>O(b<sup>d</sup>)</strong>, where d is the shallowest goal depth.</td>
+                    <td>When m &gt;&gt; d (e.g. goal at depth 5, but tree extends to depth 100), DFS wastes exponential time in deep dead ends, while IDS finishes at depth d.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Space Complexity</strong></td>
+                    <td>O(b &times; m) linear space.</td>
+                    <td><strong>O(b &times; d)</strong> linear space.</td>
+                    <td>Because d &le; m, IDS uses strictly less or equal memory than DFS!</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Optimality</strong></td>
+                    <td>Not optimal (returns the first path found down the leftmost branch, regardless of length).</td>
+                    <td><strong>Optimal</strong> (for unit step costs).</td>
+                    <td>IDS guarantees finding the shallowest goal state first, ensuring shortest path.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p><strong>Summary Conclusion:</strong> IDS combines the <em>optimal completeness of BFS</em> with the <em>modest linear space complexity of DFS</em>. It dominates DFS in all four fundamental criteria.</p>
+            </div>
           </div>
 
-          <h3>Uniform-Cost Search (UCS)</h3>
-          <p>
-            BFS assumes every move (arc) costs exactly the same (e.g., 1). But in the real world (like the Traveling Salesperson Problem), travelling from City A to City B might cost 50km, while City A to City C costs 200km.
-          </p>
-          
-          <div class="definition">
-            <div class="callout-label">Definition</div>
-            <strong>Uniform-Cost Search:</strong> Instead of expanding the shallowest node, UCS expands the node with the <em>lowest cumulative path cost</em> <code>g(n)</code>.
+          <!-- EXAM QUESTION 3 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Fall 2016 &amp; Spring 2024</span>
+                <span class="exam-badge purple">Graph Search Execution</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 3: BFS vs DFS Graph Search Traces with Alphabetical Tie-Breaking</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">Standard Trace Problem</span>
+                <span class="exam-badge green">Step-by-Step Table</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> Consider a search graph with start node S and goal node G. Successors are always broken alphabetically (e.g. A before B). Contrast the expansion sequence and path returned between Breadth-First Graph Search (FIFO queue) and Depth-First Graph Search (LIFO stack) when avoiding repeated states (Closed list).</p>
+
+            <div class="solution-box">
+              <h5>Model Solution &amp; Frontier Dynamics</h5>
+              <div class="ascii-diagram">
+        [ S ]
+       /          [ A ]   [ B ]
+     /           [ C ] [ D ] [ G ]
+    |
+   [ G ]
+              </div>
+              <p><strong>1. Breadth-First Graph Search (Queue: FIFO):</strong></p>
+              <ul>
+                <li>Expand S &rarr; Fringe: [A, B]</li>
+                <li>Expand A &rarr; Fringe: [B, C, D]</li>
+                <li>Expand B &rarr; Fringe: [C, D, G]</li>
+                <li>Expand C &rarr; Fringe: [D, G] (G already in fringe)</li>
+                <li>Expand D &rarr; Fringe: [G]</li>
+                <li>Expand G &rarr; <strong>GOAL FOUND!</strong> Path returned: <code>S &rarr; B &rarr; G</code> (length = 2 moves).</li>
+              </ul>
+
+              <p style="margin-top: 14px;"><strong>2. Depth-First Graph Search (Stack: LIFO):</strong></p>
+              <ul>
+                <li>Expand S &rarr; Push successors in reverse alphabetical order so A is on top: Stack: [B, A]</li>
+                <li>Pop A &rarr; Successors C, D. Stack: [B, D, C]</li>
+                <li>Pop C &rarr; Successors G. Stack: [B, D, G]</li>
+                <li>Pop G &rarr; <strong>GOAL FOUND!</strong> Path returned: <code>S &rarr; A &rarr; C &rarr; G</code> (length = 3 moves, suboptimal!).</li>
+              </ul>
+            </div>
           </div>
 
-          <p><strong>How it works:</strong></p>
-          <ul>
-            <li><strong>Structure:</strong> A Priority Queue ordered by cumulative path cost.</li>
-            <li>It expands in "cost contours" rather than depth contours.</li>
-            <li>The goal test is applied <em>when a node is selected for expansion</em>, not when it is first generated (because a cheaper path to that node might be found later!).</li>
-            <li><strong>Optimality:</strong> Yes, UCS is guaranteed to find the optimal (cheapest) path as long as all step costs are non-negative.</li>
-          </ul>
-
-          <div class="example">
-            <div class="callout-label">Example</div>
-            <h4>Uniform-Cost Search Trace</h4>
-            <p>Consider navigating from Sibiu to Bucharest.</p>
-            <table style="width:100%; text-align:left; border-collapse: collapse; margin-top: 10px;">
-              <tr style="border-bottom: 2px solid var(--bd);"><th>Step</th><th>Fringe (Priority Queue)</th><th>Action</th></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>1</td><td>[Sibiu: 0]</td><td>Expand Sibiu</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>2</td><td>[Rimnicu: 80, Fagaras: 99]</td><td>Expand Rimnicu</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>3</td><td>[Fagaras: 99, Pitesti: 177]</td><td>Expand Fagaras</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>4</td><td>[Pitesti: 177, Bucharest: 310]</td><td>Expand Pitesti</td></tr>
-              <tr style="border-bottom: 1px solid var(--bd);"><td>5</td><td>[Bucharest: 278, Bucharest: 310]</td><td>Expand Bucharest (Cost 278) -> Goal!</td></tr>
-            </table>
-            <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">Note: A sub-optimal path to Bucharest (Cost 310) was found at step 4, but UCS correctly waited and expanded Pitesti to discover the cheaper path (Cost 278).</p>
-          </div>
-
-          <div class="summary-box">
-            <h4>Key Takeaways</h4>
-            <ul>
-              <li><strong>IDS:</strong> Combines BFS optimality with DFS memory efficiency by repeatedly running depth-limited DFS.</li>
-              <li><strong>UCS:</strong> The cheapest-first search. Uses a priority queue to guarantee the lowest cost path in graphs with varying arc weights.</li>
-            </ul>
+          <div class="protip-box">
+            <h4>FAST Mid-1 Exam Pro-Tips for Uninformed Search</h4>
+            <ol>
+              <li><strong>The Golden Rule of UCS:</strong> In UCS, Goal Test MUST be applied when a node is <strong>popped from the priority queue</strong>, NEVER when it is generated/inserted! If you write that UCS tests goals upon insertion, you will lose 5–10 marks immediately.</li>
+              <li><strong>Zero-Cost and Negative-Cost Edges:</strong> UCS requires all edge costs c &ge; &epsilon; &gt; 0. If zero-cost edges exist, UCS can loop infinitely. If negative-cost edges exist, Dijkstra/UCS fails completely (requires Bellman-Ford).</li>
+              <li><strong>Tie-Breaking Order:</strong> FAST exams almost always specify: <em>"Ties are broken alphabetically"</em>. Double check whether successors are inserted into a stack or queue, as stack (LIFO) requires pushing in reverse alphabetical order to expand alphabetical first!</li>
+            </ol>
           </div>
         </div>
 
@@ -437,31 +898,28 @@
       <div class="bottom-nav">
         <button id="prev-btn" onclick="goPrev()">
           <div>
-            <span class="btn-label">← Previous</span>
+            <span class="btn-label">&larr; Previous</span>
             <span class="btn-title" id="prev-title">Topic</span>
           </div>
         </button>
         <button id="next-btn" onclick="goNext()">
           <div>
-            <span class="btn-label">Next →</span>
+            <span class="btn-label">Next &rarr;</span>
             <span class="btn-title" id="next-title">Topic</span>
           </div>
         </button>
       </div>
     </div>
+
     <button
       id="back-to-top"
-      onclick="
-        document
-          .getElementById('main-content')
-          .scrollTo({ top: 0, behavior: 'smooth' })
-      "
+      onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })"
     >
-      ↑
+      &uarr;
     </button>
 
     <script>
-      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7"];
       let currentTopicIndex = 0;
 
       function getTopicTitle(id) {
@@ -469,21 +927,8 @@
                      document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
         if (link) {
           const numEl = link.querySelector('.nav-num');
-          if (numEl) {
-            return link.textContent.replace(numEl.textContent, '').trim();
-          }
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
           return link.textContent.replace(/^\d+\s*/, '').trim();
-        }
-        const card = document.getElementById(id);
-        if (card) {
-          const h2 = card.querySelector('h2');
-          if (h2) {
-            const numEl = h2.querySelector('.topic-num');
-            if (numEl) {
-              return h2.textContent.replace(numEl.textContent, '').trim();
-            }
-            return h2.textContent.replace(/^\d+\s*/, '').trim();
-          }
         }
         return 'Topic';
       }
@@ -564,19 +1009,15 @@
 
       function filterContent() {
         const q = document.getElementById("search-input").value.toLowerCase();
-        document
-          .querySelectorAll(".nav-sublist li")
-          .forEach(
-            (i) =>
-              (i.style.display = i.textContent.toLowerCase().includes(q)
-                ? ""
-                : "none"),
-          );
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+            i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
       }
 
-      if (topics.length > 0) showTopic(topics[0]);
-      const mc = document.getElementById("main-content");
-      const bb = document.getElementById("back-to-top");
+      showTopic(topics[0]);
+
+      const mc = document.getElementById("main-content"),
+        bb = document.getElementById("back-to-top");
       mc.addEventListener(
         "scroll",
         () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
