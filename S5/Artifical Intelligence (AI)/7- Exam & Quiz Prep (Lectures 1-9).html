@@ -66,6 +66,127 @@
         margin-bottom: 10px;
       }
     </style>
+  
+    <style>
+      .exam-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: monospace;
+      }
+      .exam-badge.gold {
+        background: rgba(240, 169, 78, 0.15);
+        color: #f0a94e;
+        border: 1px solid rgba(240, 169, 78, 0.35);
+      }
+      .exam-badge.purple {
+        background: rgba(179, 133, 240, 0.15);
+        color: #b385f0;
+        border: 1px solid rgba(179, 133, 240, 0.35);
+      }
+      .exam-badge.cyan {
+        background: rgba(79, 163, 227, 0.15);
+        color: #4fa3e3;
+        border: 1px solid rgba(79, 163, 227, 0.35);
+      }
+      .exam-badge.green {
+        background: rgba(79, 191, 139, 0.15);
+        color: #4fbf8b;
+        border: 1px solid rgba(79, 191, 139, 0.35);
+      }
+      .exam-card {
+        background: #18181b;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 22px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s ease;
+      }
+      .exam-card:hover {
+        border-color: rgba(217, 119, 87, 0.45);
+      }
+      .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .exam-title {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+      }
+      .exam-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .solution-box {
+        background: #141c24;
+        border: 1px solid #234563;
+        border-left: 4px solid #4fa3e3;
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin: 16px 0;
+      }
+      .solution-box h5 {
+        color: #4fa3e3;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .math-box {
+        font-family: monospace;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-left: 3px solid #facc15;
+        margin: 12px 0;
+        color: #facc15;
+        line-height: 1.6;
+      }
+      .trap-card {
+        background: rgba(240, 82, 79, 0.06);
+        border: 1px solid rgba(240, 82, 79, 0.25);
+        border-left: 4px solid #f0524f;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 14px 0;
+      }
+      .trap-card h4 {
+        color: #f0524f;
+        margin: 0 0 6px;
+        font-size: 0.95rem;
+      }
+      .protip-box {
+        background: rgba(240, 169, 78, 0.08);
+        border: 1px solid rgba(240, 169, 78, 0.3);
+        border-left: 4px solid #f0a94e;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+      }
+      .protip-box h4 {
+        color: #f0a94e;
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+      }
+    </style>
   </head>
   <body>
     <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
@@ -478,6 +599,141 @@
           </div>
         </div>
 
+
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">★</span>FAST Mid-1 Exam Hall of Fame (2016–2026)</h2>
+          <p class="topic-subtitle">A Decade of Real Mid-1 Exams Analyzed: Recurring Patterns, Fatal Traps &amp; High-Yield Solutions</p>
+
+          <div class="summary-box" style="margin-top: 16px;">
+            <h4>Decade-Long Exam Analysis (2016–2026)</h4>
+            <p>Analysis of 17 official past papers and solution keys across 10 years reveals that FAST NUCES Mid-1 exams adhere to an extraordinarily consistent core curriculum. Every single paper tests 4 foundational pillars: (1) PEAS &amp; Environment Dimensions, (2) State Space Formulation with Branching Analysis, (3) Uninformed Search &amp; UCS, and (4) Heuristic A* Tracing with Minimax/Alpha-Beta. Master the "Top 5 Deadly Exam Traps" below to ensure top grades.</p>
+          </div>
+
+          <!-- TOP 5 DEADLY EXAM TRAPS -->
+          <h3 style="margin-top: 28px;">The Top 5 Deadly Exam Traps (Tested Repeatedly)</h3>
+
+          <div class="trap-card">
+            <h4>Trap 1: The "Early Goal Checking" Trap in UCS and A* (Fall 2016, Spring 2018)</h4>
+            <p><strong>The Trap:</strong> Testing for the goal state when a node is <em>generated</em> (inserted into the frontier) rather than when it is <em>expanded</em> (popped from the queue).</p>
+            <p><strong>The Reality:</strong> In BFS with unit costs, testing early preserves optimality because depth = cost. In UCS and A*, edge costs vary; a deeper path can have a strictly lower total cost! <strong>Testing early in UCS or A* destroys optimality</strong> and causes the algorithm to return expensive suboptimal paths!</p>
+          </div>
+
+          <div class="trap-card">
+            <h4>Trap 2: Manhattan Distance Admissibility with Diagonal Steps (Spring 2026 Q1)</h4>
+            <p><strong>The Trap:</strong> Assuming Manhattan distance <code>h(n) = |dx| + |dy|</code> is always admissible on 2D grids.</p>
+            <p><strong>The Reality:</strong> If diagonal movement is permitted (e.g. diagonal cost = 4, while two orthogonal steps cost 3+3 = 6), Manhattan assumes two orthogonal moves and predicts 6. Since <code>6 &gt; 4</code>, Manhattan <strong>overestimates</strong> diagonal shortcuts and is <strong>INADMISSIBLE</strong>! The correct admissible heuristic is <code>4 &times; min(dx, dy) + 3 &times; |dx - dy|</code>.</p>
+          </div>
+
+          <div class="trap-card">
+            <h4>Trap 3: Consistency vs Admissibility &amp; Reopening Visited Nodes (Spring 2018 Q1, Fall 2018 Q1)</h4>
+            <p><strong>The Trap:</strong> Confusing admissibility with monotonicity/consistency.</p>
+            <p><strong>The Reality:</strong> Admissibility (<code>h(n) &le; h*(n)</code>) guarantees optimality for <em>Tree Search</em>. For <em>Graph Search</em> with a CLOSED list, if the heuristic is only admissible but not consistent, a cheaper path to a closed node can be found later! If closed nodes are not reopened, A* will return a suboptimal path. <strong>Consistency (<code>h(n) &le; c(n,a,n') + h(n')</code>) is strictly required to guarantee optimality without reopening CLOSED nodes.</strong></p>
+          </div>
+
+          <div class="trap-card">
+            <h4>Trap 4: Normal Play vs Misere Play in Take-Away Games (Spring 2026 vs Spring 2025)</h4>
+            <p><strong>The Trap:</strong> Skimming the victory condition of combinatorial games.</p>
+            <p><strong>The Reality:</strong> In Spring 2026 (Five-Stone Game), the player who takes the last stone <strong>WINS</strong> (Normal play: optimal move is take 2 stones). In Spring 2025 (Subtraction Game N=5), the player who takes the last stone <strong>LOSES</strong> (Misere play). A single misread word flips terminal node values from +1 to -1 across the entire tree!</p>
+          </div>
+
+          <div class="trap-card">
+            <h4>Trap 5: Alphabetical Tie-Breaking in DFS vs BFS (Fall 2016 Q1, Spring 2024 Q1)</h4>
+            <p><strong>The Trap:</strong> Forgetting how LIFO stacks process alphabetical ties.</p>
+            <p><strong>The Reality:</strong> When exam instructions state <em>"Ties are broken alphabetically"</em>: In BFS (Queue), push A then B, so A is dequeued first. In DFS (Stack), pushing A then B causes B to sit on top of the stack and be popped first! To expand A first in DFS, successors must be pushed in <strong>reverse alphabetical order</strong> [B, A]!</p>
+          </div>
+
+          <!-- MASTER DECISION MATRIX -->
+          <h3 style="margin-top: 32px;">Master Algorithm Selection &amp; Complexity Matrix</h3>
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Algorithm</th>
+                <th>Completeness</th>
+                <th>Time Complexity</th>
+                <th>Space Complexity</th>
+                <th>Optimality</th>
+                <th>Frontier Data Structure</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>BFS</strong></td>
+                <td>Yes (finite b)</td>
+                <td>O(b<sup>d</sup>)</td>
+                <td>O(b<sup>d</sup>) [Exponential]</td>
+                <td>Yes (unit costs only)</td>
+                <td>FIFO Queue</td>
+              </tr>
+              <tr>
+                <td><strong>DFS</strong></td>
+                <td>No (infinite graphs)</td>
+                <td>O(b<sup>m</sup>)</td>
+                <td>O(b &times; m) [Linear]</td>
+                <td>No</td>
+                <td>LIFO Stack</td>
+              </tr>
+              <tr>
+                <td><strong>IDS</strong></td>
+                <td>Yes (finite b)</td>
+                <td>O(b<sup>d</sup>)</td>
+                <td>O(b &times; d) [Linear]</td>
+                <td>Yes (unit costs only)</td>
+                <td>LIFO Stack with limit</td>
+              </tr>
+              <tr>
+                <td><strong>UCS</strong></td>
+                <td>Yes (c &ge; &epsilon; &gt; 0)</td>
+                <td>O(b<sup>1 + &lfloor;C*/&epsilon;&rfloor;</sup>)</td>
+                <td>O(b<sup>1 + &lfloor;C*/&epsilon;&rfloor;</sup>)</td>
+                <td>Yes (general costs)</td>
+                <td>Priority Queue on g(n)</td>
+              </tr>
+              <tr>
+                <td><strong>Greedy Best-First</strong></td>
+                <td>No (in tree search)</td>
+                <td>O(b<sup>m</sup>) worst case</td>
+                <td>O(b<sup>m</sup>)</td>
+                <td>No</td>
+                <td>Priority Queue on h(n)</td>
+              </tr>
+              <tr>
+                <td><strong>A* Search</strong></td>
+                <td>Yes (finite b, c &ge; &epsilon;)</td>
+                <td>O(b<sup>d</sup>) worst case</td>
+                <td>O(b<sup>d</sup>)</td>
+                <td>Yes (admissible/consistent)</td>
+                <td>Priority Queue on f = g + h</td>
+              </tr>
+              <tr>
+                <td><strong>Minimax</strong></td>
+                <td>Yes (finite tree)</td>
+                <td>O(b<sup>m</sup>)</td>
+                <td>O(b &times; m)</td>
+                <td>Yes (against optimal)</td>
+                <td>Recursion Stack</td>
+              </tr>
+              <tr>
+                <td><strong>Alpha-Beta</strong></td>
+                <td>Yes (finite tree)</td>
+                <td>O(b<sup>m/2</sup>) best case</td>
+                <td>O(b &times; m)</td>
+                <td>Yes (exact same as Minimax)</td>
+                <td>Recursion Stack with [&alpha;, &beta;]</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="protip-box">
+            <h4>FAST Mid-1 Exam Hall of Fame Golden Rule</h4>
+            <p><strong>"The 3 Lines That Secure A-Grade on Every Sessional":</strong></p>
+            <ul>
+              <li><strong>Line 1:</strong> Always specify whether your heuristic is admissible AND consistent, stating the triangle inequality: <code>h(n) &le; c(n,a,n') + h(n')</code>.</li>
+              <li><strong>Line 2:</strong> When formulating an agent, state whether the environment is <em>Partially or Fully Observable</em> and give the physical reason why.</li>
+              <li><strong>Line 3:</strong> In search traces, clearly display <code>g + h = f</code> on every expanded node, snapshot your OPEN priority queue, and never terminate until the goal node is <strong>popped</strong>.</li>
+            </ul>
+          </div>
+        </div>
+
       </div>
 
       <div class="bottom-nav">
@@ -504,7 +760,7 @@
     </button>
 
     <script>
-      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6"];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7"];
       let currentTopicIndex = 0;
 
       function getTopicTitle(id) {

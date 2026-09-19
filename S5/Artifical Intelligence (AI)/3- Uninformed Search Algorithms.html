@@ -70,6 +70,127 @@
         margin: 16px 0;
       }
     </style>
+  
+    <style>
+      .exam-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: monospace;
+      }
+      .exam-badge.gold {
+        background: rgba(240, 169, 78, 0.15);
+        color: #f0a94e;
+        border: 1px solid rgba(240, 169, 78, 0.35);
+      }
+      .exam-badge.purple {
+        background: rgba(179, 133, 240, 0.15);
+        color: #b385f0;
+        border: 1px solid rgba(179, 133, 240, 0.35);
+      }
+      .exam-badge.cyan {
+        background: rgba(79, 163, 227, 0.15);
+        color: #4fa3e3;
+        border: 1px solid rgba(79, 163, 227, 0.35);
+      }
+      .exam-badge.green {
+        background: rgba(79, 191, 139, 0.15);
+        color: #4fbf8b;
+        border: 1px solid rgba(79, 191, 139, 0.35);
+      }
+      .exam-card {
+        background: #18181b;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 22px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s ease;
+      }
+      .exam-card:hover {
+        border-color: rgba(217, 119, 87, 0.45);
+      }
+      .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .exam-title {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+      }
+      .exam-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .solution-box {
+        background: #141c24;
+        border: 1px solid #234563;
+        border-left: 4px solid #4fa3e3;
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin: 16px 0;
+      }
+      .solution-box h5 {
+        color: #4fa3e3;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .math-box {
+        font-family: monospace;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-left: 3px solid #facc15;
+        margin: 12px 0;
+        color: #facc15;
+        line-height: 1.6;
+      }
+      .ascii-diagram {
+        font-family: monospace;
+        background: #09090b;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 14px 0;
+        color: #4fa3e3;
+        white-space: pre;
+        overflow-x: auto;
+        font-size: 0.88rem;
+        line-height: 1.5;
+      }
+      .protip-box {
+        background: rgba(240, 169, 78, 0.08);
+        border: 1px solid rgba(240, 169, 78, 0.3);
+        border-left: 4px solid #f0a94e;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+      }
+      .protip-box h4 {
+        color: #f0a94e;
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+      }
+    </style>
   </head>
   <body>
     <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
@@ -112,6 +233,7 @@
             <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Depth-Limited &amp; Iterative Deepening</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Uniform Cost Search (UCS) Deep-Dive</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Uninformed Comparison Matrix &amp; Practice</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">★</span>Mid-1 Solved Questions (2016–2026)</a></li>
           </ul>
         </li>
         <li>
@@ -600,6 +722,177 @@
           </div>
         </div>
 
+
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">★</span>FAST Mid-1 Exam Solved Questions (2016–2026)</h2>
+          <p class="topic-subtitle">Authentic Sessional-I Questions on Early Goal Testing, Uniform Cost Search &amp; Algorithm Comparisons</p>
+
+          <div class="summary-box" style="margin-top: 16px;">
+            <h4>Why This Topic is the Highest Scoring Section on Mid-1</h4>
+            <p>Every single FAST Mid-1 exam tests uninformed search mechanisms. Specifically, the <strong>"Early Goal Checking Trap"</strong> (checking goal when a node is added to the frontier vs when it is popped) is the single most celebrated question in FAST exam history (appearing in Fall 2016, Spring 2018, and Fall 2018). Master this proof and you are guaranteed 10+ marks!</p>
+          </div>
+
+          <!-- EXAM QUESTION 1 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Fall 2016 &amp; Spring 2018</span>
+                <span class="exam-badge purple">Question 2 (10 Marks) • Hall of Fame</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 1: The "Early Goal Checking" Trap in Graph Search</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">Appeared in 3 Mids</span>
+                <span class="exam-badge green">Classic FAST Problem</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> In standard Graph Search, the goal test is applied when a node is <strong>popped/expanded</strong> from the priority queue. A student suggests modifying the algorithm by testing whether a node reaches the goal state <strong>as soon as it is generated (inserted into the fringe)</strong> to terminate faster.</p>
+            <ol>
+              <li>If using <code>EARLY-GOAL-CHECKING-GRAPH-SEARCH</code> with Uniform Cost Search (UCS), is the algorithm still <strong>Complete</strong>? Justify.</li>
+              <li>Will it return an <strong>Optimal</strong> solution? Justify with a concrete counterexample.</li>
+              <li>Why does BFS remain optimal with Early Goal Checking on unit costs, whereas UCS completely fails?</li>
+            </ol>
+
+            <div class="solution-box">
+              <h5>Complete Mathematical &amp; Algorithmic Proof</h5>
+
+              <p><strong>1. Completeness: TRUE.</strong></p>
+              <p>Testing for the goal early upon generation only causes the algorithm to terminate <em>earlier</em> than standard UCS. Since standard UCS is complete on finite state spaces with step costs c &ge; &epsilon; &gt; 0, early goal checking will still find a goal state if one exists and terminate. Hence, it remains complete.</p>
+
+              <p style="margin-top: 14px;"><strong>2. Optimality: FALSE (LOSES OPTIMALITY!).</strong></p>
+              <p>Early goal checking completely destroys the optimality guarantee of UCS. Below is the canonical counterexample graph:</p>
+              
+              <div class="ascii-diagram">
+         [ S ] (Start)
+        /        c=10/        c=1
+      v         v
+    [ G ]<------[ A ]
+    (Goal)  c=2
+              </div>
+
+              <p><strong>Step-by-step Trace under Early Goal Checking UCS:</strong></p>
+              <ul>
+                <li><strong>Start at S:</strong> Expand S. Generate its successors: G (with cost g=10) and A (with cost g=1).</li>
+                <li><strong>Early Goal Check on Generation:</strong> The algorithm tests G as soon as G is generated. Since G is a goal state, the algorithm <strong>immediately terminates</strong> and returns path <code>S &rarr; G</code> with cost <strong>10</strong>!</li>
+                <li><strong>The True Optimal Path:</strong> The path <code>S &rarr; A &rarr; G</code> has cost <code>1 + 2 = 3</code>!</li>
+                <li><strong>Conclusion:</strong> The algorithm returned a suboptimal solution (cost 10 instead of 3). Standard UCS would have kept G on the priority queue and expanded A first (since g(A)=1 &lt; g(G)=10), discovering the cheaper route of cost 3.</li>
+              </ul>
+
+              <p style="margin-top: 14px;"><strong>3. Why BFS is Optimal with Early Goal Check but UCS Fails:</strong></p>
+              <p>In BFS, all edge costs are uniform (c = 1). Therefore, cumulative path cost is strictly proportional to depth d (g(n) = d). The first time the goal state is generated at depth d, no shallower path to the goal can ever exist. In UCS, edge costs vary arbitrarily: a path with <strong>more edges (deeper) can have a strictly lower total cost</strong> than a path with fewer edges. Therefore, UCS must delay the goal test until a node is <em>popped from the queue</em>, which guarantees that all paths with lower cost have already been explored.</p>
+            </div>
+          </div>
+
+          <!-- EXAM QUESTION 2 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Fall 2017</span>
+                <span class="exam-badge purple">Problem 2a (4 Points)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 2: In What Ways is Iterative Deepening Better than DFS?</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">CS401 Sessional</span>
+                <span class="exam-badge green">4-Criteria Evaluation</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> Provide a rigorous comparison between Iterative Deepening Search (IDS) and Depth-First Search (DFS) evaluated strictly against the four standard criteria used to compare search algorithms.</p>
+
+            <div class="solution-box">
+              <h5>Model Solution</h5>
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Criterion</th>
+                    <th>Depth-First Search (DFS)</th>
+                    <th>Iterative Deepening Search (IDS)</th>
+                    <th>Why IDS is Strictly Superior</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Completeness</strong></td>
+                    <td>Incomplete (can get trapped in infinite paths or cycles in infinite state spaces).</td>
+                    <td><strong>Complete</strong> (guaranteed to find goal if branching factor b is finite).</td>
+                    <td>IDS systematically increments depth limit (0, 1, 2, ...), so it can never be trapped down an infinite branch.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Time Complexity</strong></td>
+                    <td>O(b<sup>m</sup>), where m is the maximum tree depth (m can be &infin;).</td>
+                    <td><strong>O(b<sup>d</sup>)</strong>, where d is the shallowest goal depth.</td>
+                    <td>When m &gt;&gt; d (e.g. goal at depth 5, but tree extends to depth 100), DFS wastes exponential time in deep dead ends, while IDS finishes at depth d.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Space Complexity</strong></td>
+                    <td>O(b &times; m) linear space.</td>
+                    <td><strong>O(b &times; d)</strong> linear space.</td>
+                    <td>Because d &le; m, IDS uses strictly less or equal memory than DFS!</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Optimality</strong></td>
+                    <td>Not optimal (returns the first path found down the leftmost branch, regardless of length).</td>
+                    <td><strong>Optimal</strong> (for unit step costs).</td>
+                    <td>IDS guarantees finding the shallowest goal state first, ensuring shortest path.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p><strong>Summary Conclusion:</strong> IDS combines the <em>optimal completeness of BFS</em> with the <em>modest linear space complexity of DFS</em>. It dominates DFS in all four fundamental criteria.</p>
+            </div>
+          </div>
+
+          <!-- EXAM QUESTION 3 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Fall 2016 &amp; Spring 2024</span>
+                <span class="exam-badge purple">Graph Search Execution</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 3: BFS vs DFS Graph Search Traces with Alphabetical Tie-Breaking</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">Standard Trace Problem</span>
+                <span class="exam-badge green">Step-by-Step Table</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> Consider a search graph with start node S and goal node G. Successors are always broken alphabetically (e.g. A before B). Contrast the expansion sequence and path returned between Breadth-First Graph Search (FIFO queue) and Depth-First Graph Search (LIFO stack) when avoiding repeated states (Closed list).</p>
+
+            <div class="solution-box">
+              <h5>Model Solution &amp; Frontier Dynamics</h5>
+              <div class="ascii-diagram">
+        [ S ]
+       /          [ A ]   [ B ]
+     /           [ C ] [ D ] [ G ]
+    |
+   [ G ]
+              </div>
+              <p><strong>1. Breadth-First Graph Search (Queue: FIFO):</strong></p>
+              <ul>
+                <li>Expand S &rarr; Fringe: [A, B]</li>
+                <li>Expand A &rarr; Fringe: [B, C, D]</li>
+                <li>Expand B &rarr; Fringe: [C, D, G]</li>
+                <li>Expand C &rarr; Fringe: [D, G] (G already in fringe)</li>
+                <li>Expand D &rarr; Fringe: [G]</li>
+                <li>Expand G &rarr; <strong>GOAL FOUND!</strong> Path returned: <code>S &rarr; B &rarr; G</code> (length = 2 moves).</li>
+              </ul>
+
+              <p style="margin-top: 14px;"><strong>2. Depth-First Graph Search (Stack: LIFO):</strong></p>
+              <ul>
+                <li>Expand S &rarr; Push successors in reverse alphabetical order so A is on top: Stack: [B, A]</li>
+                <li>Pop A &rarr; Successors C, D. Stack: [B, D, C]</li>
+                <li>Pop C &rarr; Successors G. Stack: [B, D, G]</li>
+                <li>Pop G &rarr; <strong>GOAL FOUND!</strong> Path returned: <code>S &rarr; A &rarr; C &rarr; G</code> (length = 3 moves, suboptimal!).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="protip-box">
+            <h4>FAST Mid-1 Exam Pro-Tips for Uninformed Search</h4>
+            <ol>
+              <li><strong>The Golden Rule of UCS:</strong> In UCS, Goal Test MUST be applied when a node is <strong>popped from the priority queue</strong>, NEVER when it is generated/inserted! If you write that UCS tests goals upon insertion, you will lose 5–10 marks immediately.</li>
+              <li><strong>Zero-Cost and Negative-Cost Edges:</strong> UCS requires all edge costs c &ge; &epsilon; &gt; 0. If zero-cost edges exist, UCS can loop infinitely. If negative-cost edges exist, Dijkstra/UCS fails completely (requires Bellman-Ford).</li>
+              <li><strong>Tie-Breaking Order:</strong> FAST exams almost always specify: <em>"Ties are broken alphabetically"</em>. Double check whether successors are inserted into a stack or queue, as stack (LIFO) requires pushing in reverse alphabetical order to expand alphabetical first!</li>
+            </ol>
+          </div>
+        </div>
+
       </div>
 
       <div class="bottom-nav">
@@ -626,7 +919,7 @@
     </button>
 
     <script>
-      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6"];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7"];
       let currentTopicIndex = 0;
 
       function getTopicTitle(id) {

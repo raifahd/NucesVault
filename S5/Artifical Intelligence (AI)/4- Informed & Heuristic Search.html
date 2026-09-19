@@ -87,6 +87,129 @@
         margin-bottom: 8px;
       }
     </style>
+  
+    <style>
+      .exam-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: monospace;
+      }
+      .exam-badge.gold {
+        background: rgba(240, 169, 78, 0.15);
+        color: #f0a94e;
+        border: 1px solid rgba(240, 169, 78, 0.35);
+      }
+      .exam-badge.purple {
+        background: rgba(179, 133, 240, 0.15);
+        color: #b385f0;
+        border: 1px solid rgba(179, 133, 240, 0.35);
+      }
+      .exam-badge.cyan {
+        background: rgba(79, 163, 227, 0.15);
+        color: #4fa3e3;
+        border: 1px solid rgba(79, 163, 227, 0.35);
+      }
+      .exam-badge.green {
+        background: rgba(79, 191, 139, 0.15);
+        color: #4fbf8b;
+        border: 1px solid rgba(79, 191, 139, 0.35);
+      }
+      .exam-card {
+        background: #18181b;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 22px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transition: border-color 0.2s ease;
+      }
+      .exam-card:hover {
+        border-color: rgba(217, 119, 87, 0.45);
+      }
+      .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .exam-title {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+      }
+      .exam-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .solution-box {
+        background: #141c24;
+        border: 1px solid #234563;
+        border-left: 4px solid #4fa3e3;
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin: 16px 0;
+      }
+      .solution-box h5 {
+        color: #4fa3e3;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .math-box {
+        font-family: monospace;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-left: 3px solid #facc15;
+        margin: 12px 0;
+        color: #facc15;
+        line-height: 1.6;
+      }
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+      }
+      .comparison-table th, .comparison-table td {
+        border: 1px solid var(--bd);
+        padding: 10px 14px;
+        text-align: left;
+        font-size: 0.9rem;
+      }
+      .comparison-table th {
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--ac);
+      }
+      .protip-box {
+        background: rgba(240, 169, 78, 0.08);
+        border: 1px solid rgba(240, 169, 78, 0.3);
+        border-left: 4px solid #f0a94e;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 20px 0;
+      }
+      .protip-box h4 {
+        color: #f0a94e;
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+      }
+    </style>
   </head>
   <body>
     <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
@@ -569,6 +692,160 @@ function BEST_FIRST_SEARCH(Start_State, Goal_Test)
           </div>
         </div>
 
+
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">★</span>FAST Mid-1 Exam Solved Questions (2016–2026)</h2>
+          <p class="topic-subtitle">Authentic Sessional-I Questions on Heuristic Admissibility, Mathematical Dominance &amp; Local Search Variants</p>
+
+          <div class="summary-box" style="margin-top: 16px;">
+            <h4>Why Heuristic Design is Tested Rigorously at FAST</h4>
+            <p>On every FAST Mid-1 exam, instructors do not merely ask you to compute a heuristic—they test whether you can <strong>prove admissibility or disprove it with a counterexample</strong>, and explain why one heuristic <strong>dominates</strong> another. Questions directly from the Spring 2026 and Spring 2024 papers below illustrate the exact depth required.</p>
+          </div>
+
+          <!-- EXAM QUESTION 1 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Sessional-I • Feb 2026</span>
+                <span class="exam-badge purple">Question 1d, 1e, 1f (7 Marks)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 1: Manhattan vs Diagonal Heuristic Admissibility &amp; Dominance Proof</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">SP-2026 Exam</span>
+                <span class="exam-badge green">Fresh 2026 Paper</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> An autonomous delivery robot moves in a 2D warehouse grid with obstacles. Movement rules and costs: <strong>Horizontal or Vertical move &rarr; cost = 3</strong>; <strong>Diagonal move &rarr; cost = 4</strong>. Goal is at (x<sub>g</sub>, y<sub>g</sub>).</p>
+            <ol>
+              <li>Is the Manhattan distance heuristic <code>h<sub>1</sub>(n) = |x<sub>g</sub> - x| + |y<sub>g</sub> - y|</code> admissible for this problem? Prove your answer.</li>
+              <li>Consider another heuristic: <code>h<sub>2</sub>(n) = 4 &times; min(dx, dy) + 3 &times; |dx - dy|</code>, where <code>dx = |x<sub>g</sub> - x|</code> and <code>dy = |y<sub>g</sub> - y|</code>. Is h<sub>2</sub> admissible? How?</li>
+              <li>Between h<sub>1</sub> and h<sub>2</sub>, which heuristic will make A* search more efficient? Justify.</li>
+            </ol>
+
+            <div class="solution-box">
+              <h5>Step-by-Step Model Solution &amp; Mathematical Proof</h5>
+
+              <p><strong>Part 1: Is h<sub>1</sub>(n) Admissible? NO (INADMISSIBLE!)</strong></p>
+              <p><strong>Proof by Counterexample:</strong> A heuristic is admissible if and only if for all states n, <code>h(n) &le; h*(n)</code> (it never overestimates the true minimal cost to goal). Let the robot be at <code>n = (3, 2)</code> and goal at <code>(4, 3)</code>:</p>
+              <ul>
+                <li><strong>True Cost h*(n):</strong> The robot can make a single diagonal move from (3,2) to (4,3). The true cost of this move is <strong>4</strong>.</li>
+                <li><strong>Manhattan Cost Calculation:</strong> Manhattan distance evaluates <code>dx = |4-3| = 1</code>, <code>dy = |3-2| = 1</code>. If Manhattan distance is evaluated in grid step costs: <code>1 &times; 3 + 1 &times; 3 = 6</code>.</li>
+                <li>Because <code>6 &gt; 4</code> (estimated cost exceeds true cost), the heuristic <strong>overestimates</strong> the cost of diagonal shortcuts!</li>
+                <li><em>Even if evaluated as raw coordinate sum:</em> for start (0,0) to goal (4,3), <code>h_1(0,0) = 4 + 3 = 7</code>, but 3 diagonal moves (cost 12) + 1 horizontal move (cost 3) = 15. However, on any local step where a diagonal move is available, Manhattan assumes 2 orthogonal steps (cost 6), overestimating the direct diagonal option (cost 4). Therefore, h<sub>1</sub> is <strong>inadmissible</strong>.</li>
+              </ul>
+
+              <p style="margin-top: 14px;"><strong>Part 2: Is h<sub>2</sub>(n) Admissible? YES (ADMISSIBLE!)</strong></p>
+              <p><strong>Proof via Relaxed Problem:</strong></p>
+              <ul>
+                <li>Consider a <em>relaxed version</em> of the warehouse grid where <strong>all obstacle shelves are removed</strong>.</li>
+                <li>In this unobstructed grid, the absolute fastest way to travel between (x, y) and (x<sub>g</sub>, y<sub>g</sub>) is to make <code>min(dx, dy)</code> diagonal steps (each costing 4) to simultaneously reduce both x and y differences, and then make the remaining <code>|dx - dy|</code> straight orthogonal steps (each costing 3).</li>
+                <li>The total cost of this optimal unobstructed path is precisely:
+                  <div class="math-box">h<sub>2</sub>(n) = 4 &times; min(dx, dy) + 3 &times; |dx - dy|</div>
+                </li>
+                <li>In the real warehouse, obstacle shelves can only force the robot to take longer detours, meaning <code>h*(n) &ge; h<sub>2</sub>(n)</code> for all states.</li>
+                <li>Since the optimal cost in a relaxed problem is always a lower bound on the original problem, <strong>h<sub>2</sub> is mathematically guaranteed to be admissible</strong>.</li>
+              </ul>
+
+              <p style="margin-top: 14px;"><strong>Part 3: Efficiency Comparison (Dominance):</strong></p>
+              <p><strong>Answer: h<sub>2</sub>(n) makes A* strictly more efficient and reliable.</strong></p>
+              <ul>
+                <li>First, h<sub>1</sub> is inadmissible, so A* using h<sub>1</sub> does not even guarantee finding the optimal path.</li>
+                <li>Second, h<sub>2</sub> correctly models diagonal movement. Because it provides a tighter, more informed lower bound (<code>h<sub>2</sub>(n) &ge; 0</code>), it dominates less informed heuristics.</li>
+                <li>A* will expand fewer total nodes with h<sub>2</sub> because states with high heuristic values are pruned early, keeping the search focused directly along the optimal diagonal trajectory.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- EXAM QUESTION 2 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Sessional-I • Feb 2024</span>
+                <span class="exam-badge purple">Question 1d (Heuristic Justification)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 2: Inadmissible Heuristic Formulation in Grid Search</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">SP-2024 Exam</span>
+                <span class="exam-badge green">Common Trap</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong> In the "Solve-It Felix" grid game, each move {L, R, U, D} has an actual cost of 1. A student designs the following heuristic to bias Felix toward vertical movement: <code>h(n) = Horizontal Distance + 5 &times; Vertical Distance</code>. Is this heuristic admissible? Justify your answer.</p>
+
+            <div class="solution-box">
+              <h5>Model Solution</h5>
+              <p><strong>Answer: NOT ADMISSIBLE.</strong></p>
+              <p><strong>Justification:</strong> By multiplying vertical distance by 5, the heuristic assumes each vertical step costs 5, whereas the actual move cost in the game is only 1. For any node n that requires vertical travel, h(n) vastly overestimates the true cost.</p>
+              <p><strong>Concrete Counterexample:</strong> Consider a cell G that is 1 cell directly above the key cell (Horizontal = 0, Vertical = 1). The actual minimal cost to reach the key is <code>h*(G) = 1</code> move. However:
+              <div class="math-box">h(G) = 0 + 5 &times; (1) = 5 &gt; h*(G) = 1</div>
+              Because <code>h(G) &gt; h*(G)</code>, the heuristic overestimates the cost to goal, violating admissibility.</p>
+            </div>
+          </div>
+
+          <!-- EXAM QUESTION 3 -->
+          <div class="exam-card">
+            <div class="exam-header">
+              <div>
+                <span class="exam-badge gold">FAST Mid-I • Fall 2017</span>
+                <span class="exam-badge purple">Problem 2c &amp; 2d (Short Questions)</span>
+                <h3 class="exam-title" style="margin-top: 8px;">Question 3: Hill-Climbing vs Best-First Search &amp; Extreme Parameter Cases</h3>
+              </div>
+              <div class="exam-meta">
+                <span class="exam-badge cyan">CS401 NUCES</span>
+                <span class="exam-badge green">Conceptual 2-Markers</span>
+              </div>
+            </div>
+            <p><strong>Problem Statement:</strong></p>
+            <ol>
+              <li>State two major differences between Hill-Climbing Search and Best-First Search.</li>
+              <li>What algorithm results as a special case if:
+                <br>&bull; (i) Local Beam Search is applied with <code>k = 1</code>?
+                <br>&bull; (ii) Genetic Algorithm is run with population size <code>N = 1</code> and a mutation rate of 1.0 (always apply mutation)?
+              </li>
+            </ol>
+
+            <div class="solution-box">
+              <h5>Model Solution</h5>
+              <p><strong>1. Two Major Differences:</strong></p>
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Feature</th>
+                    <th>Hill-Climbing Search</th>
+                    <th>Best-First Search</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Memory &amp; Frontier</strong></td>
+                    <td>Keeps <strong>zero memory</strong> of previous states (maintains only current state, O(1) space). No agenda or frontier.</td>
+                    <td>Maintains a <strong>global priority queue (OPEN list)</strong> of all unexplored nodes and a CLOSED list of visited states.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Backtracking &amp; Completeness</strong></td>
+                    <td><strong>Cannot backtrack.</strong> If it hits a local maximum or shoulder, it terminates or gets stuck forever (incomplete).</td>
+                    <td><strong>Can backtrack.</strong> If the current branch looks unpromising, it automatically reverts to the next best node on OPEN (complete on finite graphs).</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p style="margin-top: 14px;"><strong>2. Extreme Parameter Special Cases:</strong></p>
+              <ul>
+                <li><strong>(i) Local Beam Search with k = 1:</strong> Becomes standard <strong>Greedy Local Hill-Climbing</strong>. (With k=1, exactly one state is maintained at each step, choosing the best neighbor from its immediate successors).</li>
+                <li><strong>(ii) Genetic Algorithm with N = 1 and Mutation Rate = 1:</strong> Becomes a <strong>Random Walk / Stochastic Local Hill Climbing</strong>. (With N=1, no crossover/sexual reproduction is possible. Since mutation occurs with probability 1.0 at every step, the single individual undergoes continuous random point mutations, equivalent to random-walk local search).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="protip-box">
+            <h4>FAST Mid-1 Exam Pro-Tips for Informed Search</h4>
+            <ol>
+              <li><strong>The Counterexample Technique:</strong> When asked to prove a heuristic is NOT admissible, never write general paragraphs. Pick <em>ONE single state</em>, compute <code>h(n)</code>, compute the actual cost <code>h*(n)</code>, and explicitly write: <em>"Since h(n) &gt; h*(n), it overestimates and is therefore inadmissible."</em> FAST professors award 100% marks immediately for this clean structure.</li>
+              <li><strong>The Relaxed Problem Technique:</strong> To prove a heuristic IS admissible, show that it is the exact optimal solution to a <em>relaxed problem</em> where one or more constraints (walls, rules) are removed.</li>
+              <li><strong>Heuristic Dominance Definition:</strong> For two admissible heuristics h<sub>1</sub> and h<sub>2</sub>, h<sub>2</sub> <strong>dominates</strong> h<sub>1</sub> if for all states n, <code>h<sub>2</sub>(n) &ge; h<sub>1</sub>(n)</code> and strictly greater for at least one state. A dominating heuristic will never expand more nodes than the dominated one.</li>
+            </ol>
+          </div>
+        </div>
+
       </div>
 
       <div class="bottom-nav">
@@ -595,7 +872,7 @@ function BEST_FIRST_SEARCH(Start_State, Goal_Test)
     </button>
 
     <script>
-      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6"];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7"];
       let currentTopicIndex = 0;
 
       function getTopicTitle(id) {
