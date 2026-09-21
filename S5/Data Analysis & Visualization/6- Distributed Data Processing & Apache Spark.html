@@ -1829,6 +1829,566 @@ Legacy code using RDDs?                 →  Convert to DataFrame if possible</c
             </ul>
           </div>
 
+          <!-- ═══════════════════════════════════════ PAST QUIZ MCQs ════════════════════════════════════ -->
+          <h3 style="color:var(--ac); margin-top:40px;">📋 Past Quiz MCQs — Official Questions</h3>
+          <p>These are the <strong>exact questions from your in-class quizzes</strong> (all sections, with answers). The mid-exam will likely follow the same MCQ style. Study these carefully — patterns repeat!</p>
+
+          <!-- MCQ styling -->
+          <style>
+            .mcq-block { margin-bottom: 14px; }
+            .mcq-block details { border: 1px solid var(--bd); border-radius: 10px; overflow: hidden; }
+            .mcq-block details summary {
+              padding: 13px 18px; cursor: pointer; font-weight: 500;
+              background: rgba(255,255,255,0.02); list-style: none;
+              display: flex; align-items: flex-start; gap: 10px; transition: background 0.2s;
+              line-height: 1.5;
+            }
+            .mcq-block details summary:hover { background: var(--hv); }
+            .mcq-block details[open] summary { background: rgba(16,185,129,0.06); border-bottom: 1px solid var(--bd); }
+            .mcq-block .mcq-answer {
+              padding: 14px 18px; border-left: 4px solid var(--def-bd);
+              background: rgba(16,185,129,0.04);
+            }
+            .mcq-options { margin: 8px 0 0 0; padding-left: 18px; font-size: 0.88rem; color: var(--mt); list-style: upper-alpha; line-height: 1.9; }
+            .mcq-options li.correct { color: var(--def-bd); font-weight: 700; }
+            .quiz-section-heading {
+              display: flex; align-items: center; gap: 10px;
+              background: rgba(217,119,87,0.06); border: 1px solid rgba(217,119,87,0.2);
+              border-radius: 10px; padding: 10px 16px; margin: 28px 0 14px;
+              font-weight: 700; font-size: 0.95rem; color: var(--ac);
+            }
+          </style>
+
+          <!-- ── QUIZ 1 ── -->
+          <div class="quiz-section-heading">📝 Quiz 1 — PCS Framework, DSLC, Tidy Data &amp; EDA</div>
+          <p style="font-size:0.85rem; color:var(--mt); margin-bottom:16px;">Topics: Veridical Data Science, PCS Framework, Data Science Lifecycle, Data Cleaning, Exploratory Data Analysis. <em>Both sections A &amp; B shown.</em></p>
+
+          <!-- Q1-A-1 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q1</span>&nbsp;According to Chapter 1, what does the <strong>"P"</strong> in the PCS framework stand for?
+                <ul class="mcq-options">
+                  <li>Probability</li><li>Predictability</li><li>Processing</li><li>Precision</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Predictability.</strong> The PCS framework stands for <strong>Predictability, Computability, Stability</strong>. Predictability means results should generalize — if you ran the study again or changed the sample slightly, you'd reach the same conclusions.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-2 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q2</span>&nbsp;In Veridical Data Science, the transition from the "Real-World Realm" to the "Data Realm" relies primarily on:
+                <ul class="mcq-options">
+                  <li>Machine learning algorithms</li><li>Data visualization techniques</li><li>Measurement and data collection processes</li><li>Computational hardware</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Measurement and data collection processes.</strong> The bridge between real-world phenomena and the data realm is the act of <em>measuring</em> and <em>collecting</em> — sensors, surveys, scraping, etc. Without good measurement, downstream analytics are built on sand.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-3 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q3</span>&nbsp;According to the Data Science Life Cycle (DSLC), what is typically the <strong>first step</strong> in a data science project?
+                <ul class="mcq-options">
+                  <li>Exploratory Data Analysis</li><li>Data Cleaning</li><li>Question Formulation</li><li>Modeling</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Question Formulation.</strong> Before any data is touched, you must define <em>what you're trying to answer</em>. A poorly framed question leads to the wrong data, the wrong model, and the wrong conclusion — no matter how sophisticated your analysis is.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-4 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q4</span>&nbsp;During the DSLC, if a data scientist discovers the available data <em>cannot</em> answer the original research question, the most appropriate next step is:
+                <ul class="mcq-options">
+                  <li>Use a powerful ML model to find an answer anyway</li><li>Refine the question or acquire new, appropriate data</li><li>Skip directly to Explanatory Data Analysis</li><li>Delete the missing values and proceed</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Refine the question or acquire new data.</strong> The DSLC is <em>iterative</em> — looping back is expected and correct. Forcing an unanswerable question through a model produces meaningless results. This connects to Veridical DS: the conclusions must truthfully map to reality.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-5 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q5</span>&nbsp;What is the defining characteristic of <strong>"Tidy Data"</strong>?
+                <ul class="mcq-options">
+                  <li>All missing values have been replaced with zeros</li><li>The data has been normalized to a standard scale</li><li>Every variable is a column, and every observation is a row</li><li>The dataset contains only numerical variables</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Every variable is a column, every observation is a row.</strong> Tidy data (Hadley Wickham, 2014) has three rules: (1) each variable is a column, (2) each observation is a row, (3) each type of observational unit is a table. This structure makes vectorized operations and visualization trivially easy.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-6 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q6</span>&nbsp;Why is it best practice to <strong>encapsulate data cleaning steps into functions or scripts</strong>?
+                <ul class="mcq-options">
+                  <li>To make the data file size smaller</li><li>To ensure the process is reproducible and changes can be tracked</li><li>To permanently overwrite the original raw data</li><li>To prevent other researchers from seeing the raw data</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Reproducibility and traceability.</strong> If cleaning steps live only in your head or scattered cells, no one (including future you) can audit or redo them. Functions + version control = a reproducible pipeline. This also aligns with the PCS Stability principle.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-7 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q7</span>&nbsp;What is the <strong>primary goal of Exploratory Data Analysis (EDA)</strong>?
+                <ul class="mcq-options">
+                  <li>To present a final, polished conclusion to stakeholders</li><li>To discover underlying patterns, spot anomalies, and formulate hypotheses</li><li>To train predictive machine learning models</li><li>To prove that the initial hypothesis was correct</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Discover patterns, spot anomalies, formulate hypotheses.</strong> EDA is <em>open-ended exploration</em> — you don't know the answer yet. It's the detective phase. You are <em>not</em> proving anything; you're building understanding so you can ask better questions.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-8 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q8</span>&nbsp;What is the recommended approach for <strong>starting an EDA</strong>?
+                <ul class="mcq-options">
+                  <li>Apply advanced clustering algorithms before any visual plots</li><li>Remove all missing values and outliers before formulating any questions</li><li>Plot every single variable against every other variable</li><li>Follow a question-and-answer workflow guided by domain knowledge</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: D — Question-and-answer workflow guided by domain knowledge.</strong> EDA is not a mechanical scan of all combinations — it's <em>guided</em> by what you already know about the domain. You ask a question, visualize to answer it, then ask the next question that arises.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-9 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q9</span>&nbsp;Which best describes <strong>"Stability"</strong> in the PCS framework?
+                <ul class="mcq-options">
+                  <li>The model must predict exactly the same outcome every time, regardless of input</li><li>The data science pipeline should run without crashing</li><li>Conclusions should remain robust even if human judgment calls or data samples change slightly</li><li>The data must never be altered once collected</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Robust conclusions under slight perturbations.</strong> Stability (also called robustness) asks: if I changed the analyst, the sample, or made slightly different preprocessing choices, would I reach the same conclusion? If a finding only holds for one very specific set of choices, it's not stable — and probably not real.</div>
+            </details>
+          </div>
+
+          <!-- Q1-A-10 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q10</span>&nbsp;When a data scientist examines summary statistics and visualizes distributions to check for errors, they are bridging which two DSLC phases?
+                <ul class="mcq-options">
+                  <li>Question Formulation and Data Acquisition</li><li>Data Cleaning and Exploratory Data Analysis</li><li>Modeling and Reporting</li><li>Data Acquisition and Modeling</li>
+                </ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Data Cleaning and Exploratory Data Analysis.</strong> In practice, cleaning and EDA are interleaved: you visualize to find errors (EDA), then fix them (cleaning), then re-visualize to verify. The DSLC phases overlap in real projects — the lifecycle is iterative, not waterfall.</div>
+            </details>
+          </div>
+
+          <!-- ── Quiz 1-B additional unique questions ── -->
+          <div class="quiz-section-heading" style="background:rgba(59,130,246,0.06); border-color:rgba(59,130,246,0.2); color:var(--exp-bd);">📝 Quiz 1-B — Additional Variants</div>
+
+          <!-- Q1-B-1 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q</span>&nbsp;What does the <strong>"C"</strong> in the PCS framework stand for?
+                <ul class="mcq-options"><li>Consistency</li><li>Correlation</li><li>Computability</li><li>Causality</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Computability.</strong> PCS = Predictability, <strong>Computability</strong>, Stability. Computability asks: can we actually compute this at scale with the data and resources we have? An analytically perfect method that takes 10,000 years to run is not computable in practice.</div>
+            </details>
+          </div>
+
+          <!-- Q1-B-2 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q</span>&nbsp;The overarching goal of "Veridical" Data Science is to ensure that results are:
+                <ul class="mcq-options"><li>Truthful and reliably map back to real-world phenomena</li><li>As mathematically complex as possible</li><li>Solely focused on maximizing predictive accuracy</li><li>Generated entirely without human intervention</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: A — Truthful and reliably mapped to real-world phenomena.</strong> "Veridical" comes from Latin <em>veridicus</em> (truth-telling). Veridical Data Science (Yu &amp; Kumbier) insists that results must faithfully reflect what's happening in the real world, not just what the algorithm produces.</div>
+            </details>
+          </div>
+
+          <!-- Q1-B-3 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q</span>&nbsp;In the DSLC, the phase immediately <strong>following Data Discovery/Acquisition</strong> is typically:
+                <ul class="mcq-options"><li>Explanatory Data Analysis</li><li>Data Cleaning</li><li>Advanced Modeling</li><li>Formulating the initial question</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Data Cleaning.</strong> Raw acquired data is never analysis-ready. The very next step is cleaning: fixing types, handling missing values, standardizing formats. Only after cleaning is EDA meaningful — otherwise you're exploring noise and errors.</div>
+            </details>
+          </div>
+
+          <!-- Q1-B-5 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;What is a primary risk of <strong>manually editing a raw data file in Excel</strong>?
+                <ul class="mcq-options"><li>Spreadsheets cannot handle numerical data</li><li>Manual edits are hard to track, making the process irreproducible</li><li>Spreadsheets automatically delete all missing values</li><li>It is illegal to use spreadsheets in data science</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Irreproducible cleaning process.</strong> If you edit a cell in Excel manually, that change is invisible — there's no log, no script, no audit trail. Six months later, no one (including you) can reproduce the cleaned dataset from the raw one. This violates the reproducibility principle of PCS Stability.</div>
+            </details>
+          </div>
+
+          <!-- Q1-B-7 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;What is the main difference between <strong>EDA</strong> and <strong>Explanatory Analysis</strong>?
+                <ul class="mcq-options"><li>EDA uses tables; Explanatory uses charts</li><li>EDA is for the data scientist to discover insights; Explanatory is for communicating specific findings to an audience</li><li>EDA requires ML; Explanatory only uses simple math</li><li>EDA is done at the very end of the project</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Audience difference.</strong> EDA is <em>private detective work</em> — messy, exploratory, for the analyst's eyes. Explanatory Analysis is <em>public storytelling</em> — polished, focused, designed to communicate one specific insight to a non-technical audience. Confusing them leads to either under-communicating or over-sharing raw exploration artifacts.</div>
+            </details>
+          </div>
+
+          <!-- Q1-B-8 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q</span>&nbsp;To visualize the distribution of a <strong>single continuous numerical variable</strong>, which chart is most appropriate?
+                <ul class="mcq-options"><li>A pie chart</li><li>A scatter plot</li><li>A histogram</li><li>A line plot over time</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Histogram.</strong> A histogram groups continuous values into bins and shows the count (frequency) per bin — revealing shape, spread, skew, and modality of a single variable. Scatter plots need two variables; pie charts are for proportions; line plots require a time/ordered axis.</div>
+            </details>
+          </div>
+
+          <!-- Q1-B-10 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;What are the <strong>three realms</strong> that must be strongly connected to ensure trustworthy real-world decisions?
+                <ul class="mcq-options"><li>The real-world realm, the data realm, and the algorithmic realm</li><li>The business realm, the academic realm, and the technology realm</li><li>The prediction realm, the inference realm, and the description realm</li><li>The hardware realm, the software realm, and the deployment realm</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: A — Real-world, Data, and Algorithmic realms.</strong> Veridical Data Science requires a strong chain: real-world phenomena → data (via measurement) → algorithms (via modeling) → back to real-world decisions. A weak link anywhere — poor measurement, wrong model — breaks the trustworthiness of the conclusions.</div>
+            </details>
+          </div>
+
+          <!-- ── QUIZ 2 ── -->
+          <div class="quiz-section-heading" style="background:rgba(139,92,246,0.06); border-color:rgba(139,92,246,0.2); color:var(--qst-bd);">📝 Quiz 2 — Medallion Architecture &amp; Delta Lake</div>
+          <p style="font-size:0.85rem; color:var(--mt); margin-bottom:16px;">Topics: Data Lake weaknesses, Bronze/Silver/Gold layers, Delta Lake transactions, schema enforcement/evolution, OPTIMIZE/VACUUM, idempotency, incremental loads.</p>
+
+          <!-- Q2-A-1 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q1</span>&nbsp;What model do traditional, unmanaged data lakes follow that makes them highly susceptible to inconsistency when write operations fail?
+                <ul class="mcq-options"><li>The ACID model</li><li>The relational model of normalized, 3NF schemas</li><li>The BASE model (Basically Available, Soft-state, Eventually consistent)</li><li>The single-tier coupled compute and storage model</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — The BASE model.</strong> Traditional data lakes are BASE: they trade consistency for availability. A failed write can leave partial files — some new, some old — with no transaction log to tell readers which files are valid. Delta Lake fixes this by adding a proper ACID transaction log.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-2 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q2</span>&nbsp;How should data teams conceptually view the Medallion architecture layers to maintain platform flexibility?
+                <ul class="mcq-options"><li>As physical servers isolated by hardware firewalls</li><li>As logical progressive refinement boundaries, rather than strictly rigid physical systems</li><li>As a single-tier coupled database schema where all tables share the same normal form</li><li>As a vendor-locked proprietary toolset native only to a single cloud provider</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Logical progressive refinement boundaries.</strong> Bronze/Silver/Gold are <em>logical</em> concepts — they could all live on the same storage system, or different cloud regions. The key is the <em>progressive data refinement</em> pattern, not any specific physical arrangement. This keeps the architecture portable across vendors.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-3 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q3</span>&nbsp;What is the primary functional intent of the <strong>Bronze layer</strong>?
+                <ul class="mcq-options"><li>To store raw data from diverse sources in its original structure, serving as a queryable historical source of truth</li><li>To act as a highly aggregated, business-ready serving layer optimized for BI tools</li><li>To completely normalize all incoming data into 3NF to save on storage</li><li>To execute complex cross-domain joins and apply heavy business logic</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: A — Raw, historical source of truth.</strong> Bronze is the <em>landing zone</em>: raw data arrives and is stored with full fidelity, as-is from the source. No transformation, no business logic. If Silver gets corrupted, you replay Bronze. The bronze layer is your insurance policy.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-4 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q4</span>&nbsp;What unique metadata structure does Delta Lake establish alongside standard data files to track atomic transactions?
+                <ul class="mcq-options"><li>A separate on-premises SQL Server metadata repository</li><li>The Hive Metastore database running inside a Hadoop NameNode</li><li>A <code>_delta_log/</code> subdirectory containing ordered, sequential JSON commit files</li><li>An external schema registry mapped to static CSV files</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — <code>_delta_log/</code> with sequential JSON commit files.</strong> Each transaction appends a new JSON file to <code>_delta_log/</code> (e.g., <code>00000000000000000001.json</code>). Each JSON records: which Parquet files were added, which were removed. The "current state" of the table = the cumulative effect of all log entries. This is the ACID guarantee.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-5 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-hard">Q5</span>&nbsp;Why is premature cross-source integration generally <strong>discouraged in the Silver layer</strong>?
+                <ul class="mcq-options"><li>Columnar formats like Parquet cannot support joined records</li><li>To maintain an isolated, decoupled design and prevent unnecessary dependencies between applications early in the pipeline</li><li>Because joining tables triggers Delta VACUUM and deletes historical snapshots</li><li>Joining data is exclusively reserved for generative AI vector databases</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Decoupled design prevents tight coupling between pipelines.</strong> If Silver joins source system A to source system B, now a schema change in A breaks B's Silver pipeline. Keeping Silver source-oriented means each pipeline is independent. Cross-source joins belong in Gold — by then schemas are stable and business rules are well-understood.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-6 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q6</span>&nbsp;What is the core functional difference between <strong>append mode</strong> and <strong>merge mode</strong>?
+                <ul class="mcq-options"><li>Append only adds new records; merge supports conditional upserts (update if exists, insert if new)</li><li>Append deletes the existing table before writing; merge updates files in-place</li><li>Append relies on external database logs; merge is only compatible with unstructured files</li><li>There is no difference; both are synonyms for truncate-and-reload</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: A — Append adds new records only; merge supports upserts.</strong> Append is for immutable/event data where records never change (e.g., transaction logs). Merge (<code>MERGE INTO</code> in Delta) handles slowly changing dimensions where a record might be updated — it matches on a key and either updates existing rows or inserts new ones.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-7 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q7</span>&nbsp;What is the functional role of an extra <strong>"landing zone" or "pre-Bronze" area</strong> in complex platforms?
+                <ul class="mcq-options"><li>To act as a highly modeled dimensional presentation area for executive BI dashboards</li><li>To run computationally intensive ML model training directly on source files</li><li>To replace Delta Lake tables with volatile, temporary memory caches</li><li>To stage raw data, perform safe decompression, metadata generation, and protect against unexpected API errors</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: D — Safe staging and API error protection.</strong> A pre-Bronze landing zone receives raw files exactly as delivered (compressed, in original format) before any processing. If decompression fails or the API sends corrupt data, it fails <em>here</em> — not inside the Delta table — protecting Bronze from dirty writes.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-8 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q8</span>&nbsp;What operational problem does Delta Lake's <strong>OPTIMIZE</strong> command resolve?
+                <ul class="mcq-options"><li>The "schema-on-read" bottleneck caused by missing conformed dimensions</li><li>The storage cost of maintaining historical files by deleting all time-travel snapshots</li><li>The physical file fragmentation and high network read overhead of the "small file problem"</li><li>The lack of secure views for column-level data masking</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — The "small file problem".</strong> Streaming and incremental loads produce thousands of tiny Parquet files. Reading a table with 100,000 small files = 100,000 file-open operations — catastrophically slow. <code>OPTIMIZE</code> compacts them into fewer, larger files, dramatically reducing read latency and cloud storage costs.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-9 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q9</span>&nbsp;How does Delta Lake <strong>speed up transaction log reconstruction</strong>?
+                <ul class="mcq-options"><li>It periodically writes consolidated "checkpoint" snapshots of the log, typically every 10 transactions</li><li>It translates the transaction log into highly normalized Data Vault tables</li><li>It restricts all table operations to a single, centralized on-premises server</li><li>It runs an async ML algorithm to predict future transactions</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: A — Checkpoint snapshots every 10 transactions.</strong> Replaying 10,000 JSON log files to reconstruct table state would be slow. Every 10 commits, Delta writes a Parquet <em>checkpoint</em> file that captures the full current state. Log reconstruction starts from the latest checkpoint + any newer JSON commits — usually just a handful of files.</div>
+            </details>
+          </div>
+
+          <!-- Q2-A-10 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q10</span>&nbsp;Which of the following is <strong>NOT</strong> an advantage of a well-designed data architecture?
+                <ul class="mcq-options"><li>Reduced data redundancy and storage costs across systems</li><li>Elimination of initial engineering setup costs and overhead</li><li>Improved data governance, lineage tracking, and compliance</li><li>Enhanced query performance and scalability for analytics</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Eliminating initial setup costs is NOT a benefit.</strong> Good data architecture <em>requires</em> significant upfront engineering investment (designing schemas, setting up pipelines, governance). The benefits (scalability, governance, reduced future maintenance) arrive later. Anyone promising zero setup cost is selling you a magic solution.</div>
+            </details>
+          </div>
+
+          <!-- ── QUIZ 2-B additional unique questions ── -->
+          <div class="quiz-section-heading" style="background:rgba(59,130,246,0.06); border-color:rgba(59,130,246,0.2); color:var(--exp-bd);">📝 Quiz 2-B — Additional Variants</div>
+
+          <!-- Q2-B-1 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;What role does the <strong>transaction log</strong> play in ensuring readers see a "single source of truth"?
+                <ul class="mcq-options"><li>It stores copies of the entire table dataset in memory</li><li>It dynamically rewrites immutable physical data files in-place during active scans</li><li>It acts as a database gatekeeper, blocking non-SQL query engines</li><li>It tracks exactly which physical Parquet files are active, shielding readers from partial writes, failed jobs, or orphaned files</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: D — Tracks which Parquet files are active.</strong> At any point in time, the transaction log defines the canonical set of valid Parquet files. A reader atomically reads the log → gets the file list → reads those files. Even if a concurrent write is in progress (partial new files exist), the reader only sees the committed, valid files.</div>
+            </details>
+          </div>
+
+          <!-- Q2-B-2 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-hard">Q</span>&nbsp;How does Delta Lake execute a logical <strong>DELETE or UPDATE</strong> on immutable Parquet files?
+                <ul class="mcq-options"><li>It performs a "Copy-on-Write," creating a new Parquet file with the changes and recording a tombstone in the log</li><li>It accesses physical disk blocks and overwrites exact bits containing those rows in-place</li><li>It converts the Delta table into a normalized Data Vault format</li><li>It forces the compute cluster to reboot and clears the memory cache</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: A — Copy-on-Write with a tombstone in the log.</strong> Parquet files are immutable — you can't modify a byte inside them. Instead: Delta reads the affected file, applies the change (delete or update), writes a <em>new</em> Parquet file with the modification, then records in the log that the old file is "removed" (tombstoned) and the new file is "added." The old file still exists (enabling time travel) until <code>VACUUM</code> physically deletes it.</div>
+            </details>
+          </div>
+
+          <!-- Q2-B-3 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-easy">Q</span>&nbsp;What is the primary functional difference between the <strong>Silver and Gold layers</strong>?
+                <ul class="mcq-options"><li>Silver contains raw data; Gold contains slightly compressed raw files</li><li>Silver standardizes and cleanses source-oriented data; Gold curates, integrates, and optimizes data specifically for business consumption</li><li>Silver is optimized for vertical scaling; Gold is designed only for on-premises databases</li><li>Silver uses schema-on-read; Gold is completely schema-less</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Silver = clean + source-oriented; Gold = curated + business-ready.</strong> Silver still looks like the source systems, just cleaned. Gold is business-domain-oriented: it might join multiple Silver tables, apply business rules, and produce denormalized aggregates that directly answer "what is our monthly revenue by region?" without any further transformation.</div>
+            </details>
+          </div>
+
+          <!-- Q2-B-6 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-hard">Q</span>&nbsp;Why is <strong>idempotency</strong> considered a fundamental design principle for Medallion data pipelines?
+                <ul class="mcq-options"><li>It ensures that running a pipeline multiple times with the same input always produces the exact same output state without duplicates</li><li>It allows schemas to evolve blindly without tracking changes in the transaction log</li><li>It forces the system to run in a single-tier coupled environment</li><li>It requires data engineers to manually clean up files after every pipeline failure</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: A — Same input always produces same output, no duplicates.</strong> Pipelines fail and get retried. An idempotent pipeline can be re-run safely: whether it runs once or 10 times on the same data, the final state is identical. Without idempotency, retries cause duplicate records — a classic and catastrophic data quality bug.</div>
+            </details>
+          </div>
+
+          <!-- Q2-B-7 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;What is the difference between <strong>schema enforcement</strong> and <strong>schema evolution</strong> in Delta Lake?
+                <ul class="mcq-options"><li>Enforcement is schema-on-read; evolution is schema-on-write</li><li>Enforcement blocks writes with mismatched structures; evolution allows the table schema to safely adapt to new columns</li><li>Enforcement requires normalized databases; evolution is only for unstructured text files</li><li>There is no difference; both describe manual schema reloads</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Enforcement blocks bad writes; evolution allows safe schema changes.</strong> Schema enforcement is the <em>guard</em>: if an upstream producer sends a column called <code>userId</code> when the table expects <code>user_id</code>, Delta rejects the write immediately and loudly. Schema evolution is the <em>controlled escape hatch</em>: with <code>mergeSchema=true</code>, intentional new columns are added to the table definition — opted in explicitly, not silently.</div>
+            </details>
+          </div>
+
+          <!-- Q2-B-8 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;Which command can physically restrict long-term <strong>time travel</strong> capabilities on a Delta table?
+                <ul class="mcq-options"><li>OPTIMIZE</li><li>RESTORE</li><li>VACUUM</li><li>SHALLOW CLONE</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — VACUUM.</strong> <code>VACUUM table RETAIN 168 HOURS</code> physically deletes old Parquet files (tombstoned by the transaction log) that are older than the retention period. After running VACUUM, you can no longer time-travel to versions older than the retention threshold — those underlying files are gone. The default retention is 7 days.</div>
+            </details>
+          </div>
+
+          <!-- Q2-B-9 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-hard">Q</span>&nbsp;In Medallion Architecture, where should <strong>schema drift</strong> primarily be handled?
+                <ul class="mcq-options"><li>During ingestion into Bronze, by dropping non-conforming records</li><li>During the Bronze-to-Silver transition, through explicit schema evolution, parsing, or validation rules</li><li>In the Gold layer, by re-aggregating tables whenever upstream sources change</li><li>At the source database level, by enforcing triggers that block schema changes</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Bronze-to-Silver transition.</strong> Bronze accepts everything (full fidelity, no transformation). Silver is where you impose structure. Schema drift (upstream field rename, new field, type change) is detected when Silver tries to parse Bronze — this is the right place to either evolve the schema, add parsing logic, or quarantine non-conforming records. Handling it in Gold is too late; handling it in Bronze means you might reject valid data.</div>
+            </details>
+          </div>
+
+          <!-- Q2-B-10 -->
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-hard">Q</span>&nbsp;An engineer chooses <strong>Incremental Load via Delta MERGE</strong> over Full Load for a Silver-layer table. What is the primary operational trade-off?
+                <ul class="mcq-options"><li>Higher storage consumption, because Incremental Loads duplicate historical data on every run</li><li>Increased pipeline state complexity, as the pipeline must track state/watermarks and handle upserts</li><li>Inability to process schema drift, because Incremental Loads require fixed schemas</li><li>Slower execution times for daily batches compared to processing the entire multi-year history</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Increased pipeline state complexity.</strong> Full Load is simple: delete everything, reload all data. Incremental Load is more efficient (only processes new/changed records) but requires the pipeline to: (1) track a watermark (last-processed timestamp or ID), (2) correctly identify changed records, (3) handle the MERGE logic (what to update vs. insert). One bug in watermark tracking = silent data loss or duplicates.</div>
+            </details>
+          </div>
+
+          <!-- ════════════════════ EXPECTED NEW MCQs ════════════════════ -->
+          <h3 style="color:var(--ac); margin-top:48px;">🔮 Expected MCQs — Topics Not Yet Quizzed</h3>
+          <p>The past quizzes covered DSLC/PCS (Quiz 1) and Medallion/Delta Lake (Quiz 2). The mid-exam will likely test the remaining modules. Here are high-probability MCQs for those gaps.</p>
+
+          <!-- Data Preparation -->
+          <div class="quiz-section-heading" style="background:rgba(16,185,129,0.06); border-color:rgba(16,185,129,0.2); color:var(--def-bd);">🔮 Expected — Data Preparation &amp; Feature Engineering</div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;Which imputation strategy is most appropriate for a <strong>time-series dataset</strong> with missing sensor readings?
+                <ul class="mcq-options"><li>Replace with column mean</li><li>Forward-fill (propagate last valid observation)</li><li>Replace with zero</li><li>Delete the entire row</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Forward-fill.</strong> In time series, the most recent valid value is the best estimate for a missing one — sensor data doesn't jump randomly. Mean imputation would break temporal autocorrelation. Deleting rows destroys the time continuity of the series.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;A variable "education level" has values: High School &lt; Bachelor's &lt; Master's &lt; PhD. What encoding should be applied for a machine learning model?
+                <ul class="mcq-options"><li>One-hot encoding (dummy variables)</li><li>Label encoding preserving the ordinal order</li><li>Standardization (Z-score normalization)</li><li>Binning into equal-width intervals</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Label encoding preserving ordinal order.</strong> This is an <em>ordinal</em> variable — the categories have a meaningful order. Label encoding (0, 1, 2, 3) preserves the ranking. One-hot encoding would destroy the ordering information by treating all levels as equally different from each other.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;A data scientist standardizes features using Z-score normalization before training a model. What is the primary reason?
+                <ul class="mcq-options"><li>To convert all variables to the range [0, 1]</li><li>To ensure all features have mean = 0 and std = 1, preventing larger-scale features from dominating distance-based algorithms</li><li>To remove all outliers from the dataset</li><li>To convert categorical variables to numerical ones</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Mean = 0, std = 1 to prevent scale dominance.</strong> A feature measured in millions (income) would dominate a feature measured in ones (age) in distance-based algorithms (KNN, SVM, PCA). Z-score standardization puts all features on the same scale without distorting the distribution shape. Note: it does NOT bound to [0,1] — that's Min-Max normalization.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;The IQR (Interquartile Range) method for outlier detection flags values outside [Q1 − 1.5×IQR, Q3 + 1.5×IQR]. What is a key <strong>limitation</strong> of this method?
+                <ul class="mcq-options"><li>It can only detect outliers in categorical data</li><li>It assumes near-normality and may flag valid extreme values in highly skewed distributions</li><li>It requires a minimum of 1 million data points to be statistically valid</li><li>It requires standardization to be applied first</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Assumes near-normality; overly aggressive on skewed distributions.</strong> For right-skewed distributions (like salary or house prices), legitimate high values are flagged as outliers because the upper fence is too low. In such cases, prefer log transformation first, or use domain-knowledge thresholds rather than mechanical IQR cutoffs.</div>
+            </details>
+          </div>
+
+          <!-- Distributed Computing / Spark -->
+          <div class="quiz-section-heading" style="background:rgba(217,119,87,0.06); border-color:rgba(217,119,87,0.2); color:var(--ac);">🔮 Expected — Distributed Computing &amp; Apache Spark</div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;In Apache Spark, which operation <strong>triggers actual execution</strong> of the DAG?
+                <ul class="mcq-options"><li><code>df.filter(col("age") > 30)</code></li><li><code>df.select("name", "age")</code></li><li><code>df.count()</code></li><li><code>df.groupBy("city")</code></li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — <code>df.count()</code></strong>. It is an <strong>action</strong>. The other three are <em>transformations</em> — lazy operations that only add nodes to the DAG without executing anything. Only actions (<code>count</code>, <code>show</code>, <code>collect</code>, <code>write</code>) trigger the Catalyst optimizer to finalize and execute the full plan.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;What is the main advantage of Spark keeping intermediate data <strong>in memory (RAM)</strong> compared to Hadoop MapReduce?
+                <ul class="mcq-options"><li>It allows Spark to support SQL queries, which MapReduce cannot</li><li>It eliminates the need for a distributed file system entirely</li><li>It avoids expensive disk I/O between computation steps, making iterative workloads up to 100× faster</li><li>It allows Spark to run on a single machine without a cluster</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Avoids disk I/O between steps, up to 100× faster for iterative workloads.</strong> MapReduce writes every intermediate result to HDFS (disk). Spark keeps them in RAM. For ML training with 100 iterations, MapReduce = 200+ disk read/write operations on intermediate data; Spark = 1 initial read + 100 in-memory passes. Disk is 100–1000× slower than RAM.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;In the Spark execution hierarchy, what creates a <strong>new Stage boundary</strong>?
+                <ul class="mcq-options"><li>Any call to <code>filter()</code> or <code>select()</code></li><li>A wide transformation (shuffle) such as <code>groupBy()</code> or <code>join()</code></li><li>Creating a new SparkSession</li><li>Calling <code>cache()</code> on a DataFrame</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Wide transformations (shuffles).</strong> A shuffle requires data to move across partitions and across the network. Spark cannot pipeline this — all tasks before the shuffle must complete before tasks after can start. This synchronization barrier = a Stage boundary. Narrow transformations (filter, select) have no shuffle and are fused into the same stage.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;What is an <strong>RDD (Resilient Distributed Dataset)</strong> in Spark?
+                <ul class="mcq-options"><li>A relational database table stored in Spark's internal SQL engine</li><li>A configuration file that defines how many partitions a Spark job uses</li><li>An immutable, partitioned collection of records distributed across cluster nodes, with a lineage for fault recovery</li><li>A streaming data source that connects to Kafka</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Immutable, partitioned, lineage-based collection.</strong> RDD = <strong>R</strong>esilient (fault-tolerant via lineage recomputation), <strong>D</strong>istributed (partitions on multiple nodes), <strong>D</strong>ataset (collection of records of any type). "Immutable" means transformations produce new RDDs — they never modify the original.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;In HDFS, what is the role of the <strong>NameNode</strong>?
+                <ul class="mcq-options"><li>It stores the actual data blocks of files</li><li>It stores only the metadata (file-to-block mapping, block locations) but no actual file data</li><li>It executes MapReduce tasks on each worker node</li><li>It manages CPU and RAM allocation for the YARN cluster</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Stores only metadata (file-to-block mapping).</strong> The NameNode is the "card catalog" of HDFS: it knows <em>where</em> every block lives (which DataNode) and the file → block mapping. Actual data bytes live only on DataNodes. This is why NameNode failure is catastrophic — all metadata is lost. Hence HA setups use secondary/standby NameNodes.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-hard">Q</span>&nbsp;A Spark DataFrame operation chain is: <code>read → filter → select → groupBy → agg → write</code>. Which operations cause a <strong>shuffle</strong>?
+                <ul class="mcq-options"><li>filter and select</li><li>read and write</li><li>groupBy and agg</li><li>All of the above</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — groupBy and agg.</strong> <code>filter</code> and <code>select</code> are narrow transformations — they operate within each partition independently, no data crosses partition boundaries. <code>groupBy</code> requires all records with the same key to land on the same partition = shuffle. <code>agg</code> follows the groupBy and completes on the post-shuffle data. <code>read</code> and <code>write</code> are I/O operations, not shuffles.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;Why does Spark prefer <strong>DataFrames over RDDs</strong> for most production workloads?
+                <ul class="mcq-options"><li>DataFrames only work with Python, giving PySpark a performance advantage</li><li>DataFrames have a schema that Catalyst can understand and optimize; RDD operations are opaque black boxes to the optimizer</li><li>RDDs do not support distributed execution</li><li>DataFrames automatically cache all data in RAM without any user action</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Catalyst can optimize DataFrames; RDDs are opaque.</strong> When you write <code>df.filter(col("age") > 30).groupBy("city").count()</code>, Catalyst understands the semantics: it can push the filter before the groupBy, prune unused columns, and choose an optimal join strategy. An equivalent RDD lambda function (<code>rdd.filter(lambda x: x.age > 30)</code>) is a black box — Catalyst can't look inside and can't optimize it.</div>
+            </details>
+          </div>
+
+          <!-- Data Warehousing concepts (likely to appear) -->
+          <div class="quiz-section-heading" style="background:rgba(234,179,8,0.06); border-color:rgba(234,179,8,0.2); color:#eab308;">🔮 Expected — Data Architecture &amp; Warehousing Concepts</div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;What is "schema-on-read" as used in Data Lakes?
+                <ul class="mcq-options"><li>The schema is enforced at write time, rejecting non-conforming data</li><li>No schema is stored; the schema is inferred and applied only at query time</li><li>All data is stored as strictly typed XML with embedded schema definitions</li><li>Schema changes require a full table rebuild before any reads are possible</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Schema inferred and applied at query time.</strong> Data Lakes store raw files (Parquet, JSON, CSV) with no enforced schema. When you query, you project a schema onto the data at that moment. Advantage: flexibility to store any format. Disadvantage: schema drift goes undetected — a silently renamed column returns NULL for all new records.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;Which data storage format is <strong>columnar</strong> and most suitable for analytical (OLAP) workloads?
+                <ul class="mcq-options"><li>CSV (Comma-Separated Values)</li><li>JSON (JavaScript Object Notation)</li><li>Parquet</li><li>XML (eXtensible Markup Language)</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: C — Parquet.</strong> Parquet stores data column-by-column. For a query like <code>SELECT SUM(revenue) FROM sales</code>, only the revenue column's bytes are read from disk — skipping all other columns. CSV and JSON are row-oriented (must read the entire row to get one field). Parquet also supports efficient compression and predicate pushdown, making it the standard for data lake analytics.</div>
+            </details>
+          </div>
+
+          <div class="mcq-block">
+            <details>
+              <summary><span class="diff-badge diff-medium">Q</span>&nbsp;ACID transactions in Delta Lake guarantee which four properties?
+                <ul class="mcq-options"><li>Availability, Consistency, Isolation, Durability</li><li>Atomicity, Consistency, Isolation, Durability</li><li>Atomicity, Computability, Idempotency, Durability</li><li>Availability, Computability, Integrity, Dependency</li></ul>
+              </summary>
+              <div class="mcq-answer"><strong>✅ Answer: B — Atomicity, Consistency, Isolation, Durability.</strong>
+                <ul style="margin-top:8px; line-height:1.9;">
+                  <li><strong>Atomicity:</strong> A transaction either fully succeeds or fully fails — no partial writes.</li>
+                  <li><strong>Consistency:</strong> The table is always in a valid state before and after any transaction.</li>
+                  <li><strong>Isolation:</strong> Concurrent reads and writes don't interfere — readers see a consistent snapshot.</li>
+                  <li><strong>Durability:</strong> Committed transactions survive crashes — they're persisted to the transaction log.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
           <!-- ═══════════════════════════════════════ EXAM QUESTIONS ════════════════════════════════════ -->
           <h3 style="color:var(--ac); margin-top:40px;">🎯 Tricky Exam-Style Questions</h3>
           <p>These questions are deliberately tricky — they test conceptual depth and the ability to apply multiple ideas together. Try each before expanding.</p>
