@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Data Analysis &amp; Visualization — Distributed Data Processing &amp; Apache Spark</title>
-    <meta name="description" content="Detailed notes on MapReduce, Distributed File Systems, DAGs, Hadoop, Apache Spark architecture, RDDs, DataFrames, transformations, actions, and the shift from single-machine to distributed computing." />
+    <meta name="description" content="Detailed notes on MapReduce, Distributed File Systems, DAGs, Hadoop, Apache Spark architecture, RDDs, DataFrames, transformations, actions, lazy evaluation, Jobs/Stages/Tasks, Spark pitfalls, and mid-exam preparation covering all modules." />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -246,6 +246,16 @@
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-6')">
                 <span class="nav-num">06</span>🎯 Quiz &amp; Review
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-7')">
+                <span class="nav-num">07</span>⚠️ RDDs &amp; Spark Pitfalls
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-8')">
+                <span class="nav-num">08</span>🏆 Mid-Exam Master Prep
               </a>
             </li>
           </ul>
@@ -1412,6 +1422,673 @@ df.unpersist()  # Free RAM when done</code></pre>
         </div>
         <!-- end topic-6 -->
 
+        <!-- TOPIC 7: RDDs & Spark Pitfalls -->
+        <div class="topic-card" id="topic-7" style="display:none;">
+          <h2><span class="topic-num">7</span>⚠️ The Role of RDDs &amp; Spark Pitfalls to Avoid</h2>
+          <p class="topic-subtitle">Week 5 (15, 17 Sep) — Learning Spark 2nd Ed., Ch. 1–3</p>
+
+          <p>
+            This topic ties together the Week 5 syllabus: RDDs vs. the high-level API, lazy evaluation in depth,
+            and the classic pitfalls that trip up developers moving from single-machine to Spark programming.
+            Think of it as your practical survival guide for writing good Spark code.
+          </p>
+
+          <h3>The Role of RDDs — Why They Still Matter</h3>
+          <p>
+            Even though DataFrames are almost always the right choice, RDDs are still Spark's foundational
+            abstraction. Understanding them deeply explains <em>why</em> DataFrames work the way they do.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>RDD (Resilient Distributed Dataset):</strong> Spark's original core abstraction (introduced in 2012 AMPLab paper).
+            An <em>immutable</em>, <em>partitioned</em> collection of records distributed across nodes, with a recorded <em>lineage</em>
+            for fault recovery. Three key properties:
+            <ul style="margin-top:10px;">
+              <li><strong>Resilient:</strong> Fault-tolerant via lineage — lost partitions are recomputed, not stored redundantly.</li>
+              <li><strong>Distributed:</strong> Partitions live on different executor nodes — parallel processing by default.</li>
+              <li><strong>Dataset:</strong> A collection of records (can be any Python/Java/Scala object — RDDs are schema-free).</li>
+            </ul>
+          </div>
+
+          <h4>The Five RDD Properties (Internal)</h4>
+          <table>
+            <tr><th>Property</th><th>Description</th><th>Why It Matters</th></tr>
+            <tr>
+              <td><strong>Partitions list</strong></td>
+              <td>Set of partition objects making up the dataset</td>
+              <td>Determines parallelism — one task per partition</td>
+            </tr>
+            <tr>
+              <td><strong>Compute function</strong></td>
+              <td>Function to compute the partition's data from parent RDDs</td>
+              <td>Enables lazy evaluation and recomputation on failure</td>
+            </tr>
+            <tr>
+              <td><strong>Dependencies list</strong></td>
+              <td>List of parent RDDs this RDD depends on</td>
+              <td>The lineage graph used for fault recovery</td>
+            </tr>
+            <tr>
+              <td><strong>Partitioner (optional)</strong></td>
+              <td>Hash or range partitioning scheme for key-value RDDs</td>
+              <td>Determines how shuffles route records to partitions</td>
+            </tr>
+            <tr>
+              <td><strong>Preferred locations (optional)</strong></td>
+              <td>Node preferences for data locality</td>
+              <td>Allows scheduling tasks near their data (HDFS blocks)</td>
+            </tr>
+          </table>
+
+          <h3>When to Use RDDs vs DataFrames</h3>
+          <div class="compare-grid">
+            <div class="compare-card left">
+              <h4 style="color:var(--exp-bd);">Use RDDs when…</h4>
+              <ul>
+                <li>You need <strong>fine-grained control</strong> over partitioning (e.g., custom partitioner)</li>
+                <li>Working with <strong>unstructured data</strong> that has no schema (binary blobs, raw text)</li>
+                <li>Complex <strong>custom data types</strong> that DataFrames can't represent as columns</li>
+                <li>Using <strong>legacy Spark 1.x code</strong> that predates DataFrames</li>
+                <li>You need <strong>Python objects</strong> and can't express logic as DataFrame operations</li>
+              </ul>
+            </div>
+            <div class="compare-card right">
+              <h4 style="color:var(--ac);">Use DataFrames in all other cases</h4>
+              <ul>
+                <li>Structured / semi-structured data (CSV, JSON, Parquet, Avro, JDBC)</li>
+                <li>SQL queries, aggregations, joins, ETL pipelines</li>
+                <li>Machine learning with MLlib (operates on DataFrames)</li>
+                <li>Any multi-language team (Python, Scala, Java, R same API)</li>
+                <li>Anywhere performance matters — Catalyst optimizes DataFrames, not RDDs</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">The Optimizer Blindspot</div>
+            When you use an RDD with a Python lambda (e.g., <code>rdd.map(lambda x: x.upper())</code>),
+            Catalyst sees it as an <strong>opaque black box</strong>. It cannot look inside the lambda to reorder
+            operations, push predicates, or fuse stages. The same logic expressed as a DataFrame operation
+            (<code>df.withColumn("col", upper(col("col")))</code>) is fully transparent to Catalyst and can be
+            combined, reordered, and compiled to efficient bytecode. This is why DataFrames consistently
+            outperform equivalent RDD code even when the developer writes "optimal" RDD logic.
+          </div>
+
+          <h3>The Role of the High-Level API (DataFrames / Datasets / SQL)</h3>
+          <p>
+            Spark 2.0 unified three previously separate APIs — SparkContext (RDDs), SQLContext (DataFrames),
+            and HiveContext — into a single <strong>SparkSession</strong>. The high-level API sits on top of
+            the same RDD engine but adds a schema layer and Catalyst.
+          </p>
+
+          <div class="spark-stack">
+            <div class="spark-layer sl-1">
+              <span class="sl-icon">🗣️</span>
+              <div class="sl-label">User Code (Python, Scala, SQL, R)</div>
+              <div class="sl-desc">You write DataFrame operations or SQL strings — declarative and human-readable</div>
+            </div>
+            <div class="spark-layer sl-2">
+              <span class="sl-icon">🔍</span>
+              <div class="sl-label">Catalyst Query Optimizer</div>
+              <div class="sl-desc">Parses → resolves → rewrites → generates optimized physical plan</div>
+            </div>
+            <div class="spark-layer sl-3">
+              <span class="sl-icon">⚡</span>
+              <div class="sl-label">Tungsten Execution Engine</div>
+              <div class="sl-desc">Generates JVM bytecode; manages memory off-heap; cache-aware binary processing</div>
+            </div>
+            <div class="spark-layer sl-4">
+              <span class="sl-icon">📦</span>
+              <div class="sl-label">RDD Engine (Spark Core)</div>
+              <div class="sl-desc">Task scheduling, shuffle management, fault recovery — the actual distributed machinery</div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Key Insight — Why the High-Level API is Faster</div>
+            The high-level API doesn't just add convenience — it adds <strong>semantic understanding</strong>.
+            When Spark knows you're doing a <code>groupBy + sum</code>, it can choose the optimal join strategy,
+            push filters early, and use vectorized SIMD operations via Tungsten. An equivalent RDD <code>reduceByKey</code>
+            is fully opaque — Spark executes exactly what you wrote, with no chance to improve it.
+          </div>
+
+          <h3>Lazy Evaluation — Deep Dive</h3>
+          <p>
+            Lazy evaluation is the mechanism that makes all optimization possible. Here is the exact sequence
+            of events when you write and execute a Spark program:
+          </p>
+
+          <div class="dag-container">
+            <p style="text-align:center; font-weight:600; color:var(--ac); margin-bottom:16px;">Lazy Evaluation — Step-by-Step Timeline</p>
+            <div class="dag-row">
+              <div class="dag-node dn-orange" style="min-width:260px;">
+                Step 1: df.filter(…).groupBy(…).agg(…)<br>
+                <span style="font-size:0.72rem; font-weight:400;">You write Python/Scala code. Nothing happens in the cluster.</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↓ builds</div>
+            <div class="dag-row">
+              <div class="dag-node dn-blue" style="min-width:260px;">
+                Step 2: Unresolved Logical Plan<br>
+                <span style="font-size:0.72rem; font-weight:400;">A tree of AST nodes — column names unresolved. Still no cluster activity.</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↓ Catalyst resolves schema</div>
+            <div class="dag-row">
+              <div class="dag-node dn-blue" style="min-width:260px;">
+                Step 3: Resolved Logical Plan<br>
+                <span style="font-size:0.72rem; font-weight:400;">Column names and types validated against catalog. Errors surface here if column doesn't exist.</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↓ Catalyst applies 60+ optimizations rules</div>
+            <div class="dag-row">
+              <div class="dag-node dn-purple" style="min-width:260px;">
+                Step 4: Optimized Logical Plan<br>
+                <span style="font-size:0.72rem; font-weight:400;">Predicate pushdown, constant folding, column pruning, null propagation applied.</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↓ Physical planner generates candidates</div>
+            <div class="dag-row">
+              <div class="dag-node dn-gold" style="min-width:260px;">
+                Step 5: Best Physical Plan Selected<br>
+                <span style="font-size:0.72rem; font-weight:400;">Cost model chooses: broadcast join vs. sort-merge join, etc.</span>
+              </div>
+            </div>
+            <div class="dag-arrow-down">↓ ACTION called (.show(), .count(), .write()…)</div>
+            <div class="dag-row">
+              <div class="dag-node dn-green" style="min-width:260px;">
+                Step 6: Tungsten Generates &amp; Runs Code<br>
+                <span style="font-size:0.72rem; font-weight:400;">JVM bytecode generated. Tasks dispatched to executors. Data processing begins NOW.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Tip — Lazy vs. Eager</div>
+            <strong>Transformations are LAZY:</strong> <code>filter, select, groupBy, join, withColumn, map, flatMap, distinct, orderBy</code>.<br>
+            <strong>Actions are EAGER (trigger execution):</strong> <code>show, count, collect, first, take(n), write, foreach, reduce, saveAsTextFile</code>.<br>
+            A common trick question: <code>df.cache()</code> is technically a transformation (lazy!) — the data is only actually cached after the <em>next action</em> triggers it.
+          </div>
+
+          <h3>⚠️ Spark Programming Pitfalls to Avoid</h3>
+          <p>These are the most common mistakes developers make when moving from single-machine code to Spark.
+          Each one either silently hurts performance or causes outright failures.</p>
+
+          <div class="warning-box">
+            <div class="callout-label">Pitfall 1 — Using <code>collect()</code> on Large DataFrames</div>
+            <code>df.collect()</code> pulls <strong>all data from all executors back to the driver as a Python list</strong>.
+            On a 10 TB DataFrame this means sending 10 TB over the network to one machine — crashing the driver with OutOfMemoryError.
+            <br><br>
+            <strong>Fix:</strong> Use <code>df.show(n)</code> to inspect a small sample, <code>df.take(n)</code> to get n rows,
+            or <code>df.write()</code> to persist results to storage instead of collecting them to the driver.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Pitfall 2 — Calling Actions in a Loop</div>
+            <pre><code># BAD — triggers a full DAG execution 1000 times!
+for i in range(1000):
+    count = df.filter(col("id") == i).count()  # 1000 Spark jobs!
+
+# GOOD — one job, filter once on all values
+result = df.groupBy("id").count()  # one wide transformation
+result.show()</code></pre>
+            Every action submits a new Spark job. A loop with 1000 actions = 1000 cluster round-trips.
+            Always push the logic into a single DataFrame operation.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Pitfall 3 — Forgetting to Cache Reused DataFrames</div>
+            <pre><code># BAD — df computed TWICE from scratch
+df = spark.read.parquet("huge_file").filter(col("active") == True)
+count1 = df.count()       # full DAG execution #1
+count2 = df.groupBy("region").count()  # full DAG execution #2
+
+# GOOD — compute once, reuse from RAM
+df = spark.read.parquet("huge_file").filter(col("active") == True).cache()
+df.count()                # triggers computation + caches to RAM
+df.groupBy("region").count()  # reads from RAM</code></pre>
+            Forgetting <code>.cache()</code> (or <code>.persist()</code>) on a DataFrame used in multiple downstream
+            operations means Spark re-reads from storage and re-applies all transformations each time.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Pitfall 4 — Unnecessary Shuffles (Avoid <code>groupBy</code> when <code>reduceByKey</code> suffices)</div>
+            <code>groupBy</code> collects <em>all</em> values for a key in one partition then aggregates.
+            For simple aggregations (sum, count), Spark can pre-aggregate on each partition first
+            (map-side combine) before the shuffle — dramatically reducing network data.<br><br>
+            With DataFrames, use <code>df.groupBy().agg(sum(…))</code> — Catalyst automatically applies
+            partial aggregation. With RDDs, always use <code>reduceByKey</code> over <code>groupByKey</code>
+            because <code>groupByKey</code> skips the map-side combine entirely.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Pitfall 5 — Python UDFs Kill Performance</div>
+            <pre><code># BAD — Python UDF: JVM → Python → JVM for every row
+from pyspark.sql.functions import udf
+from pyspark.sql.types import StringType
+
+@udf(StringType())
+def clean_name(name):
+    return name.strip().lower()  # runs in Python process, row by row
+
+df.withColumn("name", clean_name(col("name")))  # 10-100x slower!
+
+# GOOD — use built-in Spark functions (JVM native)
+from pyspark.sql.functions import lower, trim
+df.withColumn("name", lower(trim(col("name"))))  # fully optimized by Catalyst</code></pre>
+            Spark's built-in functions (<code>lower</code>, <code>trim</code>, <code>concat</code>, <code>regexp_replace</code>,
+            etc.) run natively in the JVM and are optimized by Tungsten. Python UDFs require serializing each
+            row from JVM → Python interpreter → back to JVM. For unavoidable custom logic, use
+            <strong>Pandas UDFs (vectorized UDFs)</strong> which transfer entire Arrow columnar batches,
+            amortizing the serialization overhead.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Pitfall 6 — Data Skew (One Partition Does All the Work)</div>
+            Data skew occurs when certain keys appear far more frequently than others, causing one executor
+            to process 90% of the data while others are idle.<br><br>
+            <strong>Symptom:</strong> In Spark UI, 99 tasks finish in 5 seconds, one task runs for 10 minutes.
+            <strong>Common cause:</strong> Joining on a column with many NULLs or a dominant value (e.g., user_id
+            where most records belong to one enterprise account).<br><br>
+            <strong>Fixes:</strong> (1) Filter out null keys before joining. (2) Salt the key by appending a random
+            number (e.g., <code>"keyA_3"</code>), then remove salt after join. (3) Broadcast the smaller table
+            to avoid the shuffle entirely (<code>broadcast(df_small)</code>).
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Pitfall 7 — Serialization &amp; Closure Variables</div>
+            When Spark serializes a task to send to executors, it captures the entire <em>closure</em> of your
+            lambda or function — including any Python objects referenced from the outer scope.
+            If you accidentally close over a SparkSession, a large dict, or a database connection,
+            Spark will try to serialize and ship it to every executor, causing either serialization errors or
+            massive overhead.<br><br>
+            <strong>Fix:</strong> Keep closures minimal. Broadcast large lookup tables explicitly with
+            <code>spark.sparkContext.broadcast(my_dict)</code> — Spark sends one copy per executor node,
+            not one copy per task.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Week 5 Summary — RDD vs DataFrame Decision Tree</div>
+            <h4>Quick Decision Guide</h4>
+            <pre><code>Is your data structured / has columns?  →  YES → Use DataFrame
+                                        →  NO  → Use RDD
+
+Do you need Catalyst optimization?      →  YES → Use DataFrame
+Do you need SQL queries?                →  YES → Use DataFrame / SQL
+Are you doing iterative ML?             →  YES → Use MLlib (DataFrames)
+Do you need custom partitioning logic?  →  YES → Consider RDD
+Legacy code using RDDs?                 →  Convert to DataFrame if possible</code></pre>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary><span class="diff-badge diff-easy" style="background:rgba(16,185,129,0.2);color:var(--def-bd);font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;margin-right:8px;">Easy</span>What does the "R" in RDD stand for, and what mechanism provides this property?</summary>
+              <p><strong>Answer:</strong> "Resilient" — meaning fault-tolerant. Spark achieves this through <strong>lineage</strong>: every RDD remembers the sequence of transformations that created it (its parent RDDs and operations). If a partition is lost due to executor failure, Spark re-executes the lineage from the last stable source (e.g., HDFS file) to regenerate only the lost partition — without restarting the entire job. This is Spark's primary fault tolerance mechanism, as opposed to HDFS which uses data replication.</p>
+            </details>
+            <details>
+              <summary><span class="diff-badge diff-medium" style="background:rgba(234,179,8,0.2);color:#eab308;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;margin-right:8px;">Medium</span>Why is <code>groupByKey()</code> on an RDD worse than <code>reduceByKey()</code> for computing a sum? Trace what happens at the cluster level for each.</summary>
+              <p><strong>Answer:</strong></p>
+              <p><strong><code>groupByKey()</code></strong>: Shuffles ALL values for every key across the network to a single partition. Then, on the reducer, sums them. If key "A" appears 1 million times, all 1 million values are sent over the network before any addition occurs. Memory per reducer must hold all values for a key simultaneously.</p>
+              <p><strong><code>reduceByKey()</code></strong>: First performs a <em>map-side combine (partial aggregation)</em> on each executor — adds up all values for key "A" within the local partition first, producing one partial sum per partition. Then, only the partial sums are shuffled over the network. Instead of sending 1 million values, you send just N partial sums (where N = number of partitions). Dramatically reduces network I/O and executor memory pressure.</p>
+              <p>DataFrames' <code>groupBy().sum()</code> automatically applies this optimization via Catalyst — one more reason to prefer DataFrames.</p>
+            </details>
+            <details>
+              <summary><span class="diff-badge diff-hard" style="background:rgba(239,68,68,0.2);color:#ef4444;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;margin-right:8px;">Hard</span>A Spark job reads a 500 GB Parquet file, applies 10 chained narrow transformations, then does a <code>groupBy</code>, then 5 more narrow transformations. How many stages does this job have? How many tasks per stage if the file has 4000 partitions and you set <code>spark.sql.shuffle.partitions=200</code>?</summary>
+              <p><strong>Answer:</strong></p>
+              <p><strong>Number of stages = 2</strong> (one shuffle boundary = one stage boundary). Narrow transformations fuse together into single stages.</p>
+              <ul>
+                <li><strong>Stage 1:</strong> Read Parquet + 10 narrow transformations + write shuffle output. Number of tasks = <strong>4000</strong> (one per input partition).</li>
+                <li><strong>Stage 2:</strong> Read shuffle data + groupBy aggregation + 5 narrow transformations + output. Number of tasks = <strong>200</strong> (set by <code>spark.sql.shuffle.partitions</code>, which controls the number of post-shuffle partitions).</li>
+              </ul>
+              <p><strong>Key insight:</strong> The number of tasks in Stage 1 is determined by the number of input partitions (Parquet file splits). The number of tasks in Stage 2 is determined by <code>spark.sql.shuffle.partitions</code> (default 200). This second number is often the biggest Spark tuning knob — too few and you have large, slow tasks; too many and you have too much scheduling overhead.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Week 5 Key Takeaways</h4>
+            <ul>
+              <li>RDDs: foundational abstraction — immutable, partitioned, lineage-based. Use only when DataFrames can't express your logic.</li>
+              <li>DataFrames are opaque as SQL tables to you but <em>transparent</em> to Catalyst — always preferred for structured workloads.</li>
+              <li>Lazy evaluation builds the full plan; Catalyst optimizes it globally before any data is touched.</li>
+              <li>Breaking away from single-node: no shared memory, no global loops, think in partitions and transformations.</li>
+              <li>Top pitfalls: <code>collect()</code> on large data, actions in loops, no caching on reused DFs, unnecessary shuffles, Python UDFs, data skew.</li>
+            </ul>
+          </div>
+        </div>
+        <!-- end topic-7 -->
+
+        <!-- TOPIC 8: Mid-Exam Master Prep -->
+        <div class="topic-card" id="topic-8" style="display:none;">
+          <h2><span class="topic-num">8</span>🏆 Mid-Exam Master Prep</h2>
+          <p class="topic-subtitle">Comprehensive exam prep — all modules covered so far</p>
+
+          <p>
+            Your mid-exam is tomorrow. This topic is your final-review hub:
+            a comprehensive master summary of everything covered so far, followed by tricky exam-style questions
+            that test <em>deep understanding</em>, not just recall. Work through each section systematically.
+          </p>
+
+          <!-- ═══════════════════════════════════════ MASTER SUMMARY ════════════════════════════════════ -->
+          <div class="summary-box" style="margin-bottom:36px;">
+            <h4>📚 Master Summary — Everything Covered So Far</h4>
+
+            <p style="font-weight:600; color:var(--ac); margin-top:16px;">Module 1 — Introduction to Data Analysis &amp; Visualization</p>
+            <ul>
+              <li>Data analysis = extracting insights from raw data to support decisions. Visualization = making those insights perceptible.</li>
+              <li>Types of analytics: <strong>Descriptive</strong> (what happened), <strong>Diagnostic</strong> (why it happened), <strong>Predictive</strong> (what will happen), <strong>Prescriptive</strong> (what should we do).</li>
+              <li>Data types: Nominal (categories, no order), Ordinal (ordered categories), Interval (equal gaps, no true zero), Ratio (equal gaps + true zero).</li>
+              <li>Visualization types: Bar (categorical comparison), Line (trends over time), Scatter (correlation/relationship), Histogram (distribution), Box plot (spread + outliers), Heatmap (matrix of values).</li>
+            </ul>
+
+            <p style="font-weight:600; color:var(--ac); margin-top:16px;">Module 2 — Data Analysis Lifecycle</p>
+            <ul>
+              <li>CRISP-DM: Business Understanding → Data Understanding → Data Preparation → Modeling → Evaluation → Deployment. Iterative, not linear.</li>
+              <li>80% of data science time = data preparation (cleaning, wrangling, feature engineering).</li>
+              <li>Data quality dimensions: Completeness, Consistency, Accuracy, Timeliness, Uniqueness.</li>
+            </ul>
+
+            <p style="font-weight:600; color:var(--ac); margin-top:16px;">Module 3 — Data Preparation</p>
+            <ul>
+              <li>Handling missing values: Remove (if rare), Impute with mean/median/mode (numeric), Forward-fill (time series), Predictive imputation (regression/KNN).</li>
+              <li>Outlier detection: Z-score (&gt;3σ), IQR method (Q1 − 1.5×IQR, Q3 + 1.5×IQR), DBSCAN.</li>
+              <li>Feature engineering: One-hot encoding (nominal), Label encoding (ordinal), Normalization (0–1), Standardization (Z-score for ML).</li>
+              <li>Data wrangling: reshaping (melt/pivot), merging, filtering, derived columns.</li>
+            </ul>
+
+            <p style="font-weight:600; color:var(--ac); margin-top:16px;">Module 4 — Exploratory Data Analysis (EDA)</p>
+            <ul>
+              <li>EDA goal: understand structure, spot patterns, identify anomalies <em>before</em> modeling.</li>
+              <li>Univariate: distribution, central tendency, spread (std, IQR). Bivariate: correlation, scatter, cross-tabs. Multivariate: PCA, pair plots.</li>
+              <li>Pearson correlation: linear only. Spearman: monotonic. Correlation ≠ causation.</li>
+              <li>EDA tools: <code>df.describe()</code>, <code>df.info()</code>, <code>df.corr()</code>, histograms, box plots, heatmaps.</li>
+            </ul>
+
+            <p style="font-weight:600; color:var(--ac); margin-top:16px;">Module 5 — Evolution of Data Architecture</p>
+            <ul>
+              <li>Data Warehouse → Data Lake → Lakehouse (Delta Lake combines both: schema enforcement + raw storage).</li>
+              <li>Data Warehouse: structured only, schema-on-write, OLAP, optimized for BI. Data Lake: any format, schema-on-read, cheap object storage.</li>
+              <li>Medallion Architecture: <strong>Bronze</strong> (raw ingestion, full fidelity) → <strong>Silver</strong> (cleaned, joined, validated) → <strong>Gold</strong> (curated, aggregated, BI/ML-ready).</li>
+              <li>Delta Lake: adds ACID transactions, schema evolution, time travel (read historical snapshots), and upserts (MERGE) on top of Parquet files.</li>
+              <li>OLTP (Online Transaction Processing): many small reads/writes (normalized). OLAP (Online Analytical Processing): large scans, aggregations (denormalized/columnar).</li>
+            </ul>
+
+            <p style="font-weight:600; color:var(--ac); margin-top:16px;">Module 6 — Distributed Data Processing &amp; Apache Spark</p>
+            <ul>
+              <li>Big Data 3 Vs (Volume, Velocity, Variety) + hardware plateau (~2005) → horizontal scaling on commodity clusters.</li>
+              <li>HDFS: files split into 128 MB blocks, replicated 3×. NameNode (metadata) + DataNodes (blocks). Data locality = run compute where data lives.</li>
+              <li>MapReduce: Map → Shuffle → Reduce. Disk-bound between phases — disastrous for iterative ML.</li>
+              <li>DAG: represents full computation as nodes (ops) + edges (dependencies). Enables global optimization.</li>
+              <li>Spark: in-memory, unified (SQL, Streaming, MLlib, GraphX). Up to 100× faster than MapReduce.</li>
+              <li>RDD: low-level, schema-free, lineage-based. DataFrame: high-level, Catalyst-optimized, schema-aware. Prefer DataFrames.</li>
+              <li>Lazy evaluation: transformations build plan; actions trigger execution. Enables Catalyst optimization.</li>
+              <li>Narrow transformations (no shuffle): filter, select, map. Wide (shuffle): groupBy, join, orderBy.</li>
+              <li>Hierarchy: Application → Job (per action) → Stage (per shuffle boundary) → Task (per partition).</li>
+              <li>Catalyst pipeline: Unresolved → Resolved → Optimized Logical Plan → Physical Plan → Execute.</li>
+            </ul>
+          </div>
+
+          <!-- ═══════════════════════════════════════ EXAM QUESTIONS ════════════════════════════════════ -->
+          <h3 style="color:var(--ac); margin-top:40px;">🎯 Tricky Exam-Style Questions</h3>
+          <p>These questions are deliberately tricky — they test conceptual depth and the ability to apply multiple ideas together. Try each before expanding.</p>
+
+          <h4 style="margin-top:28px;">Section A — Data Concepts &amp; EDA</h4>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span>A student removes all outliers from a dataset by deleting every row outside Q1−1.5×IQR. Their model performs worse than before. What likely went wrong, and how should outliers actually be handled?</summary>
+              <div class="answer">
+                <p><strong>Answer:</strong> Several things could have gone wrong:</p>
+                <ul>
+                  <li><strong>Outliers weren't errors — they were valid extremes.</strong> In fraud detection, the outliers <em>are</em> the signal you want to predict. Removing them eliminates the rarest but most important examples.</li>
+                  <li><strong>The IQR rule is too aggressive for some distributions.</strong> For a right-skewed distribution (like salaries), Q3+1.5×IQR might remove perfectly valid high earners. The method assumes near-normality.</li>
+                  <li><strong>Removed too much data.</strong> If 15% of rows were "outliers", removing them creates a biased sample that no longer represents the real population the model will be deployed on.</li>
+                </ul>
+                <p><strong>Better approach:</strong> Investigate each outlier — is it a data entry error (fix it), a system anomaly (flag it), or a genuine extreme value (keep it)? Consider robust alternatives: Winsorization (cap values at a percentile rather than removing them), log transformation to compress the right tail, or use tree-based models that are naturally robust to outliers.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span>Two variables have a Pearson correlation of 0.95. A student concludes they have a strong positive linear relationship. What critical assumptions might make this conclusion wrong?</summary>
+              <div class="answer">
+                <p><strong>Answer: Several assumptions could be violated:</strong></p>
+                <ul>
+                  <li><strong>Outliers inflate Pearson correlation.</strong> A single outlier can create a spuriously high r even when the bulk of data has no linear pattern (Anscombe's quartet — four datasets with identical statistics but completely different distributions).</li>
+                  <li><strong>Confounding variables (Simpson's paradox).</strong> Both variables might be driven by a hidden third variable (e.g., both age and salary correlate with years of experience — high r but not directly causal).</li>
+                  <li><strong>Spurious correlation.</strong> Per-capita cheese consumption correlates with deaths by bedsheet tangling. Both trend upward over time — it's a coincidence, not a relationship.</li>
+                  <li><strong>Non-linear relationships can show high Pearson r.</strong> A quadratic relationship where Pearson doesn't capture the true structure can still show high r in a limited range.</li>
+                  <li><strong>Correlation ≠ causation.</strong> Even a real linear relationship doesn't tell you which variable causes which — or whether both are effects of a common cause.</li>
+                </ul>
+                <p>Always visualize with a scatter plot, check for outliers, and use domain knowledge before concluding anything from a correlation coefficient alone.</p>
+              </div>
+            </details>
+          </div>
+
+          <h4 style="margin-top:28px;">Section B — Data Architecture</h4>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span>A company uses a Data Lake. They discover that 40% of their data is wrong — columns were renamed upstream without notice, breaking all downstream pipelines silently. Which architectural evolution solves this, and how exactly?</summary>
+              <div class="answer">
+                <p><strong>Answer: A Delta Lakehouse with Schema Enforcement and Schema Evolution controls.</strong></p>
+                <p><strong>The problem (Data Lake weakness):</strong> Data Lakes are schema-on-read — you define the schema when you query, not when you write. If an upstream producer renames a column (e.g., <code>user_id</code> → <code>userId</code>), all existing Parquet files still work, but new files use the new name. Downstream queries silently read NULL for the renamed column — data quality degrades without any error.</p>
+                <p><strong>Delta Lake solution:</strong></p>
+                <ul>
+                  <li><strong>Schema enforcement:</strong> Delta rejects any write whose schema doesn't match the table's schema — the upstream renaming would fail loudly at write time, immediately alerting the team.</li>
+                  <li><strong>Schema evolution:</strong> If a new column is intentionally added, <code>mergeSchema=true</code> allows it explicitly — you opt in, not opt out.</li>
+                  <li><strong>Audit log + Time Travel:</strong> Delta's transaction log records every change. You can query <code>DESCRIBE HISTORY table</code> to see when the schema changed and <code>SELECT * FROM table VERSION AS OF 42</code> to read data before the corruption.</li>
+                </ul>
+                <p>The Medallion architecture also helps: raw data lands in Bronze (untouched), Silver applies validation. A schema change breaks Silver, not Bronze — you can replay Bronze through corrected Silver logic.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-hard">Hard</span>Explain the difference between OLTP and OLAP databases with respect to normalization, query patterns, and indexing strategy. Why can't you use one system for both workloads efficiently?</summary>
+              <div class="answer">
+                <p><strong>OLTP (Online Transaction Processing):</strong></p>
+                <ul>
+                  <li><strong>Normalization:</strong> Highly normalized (3NF, BCNF) — no redundancy, each fact stored once. Enables fast writes/updates/deletes without anomalies.</li>
+                  <li><strong>Query pattern:</strong> Many small, targeted queries — "fetch this customer's order", "update this record". Millisecond latency, high concurrency (thousands of users).</li>
+                  <li><strong>Indexing:</strong> B-tree indexes on primary/foreign keys — optimized for point lookups and range queries on individual rows.</li>
+                  <li><strong>Storage:</strong> Row-oriented — an entire row (all columns) stored contiguously. Good for reading/writing whole records.</li>
+                </ul>
+                <p><strong>OLAP (Online Analytical Processing):</strong></p>
+                <ul>
+                  <li><strong>Normalization:</strong> Denormalized (star/snowflake schema) — dimensions pre-joined, redundancy accepted for query speed.</li>
+                  <li><strong>Query pattern:</strong> Few, complex, long-running scans — "sum all revenue by region for 2024". Touches millions/billions of rows, returns aggregates.</li>
+                  <li><strong>Indexing:</strong> Bitmap indexes, zone maps, partition pruning — optimized for filtering large scans on low-cardinality columns.</li>
+                  <li><strong>Storage:</strong> Columnar — each column stored separately. When aggregating one column of 1 billion rows, only that column is read (not all columns of all rows). 10-100× less I/O.</li>
+                </ul>
+                <p><strong>Why they can't share one system:</strong> Row storage is terrible for column scans. Normalized schemas require expensive joins for every analytical query. OLTP systems under heavy analytical queries starve real-time transactions of I/O bandwidth. OLAP denormalization makes transactional updates complex (update one fact = update multiple copies). Hence: separate OLTP (PostgreSQL, MySQL) → ETL → OLAP (Redshift, Snowflake, Spark) is the standard pattern.</p>
+              </div>
+            </details>
+          </div>
+
+          <h4 style="margin-top:28px;">Section C — Spark &amp; Distributed Computing</h4>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span>A junior engineer says "I added a <code>.cache()</code> call to my DataFrame and my job became <em>slower</em>. Caching is supposed to speed things up — what went wrong?"</summary>
+              <div class="answer">
+                <p><strong>Answer: Caching has a cost — it's only beneficial when the DataFrame is actually reused.</strong></p>
+                <p><strong>Why caching hurt performance:</strong></p>
+                <ul>
+                  <li><strong>Only used once:</strong> If the DataFrame is only read once downstream, caching adds the cost of materializing and storing partitions in RAM for no benefit.</li>
+                  <li><strong>Memory pressure:</strong> Caching evicts other cached DataFrames or executor working memory. If the cluster doesn't have enough RAM, Spark <em>spills</em> the cached data to disk — slower than just reading the original source.</li>
+                  <li><strong>Serialization cost:</strong> For the default <code>MEMORY_AND_DISK</code> storage level, serializing partitions to store them takes CPU time upfront.</li>
+                  <li><strong>The DataFrame is cheap to recompute:</strong> If the lineage is short (e.g., just a small CSV read + one filter), recomputing it is faster than caching and deserializing.</li>
+                </ul>
+                <p><strong>When caching actually helps:</strong> The DataFrame has a long, expensive lineage AND is used in two or more downstream actions or joins. A good rule: only cache if you can measure a speedup with it vs. without it.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span>You run <code>df.filter(col("age") &gt; 30).count()</code> and then <code>df.filter(col("age") &gt; 30).show(5)</code>. How many times does Spark actually read the underlying file? What single change eliminates the redundant read?</summary>
+              <div class="answer">
+                <p><strong>Answer: Spark reads the file TWICE</strong> — once per action. Each action independently re-triggers the full DAG from the source:</p>
+                <ol>
+                  <li>Action 1 (<code>.count()</code>): reads file → filters → counts. Returns result to driver. Discards all partitions.</li>
+                  <li>Action 2 (<code>.show(5)</code>): reads file AGAIN → filters AGAIN → returns 5 rows. Identical to step 1 except it returns rows instead of a count.</li>
+                </ol>
+                <p><strong>Fix:</strong></p>
+                <pre><code>filtered = df.filter(col("age") > 30).cache()
+filtered.count()    # triggers computation, caches to RAM
+filtered.show(5)    # reads from RAM — no file I/O!
+filtered.unpersist()  # free RAM</code></pre>
+                <p>After <code>.cache()</code>, the first action materializes the filtered partitions into executor RAM. The second action reads from RAM — no file I/O at all. This is critical when the source is a remote S3 bucket or slow HDFS cluster where each read costs real time and money.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-hard">Hard</span>A Spark job has Stage 1 with 100 tasks (all complete in 3 minutes) and Stage 2 with 100 tasks — 99 finish in 2 minutes but one task takes 25 minutes. The Spark UI shows a single task with 50 GB of shuffle read. Diagnose the exact problem and list three specific remedies.</summary>
+              <div class="answer">
+                <p><strong>Diagnosis: Classic Data Skew.</strong> Stage 1 completed a shuffle (wide transformation). Stage 2 starts reading shuffle data. One post-shuffle partition received 50 GB while others received ~500 MB each — one key is massively over-represented in the data. The entire Stage 2 is blocked until the skewed task finishes (all tasks in a stage must complete before the next stage starts).</p>
+                <p><strong>Root cause investigation:</strong></p>
+                <ul>
+                  <li>Check: <code>df.groupBy("join_key").count().orderBy(col("count").desc()).show(20)</code> — look for one key with millions of records while most have thousands.</li>
+                  <li>Common culprits: NULL values all hash to same partition, one enterprise customer with millions of transactions, one dominant categorical value.</li>
+                </ul>
+                <p><strong>Three remedies:</strong></p>
+                <ol>
+                  <li><strong>Filter nulls before joining:</strong> <code>df.filter(col("join_key").isNotNull())</code> — if nulls are the skewed key, process them separately or drop them.</li>
+                  <li><strong>Salting:</strong> Append a random number (0–N) to the skewed key before the shuffle: <code>concat(col("key"), lit("_"), (rand() * 10).cast("int"))</code>. This distributes one hot key across 10 partitions. After aggregation, sum partial aggregates for each salt. Works for aggregations but requires more complex logic for joins.</li>
+                  <li><strong>Broadcast join:</strong> If one table is small enough to fit in executor memory (&lt;~8 GB), use <code>df_large.join(broadcast(df_small), "key")</code>. Spark sends a full copy of the small table to every executor, eliminating the shuffle entirely — no skew possible without a shuffle.</li>
+                </ol>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span>What's the difference between <code>rdd.map()</code> and <code>rdd.flatMap()</code>? Give a concrete example where <code>flatMap</code> is essential and <code>map</code> would fail to produce the correct result.</summary>
+              <div class="answer">
+                <p><strong>map(f):</strong> Applies function f to each element, producing exactly <em>one output element per input element</em>. The output RDD has the same number of elements as the input.</p>
+                <p><strong>flatMap(f):</strong> Applies function f to each element, but f returns an <em>iterable</em>. Spark then <em>flattens</em> all the iterables into a single output. One input element can produce zero, one, or many output elements.</p>
+                <p><strong>Example — Word Count tokenization:</strong></p>
+                <pre><code># Input RDD:
+rdd = sc.parallelize(["hello world", "spark is fast"])
+
+# With map — gives LIST of lists (wrong for word count!)
+rdd.map(lambda line: line.split(" ")).collect()
+# → [["hello", "world"], ["spark", "is", "fast"]]  # 2 elements
+
+# With flatMap — flattens to individual words (correct!)
+rdd.flatMap(lambda line: line.split(" ")).collect()
+# → ["hello", "world", "spark", "is", "fast"]  # 5 elements</code></pre>
+                <p>For word count, you need individual words as RDD elements. <code>map</code> produces nested lists — you'd be counting 2 lists, not 5 words. <code>flatMap</code> flattens them into 5 separate elements, enabling the subsequent <code>map(word → (word, 1))</code> and <code>reduceByKey</code> to work correctly.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-hard">Hard</span>A Spark application processes the same large DataFrame in two separate branches: Branch A does a join, Branch B does a groupBy. Both branches are then unioned. How many times is the source DataFrame computed, and how do you minimize redundant computation?</summary>
+              <div class="answer">
+                <p><strong>Without caching: 2 times.</strong> Each branch creates its own DAG path back to the source. When both DAGs are triggered (either by a single action on the union, or separate actions), Spark traces each branch independently back to the source file and reads + processes it twice — even though both branches start from the same logical DataFrame.</p>
+                <p><strong>With caching: 1 time.</strong></p>
+                <pre><code># BAD — source computed twice:
+branch_a = df.join(other_df, "key")
+branch_b = df.groupBy("category").count()
+result = branch_a.union(branch_b)
+result.show()  # df is read and processed twice!
+
+# GOOD — cache the shared root:
+df.cache()
+branch_a = df.join(other_df, "key")
+branch_b = df.groupBy("category").count()
+result = branch_a.union(branch_b)
+result.show()  # df is computed once, cached; both branches read from RAM</code></pre>
+                <p>This is called the <strong>diamond dependency</strong> pattern — two paths in the DAG sharing a common ancestor. Catalyst doesn't automatically deduplicate common subexpressions across separate actions, so explicit caching of the shared DataFrame is essential.</p>
+              </div>
+            </details>
+          </div>
+
+          <h4 style="margin-top:28px;">Section D — Conceptual &amp; Cross-Topic</h4>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-tricky">Tricky</span>Explain why Spark's fault tolerance is sometimes called "coarse-grained" vs. databases that offer "fine-grained" recovery. In which scenarios does Spark's approach become a liability?</summary>
+              <div class="answer">
+                <p><strong>Coarse-grained vs. Fine-grained fault tolerance:</strong></p>
+                <p><strong>Spark (coarse-grained):</strong> Fault tolerance operates at the partition level. The lineage records which <em>transformation</em> created a partition — not which individual records were modified. Recovery means re-running the entire transformation for the lost partition. You can't recover a single row — you recompute the whole partition.</p>
+                <p><strong>RDBMS (fine-grained):</strong> Databases use write-ahead logs (WAL) that record every individual row-level change. Recovery = replay the WAL, row by row. Can recover one specific UPDATE from three days ago.</p>
+                <p><strong>Why Spark's approach is fast:</strong> No per-row logging overhead, no WAL writes for every transformation. The lineage is essentially free — it's just a graph of function calls, not a data log.</p>
+                <p><strong>When it becomes a liability:</strong></p>
+                <ul>
+                  <li><strong>Very long lineages:</strong> If the lineage chains through 50 transformations and one partition fails, recovering it means re-executing all 50 transformations on the source data — expensive.</li>
+                  <li><strong>Slow or unavailable source:</strong> If the original source (e.g., S3) is throttled or down, recovery fails.</li>
+                  <li><strong>Random writes / updates:</strong> Spark is read-heavy. It cannot do row-level updates. (Delta Lake adds this on top.)</li>
+                </ul>
+                <p><strong>Mitigation:</strong> Use <code>.checkpoint()</code> to materialize a DataFrame to HDFS/S3, breaking the lineage. Acts like a WAL snapshot — recovery re-starts from the checkpoint, not from the original source.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="quiz-q">
+            <details>
+              <summary><span class="diff-badge diff-medium">Medium</span>The Bronze-Silver-Gold medallion layers are analogous to stages in the Data Analysis Lifecycle. Map each medallion layer to its corresponding CRISP-DM phase.</summary>
+              <div class="answer">
+                <p><strong>Answer:</strong></p>
+                <table>
+                  <tr><th>Medallion Layer</th><th>CRISP-DM Phase</th><th>What Happens</th></tr>
+                  <tr>
+                    <td><strong>Bronze (Raw)</strong></td>
+                    <td>Data Understanding</td>
+                    <td>Ingest raw data as-is from source systems. No transformation — full fidelity audit trail. Equivalent to initial data collection and description.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Silver (Cleansed)</strong></td>
+                    <td>Data Preparation</td>
+                    <td>Apply cleaning (remove nulls, fix types), joins, validation rules. This is the 80% of data science work — wrangling raw Bronze into analysis-ready form.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Gold (Aggregated)</strong></td>
+                    <td>Modeling + Evaluation + Deployment</td>
+                    <td>Business-domain aggregations and curated tables ready for BI dashboards, ML features, and analytical reporting. Directly consumed by stakeholders.</td>
+                  </tr>
+                </table>
+                <p>The beauty of the medallion pattern: if a Silver cleaning rule is wrong, you can replay Bronze → Silver without losing the original data. Maps perfectly to CRISP-DM's iterative nature — go back to Data Preparation without losing Business Understanding context.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="summary-box" style="margin-top:40px; border-color: var(--ac);">
+            <h4>⚡ Last-Night Cram Sheet — 20 Must-Know Facts</h4>
+            <ol style="line-height:2.1;">
+              <li>4 analytics types: Descriptive → Diagnostic → Predictive → Prescriptive (ascending sophistication)</li>
+              <li>CRISP-DM = 6 phases, iterative. Business Understanding is always first.</li>
+              <li>80% of data science = data preparation (cleaning, wrangling)</li>
+              <li>Outlier removal is NOT always correct — first investigate if it's an error or valid extreme</li>
+              <li>Correlation ≠ causation. Pearson = linear only. Spearman = monotonic (handles non-linear)</li>
+              <li>Data Warehouse = schema-on-write, structured, OLAP. Data Lake = schema-on-read, any format.</li>
+              <li>Delta Lake adds ACID + time travel + schema enforcement on top of a Data Lake</li>
+              <li>Medallion: Bronze (raw) → Silver (clean) → Gold (curated). Each layer adds value, never overwrites prior.</li>
+              <li>~2005: CPU clock speed plateau → distributed computing became mandatory for big data</li>
+              <li>MapReduce: disk-bound between every phase. Spark: keeps intermediate data in RAM → up to 100× faster</li>
+              <li>HDFS: 128 MB blocks, 3× replication. NameNode = metadata. DataNode = actual blocks.</li>
+              <li>Data locality = move compute to data, not data to compute (avoids network bottleneck)</li>
+              <li>Transformations = LAZY (build plan). Actions = EAGER (trigger execution)</li>
+              <li>Narrow transformation = one input partition → one output partition (no shuffle, fast)</li>
+              <li>Wide transformation = multiple input partitions → one output partition (shuffle, expensive)</li>
+              <li>Job → Stage → Task. One stage per shuffle boundary. One task per partition per stage.</li>
+              <li>DataFrames &gt; RDDs: Catalyst can optimize DataFrames; RDDs are opaque black boxes</li>
+              <li>Python UDFs = slow (JVM↔Python serialization). Use built-in Spark functions instead.</li>
+              <li>Data skew = one partition has too much data. Fix: broadcast join, salting, or filter nulls</li>
+              <li>cache() = lazy. Data is only stored in RAM after the NEXT action triggers computation.</li>
+            </ol>
+          </div>
+        </div>
+        <!-- end topic-8 -->
+
       </div>
       <!-- end module-container -->
 
@@ -1440,7 +2117,7 @@ df.unpersist()  # Free RAM when done</code></pre>
     </button>
 
     <script>
-      const topics = ["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6"];
+      const topics = ["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6","topic-7","topic-8"];
       let currentTopicIndex = 0;
 
       function getTopicTitle(id) {
