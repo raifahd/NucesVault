@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Technical &amp; Business Writing — Exam Prep: Midterm I</title>
+    <meta
+      name="description"
+      content="Comprehensive exam preparation for TBW Midterm I, featuring past paper case studies, document analysis, and document writing practice."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SIDEBAR
+         ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Technical Business Writing</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      
+        
+        <ul class="nav-list" id="nav-list">
+          <li>
+            <a class="nav-module-link" href="./1- Technical Communication in the Workplace.html">
+              <span class="nav-num">01</span>Technical Communication in the Workplace
+            </a>
+          </li>
+          <li>
+            <a class="nav-module-link" href="./2- Correspondence.html">
+              <span class="nav-num">02</span>Correspondence
+            </a>
+          </li>
+          <li>
+            <a class="nav-module-link" href="./3- Presentations.html">
+              <span class="nav-num">03</span>Presentations &amp; Delivery
+            </a>
+          </li>
+          <li class="nav-section">
+            <div class="nav-section-title" onclick="toggleSection(this)">
+              <span>4. Exam Prep: Midterm I</span>
+              <span class="chevron">▼</span>
+            </div>
+            <ul class="nav-sublist">
+              <li>
+                <a href="javascript:void(0)" onclick="showTopic('topic-1')" class="active">
+                  <span class="nav-num">01</span>Ethics &amp; Culture Case Studies
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                  <span class="nav-num">02</span>Informal Reports
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                  <span class="nav-num">03</span>Document Analysis
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Technical &amp; Business Writing (TBW)</div>
+          <h1 class="module-title">Exam Prep: Midterm I</h1>
+          <p style="color: var(--mt); font-size: 0.9rem; margin-top: 6px;">
+            <strong>Core Focus:</strong> Past Paper Case Studies, Ethics, Culture, and Document Writing
+          </p>
+        </div>
+
+        <!-- ── TOPIC 1 ─────────────────────────────────────── -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Ethics &amp; Culture Case Studies</h2>
+          <p class="topic-subtitle">Analyzing unethical practices and cross-cultural communication breakdowns</p>
+
+          <p>
+            Case studies test your ability to apply the principles of ethical communication, the Rhetorical Situation, and cultural contexts (high-context vs. low-context) to real-world scenarios.
+          </p>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Case Study: Ethics &amp; Plagiarism</div>
+            <details>
+              <summary><strong>Scenario:</strong> GlobalTech Solutions (AI Feature Report)</summary>
+              <p>Maria assigned Junaid Khan the task of writing a report on a new AI feature. Junaid did extensive research, but instead of citing the sources, he copied entire sections without attribution, presenting the information as his own. Delaying the report's release to fix this would cause significant financial losses for GlobalTech.<br><br>
+              <strong>A. What was wrong with Junaid's use of data, and why is it unethical?</strong><br>
+              <strong>B. How can Maria resolve the ethical dilemma, considering professional and ethical considerations?</strong></p>
+              
+              <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--bd);">
+              
+              <p><strong>Model Answer:</strong><br>
+              <strong>A.</strong> Junaid committed <strong>plagiarism</strong> by taking credit for someone else's work. It is unethical because it violates the principle of honesty, misrepresents his expertise, and infringes on the intellectual property rights of the original authors. It compromises the integrity of the company.<br><br>
+              <strong>B.</strong> Maria must prioritize ethics over immediate financial gain. She should immediately halt the distribution of the plagiarized report. She must instruct Junaid (or another team member) to properly cite all sources and rewrite the plagiarized sections. Additionally, she should issue a formal warning to Junaid and implement a strict review/plagiarism-checking process for future reports to prevent recurrence.</p>
+            </details>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Case Study: False Reassurance</div>
+            <details>
+              <summary><strong>Scenario:</strong> The CEO's Blog Post on Layoffs</summary>
+              <p>A CEO writes an internal blog post stating: "We remain confident in the company's fundamental business strategy... to ensure continued financial strength" while senior leadership was already discussing laying off 20% of the workforce. One month later, 700 people are fired. <br><br>
+              <strong>A. Evaluate whether the message can be considered ethical. Give reasons.</strong><br>
+              <strong>B. What responsibilities do organizational leaders have during uncertainty?</strong></p>
+              
+              <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--bd);">
+              
+              <p><strong>Model Answer:</strong><br>
+              <strong>A.</strong> No, the message is <strong>unethical</strong>. It constitutes <strong>suppression of information</strong> and <strong>deceptive reassurance</strong>. While not a direct lie, its intent was to create a false impression of job security. It violated honesty and caused harm by denying employees the chance to prepare financially or seek new jobs.<br><br>
+              <strong>B.</strong> Leaders must be truthful and avoid misleading statements. They should share relevant information in good time to allow employees to plan. If they cannot disclose details due to confidentiality, they must honestly state that decisions are under review, rather than offering false comfort to protect investor confidence.</p>
+            </details>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Case Study: Organizational Culture Clash</div>
+            <details>
+              <summary><strong>Scenario:</strong> Technologix Headquarters (R&amp;D vs. Marketing)</summary>
+              <p>The R&amp;D engineers (meticulous, detail-oriented) presented a technical report full of charts and complex data. The Marketing team (creative, storytelling) found it overwhelming and lacking a "wow factor". Marketing felt their creative suggestions were dismissed, while R&amp;D felt Marketing's ideas lacked technical accuracy. The meeting ended abruptly with raised voices.<br><br>
+              <strong>A. What does the term "organizational culture" refer to?</strong><br>
+              <strong>B. What strategies could bridge the communication gap between R&amp;D and Marketing? (Mention three)</strong></p>
+
+              <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--bd);">
+
+              <p><strong>Model Answer:</strong><br>
+              <strong>A.</strong> Organizational culture refers to the shared values, communication norms, decision-making processes, leadership styles, and history that govern behavior within an organization.<br><br>
+              <strong>B. Strategies:</strong><br>
+              1. <strong>Adapt the Rhetorical Situation:</strong> R&amp;D should adjust the complexity and format of their presentation to suit the Marketing audience, focusing on the "big picture" (Abstract) before diving into dense charts.<br>
+              2. <strong>Establish Cross-Functional Guidelines:</strong> Set ground rules for meetings that respect both technical accuracy and creative input (combining low-context explicit data with high-context storytelling).<br>
+              3. <strong>Promote the "You" Attitude:</strong> Both teams should focus on how they can help the other achieve the ultimate goal (a successful product launch) rather than defending their own departmental ego.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- ── TOPIC 2 ─────────────────────────────────────── -->
+        <div class="topic-card" id="topic-2" style="display: none;">
+          <h2><span class="topic-num">2</span>Informal Reports</h2>
+          <p class="topic-subtitle">Identifying and structuring informal workplace reports</p>
+
+          <p>
+            Informal reports are used for internal communication to convey information quickly and efficiently. They are usually formatted as <strong>memos</strong> (if internal) or <strong>letters</strong> (if external).
+          </p>
+
+          <h3>Types of Informal Reports</h3>
+          <ul>
+            <li><strong>Activity Report:</strong> Summarizes tasks completed, time spent, and challenges encountered over a specific period (e.g., weekly).</li>
+            <li><strong>Equipment Evaluation:</strong> Assesses new hardware/software comparing performance, cost, and efficiency. Structured with descriptions followed by detailed analysis.</li>
+            <li><strong>Problem Analysis:</strong> Identifies the root cause of an issue (e.g., engine delays) and proposes solutions.</li>
+            <li><strong>Progress Report:</strong> Explains project status, delays, and revised timelines for completion.</li>
+            <li><strong>Feasibility Study:</strong> Evaluates options (e.g., replacing vs. updating software) to determine the most viable and cost-effective choice.</li>
+          </ul>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Report Formats (Memo vs. Letter)</div>
+            <details>
+              <summary><strong>Scenario:</strong> PakFab Textiles Operations Manager</summary>
+              <p>You are the Operations Manager at PakFab Textiles. You need to announce a significant process improvement—a new quality control system—that affects every employee from the factory floor to the managerial offices.<br><br>
+              <strong>A. Will you write a letter or memo? Justify your answer.</strong><br>
+              <strong>B. Write the Introductory Summary paragraph.</strong></p>
+
+              <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--bd);">
+
+              <p><strong>Model Answer:</strong><br>
+              <strong>A.</strong> I will write a <strong>memo</strong>. Memos are used for <em>internal</em> communication within an organization, moving upward, downward, or horizontally. Since this policy affects employees within PakFab Textiles, a memo format (TO/FROM/DATE/SUBJECT) is appropriate, whereas a letter is used for external clients.<br><br>
+              <strong>B. Introductory Summary:</strong><br>
+              <em>To maintain our legacy as a trusted supplier of high-quality textiles in both domestic and international markets, PakFab is introducing a new, comprehensive quality control system effective next month. This memo outlines the new procedures, the training schedule for all factory and managerial staff, and how this upgrade will streamline our workflow and meet changing customer expectations.</em></p>
+            </details>
+
+            <details>
+              <summary><strong>Scenario:</strong> Construction Firm Evaluation</summary>
+              <p>Emily has evaluated a potential construction site. She must send a formal report to the external client summarizing suitability. Internally, she must send a report to her supervisor and engineering team with more technical detail.<br><br>
+              <strong>What format should Emily use for the client and the engineering team, respectively?</strong></p>
+
+              <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--bd);">
+
+              <p><strong>Answer:</strong> <strong>Letter report</strong> for the external client, and <strong>Memo report</strong> for her supervisor and engineering team.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- ── TOPIC 3 ─────────────────────────────────────── -->
+        <div class="topic-card" id="topic-3" style="display: none;">
+          <h2><span class="topic-num">3</span>Document Analysis</h2>
+          <p class="topic-subtitle">Evaluating the purpose, audience, and effectiveness of technical documents</p>
+
+          <p>
+            In document analysis, you must evaluate a given artifact (like a brochure, manual, or policy) based on the core features of technical communication.
+          </p>
+
+          <h3>4-Step Analysis Framework</h3>
+          <ol>
+            <li><strong>The Purpose:</strong> Is it to inform, instruct, persuade, or request? (e.g., "To convince the readers to get vaccinated for the flu").</li>
+            <li><strong>The Apparent Audience:</strong> Who is the target demographic? (e.g., "General public, specifically busy adults needing quick access to clinic locations").</li>
+            <li><strong>Difference from Academic Writing:</strong> Academic writing displays knowledge to a teacher for a grade. Technical writing conveys actionable information simply and quickly to an uninformed audience without unnecessary theoretical depth.</li>
+            <li><strong>Relative Success / Effectiveness:</strong> Does it use clear headings, bullet points, concise language, and a reader-centered "You" attitude? Is the vocabulary simple and accessible?</li>
+          </ol>
+
+          <div class="example">
+            <div class="callout-label">Example: Flu Vaccination Brochure Analysis</div>
+            <h4>Evaluation Breakdown</h4>
+            <ul>
+              <li><strong>Purpose:</strong> To persuade the public to get flu shots and inform them about locations/benefits.</li>
+              <li><strong>Audience:</strong> The general public of Cleveland, Ohio.</li>
+              <li><strong>Academic Difference:</strong> The writer knows more than the reader and writes to drive an action (getting vaccinated), not to earn a grade. It uses visual hierarchy (bold numbers, bullet points) instead of dense paragraphs.</li>
+              <li><strong>Effectiveness:</strong> Highly effective. It exhibits <strong>Clarity</strong> (simple language), <strong>Conciseness</strong> (short phrases like "No need for appointments"), and visual <strong>Accessibility</strong> (bold numbers for statistics like "8.1 Million").</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+      <!-- end module-container -->
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>

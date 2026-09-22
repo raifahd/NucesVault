@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Technical &amp; Business Writing — Module 6: Correspondence</title>
+    <meta
+      name="description"
+      content="Comprehensive notes for TBW Module 6: Correspondence, Business Letters, Memos, Email Guidelines, and Case Studies."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SIDEBAR
+         ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Technical Business Writing</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      
+        
+        <ul class="nav-list" id="nav-list">
+          <li>
+            <a class="nav-module-link" href="./1- Technical Communication in the Workplace.html">
+              <span class="nav-num">01</span>Technical Communication in the Workplace
+            </a>
+          </li>
+          <li class="nav-section">
+            <div class="nav-section-title" onclick="toggleSection(this)">
+              <span>2. Correspondence</span>
+              <span class="chevron">▼</span>
+            </div>
+            <ul class="nav-sublist">
+              <li>
+                <a href="javascript:void(0)" onclick="showTopic('topic-1')" class="active">
+                  <span class="nav-num">01</span>Business Letters
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                  <span class="nav-num">02</span>Memorandums (Memos)
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                  <span class="nav-num">03</span>Email Writing &amp; Guidelines
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" onclick="showTopic('topic-4')">
+                  <span class="nav-num">04</span>Correspondence Case Studies
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a class="nav-module-link" href="./3- Presentations.html">
+              <span class="nav-num">03</span>Presentations &amp; Delivery
+            </a>
+          </li>
+          <li>
+            <a class="nav-module-link" href="./4- Exam Prep Midterm I.html">
+              <span class="nav-num">04</span>Exam Prep: Midterm I
+            </a>
+          </li>
+        </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Technical &amp; Business Writing (TBW)</div>
+          <h1 class="module-title">Correspondence</h1>
+          <p style="color: var(--mt); font-size: 0.9rem; margin-top: 6px;">
+            <strong>Core Texts:</strong> Pfeiffer (8th Ed.) Chapter 6
+          </p>
+        </div>
+
+        <!-- ── TOPIC 1 ─────────────────────────────────────── -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Business Letters</h2>
+          <p class="topic-subtitle">Formatting, structures, and types of external business correspondence</p>
+
+          <p>
+            Business letters are primarily written to <strong>inform</strong> readers of specific information, <strong>persuade</strong> others to take action, or act as advertisements (e.g., sales letters). They are usually reserved for <strong>external communication</strong>.
+          </p>
+
+          <h3>Letter Format</h3>
+          <p>
+            The <strong>fully block open punctuation style</strong> is the most common format. All elements are lined up along an invisible line down the left side of the page. Text is single-spaced, with no indentation for the first sentence of paragraphs.
+          </p>
+
+          <h3>Parts of a Business Letter</h3>
+          <ul>
+            <li><strong>Letterhead / Heading:</strong> Conveys a positive image (logo, address, phone). If no letterhead is available, place your full return address and date.</li>
+            <li><strong>Date:</strong> Avoid abbreviating the month.</li>
+            <li><strong>Inside Address:</strong> The recipient’s full name, title/designation, and address.</li>
+            <li><strong>Subject Line:</strong> Optional element below the inside address to focus the topic (especially useful if addressing a large company).</li>
+            <li><strong>Salutation:</strong> Use title + last name + colon (e.g., <em>Dear Ms. Asma:</em>). Avoid "To Whom It May Concern".</li>
+            <li><strong>Body:</strong> Starts one line below salutation. Contains: Purpose, Details, Call for Action, and Closing off.</li>
+            <li><strong>Complimentary Closing:</strong> <em>Sincerely,</em> or <em>Best regards,</em> (Capitalize only the first letter).</li>
+            <li><strong>Writer's Signature Block:</strong> Typed name 4 lines below the closing, with the handwritten signature in the gap.</li>
+            <li><strong>End Notations:</strong> Reference initials, Enclosures, or Copy notations (cc/bcc).</li>
+          </ul>
+
+          <h3>Common Types of Business Letters</h3>
+          <table style="width:100%; margin: 16px 0; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--bd); text-align: left;">
+                <th style="padding: 10px 12px; color: var(--ac);">Letter Type</th>
+                <th style="padding: 10px 12px; color: var(--exp-bd);">Purpose / Definition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--bd);">
+                <td style="padding: 10px 12px; font-weight: 600;">1. Letter of Acknowledgement</td>
+                <td style="padding: 10px 12px;">Sent to acknowledge receipt of something when a written record is appropriate. May state that the matter will be looked into further.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--bd);">
+                <td style="padding: 10px 12px; font-weight: 600;">2. Letter of Enquiry</td>
+                <td style="padding: 10px 12px;">Requesting information about goods/services. Must be brief and clear (catalogue, price list, quotation).</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--bd);">
+                <td style="padding: 10px 12px; font-weight: 600;">3. Letter of Complaint</td>
+                <td style="padding: 10px 12px;">Stating facts about defective goods/services and asking for a resolution. Must <strong>avoid rudeness</strong> at all costs.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--bd);">
+                <td style="padding: 10px 12px; font-weight: 600;">4. Adjustment Letter</td>
+                <td style="padding: 10px 12px;">The response to a complaint letter. Used to investigate, explain, apologize, and put things right.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">General Guidelines</div>
+            <strong>1.</strong> Know your purpose and readers &bull; <strong>2.</strong> Follow ABC Format (Abstract, Body, Conclusion) &bull; <strong>3.</strong> Use the "You" Attitude &bull; <strong>4.</strong> Be diplomatic &bull; <strong>5.</strong> Avoid technical jargon for external readers.
+          </div>
+        </div>
+
+        <!-- ── TOPIC 2 ─────────────────────────────────────── -->
+        <div class="topic-card" id="topic-2" style="display: none;">
+          <h2><span class="topic-num">2</span>Memorandums (Memos)</h2>
+          <p class="topic-subtitle">Internal correspondence, documentation, and procedures</p>
+
+          <p>
+            A memo is used <strong>internally</strong> within an organization (moving upward, downward, or horizontally). It is <strong>never</strong> sent outside the company.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Memo vs. Letter</div>
+            <strong>Letter:</strong> External communication, requires inside address, salutation, complimentary close, avoids jargons.<br>
+            <strong>Memo:</strong> Internal communication, omits salutation/close, relies on <code>TO / FROM / DATE / SUBJECT</code>, and can use company-specific technical jargon safely.
+          </div>
+
+          <h3>Purposes of Memos</h3>
+          <ul>
+            <li><strong>Documentation:</strong> Reporting expenses, incidents, accidents, problems, hiring, or costs.</li>
+            <li><strong>Procedures:</strong> Explaining how to set up accounts, operate machinery, or use software.</li>
+            <li><strong>Cover/Transmittal:</strong> Telling the reader you have attached a document.</li>
+            <li><strong>Confirmation:</strong> Documenting meeting agendas, decisions to purchase, or conclusions arrived at.</li>
+            <li><strong>Feasibility:</strong> Studying the possibility of changes (e.g., relocating, buying new equipment).</li>
+            <li><strong>Status/Progress:</strong> Providing weekly/monthly progress reports on sales, staffing, etc.</li>
+          </ul>
+
+          <h3>Key Components of a Memo</h3>
+          <div class="example">
+            <div class="callout-label">Memo Heading Format</div>
+            <pre><code>DATE:    October 21, 2026
+TO:      Naveed Ahmed, Manager Product Development
+FROM:    Asad Irfan, Customer Support
+SUBJECT: Salary Increase For Comptrollers</code></pre>
+          </div>
+          
+          <p>The rest of the memo follows the <strong>ABC Format</strong>:</p>
+          <ul>
+            <li><strong>Introduction (Abstract):</strong> A lead-in/overview stating why you are writing and what it's about.</li>
+            <li><strong>Discussion (Body):</strong> Detailed development made accessible through highlighting techniques (lists/bullets).</li>
+            <li><strong>Conclusion:</strong> A summation stating what is next, when it will occur, and why the date is important (e.g., A directive close or complimentary close).</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="callout-label">Flawed Subject Lines</div>
+            One-word subject lines like <code>Subject: COMPTROLLERS</code> don't communicate effectively. Always use a descriptive focus + topic: <code>Subject: Salary Increase For Comptrollers</code>.
+          </div>
+        </div>
+
+        <!-- ── TOPIC 3 ─────────────────────────────────────── -->
+        <div class="topic-card" id="topic-3" style="display: none;">
+          <h2><span class="topic-num">3</span>Email Writing &amp; Guidelines</h2>
+          <p class="topic-subtitle">Maintaining professionalism in electronic correspondence</p>
+
+          <p>
+            Emails have replaced most routine memos and casual letters, but they still require a high level of professionalism.
+          </p>
+
+          <h3>Essential Email Hygiene</h3>
+          <ul>
+            <li><strong>Professionalism:</strong> Do not forward jokes/spam, discuss gossip, or use biased language.</li>
+            <li><strong>No Flames:</strong> Never send emails with abusive, obscene, or derogatory language to attack someone.</li>
+            <li><strong>Username:</strong> Use professional usernames (e.g., <code>msmith@domain.com</code>), not clever or hobby-related ones.</li>
+            <li><strong>Emoticons &amp; Abbreviations:</strong> Do not use smileys or casual chat text abbreviations (e.g., <em>BTW, LOL</em>).</li>
+            <li><strong>Subject Line:</strong> Must describe the topic and focus. When forwarding, revise the subject line to reflect current content.</li>
+            <li><strong>Copying (CC):</strong> Use the courtesy copy thoughtfully to keep others informed without cluttering inboxes.</li>
+            <li><strong>Attachments:</strong> Always include a cover message inside the email body explaining the attachment ("Attached is a copy of my budget proposal...").</li>
+            <li><strong>Formatting:</strong> Do not write in ALL UPPERCASE (shouting) or all lowercase. Ensure no grammatical typos.</li>
+          </ul>
+        </div>
+
+        <!-- ── TOPIC 4 ─────────────────────────────────────── -->
+        <div class="topic-card" id="topic-4" style="display: none;">
+          <h2><span class="topic-num">4</span>Correspondence Case Studies</h2>
+          <p class="topic-subtitle">Practice writing scenarios from past papers</p>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Case Study Questions</div>
+            
+            <details>
+              <summary>Writing a Complaint Letter (Software Error)</summary>
+              <p><strong>Scenario:</strong> You are the CEO of Avanceon (Lahore). You outsourced a software project to Social Square. After a month, it faced an error. Write a complaint letter to Manager Customer Support (Mr. Adil Rizwan). Identify that you CC'd the CEO of Social Square and enclosed a screenshot.</p>
+              <p><strong>Answer Outline:</strong></p>
+              <ul>
+                <li><strong>Heading:</strong> Avanceon Letterhead + Date + Inside Address (Adil Rizwan, Social Square).</li>
+                <li><strong>Subject:</strong> Complaint Regarding Software Error in Salary Management Program.</li>
+                <li><strong>Salutation:</strong> Dear Mr. Rizwan:</li>
+                <li><strong>Introduction:</strong> State the purchase/installation details and the exact problem clearly but politely.</li>
+                <li><strong>Body:</strong> Explain the impact of the error. Reference the enclosed screenshot.</li>
+                <li><strong>Conclusion/Action:</strong> Request immediate troubleshooting/fixing according to the contract terms.</li>
+                <li><strong>Closing:</strong> Sincerely, [Your Name/CEO].</li>
+                <li><strong>End Notations:</strong> Enclosure: Error Screenshot. cc: Mr. Avais, CEO Social Square.</li>
+              </ul>
+            </details>
+
+            <details>
+              <summary>Writing an Adjustment Letter</summary>
+              <p><strong>Scenario:</strong> You are the Customer Support Manager at Social Square. Write an adjustment letter to the CEO of Avanceon to address the complaint above, keeping them as a long-term customer.</p>
+              <p><strong>Answer Outline:</strong></p>
+              <ul>
+                <li><strong>Subject:</strong> Resolution of Software Error in Salary Management Program.</li>
+                <li><strong>Opening:</strong> Thank them for bringing it to your attention and apologize for the inconvenience (<em>"Please accept my apologies for..."</em>).</li>
+                <li><strong>Body (Explanation):</strong> Explain that your team investigated and found the root cause (e.g., an unauthorized IP access attempt). Clarify what is being done to resolve it immediately.</li>
+                <li><strong>Action/Resolution:</strong> State the timeline for the fix and offer assurance of continued support.</li>
+                <li><strong>Closing:</strong> We value Avanceon as a long-term partner and hope you won't face further problems.</li>
+              </ul>
+            </details>
+
+            <details>
+              <summary>Writing a Memo (New Timings Policy)</summary>
+              <p><strong>Scenario:</strong> As Administrative Manager at Inspire Limited, write a memo to all employees regarding a new policy enforcing 9-5 timings, due to recent late arrivals and early departures reducing productivity. Outline penalties for non-compliance.</p>
+              <p><strong>Answer Outline:</strong></p>
+              <pre><code>DATE:    October 15, 2026
+TO:      All Employees, Inspire Limited
+FROM:    [Your Name], Administrative Manager
+SUBJECT: Implementation of Strict Office Timings Policy
+
+[Introduction]
+This memo is to formally address the recent trend of irregular office attendance and outline the new timings policy effective immediately. 
+
+[Discussion/Body]
+A review of last month's entry/exit logs showed significant delays in arrival and early departures. This inconsistency severely affects our team's daily productivity, delays project timelines, and increases the workload on punctual staff members.
+
+To ensure fairness and efficiency, the company is enforcing the standard 9:00 AM to 5:00 PM working hours. All employees are required to be at their desks by 9:00 AM. 
+
+[Penalty/Conclusion]
+Employees who arrive late or leave early more than twice a month without prior approval will face a deduction in their monthly leave quota, followed by formal disciplinary action. We appreciate your cooperation in maintaining a professional work environment.</code></pre>
+            </details>
+          </div>
+        </div>
+
+      </div>
+      <!-- end module-container -->
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>
