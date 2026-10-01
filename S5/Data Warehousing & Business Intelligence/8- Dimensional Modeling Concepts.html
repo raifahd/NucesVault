@@ -1,0 +1,2458 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing &amp; BI &#8212; Dimensional Modeling Concepts</title>
+    <meta name="description" content="Comprehensive study notes for Post-Midterm Dimensional Modeling Concepts in DW&amp;BI &#8212; covering Star/Snowflake/Hybrid schemas, factless facts, families of stars, conformed dimensions, degenerate dimensions, junk dimensions, multi-flavor dimensions, surrogate keys, SCD Types 1-3, rapidly changing large dimensions, additivity, aggregate fact tables, snapshot/transaction tables, and core/custom tables (Ponniah Ch. 10 &amp; 11)." />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      /* Enhanced Visual Styling for Dimensional Schemas */
+      .source-citation {
+        background: rgba(217, 119, 87, 0.08);
+        border-left: 3px solid var(--ac);
+        padding: 8px 14px;
+        border-radius: 0 6px 6px 0;
+        font-size: 0.82rem;
+        color: var(--mt);
+        margin-bottom: 20px;
+      }
+      .source-citation strong {
+        color: var(--ac);
+      }
+      .schema-container {
+        background: rgba(24, 24, 27, 0.7);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 22px;
+        margin: 20px 0;
+        overflow-x: auto;
+      }
+      .schema-header {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--ac);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .schema-flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .schema-table {
+        background: #121215;
+        border: 1px solid #3f3f46;
+        border-radius: 8px;
+        width: 240px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+        font-size: 0.82rem;
+        overflow: hidden;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+      .schema-table:hover {
+        border-color: var(--ac);
+        transform: translateY(-2px);
+      }
+      .table-title {
+        padding: 8px 12px;
+        font-weight: 700;
+        color: #fff;
+        border-bottom: 1px solid #3f3f46;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+      }
+      .table-title.fact {
+        background: linear-gradient(135deg, rgba(217, 119, 87, 0.25), rgba(217, 119, 87, 0.05));
+        border-bottom: 2px solid var(--ac);
+        color: #fca5a5;
+      }
+      .table-title.dim {
+        background: linear-gradient(135deg, rgba(79, 163, 227, 0.2), rgba(79, 163, 227, 0.05));
+        border-bottom: 2px solid #4fa3e3;
+        color: #93c5fd;
+      }
+      .table-title.conformed {
+        background: linear-gradient(135deg, rgba(79, 191, 139, 0.2), rgba(79, 191, 139, 0.05));
+        border-bottom: 2px solid #4fbf8b;
+        color: #86efac;
+      }
+      .table-title.agg {
+        background: linear-gradient(135deg, rgba(179, 133, 240, 0.2), rgba(179, 133, 240, 0.05));
+        border-bottom: 2px solid #b385f0;
+        color: #d8b4fe;
+      }
+      .table-title.junk {
+        background: linear-gradient(135deg, rgba(240, 169, 78, 0.2), rgba(240, 169, 78, 0.05));
+        border-bottom: 2px solid #f0a94e;
+        color: #fde68a;
+      }
+      .table-title-tag {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        background: rgba(0,0,0,0.3);
+      }
+      .table-body {
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .field-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 3px 0;
+        border-bottom: 1px dashed rgba(255,255,255,0.06);
+        font-family: monospace;
+        font-size: 0.78rem;
+      }
+      .field-row:last-child {
+        border-bottom: none;
+      }
+      .field-badge {
+        font-size: 0.65rem;
+        padding: 1px 4px;
+        border-radius: 3px;
+        font-weight: 700;
+      }
+      .badge-pk { background: #854d0e; color: #fef08a; }
+      .badge-fk { background: #1e3a8a; color: #93c5fd; }
+      .badge-measure { background: #064e3b; color: #6ee7b7; }
+      .badge-dd { background: #581c87; color: #d8b4fe; }
+      .badge-attr { color: #a1a1aa; font-weight: normal; }
+
+      /* Visual Relationship Connector Arrows */
+      .schema-arrow-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        color: var(--ac);
+        flex-shrink: 0;
+      }
+      .schema-arrow-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        color: var(--ac);
+        margin: 6px auto;
+      }
+      .arrow-badge {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--ac);
+        background: rgba(217, 119, 87, 0.15);
+        border: 1px solid rgba(217, 119, 87, 0.35);
+        padding: 1px 6px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        font-family: monospace;
+      }
+      .arrow-svg {
+        display: block;
+        overflow: visible;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">&#9776;</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SIDEBAR NAVIGATION
+         ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing &amp; BI</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics&#8230;" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Introduction to DW.html"><span class="nav-mod-num">01</span>Introduction to DW</a></li>
+        <li><a class="nav-module-link" href="./2- Quiz Prep - Intro to DW.html"><span class="nav-mod-num">02</span>Quiz Prep: Intro to DW</a></li>
+        <li><a class="nav-module-link" href="./3- High Performance DSS Database Design.html"><span class="nav-mod-num">03</span>Logical & Physical Data Modeling</a></li>
+        <li><a class="nav-module-link" href="./4- Quiz Prep - DSS Database Design.html"><span class="nav-mod-num">04</span>Quiz Prep: DSS Database Design</a></li>
+        <li><a class="nav-module-link" href="./5- OLAP Implementation Techniques.html"><span class="nav-mod-num">05</span>OLAP Implementation Techniques</a></li>
+        <li><a class="nav-module-link" href="./6- Dimensional Modeling.html"><span class="nav-mod-num">06</span>Dimensional Modeling (Pre-Midterm)</a></li>
+        <li><a class="nav-module-link" href="./7- Solved Sample Midterm.html"><span class="nav-mod-num">07</span>Solved Sample Midterm</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Dimensional Modeling Concepts</span><span class="chevron">&#9660;</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Dimensional Modeling Basics</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Star vs Snowflake vs Hybrid</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Factless Fact Table</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Multi-Fact Star Schema (Families)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Shared & Conforming Dimensions</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Multi Star & Degenerate Dimensions</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>Junk Dimension</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-8')"><span class="nav-num">08</span>Multi-Flavor Dimensions</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-9')"><span class="nav-num">09</span>Natural vs Surrogate Key Designs</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-10')"><span class="nav-num">10</span>Slowly Changing Dimensions (SCD 1-3)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-11')"><span class="nav-num">11</span>Rapidly Changing (Large) Dimensions</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-12')"><span class="nav-num">12</span>Additivity of Measures/Facts</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-13')"><span class="nav-num">13</span>Aggregate Fact Tables & N-Way</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-14')"><span class="nav-num">14</span>Snapshot & Transaction Fact Tables</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-15')"><span class="nav-num">15</span>Core and Custom Fact Tables</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         MAIN CONTENT AREA
+         ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Warehousing &amp; Business Intelligence &#8212; Module 08 (Post-Midterm)</div>
+          <h1 class="module-title">Dimensional Modeling Concepts</h1>
+          <div class="source-citation" style="margin-top: 14px;">
+            <strong>Comprehensive Textbook Coverage:</strong> Paulraj Ponniah, <em>Data Warehousing Fundamentals for IT Professionals</em>, 2nd Edition (John Wiley &amp; Sons) &#8212; Chapters 10 ("Principles of Dimensional Modeling") &amp; 11 ("Dimensional Modeling: Advanced Topics"). Synthesized with departmental lecture slides and past midterm papers (Fall 2017, Fall 2018, Fall 2023).
+          </div>
+        </div>
+
+        <!-- TOPIC 1: Dimensional Modeling Basics -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Dimensional Modeling Basics</h2>
+          <p class="topic-subtitle">Foundations of OLAP design: facts, dimensions, grain, and contrasting with 3NF ER modeling</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, <em>Data Warehousing Fundamentals</em>, 2nd Ed. &#8212; Chapter 10 (pp. 225&#8211;236).
+          </div>
+
+          <h3>1. What &amp; Why: Analytical Modeling vs. OLTP Normalization</h3>
+          <p>OLTP systems use <strong>Entity-Relationship (E-R) 3NF modeling</strong> to eliminate data redundancy and ensure fast write operations (INSERT/UPDATE/DELETE). However, running analytical queries against a 3NF schema requires joining 15&#8211;30 tables, causing catastrophic query slowdowns.</p>
+          <p><strong>Dimensional Modeling</strong> is query-centric and analyst-oriented. It accepts controlled denormalization to structure data into quantifiable business metrics (<strong>Facts</strong>) surrounded by descriptive business contexts (<strong>Dimensions</strong>), producing the <strong>STAR schema</strong>.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Dimensional Modeling:</strong> A logical data design technique optimized for decision-support queries that structures numeric measures into central fact tables surrounded by denormalized, single-hop dimension tables.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Grain (Data Granularity):</strong> The exact business definition of what a single row in the fact table represents (e.g., "one line item per POS receipt"). <em>Rule: Base fact tables must always be built at the lowest atomic grain to preserve maximum drill-down capability.</em>
+          </div>
+
+          <h3>2. The 4-Step Design Method</h3>
+          <ol>
+            <li><strong>Select Business Process:</strong> Identify the operational activity to measure (e.g., Retail Sales, Invoicing).</li>
+            <li><strong>Declare the Grain:</strong> Choose the finest atomic detail (never mix multiple grains in one table).</li>
+            <li><strong>Identify Dimensions:</strong> Determine the context ("who, what, where, when, why").</li>
+            <li><strong>Identify Facts:</strong> Select numeric metrics (Quantity, Dollar Sales, Cost).</li>
+          </ol>
+
+          <h3>3. Visual Star Schema Architecture</h3>
+          <p>Notice the single-hop <strong>1:M relationship arrows</strong>: each dimension table directly filters the central fact table.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#128202; Retail Star Schema Architecture (Arrows Indicate 1 : M Joins)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Dimension: Customer -->
+              <div class="schema-table" style="width: 220px;">
+                <div class="table-title dim"><span>CUSTOMER_DIM</span><span class="table-title-tag">1</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Customer_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Customer_ID</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Customer_Name</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>City, State, Zip</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Central Fact Table -->
+              <div class="schema-table" style="width: 260px; border-color: var(--ac);">
+                <div class="table-title fact"><span>SALES_FACT</span><span class="table-title-tag">M (Center)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Customer_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Product_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Date_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Quantity_Sold</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Sales_Dollars</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Cost_Dollars</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Dimension: Product -->
+              <div class="schema-table" style="width: 220px;">
+                <div class="table-title dim"><span>PRODUCT_DIM</span><span class="table-title-tag">1</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Product_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Product_SKU</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Product_Name</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Category_Name</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>4. Comparison: E-R Modeling vs. Dimensional Modeling</h3>
+          <table>
+            <thead>
+              <tr><th>Aspect</th><th>E-R Modeling (OLTP)</th><th>Dimensional Modeling (DW)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Purpose</strong></td><td>Operations (Transaction recording)</td><td>Analytics (Decision support)</td></tr>
+              <tr><td><strong>Design Goal</strong></td><td>Zero redundancy (3NF normalization)</td><td>High query performance (Denormalized dimensions)</td></tr>
+              <tr><td><strong>Structure</strong></td><td>Complex web of many tables</td><td>Star schema: Fact surrounded by Dimensions</td></tr>
+              <tr><td><strong>Joins</strong></td><td>High (15&#8211;30 table joins required)</td><td>Low (Single-hop joins from dimensions to fact)</td></tr>
+              <tr><td><strong>User Navigability</strong></td><td>Requires technical DB knowledge</td><td>Intuitive; maps to business thinking</td></tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Atomic Grain</div>
+            Always build base fact tables at the atomic grain (e.g., line-item). Summaries can always be built upward with aggregate tables, but details can never be recovered from summarized base tables.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Do not normalize dimension tables to 3NF. Storage savings from normalizing dimensions are negligible (&lt;5% of total DW), while the multi-table join penalty severely degrades OLAP speed.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: What is data grain, and why must the base fact table be designed at the lowest grain?</summary>
+              <p><strong>Answer:</strong> The grain defines what a single fact table row represents. Lowest atomic grain preserves maximum dimensionality, enabling unlimited drill-down paths without requiring operational OLTP queries.</p>
+            </details>
+            <details>
+              <summary>Medium: Contrast E-R modeling and Dimensional modeling regarding query execution.</summary>
+              <p><strong>Answer:</strong> E-R schemas require expensive multi-table joins across dozens of normalized entities. Dimensional models flatten hierarchies into wide dimension tables, allowing fast single-hop star joins directly between dimensions and the fact table.</p>
+            </details>
+            <details>
+              <summary>Hard: Specify the 4-step dimensional design for a University Course Registration process.</summary>
+              <p><strong>Answer:</strong> (1) <strong>Process:</strong> Student Registration. (2) <strong>Grain:</strong> One row per course enrollment per student per semester. (3) <strong>Dimensions:</strong> <code>Student_Dim</code>, <code>Course_Dim</code>, <code>Semester_Dim</code>, <code>Instructor_Dim</code>. (4) <strong>Facts:</strong> <code>Registration_Count (=1)</code>, <code>Credit_Hours</code>, <code>Tuition_Dollars</code>.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Dimensional modeling optimizes for read performance and ad-hoc analytical simplicity.</li>
+              <li>A Star Schema consists of a deep, narrow fact table surrounded by wide, denormalized dimension tables.</li>
+              <li>The 4-step process: Process &rarr; Grain &rarr; Dimensions &rarr; Facts.</li>
+              <li>Base fact tables must strictly represent the lowest atomic grain.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 2: Star Schema vs Snowflake Schema vs Hybrid -->
+        <div class="topic-card" id="topic-2" style="display:none">
+          <h2><span class="topic-num">2</span>Star Schema vs. Snowflake Schema vs. Hybrid</h2>
+          <p class="topic-subtitle">Dimensional representations: Flattened (Star), Normalized (Snowflake), and StarFlake (Hybrid)</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Ponniah Ch. 10 (pp. 230&#8211;233), Ch. 11 (pp. 264&#8211;266) &amp; Purdy &amp; Brobst (<em>Perfect Dimensions</em>).
+          </div>
+
+          <h3>1. What &amp; Why: The Normalization Tradeoff</h3>
+          <p>When implementing dimension hierarchies (e.g., <code>Product &rarr; Brand &rarr; Category</code>), designers choose among three physical models:</p>
+          <ul>
+            <li><strong>Star Schema (Flattened):</strong> Completely denormalized. All hierarchy levels are collapsed into a single table. <em>Fastest queries, simple joins, slight text redundancy.</em></li>
+            <li><strong>Snowflake Schema (Normalized):</strong> Normalized. Each hierarchy level is broken into separate lookup tables. <em>Zero redundancy, but requires chained multi-table joins.</em></li>
+            <li><strong>Hybrid (StarFlake):</strong> Core dimensions remain flat (Star), while large, shared, or M:N hierarchies are snowflaked as <strong>outriggers</strong>.</li>
+          </ul>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Snowflake Schema:</strong> A variation of the star schema where dimension hierarchies are normalized into separate chained tables linked by foreign keys (e.g., <code>Fact &rarr; Product &rarr; Brand &rarr; Category</code>).
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Outrigger Dimension (Hybrid / StarFlake):</strong> A secondary dimension table joined to a primary dimension table (rather than directly to the fact table) to prevent extreme redundancy or model shared reference data.
+          </div>
+
+          <h3>2. Architectural Diagram: Star vs. Snowflake vs. Hybrid</h3>
+          <div class="schema-container">
+            <div class="schema-header">&#9881; Star vs. Snowflake vs. Hybrid (Arrows Indicate Foreign Key Join Direction)</div>
+            <div class="schema-flow" style="align-items: flex-start; gap: 24px;">
+              <!-- Star Schema -->
+              <div style="flex: 1; min-width: 220px; text-align: center;">
+                <div style="font-weight: 700; color: #4fa3e3; margin-bottom: 8px;">STAR SCHEMA</div>
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title dim"><span>PRODUCT_DIM</span><span class="table-title-tag">Flat</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Product_Key</span></div>
+                    <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Product_Name</span></div>
+                    <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Brand_Name</span></div>
+                    <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Category_Name</span></div>
+                  </div>
+                </div>
+                
+    <div class="schema-arrow-row">
+      <span class="arrow-badge">1 : M Join to Fact</span>
+      <svg width="20" height="36" viewBox="0 0 20 36" class="arrow-svg">
+        <line x1="10" y1="2" x2="10" y2="28" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="6,28 10,36 14,28" fill="currentColor" />
+      </svg>
+    </div>
+    
+                <div class="schema-table" style="width: 100%; border-color: var(--ac);">
+                  <div class="table-title fact"><span>SALES_FACT</span><span class="table-title-tag">Fact</span></div>
+                </div>
+              </div>
+
+              <!-- Snowflake Schema -->
+              <div style="flex: 1; min-width: 220px; text-align: center;">
+                <div style="font-weight: 700; color: #4fbf8b; margin-bottom: 8px;">SNOWFLAKE SCHEMA</div>
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title dim"><span>CATEGORY_DIM</span><span class="table-title-tag">Level 3</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Category_Key</span></div>
+                  </div>
+                </div>
+                
+    <div class="schema-arrow-row">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="20" height="36" viewBox="0 0 20 36" class="arrow-svg">
+        <line x1="10" y1="2" x2="10" y2="28" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="6,28 10,36 14,28" fill="currentColor" />
+      </svg>
+    </div>
+    
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title dim"><span>BRAND_DIM</span><span class="table-title-tag">Level 2</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Brand_Key</span></div>
+                    <div class="field-row"><span class="field-badge badge-fk">FK</span><span>Category_Key</span></div>
+                  </div>
+                </div>
+                
+    <div class="schema-arrow-row">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="20" height="36" viewBox="0 0 20 36" class="arrow-svg">
+        <line x1="10" y1="2" x2="10" y2="28" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="6,28 10,36 14,28" fill="currentColor" />
+      </svg>
+    </div>
+    
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title dim"><span>PRODUCT_DIM</span><span class="table-title-tag">Level 1</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Product_Key</span></div>
+                    <div class="field-row"><span class="field-badge badge-fk">FK</span><span>Brand_Key</span></div>
+                  </div>
+                </div>
+                
+    <div class="schema-arrow-row">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="20" height="36" viewBox="0 0 20 36" class="arrow-svg">
+        <line x1="10" y1="2" x2="10" y2="28" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="6,28 10,36 14,28" fill="currentColor" />
+      </svg>
+    </div>
+    
+                <div class="schema-table" style="width: 100%; border-color: var(--ac);">
+                  <div class="table-title fact"><span>SALES_FACT</span><span class="table-title-tag">Fact</span></div>
+                </div>
+              </div>
+
+              <!-- Hybrid Schema -->
+              <div style="flex: 1; min-width: 220px; text-align: center;">
+                <div style="font-weight: 700; color: #f0a94e; margin-bottom: 8px;">HYBRID (StarFlake)</div>
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title junk"><span>DEMOGRAPHIC_OUTRIGGER</span><span class="table-title-tag">Outrigger</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Demo_Key</span></div>
+                    <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Income_Tier</span></div>
+                  </div>
+                </div>
+                
+    <div class="schema-arrow-row">
+      <span class="arrow-badge">1 : M Outrigger Join</span>
+      <svg width="20" height="36" viewBox="0 0 20 36" class="arrow-svg">
+        <line x1="10" y1="2" x2="10" y2="28" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="6,28 10,36 14,28" fill="currentColor" />
+      </svg>
+    </div>
+    
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title dim"><span>CUSTOMER_DIM</span><span class="table-title-tag">Core (Flat)</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Customer_Key</span></div>
+                    <div class="field-row"><span class="field-badge badge-fk">FK</span><span>Demo_Key</span></div>
+                  </div>
+                </div>
+                
+    <div class="schema-arrow-row">
+      <span class="arrow-badge">1 : M Join to Fact</span>
+      <svg width="20" height="36" viewBox="0 0 20 36" class="arrow-svg">
+        <line x1="10" y1="2" x2="10" y2="28" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="6,28 10,36 14,28" fill="currentColor" />
+      </svg>
+    </div>
+    
+                <div class="schema-table" style="width: 100%; border-color: var(--ac);">
+                  <div class="table-title fact"><span>SALES_FACT</span><span class="table-title-tag">Fact</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>3. Comparison Matrix</h3>
+          <table>
+            <thead>
+              <tr><th>Criteria</th><th>Star Schema</th><th>Snowflake Schema</th><th>Hybrid (StarFlake)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Structure</strong></td><td>1 table per dimension</td><td>Chained normalized tables</td><td>Flat core with outriggers</td></tr>
+              <tr><td><strong>Joins</strong></td><td>Single-hop (Fastest)</td><td>Multi-hop chained (Slowest)</td><td>Minimal extra joins</td></tr>
+              <tr><td><strong>Redundancy</strong></td><td>High in text attributes</td><td>Zero (3NF)</td><td>Minimal in outriggers</td></tr>
+              <tr><td><strong>Storage Impact</strong></td><td>Slightly larger (&lt;5% of DW)</td><td>Smallest dimension footprint</td><td>Balanced</td></tr>
+              <tr><td><strong>User Simplicity</strong></td><td>Extremely easy to browse</td><td>Complex for business users</td><td>Simple for 95% of queries</td></tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Industry Standard</div>
+            Star Schema is the overwhelming industry standard. The tiny storage savings of snowflaking never justify the permanent query performance penalty of multi-table joins.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Snowflaking does <em>not</em> simplify queries. Querying sales by Category in a snowflake requires joining <code>Fact &rarr; Product &rarr; Brand &rarr; Category</code> (4 tables) instead of just <code>Fact &rarr; Product</code> (2 tables).
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy [Past Paper 2023]: State two advantages and two disadvantages of the Snowflake Schema.</summary>
+              <p><strong>Answer:</strong> Advantages: (1) Eliminates data redundancy; (2) Easier attribute updates. Disadvantages: (1) Degrades query speed due to chained joins; (2) Confuses business users with complex entity networks.</p>
+            </details>
+            <details>
+              <summary>Medium: What is an Outrigger Dimension in a Hybrid schema?</summary>
+              <p><strong>Answer:</strong> An outrigger is a secondary dimension table joined to a primary dimension rather than directly to the fact table. It is used when an entity has a shared, high-cardinality sub-hierarchy (e.g., shared demographics) to avoid extreme duplication in the primary dimension.</p>
+            </details>
+            <details>
+              <summary>Hard [Past Paper 2018 Calculation]: Calculate total dimension rows for 500,000 students in 25 batches and 10 schools under Star vs. Snowflake.</summary>
+              <p><strong>Answer:</strong> Star Schema = <code>500,000 rows</code> (single flattened table). Snowflake Schema = <code>500,000 (Student) + 25 (Batch) + 10 (School) = 500,035 rows</code>. Snowflaking adds tables and rows without meaningfully reducing storage.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Star schema flattens hierarchies for query performance and simplicity.</li>
+              <li>Snowflake normalizes hierarchies to remove redundancy, penalizing join performance.</li>
+              <li>Hybrid (StarFlake) keeps primary dimensions flat while snowflaking complex outriggers.</li>
+              <li>Star Schema is favored in production because dimension storage is trivial compared to fact storage.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 3: Factless Fact Table -->
+        <div class="topic-card" id="topic-3" style="display:none">
+          <h2><span class="topic-num">3</span>Factless Fact Table</h2>
+          <p class="topic-subtitle">Tracking events without metrics, coverage tracking, and identifying zero-event occurrences</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 10 (p. 238) &amp; Past Midterm Papers (Fall 2017 Q2d, Fall 2018 Q1d).
+          </div>
+
+          <h3>1. What &amp; Why: Modeling Events Without Numeric Facts</h3>
+          <p>Some business events produce no numeric measurement (e.g., student attendance in class, employee security badge swipes). Similarly, tracking <strong>what was possible</strong> (e.g., which products were on promotion in which stores) has no transaction amounts.</p>
+          <p>The event itself <em>is</em> the fact. These are modeled as <strong>Factless Fact Tables</strong>.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Factless Fact Table:</strong> A fact table that contains <em>no numeric measures</em>. It consists entirely of dimension foreign keys that together form a composite primary key. The presence of a row proves the event occurred or that a condition was active.
+          </div>
+
+          <h3>2. Two Varieties: Event Tracking vs. Coverage</h3>
+          <table>
+            <thead>
+              <tr><th>Variety</th><th>Purpose</th><th>Example</th><th>Query Use Case</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Event Tracking</strong></td>
+                <td>Records that an instantaneous event occurred.</td>
+                <td>Student Attendance: <code>(Student, Course, Date, Room)</code>.</td>
+                <td>Counting event frequency via <code>COUNT(*)</code>.</td>
+              </tr>
+              <tr>
+                <td><strong>Coverage / Opportunity</strong></td>
+                <td>Records conditions in effect (what <em>could</em> happen).</td>
+                <td>Promotion Coverage: <code>(Product, Store, Promotion, Date)</code>.</td>
+                <td>Detecting "Negative Events" (Promoted items with <strong>zero sales</strong>).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>3. Visual Schema Architecture &amp; Negative Query Flow</h3>
+          <p>Arrows illustrate the foreign key constraints from surrounding dimensions into the factless table, and the left-join to find zero-sales items.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#128197; Factless Architecture &amp; Zero-Sales Detection (Arrows Indicate Joins)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Student Dimension -->
+              <div class="schema-table" style="width: 180px;">
+                <div class="table-title dim"><span>STUDENT_DIM</span><span class="table-title-tag">1</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Student_Key</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Factless Fact Table -->
+              <div class="schema-table" style="width: 250px; border-color: #b385f0;">
+                <div class="table-title" style="background: rgba(179,133,240,0.2); border-bottom: 2px solid #b385f0; color: #d8b4fe;">
+                  <span>ATTENDANCE_FACTLESS</span><span class="table-title-tag">M (Event)</span>
+                </div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK,FK</span><span>Student_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">PK,FK</span><span>Course_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">PK,FK</span><span>Date_Key</span></div>
+                  <div class="field-row" style="color: var(--mt); font-style: italic;"><span>(Zero numeric measures!)</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Course Dimension -->
+              <div class="schema-table" style="width: 180px;">
+                <div class="table-title dim"><span>COURSE_DIM</span><span class="table-title-tag">1</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Course_Key</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zero-Sales Query Logic Flow -->
+            <div style="margin-top: 20px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 8px; text-align: center; font-size: 0.82rem;">
+              <span style="color: #f0a94e; font-weight: bold;">Negative Query Flow:</span> 
+              <code>PROMOTION_COVERAGE (Factless)</code> 
+              <span style="color: var(--ac); font-weight: bold;">──[ LEFT JOIN on (Product, Store, Date) ]──►</span> 
+              <code>SALES_FACT (Measures)</code> 
+              <span style="color: #fca5a5; font-weight: bold;">──► WHERE Sales_Dollars IS NULL</span> (Finds unsold promoted items!)
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Do Not Store Dummy 1s</div>
+            Avoid adding a redundant <code>Count = 1</code> column to factless tables. SQL <code>COUNT(*)</code> achieves identical results while saving 4 bytes per row across millions of records.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            A factless fact table is <em>not</em> a sparse fact table. A sparse table has measure columns with missing rows; a factless table contains <strong>zero measure columns by design</strong>.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy [Past Paper 2017 &amp; 2018]: Define a factless fact table and provide a concrete example.</summary>
+              <p><strong>Answer:</strong> A factless fact table contains only foreign keys referencing dimensions, with zero numeric measures. The presence of a row represents an event or condition. <em>Example:</em> Student Attendance tracking: <code>(Student_Key, Course_Key, Date_Key, Room_Key)</code>.</p>
+            </details>
+            <details>
+              <summary>Medium: How does a coverage fact table solve the "negative query" problem?</summary>
+              <p><strong>Answer:</strong> Sales fact tables only record transactions that happened. To find items on sale that had zero sales, left-join the <code>PROMOTION_COVERAGE</code> factless table to the <code>SALES_FACT</code> table and filter where <code>Sales_Fact.Sales_Dollars IS NULL</code>.</p>
+            </details>
+            <details>
+              <summary>Hard: Design a Hospital Emergency Coverage factless table.</summary>
+              <p><strong>Answer:</strong> <code>ON_CALL_COVERAGE (Doctor_Key, Ward_Key, Shift_Date_Key, Specialty_Key)</code>. All attributes are foreign keys forming the composite PK.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Factless fact tables contain only dimension foreign keys forming a composite PK.</li>
+              <li>Event-tracking factless tables model occurrences like attendance or badge entries.</li>
+              <li>Coverage factless tables record business conditions to detect zero-event anomalies.</li>
+              <li>Queries use SQL <code>COUNT(*)</code> instead of summing measure attributes.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 4: Multi-fact Star schema (Families of Stars) -->
+        <div class="topic-card" id="topic-4" style="display:none">
+          <h2><span class="topic-num">4</span>Multi-Fact Star Schema (Families of Stars)</h2>
+          <p class="topic-subtitle">Enterprise bus modeling, value chains, and drill-across multi-pass SQL queries</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 11: "Families of STARS" (pp. 272&#8211;276).
+          </div>
+
+          <h3>1. What &amp; Why: Modeling Multiple Business Processes</h3>
+          <p>An enterprise consists of multiple distinct business processes (e.g., Orders, Shipments, Invoicing, Inventory). Attempting to cram all processes into a single fact table causes <strong>grain mismatch errors</strong> and massive columns of NULLs.</p>
+          <p>The solution is a <strong>Family of Stars</strong>: separate star schemas for each process that share standardized <strong>conformed dimensions</strong> to model the enterprise value chain.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Family of Stars:</strong> A network of distinct star schemas in a data warehouse, each centered on a separate business process fact table, linked together through shared <strong>conformed dimension tables</strong>.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Drill-Across:</strong> An analytical OLAP operation that correlates metrics from multiple fact tables. It executes multi-pass SQL queries: aggregating each fact table separately along common conformed dimensions, then outer-joining the results on the conformed keys.
+          </div>
+
+          <h3>2. Architectural Diagram: Shared Conformed Dimensions</h3>
+          <p>Notice the relationship arrows: the central conformed dimensions provide 1 : M filtering into both independent fact tables.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#128640; Family of Stars: Conformed Dimensions Shared Across Processes</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Process 1: Orders Fact -->
+              <div class="schema-table" style="width: 220px; border-color: var(--ac);">
+                <div class="table-title fact"><span>ORDERS_FACT</span><span class="table-title-tag">Process 1</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Order_Date_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Product_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Customer_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Order_Qty</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Order_Amount</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">M : 1</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Shared Conformed Dimensions in Center -->
+              <div style="display: flex; flex-direction: column; gap: 10px; width: 220px;">
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title conformed"><span>PRODUCT_DIM</span><span class="table-title-tag">Conformed</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Product_Key</span></div>
+                    <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Product_Name</span></div>
+                  </div>
+                </div>
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title conformed"><span>CUSTOMER_DIM</span><span class="table-title-tag">Conformed</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Customer_Key</span></div>
+                    <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Customer_Name</span></div>
+                  </div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Process 2: Shipments Fact -->
+              <div class="schema-table" style="width: 220px; border-color: #4fa3e3;">
+                <div class="table-title dim"><span>SHIPMENT_FACT</span><span class="table-title-tag">Process 2</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Ship_Date_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Product_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Customer_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Shipped_Qty</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Freight_Cost</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>3. Drill-Across Multi-Pass SQL Logic</h3>
+          <div class="example">
+            <div class="callout-label">SQL Drill-Across (Never Join Fact Tables Directly!)</div>
+            <pre><code>-- 1. Pre-aggregate Orders by Product and Month
+WITH Ord AS (
+  SELECT Product_Key, SUM(Order_Amount) AS Total_Ordered
+  FROM ORDERS_FACT GROUP BY Product_Key
+),
+-- 2. Pre-aggregate Shipments by Product and Month
+Ship AS (
+  SELECT Product_Key, SUM(Freight_Cost) AS Total_Freight
+  FROM SHIPMENT_FACT GROUP BY Product_Key
+)
+-- 3. Outer join aggregated results along the conformed dimension key
+SELECT p.Product_Name, Ord.Total_Ordered, Ship.Total_Freight
+FROM PRODUCT_DIM p
+LEFT JOIN Ord  ON p.Product_Key = Ord.Product_Key
+LEFT JOIN Ship ON p.Product_Key = Ship.Product_Key;</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Enterprise Bus Matrix</div>
+            Always draft an <strong>Enterprise Bus Matrix</strong> during planning: rows list business processes, columns list conformed dimensions.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            <strong>Never execute direct fact-to-fact joins!</strong> Joining <code>Orders_Fact JOIN Shipment_Fact ON Customer_Key</code> causes an explosive Cartesian product that multiplies and corrupts metrics.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: What is a Family of Stars and why is it needed?</summary>
+              <p><strong>Answer:</strong> It is a set of star schemas sharing conformed dimensions. It is needed because different business processes have distinct grains and metrics that cannot co-exist in one table.</p>
+            </details>
+            <details>
+              <summary>Medium: How does drill-across prevent Cartesian fan-out?</summary>
+              <p><strong>Answer:</strong> Drill-across aggregates each fact table independently to a common dimension level before joining the summary sets on the conformed key.</p>
+            </details>
+            <details>
+              <summary>Hard: Design a Family of Stars for Production and Quality Inspection.</summary>
+              <p><strong>Answer:</strong> Shared dimensions: <code>PRODUCT_DIM</code>, <code>PLANT_DIM</code>, <code>TIME_DIM</code>. Fact 1: <code>PRODUCTION_FACT (Units_Produced)</code>. Fact 2: <code>INSPECTION_FACT (Units_Defective)</code>. Drill-across yields defect rates.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Each distinct business process requires its own fact table.</li>
+              <li>A Family of Stars links distinct processes via shared conformed dimensions.</li>
+              <li>Drill-across queries require multi-pass aggregation, never direct fact-to-fact joins.</li>
+              <li>The Enterprise Bus Matrix coordinates incremental data mart construction.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 5: Shared dimensions and Conforming dimensions -->
+        <div class="topic-card" id="topic-5" style="display:none">
+          <h2><span class="topic-num">5</span>Shared &amp; Conforming Dimensions</h2>
+          <p class="topic-subtitle">The enterprise integration backbone: Bus architecture, consistency, and conformed roll-ups</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 11: "Conforming Dimensions" (pp. 275&#8211;277) &amp; Past Midterm (Fall 2017 Q2a).
+          </div>
+
+          <h3>1. What &amp; Why: Eliminating Siloed Data Islands</h3>
+          <p>When business units build isolated data marts independently, they create conflicting "islands of data." Sales defines Customer by billing account; Logistics defines Customer by shipping address.</p>
+          <p><strong>Conformed Dimensions</strong> enforce unified attribute definitions, identical surrogate keys, and shared domain values across the entire enterprise, providing a "single version of the truth."</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Conformed Dimension:</strong> A dimension that has <em>identical business meaning, attribute names, domain values, and hierarchies</em> across all fact tables and data marts in an enterprise.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Conformed Roll-up Dimension:</strong> An aggregated dimension that is a strict mathematical subset or rollup of an atomic dimension (e.g., <code>MONTH_DIM</code> rolling up from <code>DATE_DIM</code>).
+          </div>
+
+          <h3>2. Architectural Diagram: Conformed Hub Architecture</h3>
+          <p>The conformed dimension acts as a central hub, linked with 1 : M relationship arrows to multiple independent business fact tables.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#129513; Conformed Dimension Hub Architecture (Arrows Show 1 : M Joins)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Fact Mart 1 -->
+              <div class="schema-table" style="width: 220px; border-color: var(--ac);">
+                <div class="table-title fact"><span>RETAIL_SALES_FACT</span><span class="table-title-tag">M (Sales)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Product_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Sales_Dollars</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">M : 1</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Conformed Dimension Hub -->
+              <div class="schema-table" style="width: 240px; border-color: #4fbf8b;">
+                <div class="table-title conformed"><span>PRODUCT_DIM (Conformed)</span><span class="table-title-tag">1 (Enterprise)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Product_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Master_SKU</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Brand_Name</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Category_Name</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Fact Mart 2 -->
+              <div class="schema-table" style="width: 220px; border-color: #4fa3e3;">
+                <div class="table-title dim"><span>INVENTORY_FACT</span><span class="table-title-tag">M (Supply)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Product_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Stock_On_Hand</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>3. Resolving Semantic Conflicts During Conformation</h3>
+          <ul>
+            <li><strong>Homonyms:</strong> Same word, different meanings (e.g., "Account" in checking vs. investment). Standardize distinct attribute names.</li>
+            <li><strong>Synonyms:</strong> Different words, same entity (e.g., "Client" vs. "Customer"). Standardize on a single column name: <code>Customer_Name</code>.</li>
+            <li><strong>Value Sets:</strong> Standardize state/country codes (convert "CA", "Calif", "06" &rarr; "CA").</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Drill-Across Prerequisite</div>
+            Conformed dimensions are the <em>only</em> mechanism that makes drill-across queries possible. Without them, cross-mart reporting is impossible.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            A dimension does not need to be conformed if it is used by only one process (e.g., <code>CARRIER_DIM</code> is unique to Shipments). Conforming is required only for shared entities.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy [Past Paper 2017 Q2a]: What is meant by conforming the dimension? Why is this important?</summary>
+              <p><strong>Answer:</strong> Conforming a dimension means establishing identical attribute names, domain values, and keys across all enterprise data marts. It is important because it prevents conflicting data silos and enables drill-across queries.</p>
+            </details>
+            <details>
+              <summary>Medium: What is the difference between a shared dimension and a conformed dimension?</summary>
+              <p><strong>Answer:</strong> "Shared" describes a physical table referenced by multiple facts. "Conformed" is an architectural standard guaranteeing that the dimension's attributes and definitions are semantically identical everywhere.</p>
+            </details>
+            <details>
+              <summary>Hard: How does a Conformed Roll-Up Dimension work when sales are daily but inventory is monthly?</summary>
+              <p><strong>Answer:</strong> Create a <code>MONTH_DIM</code> that is a strict mathematical roll-up of <code>DATE_DIM</code>. Daily sales can be aggregated to <code>Month_Key</code> and joined directly with monthly inventory snapshots.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Conformed dimensions ensure consistent definitions and keys across the enterprise.</li>
+              <li>They provide a single version of the truth and eliminate data silos.</li>
+              <li>Conformed roll-ups allow fact tables of differing grains to participate in drill-across queries.</li>
+              <li>The Kimball Bus Architecture is built entirely upon conformed dimensions.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 6: Multi Star Schema and Degenerated dimensions -->
+        <div class="topic-card" id="topic-6" style="display:none">
+          <h2><span class="topic-num">6</span>Multi Star Schema &amp; Degenerate Dimensions</h2>
+          <p class="topic-subtitle">Operational control numbers, line-item grains, and composite primary key structures</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Ponniah Ch. 10 (p. 237), Lecture Slides, Past Paper (Fall 2018 Q1b).
+          </div>
+
+          <h3>1. What &amp; Why: The Identifier with No Dimension Table</h3>
+          <p>In transaction line-item fact tables (Orders, Invoices, Shipments), all descriptive attributes (Customer, Product, Store, Date) are placed in dimension tables. The remaining transaction reference number (e.g., <code>Order_Number</code>) has no other attributes left!</p>
+          <p>Creating a 50-million-row dimension table containing only <code>Order_Number</code> would add an unnecessary 1:1 join. The identifier is retained directly in the fact table as a <strong>Degenerate Dimension (DD)</strong>.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Degenerate Dimension (DD):</strong> An operational transaction reference number (e.g., Order #, Invoice #, Bill of Lading #) stored directly in the fact table without a corresponding dimension table.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Multi Star Schema:</strong> A star schema where dimension foreign keys alone cannot uniquely identify a row; the primary key requires the degenerate dimension:
+            <br><code>PK = &Sigma;(Foreign Keys) + Degenerate_Dimension + Line_Item_Num</code>.
+          </div>
+
+          <h3>2. Architectural Diagram: Line-Item Fact Table</h3>
+          <p>Arrows illustrate the incoming foreign keys from surrounding dimensions, joining the Degenerate Dimension columns to form the composite primary key.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#129534; Degenerate Dimension in Line-Item Fact Table (Arrows Show PK Composition)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Customer Dimension -->
+              <div class="schema-table" style="width: 190px;">
+                <div class="table-title dim"><span>CUSTOMER_DIM</span><span class="table-title-tag">1</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Customer_Key</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Fact Table with DD -->
+              <div class="schema-table" style="width: 290px; border-color: var(--ac);">
+                <div class="table-title fact"><span>ORDER_LINE_FACT</span><span class="table-title-tag">Multi Star Fact</span></div>
+                <div class="table-body">
+                  <div class="field-row" style="background: rgba(179,133,240,0.18);">
+                    <span class="field-badge badge-dd">DD / PK</span><span>Order_Number (Operational Ref)</span>
+                  </div>
+                  <div class="field-row" style="background: rgba(179,133,240,0.18);">
+                    <span class="field-badge badge-dd">DD / PK</span><span>Line_Item_Seq</span>
+                  </div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Customer_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Product_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Quantity_Ordered</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Sales_Dollars</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Product Dimension -->
+              <div class="schema-table" style="width: 190px;">
+                <div class="table-title dim"><span>PRODUCT_DIM</span><span class="table-title-tag">1</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Product_Key</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>3. Key Uses of Degenerate Dimensions</h3>
+          <ul>
+            <li><strong>Market Basket Analysis:</strong> Grouping items by <code>Order_Number</code> to find which products sell together.</li>
+            <li><strong>Order-Level Metrics:</strong> Computing average items or dollars per basket.</li>
+            <li><strong>Auditability:</strong> Tracing fact table rows directly back to the operational ERP system.</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Use Operational Keys</div>
+            The degenerate dimension should be the <strong>actual operational production number</strong> (e.g. <code>ORD-98421</code>) to ensure seamless audit tracing back to OLTP.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Do not build an "Order Header" dimension table with only an Order ID. If an identifier has no descriptive attributes, keeping it in the fact table as a DD eliminates a useless join.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy [Past Paper 2018 Q1b]: When do you use Degenerate Dimensions? Give examples.</summary>
+              <p><strong>Answer:</strong> Used when fact tables are at transaction line-item grain and all descriptive attributes belong in other dimensions. <em>Examples:</em> Order #, Invoice #, Bill of Lading #, Ticket #.</p>
+            </details>
+            <details>
+              <summary>Medium: Why do foreign keys alone fail to form a unique primary key in a line-item fact table?</summary>
+              <p><strong>Answer:</strong> A customer can buy multiple items on the same day at the same store in one or more orders. Dimension keys <code>(Customer, Product, Store, Date)</code> alone are not guaranteed to be unique without <code>Order_Number + Line_Item_Seq</code>.</p>
+            </details>
+            <details>
+              <summary>Hard: Write SQL to compute "Average Line Items per Order" using a DD.</summary>
+              <p><strong>Answer:</strong> <code>SELECT AVG(cnt) FROM (SELECT Order_Number, COUNT(*) AS cnt FROM ORDER_LINE_FACT GROUP BY Order_Number) t;</code></p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>A Degenerate Dimension is an operational transaction reference number stored in the fact table without a dimension table.</li>
+              <li>It forms the fact table primary key in conjunction with dimension foreign keys.</li>
+              <li>Essential for basket analysis, order-level rollups, and operational audit traceability.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 7: Junk Dimension -->
+        <div class="topic-card" id="topic-7" style="display:none">
+          <h2><span class="topic-num">7</span>Junk Dimension</h2>
+          <p class="topic-subtitle">Consolidating low-cardinality status flags, eliminating dimension clutter, and Cartesian products</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 11: "Junk Dimensions" (p. 268).
+          </div>
+
+          <h3>1. What &amp; Why: The Status Flag Dilemma</h3>
+          <p>Operational transactions frequently contain 5&#8211;10 miscellaneous status flags (e.g., Payment Method, Order Channel, Gift Wrap Flag, Tax Exempt Flag). Storing them in the warehouse creates a dilemma:</p>
+          <ul>
+            <li><strong>Storing in Fact Table:</strong> Bloats the fact table with text strings, wasting massive storage and RAM.</li>
+            <li><strong>Separate Dimensions:</strong> Creates 10 tiny lookup tables with 2 rows each, causing severe <strong>dimension proliferation</strong> and 10 extra joins per query.</li>
+          </ul>
+          <p><strong>Solution:</strong> Combine all miscellaneous flags and indicators into a single <strong>Junk Dimension</strong> referenced by a single foreign key (<code>Junk_Key</code>) in the fact table.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Junk Dimension:</strong> A single consolidated dimension table created by combining multiple, unrelated low-cardinality flags and indicators into one physical table to suppress dimension clutter.
+          </div>
+
+          <h3>2. Architectural Diagram: Consolidating Miscellaneous Flags</h3>
+          <p>Notice the arrows: multiple operational flags merge into the Junk Dimension, which provides a single 1 : M foreign key to the fact table.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#129529; Junk Dimension Consolidation (Arrows Indicate Consolidation &amp; 1 : M Join)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Source Flags Box -->
+              <div style="background: rgba(255,255,255,0.03); border: 1px dashed var(--bd); border-radius: 8px; padding: 12px; font-size: 0.8rem; width: 190px;">
+                <div style="color: #fca5a5; font-weight: 700; margin-bottom: 6px;">Operational Source Flags</div>
+                <div>&bull; Payment_Method (4)</div>
+                <div>&bull; Order_Channel (3)</div>
+                <div>&bull; Gift_Wrap_Flag (Y/N)</div>
+                <div>&bull; Tax_Exempt_Flag (Y/N)</div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">Consolidate</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Junk Dimension -->
+              <div class="schema-table" style="width: 250px; border-color: #f0a94e;">
+                <div class="table-title junk"><span>ORDER_INDICATOR_JUNK_DIM</span><span class="table-title-tag">1</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Junk_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Flag</span><span>Payment_Method</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Flag</span><span>Order_Channel</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Flag</span><span>Gift_Wrap_Flag</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Flag</span><span>Tax_Exempt_Flag</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M Join</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Fact Table -->
+              <div class="schema-table" style="width: 210px; border-color: var(--ac);">
+                <div class="table-title fact"><span>SALES_FACT</span><span class="table-title-tag">M</span></div>
+                <div class="table-body">
+                  <div class="field-row" style="background: rgba(240,169,78,0.15);">
+                    <span class="field-badge badge-pk">FK</span><span>Junk_Key</span>
+                  </div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Sales_Dollars</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>3. Implementation: Cartesian Product vs. Dynamic ETL</h3>
+          <ul>
+            <li><strong>Cartesian Pre-population:</strong> If total combinations are small (e.g. <code>4 &times; 3 &times; 2 &times; 2 = 48 rows</code>), pre-populate all combinations during initial setup.</li>
+            <li><strong>Dynamic ETL Insertion:</strong> If theoretical combinations are large, insert new combinations dynamically during ETL only when observed in incoming data.</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Do Not Mix Customer Flags</div>
+            Only combine flags that are independent of major business entities. Customer status belongs in <code>CUSTOMER_DIM</code>, not in a junk dimension!
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Junk dimensions are not "junk data." They are critical design patterns that eliminate 5&#8211;10 unnecessary joins while reducing fact table storage by over 70%.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: What problem does a Junk Dimension solve?</summary>
+              <p><strong>Answer:</strong> It prevents fact table bloat (storing numerous text columns) and eliminates dimension proliferation (creating dozens of tiny 2-row lookup tables and unnecessary joins).</p>
+            </details>
+            <details>
+              <summary>Medium: Calculate max rows for a junk dimension: 4 payment methods, 2 delivery modes, 2 gift flags, 3 order statuses.</summary>
+              <p><strong>Answer:</strong> Full Cartesian product: <code>4 &times; 2 &times; 2 &times; 3 = 48 rows</code>.</p>
+            </details>
+            <details>
+              <summary>Hard: How does a 2-byte SmallInt Junk_Key reduce fact table size over 100M rows vs storing 5 text flags (avg 4 bytes each)?</summary>
+              <p><strong>Answer:</strong> Storing flags directly = 20 bytes/row = 2.0 GB. Storing 2-byte <code>Junk_Key</code> = 200 MB. Net savings: <strong>1.8 GB (90% reduction)</strong> per 100M rows.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Junk dimensions consolidate discrete operational flags into a single table.</li>
+              <li>Replaces multiple text columns in the fact table with a single foreign key.</li>
+              <li>Eliminates dimension clutter and prevents 5&#8211;10 extra table joins.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 8: Multi-Flavor Dimensions -->
+        <div class="topic-card" id="topic-8" style="display:none">
+          <h2><span class="topic-num">8</span>Multi-Flavor Dimensions</h2>
+          <p class="topic-subtitle">Modeling heterogeneous entities, dimensional subtypes, and specialized business extensions</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Lecture Slides: "Star Schema with Flavored Dimension" &amp; Kimball: <em>Heterogeneous Products</em>.
+          </div>
+
+          <h3>1. What &amp; Why: Modeling Heterogeneous Subtypes</h3>
+          <p>In industries like banking and insurance, a core entity exists in multiple distinct "flavors" (subtypes). In a bank, all accounts share <code>Account_Number</code>, <code>Open_Date</code>, and <code>Owner</code>. But:</p>
+          <ul>
+            <li><strong>Checking Flavor:</strong> Has <code>Overdraft_Limit</code>, <code>Check_Style</code>.</li>
+            <li><strong>Mortgage Flavor:</strong> Has <code>Interest_Rate</code>, <code>Amortization_Term</code>, <code>Escrow_Amount</code>.</li>
+          </ul>
+          <p>Creating one giant table produces a sparse table with hundreds of NULL columns. Creating isolated tables prevents cross-account enterprise reporting.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Multi-Flavor Dimension (Dimensional Subtypes):</strong> A pattern where entities share a common base dimension table (Core) joined to specialized 1:1 extension tables (Flavors) for subtype-specific attributes.
+          </div>
+
+          <h3>2. Architectural Diagram: Core + Flavored Outriggers</h3>
+          <p>Notice the relationship arrows: the Core dimension connects via 1:1 arrows to the specialized flavored extension tables, and via 1:M to the Fact table.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#127856; Multi-Flavor Dimension Architecture (Arrows Show 1 : 1 and 1 : M Joins)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Fact Table -->
+              <div class="schema-table" style="width: 200px; border-color: var(--ac);">
+                <div class="table-title fact"><span>ACCOUNT_FACT</span><span class="table-title-tag">M</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Account_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Balance</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">M : 1 Join</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Core Dimension -->
+              <div class="schema-table" style="width: 240px; border-color: #4fbf8b;">
+                <div class="table-title conformed"><span>CORE_ACCOUNT_DIM</span><span class="table-title-tag">1 (Core)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Account_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Account_Number</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Account_Type</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Open_Date</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : 1 Subtype Join</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Flavored Extension -->
+              <div class="schema-table" style="width: 240px; border-color: #f0a94e;">
+                <div class="table-title junk"><span>MORTGAGE_FLAVOR_DIM</span><span class="table-title-tag">1 (Flavor)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK,FK</span><span>Account_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Flavor</span><span>Interest_Rate</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Flavor</span><span>Amortization_Months</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Flavor</span><span>Escrow_Amount</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Account_Type Column</div>
+            Always include an <code>Account_Type</code> column in the Core dimension so queries can filter by subtype without needing to join the outer flavor tables.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Do not force completely unrelated entities (like Customers and Vendors) into a multi-flavor dimension. Multi-flavor dimensions are strictly for subtypes of the same business role.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: What is a Multi-Flavor Dimension? Give an example.</summary>
+              <p><strong>Answer:</strong> A dimensional pattern for entities that share common attributes but have specialized subtype characteristics (e.g. Bank Accounts: Checking, Savings, Mortgage).</p>
+            </details>
+            <details>
+              <summary>Medium: Compare the Single Table with NULLs approach vs. Core + Flavored Outriggers.</summary>
+              <p><strong>Answer:</strong> Single table allows simple queries but is sparse with hundreds of NULL columns. Core + Outriggers eliminates NULL bloat and creates clean schemas at the cost of a 1:1 join when querying subtype attributes.</p>
+            </details>
+            <details>
+              <summary>Hard: Write SQL to compute average mortgage interest rate for accounts opened in 2023.</summary>
+              <p><strong>Answer:</strong> <code>SELECT AVG(m.Interest_Rate) FROM CORE_ACCOUNT_DIM c JOIN MORTGAGE_FLAVOR_DIM m ON c.Account_Key = m.Account_Key WHERE c.Open_Date >= '2023-01-01';</code></p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Multi-flavor dimensions model heterogeneous entity subtypes.</li>
+              <li>Core dimension stores shared attributes; 1:1 flavored extension tables store subtype attributes.</li>
+              <li>Eliminates massive NULL sparsity while preserving unified enterprise roll-ups.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 9: Natural vs Surrogate key Designs -->
+        <div class="topic-card" id="topic-9" style="display:none">
+          <h2><span class="topic-num">9</span>Natural vs. Surrogate Key Designs</h2>
+          <p class="topic-subtitle">Source decoupling, historical versioning, unknown handling, and 4-byte integer join speed</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 10 (pp. 239&#8211;241) &amp; Ch. 11 (pp. 251&#8211;252).
+          </div>
+
+          <h3>1. What &amp; Why: Why Operational Keys Fail in DW</h3>
+          <p>Operational OLTP systems assign <strong>Natural Keys</strong> (e.g., <code>CUST-98214</code>, <code>SSN</code>, <code>SKU-A819</code>). Using natural keys in a data warehouse causes major failures: operational systems recycle keys, change formats, and cannot support Type 2 SCD history.</p>
+          <p><strong>Golden Rule:</strong> Never use operational natural keys as primary keys in dimension tables or foreign keys in fact tables. Always use system-generated <strong>Surrogate Keys</strong>.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Natural Key:</strong> The operational production key created by source applications. It has embedded business meaning and is controlled by external systems.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Surrogate Key:</strong> An artificial, system-generated integer sequence (1, 2, 3...) assigned and maintained exclusively by the warehouse ETL process, possessing zero business meaning.
+          </div>
+
+          <h3>2. The 5 Reasons Surrogate Keys are Mandatory (Ponniah)</h3>
+          <ol>
+            <li><strong>Decoupling from Source Systems:</strong> Insulates the DW when source systems change key formats or recycle IDs.</li>
+            <li><strong>Integrating Heterogeneous Sources:</strong> Resolves overlapping natural keys when merging data from multiple independent plant databases.</li>
+            <li><strong>Enabling Type 2 SCD History:</strong> A single customer (one natural key) must have multiple rows over time, each requiring a unique surrogate key.</li>
+            <li><strong>Handling Missing / Unknown Data:</strong> Pre-populating reserved keys (<code>-1 = Unknown</code>, <code>-2 = Not Applicable</code>) eliminates NULL foreign keys.</li>
+            <li><strong>Massive Storage &amp; Join Speedup:</strong> 4-byte integer keys consume 70%+ less storage and join orders of magnitude faster than 20-character strings.</li>
+          </ol>
+
+          <h3>3. Visual Key Mapping Architecture</h3>
+          <p>Arrows illustrate the ETL mapping from operational natural keys to warehouse surrogate keys, and the subsequent 1 : M join into the fact table.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#128273; Key Mapping Architecture (Arrows Show ETL Mapping &amp; 1 : M Fact Join)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Source System -->
+              <div style="background: rgba(255,255,255,0.03); border: 1px dashed #ef4444; border-radius: 8px; padding: 12px; font-size: 0.8rem; width: 190px;">
+                <div style="color: #fca5a5; font-weight: 700; margin-bottom: 4px;">Operational Source</div>
+                <div>Customer_ID: <code>CUST-9821</code></div>
+                <div>Address: <code>Chicago &rarr; Miami</code></div>
+                <div style="color: var(--mt); font-style: italic; margin-top: 4px;">(Natural Key)</div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">ETL Restructuring</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Dimension Table with Surrogate Keys -->
+              <div class="schema-table" style="width: 250px; border-color: #4fbf8b;">
+                <div class="table-title conformed"><span>CUSTOMER_DIM (SCD Type 2)</span><span class="table-title-tag">1</span></div>
+                <div class="table-body">
+                  <div class="field-row" style="background: rgba(79,191,139,0.15);">
+                    <span class="field-badge badge-pk">SK: 101</span><span>CUST-9821 | Chicago | 2020-22</span>
+                  </div>
+                  <div class="field-row" style="background: rgba(79,191,139,0.15);">
+                    <span class="field-badge badge-pk">SK: 102</span><span>CUST-9821 | Miami | 2023-Now</span>
+                  </div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M Join (SK)</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Fact Table -->
+              <div class="schema-table" style="width: 210px; border-color: var(--ac);">
+                <div class="table-title fact"><span>SALES_FACT</span><span class="table-title-tag">M</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Customer_Key (4-byte Int)</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Sales_Dollars</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Retain Natural Keys</div>
+            Keep the operational natural key as a descriptive attribute column (e.g. <code>Customer_ID</code>) in the dimension table so users can search by their operational IDs.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Never create "smart" surrogate keys containing embedded text (e.g. <code>2023CA101</code>). Surrogate keys must be completely immutable system integers.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: Differentiate between a natural key and a surrogate key.</summary>
+              <p><strong>Answer:</strong> Natural keys originate from source systems and have business meaning. Surrogate keys are artificial integers created by the DW ETL with zero business meaning.</p>
+            </details>
+            <details>
+              <summary>Medium: Why are surrogate keys mandatory for Type 2 Slowly Changing Dimensions?</summary>
+              <p><strong>Answer:</strong> In Type 2 SCD, a customer has multiple historical records over time. Because the natural key is identical on all rows, unique surrogate keys are required to distinguish the historical versions and allow fact rows to link to the correct temporal record.</p>
+            </details>
+            <details>
+              <summary>Hard: Calculate storage savings over 200M fact rows replacing five 16-byte natural keys with 4-byte surrogate keys.</summary>
+              <p><strong>Answer:</strong> Natural keys = <code>5 &times; 16 = 80 bytes/row</code> = 16.0 GB. Surrogate keys = <code>5 &times; 4 = 20 bytes/row</code> = 4.0 GB. Net savings = <strong>12.0 GB (75% reduction)</strong>.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Surrogate keys are artificial integers managed exclusively by the warehouse.</li>
+              <li>They decouple the warehouse from operational key recycling and changes.</li>
+              <li>Surrogate keys are mandatory to implement Type 2 SCD historical versioning.</li>
+              <li>They provide 70%+ storage reduction and significantly faster integer join performance.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 10: Slowly changing dimensions and type1/type2/type3 changes -->
+        <div class="topic-card" id="topic-10" style="display:none">
+          <h2><span class="topic-num">10</span>Slowly Changing Dimensions (SCD 1, 2, 3)</h2>
+          <p class="topic-subtitle">Managing evolving context: Overwrite (Type 1), Full History (Type 2), and Soft Revisions (Type 3)</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 11: "Slowly Changing Dimensions" (pp. 252&#8211;264) &amp; Lecture Slides.
+          </div>
+
+          <h3>1. What &amp; Why: Handling Attribute Evolution Over Time</h3>
+          <p>Dimension attributes change over time: customers move to new states, sales reps change territories, products are reclassified. How the DW responds determines whether historical analytics remain valid or get corrupted.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Slowly Changing Dimension (SCD):</strong> A dimension whose attributes change gradually and irregularly over time. Handled via three standard techniques: Type 1, Type 2, and Type 3.
+          </div>
+
+          <h3>2. The Three Standard SCD Types</h3>
+          <table>
+            <thead>
+              <tr><th>Type</th><th>Mechanism</th><th>History Tracked</th><th>Surrogate Key</th><th>Best Use Case</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Type 1: Overwrite</strong></td>
+                <td>Updates the existing row in-place.</td>
+                <td>Zero (Old value erased).</td>
+                <td>Same key</td>
+                <td>Fixing typos and data entry errors.</td>
+              </tr>
+              <tr>
+                <td><strong>Type 2: Add Row</strong></td>
+                <td>Inserts a new row with a new surrogate key, start/end dates, and current flag.</td>
+                <td>100% Complete History preserved.</td>
+                <td><strong>New SK required</strong></td>
+                <td>Customer relocations, territory reorganizations (Gold Standard).</td>
+              </tr>
+              <tr>
+                <td><strong>Type 3: Previous Column</strong></td>
+                <td>Adds a <code>Previous_Value</code> column to the existing record.</td>
+                <td>Partial (Two snapshots only).</td>
+                <td>Same key</td>
+                <td>"What-if" alternate history reporting (comparing old vs new territory).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>3. Visual Type 2 Historical Segmentation Architecture</h3>
+          <p>Notice the relationship arrows: past fact records remain permanently connected to the historical surrogate key (1001), while new transactions link to the active surrogate key (1002).</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#9201; Type 2 SCD Historical Fact Segmentation (Arrows Show Temporal SK Links)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Past Fact Table Rows -->
+              <div class="schema-table" style="width: 220px; border-color: var(--ac);">
+                <div class="table-title fact"><span>SALES_FACT (2020&#8211;2022)</span><span class="table-title-tag">Past Facts</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Cust_Key = 1001</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Sales in Chicago</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">Historical Join</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Type 2 Dimension Table -->
+              <div class="schema-table" style="width: 280px; border-color: #4fbf8b;">
+                <div class="table-title conformed"><span>CUSTOMER_DIM (Type 2)</span><span class="table-title-tag">SCD Table</span></div>
+                <div class="table-body">
+                  <div class="field-row" style="background: rgba(255,255,255,0.04);">
+                    <span class="field-badge badge-pk">SK: 1001</span><span>John Doe | Chicago | End: 2022 | N</span>
+                  </div>
+                  <div class="field-row" style="background: rgba(79,191,139,0.18);">
+                    <span class="field-badge badge-pk">SK: 1002</span><span>John Doe | Miami | End: 9999 | Y</span>
+                  </div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">Current Join</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- New Fact Table Rows -->
+              <div class="schema-table" style="width: 220px; border-color: var(--ac);">
+                <div class="table-title fact"><span>SALES_FACT (2023+)</span><span class="table-title-tag">New Facts</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Cust_Key = 1002</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Sales in Miami</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; High-Date Convention</div>
+            Active Type 2 records should set <code>End_Date = '9999-12-31'</code> and <code>Current_Flag = 'Y'</code> for instant point-in-time filtering:
+            <br><code>WHERE :Tx_Date BETWEEN Start_Date AND End_Date</code>.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            <strong>Never update historical fact table keys when a Type 2 change occurs!</strong> Past transactions must continue pointing to the old surrogate key to maintain historical truth.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: Compare Type 1 and Type 2 SCD regarding history preservation.</summary>
+              <p><strong>Answer:</strong> Type 1 overwrites the old value in-place, permanently destroying history. Type 2 inserts a new row with a new surrogate key, preserving 100% of historical context.</p>
+            </details>
+            <details>
+              <summary>Medium: What is the primary purpose and limitation of Type 3 SCD?</summary>
+              <p><strong>Answer:</strong> Purpose: Enables simultaneous comparison between current and previous values ("what-if" soft revisions). Limitation: Tracks only two snapshots (if changed again, the original value is lost).</p>
+            </details>
+            <details>
+              <summary>Hard: Write SQL to calculate 2023 sales by customer state using Type 2 SCD.</summary>
+              <p><strong>Answer:</strong> <code>SELECT c.State_Code, SUM(f.Sales_Dollars) FROM SALES_FACT f JOIN CUSTOMER_DIM c ON f.Customer_Key = c.Customer_Key JOIN TIME_DIM t ON f.Date_Key = t.Time_Key WHERE t.Year = 2023 GROUP BY c.State_Code;</code> Fact rows already link to the active surrogate key at transaction time.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Type 1 overwrites old values (correction of errors; zero history).</li>
+              <li>Type 2 inserts a new record with a new surrogate key (gold standard; full history).</li>
+              <li>Type 3 adds previous-value columns for side-by-side soft revisions.</li>
+              <li>Type 2 is the primary reason why surrogate keys are mandatory in dimensional modeling.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 11: Rapidly changing (large) dimensions -->
+        <div class="topic-card" id="topic-11" style="display:none">
+          <h2><span class="topic-num">11</span>Rapidly Changing (Large) Dimensions</h2>
+          <p class="topic-subtitle">Preventing dimension row explosion: Demographic Minidimensions and dimension splitting</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 11: "Rapidly Changing Dimensions" (pp. 266&#8211;268) &amp; Lecture Slides.
+          </div>
+
+          <h3>1. What &amp; Why: When Type 2 Causes Row Explosion</h3>
+          <p>If an enterprise has a <strong>large dimension</strong> (e.g., 5 million customers) where attributes change monthly (Income, Credit Rating, Account Balance, Marital Status), applying Type 2 SCD creates <strong>5,000,000 new rows every month!</strong> Within three years, the dimension swells to 180M rows, destroying indexing and query performance.</p>
+          <p><strong>Solution: Dimension Splitting (Minidimension)</strong>. Extract volatile attributes into a separate <strong>Demographic Profile Minidimension</strong> grouped into discrete categorical bands.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Minidimension:</strong> A small, independent dimension table containing volatile attributes grouped into discrete bands (e.g., Income Brackets, Credit Tiers). Its row count is permanently bounded to the Cartesian product of the bands, preventing dimension table row explosion.
+          </div>
+
+          <h3>2. Architectural Diagram: Minidimension Architecture</h3>
+          <p>Notice the relationship arrows: both the static Customer dimension and the compact Demographic Minidimension link independently via 1 : M arrows to the fact table.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#129690; Minidimension Architecture (Arrows Show Dual 1 : M Fact Joins)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Static Customer Dimension -->
+              <div class="schema-table" style="width: 220px; border-color: #4fa3e3;">
+                <div class="table-title dim"><span>CUSTOMER_DIM (Static)</span><span class="table-title-tag">1 (5M Rows)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Customer_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Attr</span><span>Name, DOB, Gender</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M Join</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Fact Table in Center -->
+              <div class="schema-table" style="width: 240px; border-color: var(--ac);">
+                <div class="table-title fact"><span>BANK_TRANSACTION_FACT</span><span class="table-title-tag">M (Fact)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Customer_Key</span></div>
+                  <div class="field-row" style="background: rgba(240,169,78,0.18);"><span class="field-badge badge-pk">FK</span><span>Profile_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Transaction_Amount</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M Join</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Demographic Minidimension -->
+              <div class="schema-table" style="width: 220px; border-color: #f0a94e;">
+                <div class="table-title junk"><span>DEMOGRAPHIC_MINIDIM</span><span class="table-title-tag">1 (~160 Rows)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Profile_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Band</span><span>Income_Bracket (4)</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Band</span><span>Credit_Score_Tier (4)</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Band</span><span>Age_Group (5)</span></div>
+                  <div class="field-row"><span class="field-badge badge-attr">Band</span><span>Home_Owner (2)</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Small Dimensions</div>
+            For <em>small</em> dimensions (e.g. 50 sales territories), rapid changes can still use standard Type 2 because total rows remain negligible (&lt;20,000). Minidimensions are required only when the dimension is <strong>both large and rapidly changing</strong>.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Never store continuous raw numbers (e.g., exact salary <code>$78,214.33</code>) in a minidimension. Continuous numbers destroy the bounded nature of the table. Volatile values must be grouped into discrete ranges.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: Why does Type 2 SCD fail on large rapidly changing dimensions?</summary>
+              <p><strong>Answer:</strong> It creates millions of new rows per ETL load, causing extreme table bloat, destroying index performance, and making table scans excessively slow.</p>
+            </details>
+            <details>
+              <summary>Medium: How does a minidimension keep its row count strictly bounded?</summary>
+              <p><strong>Answer:</strong> By grouping continuous volatile metrics into discrete categorical bands. The total rows are capped at the Cartesian product of the bands (e.g. <code>4 &times; 4 &times; 5 &times; 2 = 160 rows</code>).</p>
+            </details>
+            <details>
+              <summary>Hard: Design a telecom minidimension for 15M users: 5 usage tiers, 2 upgrade flags, 4 risk tiers.</summary>
+              <p><strong>Answer:</strong> <code>SUBSCRIBER_MINIDIM (Profile_Key, Usage_Tier, Upgrade_Flag, Risk_Tier)</code>. Total row count = <code>5 &times; 2 &times; 4 = 40 rows</code> permanently!</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Type 2 SCD fails on large rapidly changing dimensions due to row explosion.</li>
+              <li>Dimension Slicing separates static attributes from volatile attributes.</li>
+              <li>Minidimensions group volatile values into discrete, bounded categorical bands.</li>
+              <li>Both dimension keys are placed as foreign keys directly in the fact table.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 12: Additivity of measures/facts: Fully/Semi/Non Additive -->
+        <div class="topic-card" id="topic-12" style="display:none">
+          <h2><span class="topic-num">12</span>Additivity of Measures: Fully, Semi, Non-Additive</h2>
+          <p class="topic-subtitle">Mathematical properties of facts, time-dimension restrictions, and dynamic ratio calculation</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 10 (pp. 236&#8211;237) &amp; Past Midterm (Fall 2018 Q3).
+          </div>
+
+          <h3>1. What &amp; Why: The Three Classes of Additivity</h3>
+          <p>Not every numeric column in a fact table can be summed with SQL <code>SUM()</code>! Adding bank account balances across days yields fictitious money; averaging profit margin percentages produces mathematical nonsense.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Fully Additive Measure:</strong> Can be summed (<code>SUM</code>) across <em>all participating dimensions without restriction</em> (e.g., Sales Dollars, Quantity Sold).
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Semi-Additive Measure:</strong> Can be summed across some dimensions (Accounts, Products, Branches), but <strong>cannot be summed across the Time dimension</strong> (e.g., Account Balance, Inventory on Hand). Requires <code>AVG()</code> or ending closing value over time.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Non-Additive Measure:</strong> <em>Cannot be meaningfully summed across any dimension</em> (e.g., Unit Price, Profit Margin %, GPA). Must be calculated dynamically from component additive facts.
+          </div>
+
+          <h3>2. Additivity Rules Matrix</h3>
+          <table>
+            <thead>
+              <tr><th>Measure Class</th><th>SUM Across Non-Time Dims?</th><th>SUM Across Time Dim?</th><th>Examples</th><th>Correct Aggregation Strategy</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Fully Additive</strong></td>
+                <td><span style="color: #86efac; font-weight: bold;">&#10004; YES</span></td>
+                <td><span style="color: #86efac; font-weight: bold;">&#10004; YES</span></td>
+                <td>Sales Dollars, Units Sold, Registration Count (=1)</td>
+                <td>SQL <code>SUM()</code></td>
+              </tr>
+              <tr>
+                <td><strong>Semi-Additive</strong></td>
+                <td><span style="color: #86efac; font-weight: bold;">&#10004; YES</span></td>
+                <td><span style="color: #fca5a5; font-weight: bold;">&#10008; FORBIDDEN</span></td>
+                <td>Bank Account Balance, Inventory Stock, Headcount</td>
+                <td><code>SUM()</code> across accounts; <code>AVG()</code> or closing balance over time</td>
+              </tr>
+              <tr>
+                <td><strong>Non-Additive</strong></td>
+                <td><span style="color: #fca5a5; font-weight: bold;">&#10008; NO</span></td>
+                <td><span style="color: #fca5a5; font-weight: bold;">&#10008; NO</span></td>
+                <td>Margin %, Unit Price, GPA, Discount %</td>
+                <td>Store component additive sums and recalculate ratio: <code>SUM(Margin)/SUM(Sales)</code></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>3. Visual Additivity Aggregation Flow</h3>
+          <p>Arrows illustrate the permitted aggregation paths across dimensional axes.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#128290; Additivity Dimension Routing</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 20px;">
+              <div style="background: rgba(79,191,139,0.1); border: 1px solid #4fbf8b; border-radius: 8px; padding: 12px; width: 220px; font-size: 0.8rem;">
+                <div style="color: #86efac; font-weight: 700; margin-bottom: 4px;">Fully Additive (Sales)</div>
+                <div>&bull; Store &rarr; <span style="color: #86efac;">&#10004; SUM</span></div>
+                <div>&bull; Product &rarr; <span style="color: #86efac;">&#10004; SUM</span></div>
+                <div>&bull; Time &rarr; <span style="color: #86efac;">&#10004; SUM</span></div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">Semi vs Time</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <div style="background: rgba(240,169,78,0.1); border: 1px solid #f0a94e; border-radius: 8px; padding: 12px; width: 220px; font-size: 0.8rem;">
+                <div style="color: #fde68a; font-weight: 700; margin-bottom: 4px;">Semi-Additive (Balance)</div>
+                <div>&bull; Account &rarr; <span style="color: #86efac;">&#10004; SUM</span></div>
+                <div>&bull; Branch &rarr; <span style="color: #86efac;">&#10004; SUM</span></div>
+                <div>&bull; Time &rarr; <span style="color: #fca5a5; font-weight: bold;">&#10008; Use AVG / Closing</span></div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">Non-Additive</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <div style="background: rgba(239,68,68,0.1); border: 1px solid #ef4444; border-radius: 8px; padding: 12px; width: 220px; font-size: 0.8rem;">
+                <div style="color: #fca5a5; font-weight: 700; margin-bottom: 4px;">Non-Additive (Margin %)</div>
+                <div>&bull; Across Dims &rarr; <span style="color: #fca5a5;">&#10008; FORBIDDEN</span></div>
+                <div>&bull; Ratio Calculation: <br><code>SUM(Margin) / SUM(Sales)</code></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Always Store Numerator and Denominator</div>
+            Never store calculated percentages as the only measure in a fact table. Always store the additive numerator (e.g. <code>Margin_Dollars</code>) and denominator (e.g. <code>Sales_Dollars</code>) so ratios can be computed dynamically.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            <code>Registration_Count</code> (always = 1) is <strong>fully additive</strong> because summing it yields total registrations. <code>Unit_Price</code> is <strong>non-additive</strong> because summing unit prices produces nonsense.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: Classify: (a) Units Sold, (b) Bank Balance, (c) Profit Margin %.</summary>
+              <p><strong>Answer:</strong> (a) Fully Additive; (b) Semi-Additive (cannot sum across Time); (c) Non-Additive (cannot sum across any dimension).</p>
+            </details>
+            <details>
+              <summary>Medium [Past Paper 2018 Q3]: In a registration fact table with GPA, LetterGrade, and RegistrationCount (=1), identify the additivity of each.</summary>
+              <p><strong>Answer:</strong> <code>RegistrationCount</code> = Fully Additive (SUM yields total students). <code>GPA</code> = Non-Additive (requires weighted average: <code>SUM(Grade_Pts * Credits)/SUM(Credits)</code>). <code>LetterGrade</code> = Non-Additive (categorical text).</p>
+            </details>
+            <details>
+              <summary>Hard: Why does SUM fail on bank balances over time? Show valid aggregations.</summary>
+              <p><strong>Answer:</strong> Summing Monday ($5k) + Tuesday ($7k) + Wednesday ($6k) yields $18k (fictitious money). Valid aggregations: (1) <em>Average:</em> <code>($5k+$7k+$6k)/3 = $6k</code>; (2) <em>Ending Balance:</em> $6k (Wednesday closing balance).</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Fully additive facts can be summed across all dimensions.</li>
+              <li>Semi-additive facts represent balances/levels and cannot be summed across Time.</li>
+              <li>Non-additive facts (ratios, unit prices, GPA) cannot be summed across any dimension.</li>
+              <li>Always store component additive facts to compute ratios dynamically at query time.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 13: Aggregate fact tables & n-way aggregate fact tables -->
+        <div class="topic-card" id="topic-13" style="display:none">
+          <h2><span class="topic-num">13</span>Aggregate Fact Tables &amp; N-Way Aggregates</h2>
+          <p class="topic-subtitle">Accelerating dashboard speed, derived dimension tables, and collapsing sparsity dynamics</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 11: "Aggregate Fact Tables" (pp. 268&#8211;272) &amp; Past Midterms (Fall 2017 Q3&#8211;Q6).
+          </div>
+
+          <h3>1. What &amp; Why: Eliminating Multi-Million Row Table Scans</h3>
+          <p>Atomic base fact tables hold millions of rows. Scanning them for executive reports (e.g. <em>"Total quarterly sales by Category"</em>) causes painful query latency.</p>
+          <p><strong>Aggregate Fact Tables</strong> physically store pre-computed summaries rolled up along dimension hierarchies. Query engines automatically redirect summary queries to these small tables, accelerating query response by up to 100,000&times;.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Aggregate Fact Table:</strong> A summary fact table derived from a base fact table that stores pre-calculated metrics (SUM, COUNT) rolled up to higher hierarchy levels.
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>N-Way Aggregate Fact Table:</strong> Classified by the number of dimension hierarchies rolled up from atomic grain:
+            <br>&bull; <strong>0-Way:</strong> Base atomic fact table (lowest natural level).
+            <br>&bull; <strong>1-Way:</strong> Rolled up along 1 dimension hierarchy (e.g. Brand &times; Store &times; Day).
+            <br>&bull; <strong>2-Way:</strong> Rolled up along 2 dimensions (e.g. Category &times; City &times; Month).
+          </div>
+
+          <h3>2. Architectural Diagram: Progressive Roll-up Hierarchy</h3>
+          <p>Notice the arrows: progressive roll-up pipelines reduce millions of base rows to a few thousand aggregate rows, connecting to derived dimension tables.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#127959; Aggregation Hierarchy Pipeline (Arrows Show Pre-Computation Rollup)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Base Fact Table -->
+              <div class="schema-table" style="width: 220px; border-color: var(--ac);">
+                <div class="table-title fact"><span>BASE_SALES_FACT</span><span class="table-title-tag">0-Way (73M Rows)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Date_Key (Day)</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Store_Key (Store)</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Product_Key (Product)</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Sales_Dollars</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1-Way Rollup</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- 1-Way Aggregate -->
+              <div class="schema-table" style="width: 230px; border-color: #4fa3e3;">
+                <div class="table-title dim"><span>AGG_SALES_1WAY</span><span class="table-title-tag">1-Way (1.4M Rows)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Date_Key (Day)</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Store_Key (Store)</span></div>
+                  <div class="field-row" style="background: rgba(79,163,227,0.18);"><span class="field-badge badge-pk">FK</span><span>Category_Key &rarr; DERIVED</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Total_Sales</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">2-Way Rollup</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- 2-Way Aggregate -->
+              <div class="schema-table" style="width: 230px; border-color: #b385f0;">
+                <div class="table-title agg"><span>AGG_SALES_2WAY</span><span class="table-title-tag">2-Way (4.8k Rows)</span></div>
+                <div class="table-body">
+                  <div class="field-row" style="background: rgba(179,133,240,0.18);"><span class="field-badge badge-pk">FK</span><span>Month_Key &rarr; DERIVED</span></div>
+                  <div class="field-row" style="background: rgba(179,133,240,0.18);"><span class="field-badge badge-pk">FK</span><span>City_Key &rarr; DERIVED</span></div>
+                  <div class="field-row" style="background: rgba(179,133,240,0.18);"><span class="field-badge badge-pk">FK</span><span>Category_Key &rarr; DERIVED</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Monthly_Category_Sales</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>3. The Sparsity Collapse Phenomenon (Exam Essential)</h3>
+          <p>Atomic base fact tables are notoriously <strong>sparse</strong> (e.g. 10% density). But as data is rolled up into higher aggregates (e.g. Brand &times; City &times; Month), <strong>sparsity collapses and density approaches 100%</strong> because almost every city sells at least one product from every major brand in any given month.</p>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Aggregate Navigator</div>
+            Users should never write queries directly referencing aggregate tables. The database <strong>Aggregate Navigator</strong> automatically rewrites queries against the base table to transparently hit the smallest aggregate table.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Aggregate fact tables cannot join to atomic dimension tables. An aggregate table at the Category level must join to a <strong>Derived Dimension Table</strong> containing only unique categories.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: What is an aggregate fact table and why is it needed?</summary>
+              <p><strong>Answer:</strong> It is a pre-calculated summary table rolled up along dimension hierarchies to accelerate executive queries by scanning thousands of rows instead of millions of base atomic rows.</p>
+            </details>
+            <details>
+              <summary>Medium [Past Paper 2017 Q5]: Given an aggregate table at (Sub-Category &times; Store &times; Month), how many rows are retrieved for Query 4 (1 Category &times; 1 Country &times; 1 Year)?</summary>
+              <p><strong>Answer:</strong> 1 Category = 20 Sub-Categories; 1 Country = 50 Stores; 1 Year = 12 Months. Rows retrieved = <code>20 &times; 50 &times; 12 = 12,000 rows</code> (compared to scanning 1,825,000 base rows).</p>
+            </details>
+            <details>
+              <summary>Hard: Why does sparsity collapse in high-level aggregate tables?</summary>
+              <p><strong>Answer:</strong> In the base table, individual products may not sell every day at every store (high sparsity). At higher levels, nearly every city sells at least one item per category every month, driving density toward 100%.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Aggregate tables pre-compute summaries to eliminate multi-million row table scans.</li>
+              <li>N-way aggregates are categorized by the number of rolled-up dimension hierarchies.</li>
+              <li>Data sparsity collapses toward 100% density as grain becomes coarser.</li>
+              <li>Aggregate tables must link to derived dimension tables.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 14: Snapshot and Transaction fact tables -->
+        <div class="topic-card" id="topic-14" style="display:none">
+          <h2><span class="topic-num">14</span>Snapshot &amp; Transaction Fact Tables</h2>
+          <p class="topic-subtitle">Contrasting event-driven transactions with periodic status snapshots and architectural synergy</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 11: "Snapshot and Transaction Tables" (pp. 273&#8211;274) &amp; Lecture Slides.
+          </div>
+
+          <h3>1. What &amp; Why: Instantaneous Events vs. Cumulative Balances</h3>
+          <p>Business activity operates in two fundamental temporal modes:</p>
+          <ul>
+            <li><strong>Continuous Transaction Events:</strong> Customer actions at discrete points in time (making a phone call, swiping a card, depositing cash).</li>
+            <li><strong>Periodic Standing Balances:</strong> Cumulative positions at regular calendar intervals (month-end bank balance, weekly inventory stock on hand).</li>
+          </ul>
+          <p>To know a balance on December 31, summing 10 years of transactions is horribly slow. To know why a balance dropped on Tuesday, a monthly balance snapshot lacks detail. Mature data warehouses use both tables side-by-side.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Transaction Fact Table:</strong> A fact table that records an instantaneous business event at a specific point in time (append-only, sparse, fully additive measures).
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Periodic Snapshot Fact Table:</strong> A fact table that captures the status, cumulative level, or standing position of entities at recurring calendar intervals (dense, semi-additive measures).
+          </div>
+
+          <h3>2. Architectural Comparison Matrix</h3>
+          <table>
+            <thead>
+              <tr><th>Aspect</th><th>Transaction Fact Table</th><th>Periodic Snapshot Fact Table</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Grain</strong></td><td>One row per individual event/transaction</td><td>One row per entity per periodic time interval</td></tr>
+              <tr><td><strong>Data Density</strong></td><td><strong>Sparse:</strong> Rows exist only when transactions occur</td><td><strong>Dense:</strong> One row per active entity every period</td></tr>
+              <tr><td><strong>Fact Additivity</strong></td><td>Fully additive amounts (Call Duration, Dollars)</td><td>Semi-additive balances, ending positions</td></tr>
+              <tr><td><strong>Update Mode</strong></td><td>Append-only (Never updated)</td><td>Inserted at period close</td></tr>
+              <tr><td><strong>Query Purpose</strong></td><td>Detailed operational drill-down</td><td>Trend analysis, moving averages, balance shifts</td></tr>
+            </tbody>
+          </table>
+
+          <h3>3. Visual Telecom Case Study: Transaction vs. Snapshot</h3>
+          <p>Notice the relationship arrows: the central shared dimensions filter both the detailed transaction fact table and the periodic monthly snapshot fact table.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#128222; Telecom Architecture: Transaction vs. Periodic Snapshot (Arrows Show 1 : M Joins)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Transaction Fact Table -->
+              <div class="schema-table" style="width: 250px; border-color: var(--ac);">
+                <div class="table-title fact"><span>PHONE_CALL_TX_FACT</span><span class="table-title-tag">M (Event)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Account_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Call_Time_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Duration_Seconds</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Toll_Charge</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">M : 1</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Shared Dimensions in Center -->
+              <div style="display: flex; flex-direction: column; gap: 10px; width: 190px;">
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title conformed"><span>ACCOUNT_DIM</span><span class="table-title-tag">Shared 1</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Account_Key</span></div>
+                  </div>
+                </div>
+                <div class="schema-table" style="width: 100%;">
+                  <div class="table-title conformed"><span>TIME_DIM</span><span class="table-title-tag">Shared 1</span></div>
+                  <div class="table-body">
+                    <div class="field-row"><span class="field-badge badge-pk">PK</span><span>Time_Key</span></div>
+                  </div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : M</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Snapshot Fact Table -->
+              <div class="schema-table" style="width: 250px; border-color: #4fbf8b;">
+                <div class="table-title conformed"><span>MONTHLY_ACCOUNT_SNAPSHOT</span><span class="table-title-tag">M (State)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Account_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Month_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Total_Calls</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Fact</span><span>Ending_Balance_Due</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Operational Synergy</div>
+            Use the Snapshot table to generate fast 12-month balance trend charts (12 rows). When an anomaly appears, drill down into the Transaction table to inspect individual charges.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            A snapshot table is <em>not</em> an aggregate table. Snapshots record standing state levels (like inventory stock or account balance) that cannot be derived by simply summing transactions.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: Differentiate between a transaction fact table and a periodic snapshot fact table.</summary>
+              <p><strong>Answer:</strong> Transaction tables record instantaneous events (append-only, sparse, fully additive). Snapshot tables record cumulative state levels at regular intervals (dense, semi-additive).</p>
+            </details>
+            <details>
+              <summary>Medium: In banking, give an example of a query best served by a transaction table vs. a snapshot table.</summary>
+              <p><strong>Answer:</strong> Transaction: "Find the location and amount of the largest ATM withdrawal yesterday." Snapshot: "Calculate total ending checking balances on December 31."</p>
+            </details>
+            <details>
+              <summary>Hard: Compare 5-year row growth for 1M accounts with 40 transactions/month under both models.</summary>
+              <p><strong>Answer:</strong> Transaction table = <code>1M &times; 40 &times; 60 months = 2.4 Billion Rows</code>. Snapshot table = <code>1M &times; 60 months = 60 Million Rows</code> (40&times; fewer rows to scan for balance trends!).</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Transaction tables capture instantaneous event logs with fully additive metrics.</li>
+              <li>Snapshot tables capture periodic status positions with semi-additive balances.</li>
+              <li>Shared conformed dimensions enable high-level trend monitoring and operational drill-down.</li>
+              <li>Snapshots eliminate scanning billions of transaction rows to find current standing balances.</li>
+            </ul>
+          </div>
+        </div>
+    
+
+        <!-- TOPIC 15: Core and Custom fact tables -->
+        <div class="topic-card" id="topic-15" style="display:none">
+          <h2><span class="topic-num">15</span>Core and Custom Fact Tables</h2>
+          <p class="topic-subtitle">Architectural design for heterogeneous business lines, multi-service companies, and unified profitability</p>
+
+          <div class="source-citation">
+            <strong>Textbook Reference:</strong> Paulraj Ponniah, Ch. 11: "Core and Custom Tables" (pp. 274&#8211;275).
+          </div>
+
+          <h3>1. What &amp; Why: Managing Heterogeneous Lines of Service</h3>
+          <p>Large corporations manage diverse lines of service (e.g. Universal Banks offering Checking, Mortgages, Credit Cards; or Insurers offering Auto, Life, and Property insurance).</p>
+          <ul>
+            <li><strong>Universal Table Trap:</strong> Storing all services in one table causes 80%+ of columns to be NULL for any specific row.</li>
+            <li><strong>Siloed Table Trap:</strong> Creating completely disconnected tables prevents calculating overall customer profitability across services.</li>
+          </ul>
+          <p><strong>Solution: Core &amp; Custom Fact Tables</strong>. Store metrics common to all lines in a <strong>Core Fact Table</strong>, and store metrics unique to each line in specialized <strong>Custom Fact Tables</strong>, linked via conformed dimensions.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Core Fact Table:</strong> A fact table that contains measures common to <em>all lines of business</em> (e.g., Balance, Total Revenue, Operating Cost, Net Profit Margin).
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Custom Fact Table:</strong> A specialized fact table dedicated to a single line of business that contains measures unique to that specific service (e.g., Mortgage Escrow, Checking Overdrafts).
+          </div>
+
+          <h3>2. Architectural Diagram: Core &amp; Custom Fact Architecture</h3>
+          <p>Notice the relationship arrows: the Core table connects 1 : 1 to specialized Custom tables and 1 : M to shared conformed dimensions.</p>
+
+          <div class="schema-container">
+            <div class="schema-header">&#127974; Core and Custom Fact Architecture (Arrows Show 1 : 1 Subtype &amp; 1 : M Dimension Joins)</div>
+            <div class="schema-flow" style="align-items: center; justify-content: center; gap: 16px;">
+              <!-- Custom Checking Fact -->
+              <div class="schema-table" style="width: 220px; border-color: #4fa3e3;">
+                <div class="table-title dim"><span>CHECKING_CUSTOM_FACT</span><span class="table-title-tag">Custom</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Account_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Custom</span><span>Overdraft_Count</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Custom</span><span>Checks_Cleared</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : 1</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="46" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="8,6 0,10 8,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Core Fact Table in Center -->
+              <div class="schema-table" style="width: 250px; border-color: var(--ac);">
+                <div class="table-title fact"><span>CORE_FINANCIAL_FACT</span><span class="table-title-tag">Core (All Lines)</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Customer_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Account_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Time_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Core</span><span>Current_Balance</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Core</span><span>Total_Revenue</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Core</span><span>Net_Profit</span></div>
+                </div>
+              </div>
+
+              
+    <div class="schema-arrow-col">
+      <span class="arrow-badge">1 : 1</span>
+      <svg width="48" height="20" viewBox="0 0 48 20" class="arrow-svg">
+        <line x1="2" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <polygon points="40,6 48,10 40,14" fill="currentColor" />
+      </svg>
+    </div>
+    
+
+              <!-- Custom Mortgage Fact -->
+              <div class="schema-table" style="width: 220px; border-color: #f0a94e;">
+                <div class="table-title junk"><span>MORTGAGE_CUSTOM_FACT</span><span class="table-title-tag">Custom</span></div>
+                <div class="table-body">
+                  <div class="field-row"><span class="field-badge badge-pk">FK</span><span>Account_Key</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Custom</span><span>Principal_Paid</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Custom</span><span>Interest_Paid</span></div>
+                  <div class="field-row"><span class="field-badge badge-measure">Custom</span><span>Escrow_Balance</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip &#8212; Match the Grain</div>
+            Ensure Core and Custom fact tables share identical grains (e.g., monthly account level) so joins between Core and Custom tables are guaranteed 1:1 lookups with zero risk of metric multiplication.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Pitfall</div>
+            Do not duplicate core measures in custom tables. If Revenue is in the Core Fact Table, do not store it inside <code>MORTGAGE_CUSTOM_FACT</code>. Duplication risks synchronization errors.
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions &amp; Worked Solutions</div>
+            <details>
+              <summary>Easy: What are Core and Custom fact tables? Why are they useful?</summary>
+              <p><strong>Answer:</strong> Core tables hold metrics common to all product lines (revenue, profit); Custom tables hold metrics unique to each line. They prevent massive NULL columns while allowing cross-business executive reporting.</p>
+            </details>
+            <details>
+              <summary>Medium: Design Core and Custom fact tables for an insurer offering Auto and Life insurance.</summary>
+              <p><strong>Answer:</strong> Core: <code>(Policy_Key, Customer_Key, Premium, Claims_Paid, Profit)</code>. Auto Custom: <code>(Policy_Key, Collision_Loss, Towing_Count)</code>. Life Custom: <code>(Policy_Key, Death_Benefit, Cash_Value)</code>.</p>
+            </details>
+            <details>
+              <summary>Hard: How does an executive query calculate Total Customer Profitability across all lines?</summary>
+              <p><strong>Answer:</strong> The query scans <strong>only the Core Fact Table</strong>: <code>SELECT Customer_Key, SUM(Net_Profit) FROM CORE_FINANCIAL_FACT GROUP BY Customer_Key;</code> No custom tables need to be touched!</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Core fact tables hold metrics common to all product lines (revenue, profit, cost).</li>
+              <li>Custom fact tables hold metrics unique to specific business lines.</li>
+              <li>Eliminates NULL column bloat while enabling enterprise-wide customer profitability reporting.</li>
+              <li>Core and Custom tables link 1:1 on shared conformed keys.</li>
+            </ul>
+          </div>
+        </div>
+    
+      </div>
+      <!-- end module-container -->
+
+      <!-- BOTTOM PAGINATION -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">&#8592; Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next &#8594;</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">&#8593;</button>
+
+    <script>
+      // ── List of All 15 Topics ───────────────────────────────
+      const topics = [
+        "topic-1", "topic-2", "topic-3", "topic-4", "topic-5",
+        "topic-6", "topic-7", "topic-8", "topic-9", "topic-10",
+        "topic-11", "topic-12", "topic-13", "topic-14", "topic-15"
+      ];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        const mc = document.getElementById("main-content");
+        if (mc) mc.scrollTo({ top: 0, behavior: "smooth" });
+
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          if (c) c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          if (c) c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      // Initialise on first topic
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      if (mc && bb) {
+        mc.addEventListener("scroll", () => {
+          bb.style.display = mc.scrollTop > 300 ? "flex" : "none";
+        });
+      }
+    </script>
+  </body>
+</html>
