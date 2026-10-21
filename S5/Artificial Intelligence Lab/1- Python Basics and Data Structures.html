@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Lab — Lab 1 & 2: Python Basics & Data Structures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">AI Lab Notes</div>
+          <div class="sidebar-title">Artificial Intelligence Lab</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Lab 1 & 2 — Python Basics</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Python Fundamentals</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Lists & List Comprehensions</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Dictionaries</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Tuples & Sets</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Practice Problems</a></li>
+        </ul>
+        </li>
+        <li><a class="nav-module-link" href="./2- NumPy, Pandas and Matplotlib.html"><span class="nav-mod-num">L3</span>NumPy, Pandas and Matplotlib</a></li>
+        <li><a class="nav-module-link" href="./3- OOP, File Handling and Blind Search.html"><span class="nav-mod-num">L4</span>OOP, File Handling and Blind Search</a></li>
+        <li><a class="nav-module-link" href="./4- Informed Search and Game Playing.html"><span class="nav-mod-num">L5&6</span>Informed Search and Game Playing</a></li>
+        <li><a class="nav-module-link" href="./5- Hill Climbing.html"><span class="nav-mod-num">L7</span>Hill Climbing</a></li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence Lab</div>
+          <h1 class="module-title">Lab 1 and 2 — Python Basics and Data Structures</h1>
+        </div>
+
+        <!-- TOPIC 1 -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Python Fundamentals</h2>
+          <p class="topic-subtitle">Strings, loops, conditionals, functions — the building blocks every AI lab depends on</p>
+
+          <p>You already know Python basics, so this is a <strong>quick visual refresher</strong> focused on the patterns AI labs actually use. The labs test clean, concise code — not theory.</p>
+
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin:20px 0;">
+            <div style="flex:1;min-width:130px;background:var(--card-bg);border:2px solid var(--ac);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:2rem;">🔢</div>
+              <strong style="color:var(--ac);">Variables</strong>
+              <p style="font-size:.85rem;margin:4px 0 0;color:var(--fg-muted);">int, float, str, bool</p>
+            </div>
+            <div style="flex:1;min-width:130px;background:var(--card-bg);border:2px solid var(--exp-bd);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:2rem;">🔁</div>
+              <strong style="color:var(--exp-bd);">Loops</strong>
+              <p style="font-size:.85rem;margin:4px 0 0;color:var(--fg-muted);">for, while, range()</p>
+            </div>
+            <div style="flex:1;min-width:130px;background:var(--card-bg);border:2px solid var(--def-bd);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:2rem;">🌿</div>
+              <strong style="color:var(--def-bd);">Conditionals</strong>
+              <p style="font-size:.85rem;margin:4px 0 0;color:var(--fg-muted);">if / elif / else</p>
+            </div>
+            <div style="flex:1;min-width:130px;background:var(--card-bg);border:2px solid var(--qst-bd);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:2rem;">⚙️</div>
+              <strong style="color:var(--qst-bd);">Functions</strong>
+              <p style="font-size:.85rem;margin:4px 0 0;color:var(--fg-muted);">def, return, params</p>
+            </div>
+          </div>
+
+          <h3>Strings — Key Methods</h3>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>String Operations Cheatsheet</h4>
+            <pre><code>s = "  Hello, World!  "
+s.strip()            # "Hello, World!"       — remove surrounding spaces
+s.lower()            # "  hello, world!  "
+s.split(", ")        # ["  Hello", "World!  "] — split by delimiter
+s.split()            # ["Hello,", "World!"]   — split by whitespace (default)
+s.startswith("  H")  # True
+s.find("World")      # 9  — index of first occurrence, -1 if not found
+
+# f-strings (modern, always prefer)
+name = "Ali"; age = 20
+print(f"My name is {name} and I am {age} years old.")
+
+# format()
+print("Hello {}".format(name))</code></pre>
+          </div>
+
+          <h3>Loops and Range</h3>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>for loop patterns</h4>
+            <pre><code>for i in range(5):        # 0 1 2 3 4
+    print(i)
+
+for i in range(2, 8, 2):  # 2 4 6
+    print(i)
+
+# enumerate gives index + value
+fruits = ["apple", "banana", "cherry"]
+for i, fruit in enumerate(fruits):
+    print(f"{i}: {fruit}")
+# 0: apple  1: banana  2: cherry
+
+# while with break / continue
+attempts = 0
+while attempts < 3:
+    ans = input("Password: ")
+    if ans == "1234":
+        print("Correct!"); break
+    attempts += 1
+else:
+    print("Locked.")   # runs only if loop didn't break</code></pre>
+          </div>
+
+          <h3>Functions</h3>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Custom Functions</h4>
+            <pre><code># Basic
+def greet(name):
+    print(f"Hello {name}")
+
+# Return value
+def add(a, b):
+    return a + b
+
+# Multiple return values (returns as a TUPLE)
+def stats(nums):
+    return min(nums), max(nums), sum(nums) / len(nums)
+
+lo, hi, avg = stats([3, 7, 2, 9])  # unpacking
+print(lo, hi, avg)   # 2  9  5.25
+
+# Built-in functions — MUST KNOW
+nums = [3, 2, 8, 5, 10]
+max(nums), min(nums), sum(nums), len(nums), abs(-7)
+sorted(nums)              # [2, 3, 5, 8, 10]  — new list
+sorted(nums, reverse=True)# [10, 8, 5, 3, 2]  — new list, descending</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Functions returning multiple values use <strong>tuples</strong> internally. Unpack them directly: <code>a, b = my_func()</code>. The <code>for...else</code> pattern (else runs only if loop never broke) is a Python trick examiners love.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <code>range(1, 5)</code> gives <code>1, 2, 3, 4</code> — NOT 5. The stop value is always exclusive. Also <code>range()</code> returns integers only — cannot use floats as step.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Use <code>f"text {var}"</code> for string formatting — cleanest syntax</li>
+              <li><code>range(start, stop, step)</code> — stop is always exclusive</li>
+              <li>Functions can return multiple values: unpacked as <code>a, b = func()</code></li>
+              <li>Know by heart: <code>max(), min(), sum(), len(), abs(), sorted()</code></li>
+              <li><code>for...else</code>: else block runs only if loop ended without <code>break</code></li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What does <code>"hello world".split()</code> return?</summary>
+              <p><strong>Answer:</strong> <code>['hello', 'world']</code> — split() with no argument splits on whitespace and strips empty strings.</p>
+            </details>
+            <details>
+              <summary>Medium: Write a function that returns (count_positive, count_negative, count_zero) from a list.</summary>
+              <pre><code>def classify(nums):
+    pos = len([n for n in nums if n > 0])
+    neg = len([n for n in nums if n < 0])
+    zero = len([n for n in nums if n == 0])
+    return pos, neg, zero
+
+p, n, z = classify([3, -1, 0, 5, -2, 0])
+print(p, n, z)  # 2 2 2</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Word frequency counter that ignores lines starting with '#', case-insensitive.</summary>
+              <pre><code>counts = {}
+while True:
+    line = input("Enter line (or 'done'): ")
+    if line == 'done': break
+    if line.startswith('#'): continue
+    for word in line.strip().lower().split():
+        counts[word] = counts.get(word, 0) + 1
+for word, freq in counts.items():
+    print(f"{word}: {freq}")</code></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 2 -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Lists and List Comprehensions</h2>
+          <p class="topic-subtitle">The most-used data structure — mutable, ordered, indexed</p>
+
+          <p>A list is like a row of numbered boxes. You can put anything in any box, rearrange them, add or remove boxes. Lists are <strong>mutable</strong> (changeable) and <strong>ordered</strong> (indexed from 0).</p>
+
+          <div style="margin:20px 0;overflow-x:auto;">
+            <table style="width:100%;text-align:center;border-collapse:collapse;">
+              <tr>
+                <td style="padding:8px;background:var(--ac);color:#fff;font-weight:700;border-radius:6px 0 0 0;">Index</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);">0</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);">1</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);">2</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);">3</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);">4</td>
+              </tr>
+              <tr>
+                <td style="padding:8px;background:var(--ac);color:#fff;font-weight:700;">Value</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);font-weight:600;color:var(--exp-bd);">9</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);font-weight:600;color:var(--exp-bd);">41</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);font-weight:600;color:var(--exp-bd);">12</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);font-weight:600;color:var(--exp-bd);">3</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);font-weight:600;color:var(--exp-bd);">74</td>
+              </tr>
+              <tr>
+                <td style="padding:8px;background:var(--ac);color:#fff;font-weight:700;">Neg Index</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);color:var(--fg-muted);">-5</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);color:var(--fg-muted);">-4</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);color:var(--fg-muted);">-3</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);color:var(--fg-muted);">-2</td>
+                <td style="padding:8px;background:var(--card-bg);border:1px solid var(--border);color:var(--fg-muted);">-1</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>All list operations you need</h4>
+            <pre><code>t = [9, 41, 12, 3, 74, 15]
+
+# Slicing  [start:stop]  — stop is EXCLUSIVE
+t[1:3]   # [41, 12]
+t[:4]    # [9, 41, 12, 3]
+t[3:]    # [3, 74, 15]
+t[-3:]   # [3, 74, 15]   ← last 3
+t[:]     # full copy
+
+# Mutation (unlike strings/tuples)
+t[3] = 10
+t[:3] = [1, 2, 3]
+
+# Methods — memorize these
+t.append(99)         # add to end
+t.insert(2, 50)      # insert 50 at index 2
+t.remove(41)         # remove first occurrence
+t.pop()              # remove + return last
+t.pop(1)             # remove + return at index 1
+t.sort()             # sort in-place ascending
+t.sort(reverse=True) # sort in-place descending
+t.reverse()          # reverse in-place
+t.count(3)           # count occurrences
+t.index(74)          # index of first occurrence
+t.extend([100,200])  # add multiple items
+
+# Concatenation
+[1,2,3] + [4,5,6]   # [1,2,3,4,5,6]
+
+# Membership
+9 in t        # True
+20 not in t   # True</code></pre>
+          </div>
+
+          <h3>List Comprehensions</h3>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>List Comprehension:</strong> A concise one-liner to build a list by applying an expression to each item in an iterable, optionally filtered by a condition.<br><br>
+            Syntax: <code>[<em>expression</em> <strong>for</strong> <em>item</em> <strong>in</strong> <em>iterable</em> <strong>if</strong> <em>condition</em>]</code>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Comprehension Patterns</h4>
+            <pre><code># Pattern 1: Basic transform
+squares = [n**2 for n in range(10)]
+# [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+# Pattern 2: Filter + transform
+planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter']
+short = [p.upper() + '!' for p in planets if len(p) < 6]
+# ['VENUS!', 'EARTH!', 'MARS!']
+
+# Pattern 3: Count trick — True=1, False=0
+nums = [-5, -1, 0, 3, 7, -2]
+count_neg = sum(n < 0 for n in nums)  # 3  ← elegant!
+
+# Pattern 4: Filter to create cleaned list
+readings = [23, 45, -999, 30, -999, 50]
+cleaned = [r for r in readings if r != -999]
+# [23, 45, 30, 50]
+
+# Pattern 5: Squares of positives only
+squares_of_pos = [n**2 for n in nums if n > 0]
+# [9, 49]</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            Labs often ask you to rewrite a for-loop as a list comprehension. Template: <strong>[expression for item in iterable if condition]</strong>. The <code>if</code> is optional — only add when filtering.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <code>t.sort()</code> sorts in-place and returns <code>None</code>. Never write <code>t = t.sort()</code> — this makes t disappear! Use <code>sorted(t)</code> if you need a new list.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Lists are mutable and ordered — indexed from 0, negative from -1</li>
+              <li>Slicing: <code>t[start:stop]</code> — stop is exclusive</li>
+              <li>Key methods: <code>append, insert, remove, pop, sort, reverse, extend, count, index</code></li>
+              <li>Comprehension: <code>[expr for item in iterable if cond]</code></li>
+              <li><code>sorted(lst)</code> returns new list; <code>lst.sort()</code> modifies in place (returns None)</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Given t = [9, 41, 12, 3, 74], what does t[-3:] return?</summary>
+              <p><strong>Answer:</strong> <code>[12, 3, 74]</code> — the last 3 elements.</p>
+            </details>
+            <details>
+              <summary>Medium: Get squares of all positive numbers from [-3, 2, -1, 5, 0, 4] using list comprehension.</summary>
+              <p><strong>Answer:</strong> <code>[n**2 for n in [-3,2,-1,5,0,4] if n > 0]</code> → <code>[4, 25, 16]</code></p>
+            </details>
+            <details>
+              <summary>Hard: Get top-2 most sold items from a sales dict without hardcoding.</summary>
+              <pre><code>sales = {"apple":120,"banana":85,"milk":200,"bread":150,"eggs":90}
+# sorted() with key=lambda sorts by second element of each tuple
+sorted_sales = sorted(sales.items(), key=lambda x: x[1], reverse=True)
+top2 = sorted_sales[:2]
+print(top2)  # [('milk', 200), ('bread', 150)]</code></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 3 -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Dictionaries</h2>
+          <p class="topic-subtitle">Key-value pairs — the most important structure for counting, mapping, and storing data</p>
+
+          <p>Dictionaries are like a phone book: look up by <strong>name (key)</strong> to get the <strong>number (value)</strong>. Keys must be unique and immutable. Values can be anything.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Dictionary:</strong> An unordered (ordered since Python 3.7), mutable collection of key-value pairs. O(1) lookup by key. Keys must be unique and hashable (strings, numbers, tuples).
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Complete Dictionary Operations</h4>
+            <pre><code># Creating
+d = {}
+d = {'name': 'Ali', 'age': 20}
+d = dict(name='Ali', age=20)
+
+# Reading — ALWAYS use .get() to be safe!
+d['name']           # 'Ali'
+d.get('age')        # 20
+d.get('gpa', 0)     # 0  (default if key missing — NO crash)
+# d['gpa']  ← KeyError crash if key doesn't exist!
+
+# Writing
+d['email'] = 'ali@mail.com'   # add
+d['age'] = 21                  # update
+
+# Checking
+'name' in d    # True
+'gpa' in d     # False
+
+# Removing
+del d['email']            # raises KeyError if missing
+d.pop('age')              # removes + returns value
+d.pop('gpa', None)        # safe — no error if missing
+
+# Iterating
+for key in d:             # keys only
+    print(key, d[key])
+
+for k, v in d.items():   # key-value pairs ← PREFER THIS
+    print(k, v)
+
+# Views
+list(d.keys())   # ['name', 'age']
+list(d.values()) # ['Ali', 20]
+list(d.items())  # [('name','Ali'), ('age',20)]</code></pre>
+          </div>
+
+          <h3>The Counting Pattern — Most Common Lab Pattern</h3>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Word / Item Frequency Counter</h4>
+            <pre><code>words = ['Ali', 'Ahmed', 'Ali', 'Zain', 'Ahmed', 'Ali']
+
+# THE pattern — use this always:
+counts = {}
+for word in words:
+    counts[word] = counts.get(word, 0) + 1
+# {'Ali': 3, 'Ahmed': 2, 'Zain': 1}
+
+# Sort by value (frequency) — descending
+sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+# [('Ali',3), ('Ahmed',2), ('Zain',1)]
+
+# Top 2
+for word, freq in sorted_counts[:2]:
+    print(f"{word}: {freq}")</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            <strong><code>dict.get(key, default)</code> never crashes.</strong> Always use it when counting: <code>counts[x] = counts.get(x, 0) + 1</code>. This one pattern solves half the dict problems in labs.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            Accessing a missing key directly (<code>d['missing']</code>) raises a <strong>KeyError</strong>. Always use <code>d.get(key)</code> or check <code>if key in d</code> first.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Dictionaries are key-value stores — O(1) lookup by key</li>
+              <li>Use <code>.get(key, default)</code> to safely read without crashing</li>
+              <li>Counting pattern: <code>counts[x] = counts.get(x, 0) + 1</code></li>
+              <li>Iterate pairs with <code>for k, v in d.items()</code></li>
+              <li>Sort by value: <code>sorted(d.items(), key=lambda x: x[1], reverse=True)</code></li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Safe way to get 'score' from dict d, returning 0 if missing?</summary>
+              <p><strong>Answer:</strong> <code>d.get('score', 0)</code></p>
+            </details>
+            <details>
+              <summary>Medium: Read a line and print the 2 most frequent words.</summary>
+              <pre><code>line = input("Enter text: ")
+counts = {}
+for word in line.strip().lower().split():
+    counts[word] = counts.get(word, 0) + 1
+
+for word, freq in sorted(counts.items(), key=lambda x: x[1], reverse=True)[:2]:
+    print(f"{word}: {freq}")</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Shopping cart with 10% discount if total >= 1000, 5% if >= 500.</summary>
+              <pre><code>items = {"apple":100,"banana":50,"milk":120,"bread":80}
+total = 0
+while True:
+    name = input("Item (or 'done'): ")
+    if name == 'done': break
+    if name not in items: continue
+    qty = int(input("Quantity: "))
+    total += items[name] * qty
+
+discount = total*0.10 if total >= 1000 else total*0.05 if total >= 500 else 0
+print(f"Bill: {total}, Discount: {discount:.2f}, Payable: {total-discount:.2f}")</code></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 4 -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Tuples and Sets</h2>
+          <p class="topic-subtitle">Tuples = immutable lists. Sets = unordered unique collections.</p>
+
+          <div style="overflow-x:auto;margin:20px 0;">
+            <table>
+              <thead>
+                <tr><th>Feature</th><th>List</th><th>Tuple</th><th>Set</th><th>Dict</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Ordered</td><td>✅</td><td>✅</td><td>❌</td><td>✅ (py 3.7+)</td></tr>
+                <tr><td>Mutable</td><td>✅</td><td>❌</td><td>✅ add/remove</td><td>✅</td></tr>
+                <tr><td>Duplicates</td><td>✅</td><td>✅</td><td>❌ unique only</td><td>Keys: ❌</td></tr>
+                <tr><td>Index Access</td><td>✅</td><td>✅</td><td>❌</td><td>By key</td></tr>
+                <tr><td>Syntax</td><td><code>[1,2]</code></td><td><code>(1,2)</code></td><td><code>{1,2}</code></td><td><code>{'k':v}</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Tuples</h3>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Tuple:</strong> An ordered, <em>immutable</em> sequence. Like a list you cannot change after creation. Used for: multiple return values, dictionary keys, coordinate pairs.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Tuple Operations</h4>
+            <pre><code># Creating
+t = (12, 5, 75)
+t = 12, 5, 75        # parentheses are optional!
+single = ("apple",)  # ONE-item tuple needs trailing comma
+NOT_tuple = ("apple") # This is just a string!
+
+# Accessing
+t[0]   # 12
+t[-1]  # 75
+len(t) # 3
+
+# Unpacking — VERY COMMON
+a, b, c = (1, 2, 3)
+(x, y) = (4, 'fred')
+
+# Functions returning tuples (very common pattern)
+def min_max(lst):
+    return min(lst), max(lst)   # returns a tuple
+
+lo, hi = min_max([3,7,1,9,2])  # unpack immediately
+
+# dict.items() returns tuples — that's why this works:
+d = {'a':10, 'b':20}
+for k, v in d.items():   # unpacking each (key,value) tuple
+    print(k, v)
+
+# Only 2 tuple methods
+t = (1, 3, 7, 8, 7, 5)
+t.count(7)  # 2  — occurrences
+t.index(8)  # 3  — first index
+
+# IMMUTABLE — these ALL fail:
+# t[0] = 99    TypeError
+# t.sort()     AttributeError
+# t.append(5)  AttributeError</code></pre>
+          </div>
+
+          <h3>Sets</h3>
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Set:</strong> An unordered collection of <em>unique</em> items. Automatically removes duplicates. Fast O(1) membership testing — like a dictionary with only keys.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Set Operations</h4>
+            <pre><code># Creating
+s = {1, 2, 3}
+s = set()             # empty set — NOT {}!  {} is empty dict
+s = set([1,2,2,3])    # from list: removes dupes → {1,2,3}
+
+# Duplicates auto-removed
+s = {"apple","banana","cherry","apple"}  # {"apple","banana","cherry"}
+
+# Adding
+s.add("orange")
+s.update(["kiwi","lime"])  # add multiple from list/set
+
+# Removing
+s.remove("banana")   # raises KeyError if not found
+s.discard("banana")  # NO error if not found ← SAFER
+
+s.pop()    # remove a RANDOM item (unordered!)
+s.clear()  # empty set
+
+# Membership (fast O(1))
+"apple" in s   # True
+
+# Set math
+a = {1,2,3,4}; b = {3,4,5,6}
+a | b   # union:        {1,2,3,4,5,6}
+a & b   # intersection: {3,4}
+a - b   # difference:   {1,2}
+
+# PRACTICAL: remove duplicates from a list
+names = ["Ali","Ahmed","Ali","Zain"]
+unique = list(set(names))  # ["Ali","Ahmed","Zain"]</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            Sets are perfect for <strong>uniqueness</strong> problems and for <strong>tracking visited nodes</strong> in search algorithms. Every BFS/DFS implementation uses <code>visited = set()</code> to avoid infinite loops.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <code>{}</code> creates an <strong>empty dict</strong>, not an empty set! Use <code>set()</code> for an empty set. Also, <code>True</code> and <code>1</code> are considered identical in sets: <code>{True, 1, 2}</code> → <code>{True, 2}</code>.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Tuples are <strong>immutable</strong> — use for fixed data, multiple return values, dict keys</li>
+              <li>Single-item tuple: <code>(x,)</code> with trailing comma — not <code>(x)</code></li>
+              <li>Sets automatically deduplicate and have O(1) membership testing</li>
+              <li>Use <code>discard()</code> over <code>remove()</code> for safe deletion without crashes</li>
+              <li>Empty set = <code>set()</code>, NOT <code>{}</code></li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What's wrong with single = ("apple") for a one-item tuple?</summary>
+              <p><strong>Answer:</strong> It creates a string, not a tuple. Python treats parentheses around a single value as grouping. Use <code>("apple",)</code> with a trailing comma.</p>
+            </details>
+            <details>
+              <summary>Medium: Build a student registration set. Allow removing by name lookup.</summary>
+              <pre><code>registered = set()
+while True:
+    name = input("Name (or 'done'): ")
+    if name == 'done': break
+    registered.add(name)
+
+print(f"Total: {len(registered)}, Students: {registered}")
+rm = input("Remove name: ")
+if rm in registered:
+    registered.discard(rm); print("Removed.")
+else:
+    print("Student not found.")</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Sort a sales dict by value descending and display top-N items (N entered by user).</summary>
+              <pre><code>sales = {"apple":120,"banana":85,"milk":200,"bread":150,"eggs":90}
+N = int(input("Enter N: "))
+for item, qty in sorted(sales.items(), key=lambda x: x[1], reverse=True)[:N]:
+    print(f"{item}: {qty}")</code></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 5 -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Lab 1 and 2 — Full Practice Problems</h2>
+          <p class="topic-subtitle">Complete solutions to all lab task types — study these carefully</p>
+
+          <h3>Problem 1: Student Performance Analyzer</h3>
+          <div class="example">
+            <div class="callout-label">Full Solution</div>
+            <pre><code>n = int(input("Number of students: "))
+students = {}
+
+for _ in range(n):
+    name = input("Name: ")
+    marks = [int(input(f"  Subject {i+1} marks: ")) for i in range(3)]
+    students[name] = marks
+
+top_student, top_avg = None, -1
+class_total = 0
+
+for name, marks in students.items():
+    total = sum(marks)
+    avg = total / len(marks)
+    class_total += avg
+
+    if avg >= 85:   grade = 'A'
+    elif avg >= 70: grade = 'B'
+    elif avg >= 50: grade = 'C'
+    else:           grade = 'F'
+
+    print(f"{name}: Total={total}, Avg={avg:.2f}, Grade={grade}")
+
+    if avg > top_avg:
+        top_avg = avg; top_student = name
+
+print(f"\nClass Avg: {class_total/len(students):.2f}")
+print(f"Top Student: {top_student}")</code></pre>
+          </div>
+
+          <h3>Problem 2: Login Validation with 3 Attempts</h3>
+          <div class="example">
+            <div class="callout-label">Full Solution</div>
+            <pre><code>users = {"admin":"1234","ali":"pass123","ahmad":"abcd"}
+
+for attempt in range(3):
+    username = input("Username: ")
+    password = input("Password: ")
+
+    if username not in users:
+        print("Invalid username"); continue
+    if users[username] != password:
+        print("Wrong password"); continue
+
+    print("Login successful!"); break
+else:
+    # Runs ONLY if loop ended without break
+    print("Account locked after 3 failed attempts.")</code></pre>
+          </div>
+
+          <h3>Problem 3: Data Cleaning (Sensor Readings)</h3>
+          <div class="example">
+            <div class="callout-label">Full Solution</div>
+            <pre><code>readings = [23, 45, -999, 30, -999, 50, 41]
+
+faulty = readings.count(-999)
+cleaned = [r for r in readings if r != -999]
+
+print(f"Cleaned: {cleaned}")
+print(f"Min: {min(cleaned)}, Max: {max(cleaned)}")
+print(f"Avg: {sum(cleaned)/len(cleaned):.2f}")
+print(f"Faulty removed: {faulty}")</code></pre>
+          </div>
+
+          <h3>Problem 4: Top-N Items Analyzer (Tuples + Sorting)</h3>
+          <div class="example">
+            <div class="callout-label">Full Solution</div>
+            <pre><code>sales = {"apple":120,"banana":85,"milk":200,"bread":150,"eggs":90}
+
+# Convert to tuples, sort by quantity descending
+sorted_items = sorted(sales.items(), key=lambda x: x[1], reverse=True)
+
+N = int(input("Enter N: "))
+print(f"Top {N} items:")
+for item, qty in sorted_items[:N]:
+    print(f"  {item}: {qty}")</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            The <code>for...else</code> in the login example is a Python trick: the <code>else</code> block runs only if the loop <strong>completed without hitting break</strong>. This is perfect for "if no success after N tries" logic.
+          </div>
+
+          <div class="summary-box">
+            <h4>Labs 1 and 2 Complete Summary</h4>
+            <ul>
+              <li><strong>Lists:</strong> mutable, ordered — comprehension: <code>[expr for x in lst if cond]</code></li>
+              <li><strong>Dicts:</strong> key → value — always use <code>.get(k, default)</code> for safe reads</li>
+              <li><strong>Tuples:</strong> immutable — perfect for multiple return values and unpacking</li>
+              <li><strong>Sets:</strong> unique items — deduplicate lists, track visited nodes in search</li>
+              <li>Counting pattern: <code>counts[x] = counts.get(x, 0) + 1</code></li>
+              <li>Sort by value: <code>sorted(d.items(), key=lambda x: x[1], reverse=True)</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+      const topics = ["topic-1","topic-2","topic-3","topic-4","topic-5"];
+      let currentTopicIndex = 0;
+      function getTopicTitle(id){const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){const n=lk.querySelector('.nav-num');return lk.textContent.replace(n?n.textContent:'','').trim();}const card=document.getElementById(id);if(card){const h=card.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return h.textContent.replace(n?n.textContent:'','').trim();}}return 'Topic';}
+      function toggleSidebar(){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.toggle('open');if(bd)bd.classList.toggle('active');}
+      function showTopic(id){document.querySelectorAll(".topic-card").forEach(c=>c.style.display="none");const t=document.getElementById(id);if(t)t.style.display="block";currentTopicIndex=topics.indexOf(id);document.querySelectorAll(".nav-sublist a").forEach(a=>a.classList.remove("active"));const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){lk.classList.add("active");const sl=lk.closest('.nav-sublist');if(sl&&sl.style.display==='none'){sl.style.display='block';const ch=sl.previousElementSibling?.querySelector('.chevron');if(ch)ch.style.transform='rotate(0deg)';}}const pb=document.getElementById("prev-btn"),nb=document.getElementById("next-btn"),pt=document.getElementById("prev-title"),nt=document.getElementById("next-title");if(currentTopicIndex>0){pb.style.display="flex";if(pt)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);}else{pb.style.display="none";}if(currentTopicIndex<topics.length-1){nb.style.display="flex";if(nt)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);}else{nb.style.display="none";}if(t)t.scrollIntoView({behavior:"smooth",block:"start"});if(window.innerWidth<=768){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.remove('open');if(bd)bd.classList.remove('active');}}
+      function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+      function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+      function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector(".chevron");if(s.style.display==="none"){s.style.display="block";c.style.transform="rotate(0deg)";}else{s.style.display="none";c.style.transform="rotate(-90deg)";}}
+      function filterContent(){const q=document.getElementById("search-input").value.toLowerCase();document.querySelectorAll(".nav-sublist li").forEach(i=>(i.style.display=i.textContent.toLowerCase().includes(q)?"":'none'));}
+      if(topics.length>0)showTopic(topics[0]);
+      const mc=document.getElementById("main-content"),bb=document.getElementById("back-to-top");
+      mc.addEventListener("scroll",()=>(bb.style.display=mc.scrollTop>300?"flex":"none"));
+    </script>
+  </body>
+</html>

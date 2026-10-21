@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Lab — Lab 3: NumPy, Pandas and Matplotlib</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">AI Lab Notes</div>
+          <div class="sidebar-title">Artificial Intelligence Lab</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Python Basics and Data Structures.html"><span class="nav-mod-num">L1</span>Python Basics</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Lab 3 — NumPy, Pandas and Matplotlib</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>NumPy Arrays</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Pandas DataFrames</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>File Handling (txt/csv)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Matplotlib Visualizations</a></li>
+        </ul>
+        </li>
+        <li><a class="nav-module-link" href="./3- OOP, File Handling and Blind Search.html"><span class="nav-mod-num">L4</span>OOP, File Handling and Blind Search</a></li>
+        <li><a class="nav-module-link" href="./4- Informed Search and Game Playing.html"><span class="nav-mod-num">L5&6</span>Informed Search and Game Playing</a></li>
+        <li><a class="nav-module-link" href="./5- Hill Climbing.html"><span class="nav-mod-num">L7</span>Hill Climbing</a></li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence Lab</div>
+          <h1 class="module-title">Lab 3 — NumPy, Pandas and Matplotlib</h1>
+        </div>
+
+        <!-- TOPIC 1: NumPy -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>NumPy Arrays</h2>
+          <p class="topic-subtitle">Fast numerical computation — think of it as super-powered Python lists for math</p>
+
+          <p>NumPy (Numerical Python) gives you <strong>arrays</strong> — like Python lists but much faster for math because all elements are the same type and stored contiguously in memory. Every AI and data science library is built on top of NumPy.</p>
+
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin:20px 0;">
+            <div style="flex:1;min-width:180px;background:var(--card-bg);border:2px solid var(--ac);border-radius:10px;padding:16px;">
+              <strong style="color:var(--ac);">Python List</strong>
+              <pre style="margin:8px 0 0;font-size:.82rem;">[1, 2, 3, 4]
+Mixed types OK
+Slow math
+No broadcasting</pre>
+            </div>
+            <div style="display:flex;align-items:center;font-size:1.5rem;color:var(--ac);">→</div>
+            <div style="flex:1;min-width:180px;background:var(--card-bg);border:2px solid var(--def-bd);border-radius:10px;padding:16px;">
+              <strong style="color:var(--def-bd);">NumPy Array</strong>
+              <pre style="margin:8px 0 0;font-size:.82rem;">np.array([1,2,3,4])
+Same type only
+Fast math
+Broadcasting!</pre>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>NumPy Essentials — Everything You Need</h4>
+            <pre><code>import numpy as np
+
+# ── CREATING ARRAYS ──────────────────────────────────
+a = np.array([1, 2, 3, 4, 5])          # 1D array
+b = np.array([[1,2,3],[4,5,6],[7,8,9]]) # 2D array (3x3 matrix)
+
+np.zeros((3, 4))     # 3x4 matrix of zeros
+np.ones((2, 3))      # 2x3 matrix of ones
+np.arange(0, 10, 2)  # [0, 2, 4, 6, 8]  — like range() but for arrays
+np.linspace(0, 1, 5) # [0, 0.25, 0.5, 0.75, 1.0] — 5 evenly spaced
+
+# ── ARRAY PROPERTIES ─────────────────────────────────
+data = np.array([[10,20,30],[40,50,60],[70,80,90]])
+data.shape   # (3, 3)    — rows x columns
+data.ndim    # 2         — number of dimensions
+data.dtype   # int64     — data type
+data.size    # 9         — total number of elements
+
+# ── INDEXING AND SLICING ──────────────────────────────
+data[0]       # first row:  [10, 20, 30]
+data[0, 1]    # row 0, col 1: 20
+data[1:3]     # rows 1 and 2
+data[:, 1]    # all rows, column 1: [20, 50, 80]  ← very useful!
+data[0:2, 1:3] # sub-array: rows 0-1, cols 1-2
+
+# ── IMPORTANT: Slices are VIEWS, not copies! ─────────
+sub = data[0:2, 1:3]
+sub[0, 0] = 999   # THIS CHANGES data TOO!
+# data[0, 1] is now 999
+
+# ── ELEMENT-WISE MATH (broadcasting) ─────────────────
+data + 10          # add 10 to every element
+data * 2           # multiply every element by 2
+np.sqrt(data)      # square root of every element
+data ** 2          # every element squared
+
+# ── AGGREGATE FUNCTIONS ──────────────────────────────
+np.sum(data)       # sum all elements
+np.mean(data)      # mean of all
+np.min(data)       # overall minimum
+np.max(data)       # overall maximum
+np.sum(data, axis=0)  # sum each COLUMN (axis=0 = down rows)
+np.sum(data, axis=1)  # sum each ROW    (axis=1 = across cols)
+
+# ── SHAPE MANIPULATION ───────────────────────────────
+a = np.arange(9)        # [0,1,2,3,4,5,6,7,8]
+b = a.reshape(3, 3)     # 3x3 matrix
+flat = b.flatten()      # back to 1D</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            The lab exam often tests: "Extract a sub-array and modify it — does the original change?" Answer: <strong>YES!</strong> NumPy slices are <em>views</em> (shared memory), not copies. To get an independent copy, use <code>data[0:2, 1:3].copy()</code>.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            <code>np.array([1,2,3]) + [4,5,6]</code> works (NumPy broadcasts) but <code>[1,2,3] + [4,5,6]</code> gives <code>[1,2,3,4,5,6]</code> (list concatenation). Always make sure you're working with NumPy arrays when doing math.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Import: <code>import numpy as np</code> — always use alias <code>np</code></li>
+              <li>Properties: <code>.shape, .ndim, .dtype, .size</code> — know all four</li>
+              <li>Slicing: <code>arr[rows, cols]</code> — slices are views not copies!</li>
+              <li>Math is element-wise: <code>arr + 10</code> adds 10 to every element</li>
+              <li>Aggregates: <code>np.sum, np.mean, np.min, np.max, np.sqrt</code></li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: How do you create a 3x3 NumPy array and get its shape, dimensions, and total element count?</summary>
+              <pre><code>import numpy as np
+data = np.array([[10,20,30],[40,50,60],[70,80,90]])
+print(data.shape)  # (3,3)
+print(data.ndim)   # 2
+print(data.size)   # 9</code></pre>
+            </details>
+            <details>
+              <summary>Medium: Extract first 2 rows and last 2 columns. Modify element [0,0] of sub-array. What happens to original?</summary>
+              <pre><code>import numpy as np
+data = np.array([[10,20,30],[40,50,60],[70,80,90]])
+sub = data[0:2, 1:3]   # rows 0-1, cols 1-2
+print(sub)             # [[20,30],[50,60]]
+sub[0, 0] = 999
+print(data)            # data[0,1] is now 999 — CHANGED! (view, not copy)</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Sensor data analysis — create array, add 10, multiply by 2, take sqrt, display final.</summary>
+              <pre><code>import numpy as np
+data = np.array([[10,20,30],[40,50,60],[70,80,90]])
+
+print("Shape:", data.shape)
+print("Dims:", data.ndim)
+print("Type:", data.dtype)
+print("Size:", data.size)
+
+sub = data[0:2, 1:3]  # sub-array
+
+step1 = data + 10
+step2 = step1 * 2
+final = np.sqrt(step2)
+
+print("Final array after +10, *2, sqrt:")
+print(final)</code></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 2: Pandas -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Pandas DataFrames</h2>
+          <p class="topic-subtitle">Spreadsheet-like tables in Python — for structured data analysis</p>
+
+          <p>Think of a Pandas DataFrame as an Excel spreadsheet in Python. Rows are records, columns are fields. It's built on NumPy but adds labels (column names, row index) and powerful tools for querying, sorting, and summarizing data.</p>
+
+          <!-- Visual: DataFrame structure -->
+          <div style="margin:20px 0;overflow-x:auto;">
+            <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:6px;">DataFrame structure:</div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="background:var(--ac);color:#fff;">(index)</th>
+                  <th style="background:var(--ac);color:#fff;">Country</th>
+                  <th style="background:var(--ac);color:#fff;">Population</th>
+                  <th style="background:var(--ac);color:#fff;">Area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:var(--fg-muted);">0</td><td>Pakistan</td><td>241</td><td>881913</td></tr>
+                <tr><td style="color:var(--fg-muted);">1</td><td>India</td><td>1420</td><td>3287263</td></tr>
+                <tr><td style="color:var(--fg-muted);">2</td><td>China</td><td>1440</td><td>9596961</td></tr>
+                <tr><td style="color:var(--fg-muted);">3</td><td>USA</td><td>331</td><td>9833517</td></tr>
+              </tbody>
+            </table>
+            <div style="font-size:.8rem;color:var(--fg-muted);margin-top:6px;">← Each column is a <strong>Series</strong>. The whole table is a <strong>DataFrame</strong>.</div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Pandas Complete Reference</h4>
+            <pre><code>import pandas as pd
+
+# ── CREATING ──────────────────────────────────────────
+data = {
+    'Country': ['Pakistan','India','China','USA'],
+    'Population': [241, 1420, 1440, 331],
+    'Area': [881913, 3287263, 9596961, 9833517]
+}
+df = pd.DataFrame(data)
+
+# ── INSPECTION ───────────────────────────────────────
+df.head(2)        # first 2 rows
+df.tail(2)        # last 2 rows
+df.shape          # (4, 3)  — rows x cols
+df.columns        # Index(['Country','Population','Area'])
+df.dtypes         # data types of each column
+df.info()         # summary: dtypes, non-null counts
+df.describe()     # statistics: count, mean, std, min, max...
+
+# ── SELECTING ────────────────────────────────────────
+df['Country']            # single column → Series
+df[['Country','Area']]   # multiple columns → DataFrame
+df['Population'][0]      # value at row 0
+
+# ── SORTING ──────────────────────────────────────────
+df.sort_values('Population')                       # ascending
+df.sort_values('Population', ascending=False)      # descending
+
+# ── RANKING ──────────────────────────────────────────
+df['Pop_Rank'] = df['Population'].rank()           # rank column
+
+# ── AGGREGATE STATS ──────────────────────────────────
+df['Population'].sum()        # total
+df['Population'].max()        # max value
+df['Population'].min()        # min value
+df['Population'].mean()       # average
+df['Population'].idxmax()     # INDEX of max row
+# Get the country with max population:
+df.loc[df['Population'].idxmax(), 'Country']  # 'China'
+
+# ── SET INDEX + LOC vs ILOC ──────────────────────────
+df = df.set_index('Country')  # make Country the row label
+
+# .loc[] — Label-based access
+df.loc['Pakistan']            # row labeled 'Pakistan'
+df.loc['India', 'Population'] # specific cell by labels
+
+# .iloc[] — Integer position-based access
+df.iloc[0]             # first row (by position)
+df.iloc[1, 0]          # row 1, column 0 (by integer)
+
+# ── FILTERING ────────────────────────────────────────
+big = df[df['Population'] > 500]      # rows where Population > 500
+# adding multiple conditions with & or |
+both = df[(df['Population'] > 500) & (df['Area'] > 5000000)]
+
+# ── CSV READ/WRITE ────────────────────────────────────
+df.to_csv('countries.csv', index=True)   # save (index=False to omit index)
+df2 = pd.read_csv('countries.csv')       # read back
+print(df2.shape, df2.columns)</code></pre>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Series:</strong> A single column (or row) of a DataFrame — a 1D labeled array. <code>df['Population']</code> returns a Series.<br><br>
+            <strong>DataFrame:</strong> A 2D table with labeled rows and columns. Like a dict of Series objects sharing the same index.
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            Know the difference between <code>.loc[]</code> and <code>.iloc[]</code>: <strong>loc = Labels</strong>, <strong>iloc = Integers</strong>. After <code>set_index('Country')</code>, use <code>df.loc['Pakistan']</code>. Without setting index, both loc and iloc use integers.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            After <code>df = df.sort_values('Population')</code>, the integer positions (iloc) change but the labels (loc) stay the same. Don't confuse position and label after sorting!
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Create: <code>pd.DataFrame(dict_of_lists)</code></li>
+              <li>Inspect: <code>head(), shape, columns, info(), describe()</code></li>
+              <li>Sort: <code>sort_values('col', ascending=False)</code></li>
+              <li><code>.loc[label]</code> = label-based; <code>.iloc[int]</code> = position-based</li>
+              <li>CSV: <code>to_csv('file.csv')</code> and <code>read_csv('file.csv')</code></li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: How do you get the country with maximum population from a DataFrame?</summary>
+              <pre><code>df.loc[df['Population'].idxmax(), 'Country']  # 'China'
+# OR
+df.sort_values('Population', ascending=False).iloc[0]['Country']</code></pre>
+            </details>
+            <details>
+              <summary>Medium: Set Country as index, then retrieve India's data with .loc and USA's with .iloc.</summary>
+              <pre><code>df = df.set_index('Country')
+print(df.loc['India'])         # India's full row (by label)
+print(df.iloc[3])              # 4th row by position (USA)</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Full country dataset analysis — sort, rank, aggregate, set index, save, reload.</summary>
+              <pre><code>import pandas as pd
+
+data = {'Country':['Pakistan','India','China','USA'],
+        'Population':[241,1420,1440,331],
+        'Area':[881913,3287263,9596961,9833517]}
+df = pd.DataFrame(data)
+
+print(df.head(2)); print(df.shape); print(df.columns)
+df.info()
+
+print(df.sort_values('Population'))
+df['Area_Rank'] = df['Area'].rank()
+
+print("Total pop:", df['Population'].sum())
+print("Max pop country:", df.loc[df['Population'].idxmax(),'Country'])
+print("Min area country:", df.loc[df['Area'].idxmin(),'Country'])
+
+df = df.set_index('Country')
+print(df.loc['Pakistan'])
+print(df.iloc[1])
+print(df['Population'])  # as Series
+
+df.to_csv('countries.csv')
+df2 = pd.read_csv('countries.csv')
+print(df2.shape, df2.columns, df2.head(2))</code></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 3: File Handling -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>File Handling</h2>
+          <p class="topic-subtitle">Reading and writing text files — essential for real data processing tasks</p>
+
+          <p>Many lab tasks involve reading text files (like email logs) and extracting information from them. The key skill is opening files safely, reading line by line, and applying string operations to extract what you need.</p>
+
+          <!-- Visual: file modes -->
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0;">
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;flex:1;min-width:100px;">
+              <code style="color:var(--ac);">'r'</code><br>
+              <small style="color:var(--fg-muted);">Read (default)<br>File must exist</small>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;flex:1;min-width:100px;">
+              <code style="color:var(--def-bd);">'w'</code><br>
+              <small style="color:var(--fg-muted);">Write<br>Overwrites/creates</small>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;flex:1;min-width:100px;">
+              <code style="color:var(--exp-bd);">'a'</code><br>
+              <small style="color:var(--fg-muted);">Append<br>Adds to end</small>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;flex:1;min-width:100px;">
+              <code style="color:var(--qst-bd);">'x'</code><br>
+              <small style="color:var(--fg-muted);">Exclusive create<br>Error if exists</small>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>File Reading Patterns</h4>
+            <pre><code># ── SAFE FILE OPEN with try/except ──────────────────
+filename = input("Enter filename: ")
+try:
+    fh = open(filename, 'r')
+except:
+    print(f"Cannot open file: {filename}")
+    exit()  # or quit() — stop program
+
+# ── READING LINE BY LINE ─────────────────────────────
+for line in fh:
+    line = line.strip()    # remove \n and spaces
+    print(line)
+
+fh.close()
+
+# ── USING 'with' (auto-closes file) ─────────────────
+with open('data.txt', 'r') as f:
+    for line in f:
+        print(line.strip())
+
+# ── WRITING ──────────────────────────────────────────
+with open('output.txt', 'w') as f:
+    f.write("Hello\n")
+    f.write("World\n")
+
+# ── APPENDING ────────────────────────────────────────
+with open('output.txt', 'a') as f:
+    f.write("New line\n")
+
+# ── COUNTING LINES ───────────────────────────────────
+count = 0
+with open('data.txt', 'r') as f:
+    for line in f:
+        count += 1
+print(f"Total lines: {count}")
+
+# ── SEARCH WITHIN FILE ───────────────────────────────
+with open('data.txt', 'r') as f:
+    content = f.read()           # read whole file as string
+    if content.find("Ali") >= 0:
+        print("Found Ali")</code></pre>
+          </div>
+
+          <h3>Email Domain Frequency Analyzer (Lab Task)</h3>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Parsing a File — The Full Pattern</h4>
+            <pre><code># Lab Manual 3, Problem 1
+filename = input("Enter filename (e.g. mbox.txt): ")
+
+try:
+    fh = open(filename, 'r')
+except:
+    print("Cannot open file:", filename)
+    exit()
+
+domain_counts = {}
+
+for line in fh:
+    if not line.startswith("From "):  # note the space!
+        continue                       # skip non-From lines
+
+    # "From name@domain.com Mon Jan 5 ..."
+    parts = line.split()   # split by whitespace
+    email = parts[1]       # second token is the email
+    domain = email.split('@')[1]   # get part after @
+
+    domain_counts[domain] = domain_counts.get(domain, 0) + 1
+
+fh.close()
+
+# Display results
+for domain, count in sorted(domain_counts.items(), key=lambda x: x[1], reverse=True):
+    print(f"{domain}: {count}")
+
+# Most frequent
+best = max(domain_counts, key=domain_counts.get)
+print(f"\nMost frequent: {best} ({domain_counts[best]} times)")</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Use <strong><code>with open(...) as f:</code></strong> — it automatically closes the file even if an error occurs. Much better than manually calling <code>f.close()</code>. For exam tasks though, any approach works.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Always open files with <code>try/except</code> to handle missing files gracefully</li>
+              <li>Modes: <code>'r'</code>=read, <code>'w'</code>=write (overwrites), <code>'a'</code>=append, <code>'x'</code>=create new</li>
+              <li>Use <code>line.strip()</code> to remove trailing newline character</li>
+              <li>Pattern: open → loop line by line → strip → process → count in dict</li>
+              <li><code>with open(...) as f:</code> auto-closes the file</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 4: Matplotlib -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Matplotlib Visualizations</h2>
+          <p class="topic-subtitle">Turning numbers into pictures — line plots, bar charts, histograms, scatter, pie, box</p>
+
+          <p>Matplotlib is the go-to plotting library. It's very similar to MATLAB plotting. You always import it as <code>plt</code> and call functions to build up a figure, then <code>plt.show()</code> to display it.</p>
+
+          <!-- Visual: plot types grid -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;">
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:1.8rem;">📈</div>
+              <strong style="color:var(--ac);">Line Plot</strong><br>
+              <code style="font-size:.75rem;">plt.plot(x, y)</code><br>
+              <small style="color:var(--fg-muted);">Trends over time</small>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:1.8rem;">📊</div>
+              <strong style="color:var(--exp-bd);">Bar Chart</strong><br>
+              <code style="font-size:.75rem;">plt.bar(x, y)</code><br>
+              <small style="color:var(--fg-muted);">Category comparison</small>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:1.8rem;">📉</div>
+              <strong style="color:var(--def-bd);">Histogram</strong><br>
+              <code style="font-size:.75rem;">plt.hist(data)</code><br>
+              <small style="color:var(--fg-muted);">Frequency distribution</small>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:1.8rem;">🔵</div>
+              <strong style="color:var(--qst-bd);">Scatter Plot</strong><br>
+              <code style="font-size:.75rem;">plt.scatter(x,y)</code><br>
+              <small style="color:var(--fg-muted);">Relationship/correlation</small>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:1.8rem;">🥧</div>
+              <strong style="color:var(--wrn-bd);">Pie Chart</strong><br>
+              <code style="font-size:.75rem;">plt.pie(y, labels)</code><br>
+              <small style="color:var(--fg-muted);">Part-to-whole proportions</small>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:1.8rem;">📦</div>
+              <strong style="color:var(--crit-bd);">Box Plot</strong><br>
+              <code style="font-size:.75rem;">plt.boxplot(data)</code><br>
+              <small style="color:var(--fg-muted);">Min/Q1/Median/Q3/Max</small>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>All Plot Types — Full Reference</h4>
+            <pre><code>import matplotlib.pyplot as plt
+import numpy as np
+
+# ── LINE PLOT ─────────────────────────────────────────
+x = np.array([80, 85, 90, 95, 100])
+y = np.array([240, 250, 260, 270, 280])
+plt.plot(x, y)
+plt.title("Average Pulse vs Calorie Burnage")
+plt.xlabel("Average Pulse")
+plt.ylabel("Calorie Burnage")
+plt.grid()
+plt.show()
+
+# ── BAR CHART ─────────────────────────────────────────
+subjects = ['Math', 'CS', 'AI', 'Stats']
+marks    = [85, 90, 78, 88]
+plt.bar(subjects, marks)
+plt.title("Subject-wise Marks"); plt.xlabel("Subject"); plt.ylabel("Marks")
+plt.show()
+
+# ── HISTOGRAM ─────────────────────────────────────────
+scores = [45,55,60,65,70,75,80,85,90,95]
+plt.hist(scores, bins=5)  # bins = number of bars
+plt.title("Score Distribution"); plt.xlabel("Score"); plt.ylabel("Frequency")
+plt.show()
+
+# ── SCATTER PLOT ──────────────────────────────────────
+x = np.array([5,7,8,7,2,17,2,9,4,11])
+y = np.array([99,86,87,88,111,86,103,87,94,78])
+plt.scatter(x, y)
+plt.title("Car Age vs Speed"); plt.xlabel("Age"); plt.ylabel("Speed")
+plt.show()
+
+# ── PIE CHART ─────────────────────────────────────────
+sizes  = np.array([35, 25, 25, 15])
+labels = ["Apples","Bananas","Cherries","Dates"]
+plt.pie(sizes, labels=labels)
+plt.legend()
+plt.show()
+
+# ── BOX PLOT ──────────────────────────────────────────
+# Shows: Min, Q1 (25%), Median (50%), Q3 (75%), Max
+data = [3, 7, 8, 5, 12, 14, 21, 13, 18]
+plt.boxplot(data)
+plt.title("Box Plot"); plt.show()
+
+# ── SUBPLOTS (multiple plots in one figure) ───────────
+fig, axes = plt.subplots(1, 2)           # 1 row, 2 columns
+
+axes[0].plot([0,1,2,3], [3,8,1,10])
+axes[0].set_title("Line Plot")
+
+axes[1].bar(subjects, marks)
+axes[1].set_title("Bar Chart")
+
+plt.tight_layout()   # prevents overlap
+plt.show()
+
+# Alternative subplot syntax (older style)
+plt.subplot(1, 2, 1)   # (rows, cols, position)
+plt.plot([0,1,2], [10,20,30])
+plt.subplot(1, 2, 2)
+plt.bar(['A','B','C'], [3,7,5])
+plt.show()</code></pre>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Box Plot (Whisker Plot):</strong> Displays a 5-number summary of data:<br>
+            <strong>Min</strong> → <strong>Q1</strong> (25th percentile) → <strong>Median</strong> (50th) → <strong>Q3</strong> (75th) → <strong>Max</strong><br>
+            The box spans Q1 to Q3. The line inside is the Median. Whiskers extend to Min and Max.
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            The lab task asks for at least 2 plots using subplots. Remember: <code>plt.subplot(rows, cols, position)</code> — position counts left-to-right, top-to-bottom. Always add title, xlabel, ylabel. Add <code>plt.grid()</code> to line plots.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Always: <code>import matplotlib.pyplot as plt</code></li>
+              <li>Line: <code>plt.plot(x,y)</code> | Bar: <code>plt.bar(x,y)</code> | Hist: <code>plt.hist(data, bins=N)</code></li>
+              <li>Scatter: <code>plt.scatter(x,y)</code> | Pie: <code>plt.pie(y,labels=l)</code> | Box: <code>plt.boxplot(data)</code></li>
+              <li>Always add: <code>plt.title(), plt.xlabel(), plt.ylabel()</code></li>
+              <li>Subplots: <code>plt.subplot(1,2,1)</code> or <code>fig,axes=plt.subplots(1,2)</code></li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What function creates a histogram and what does the bins parameter do?</summary>
+              <p><strong>Answer:</strong> <code>plt.hist(data, bins=N)</code>. The <code>bins</code> parameter controls how many bars the histogram has — more bins = finer granularity.</p>
+            </details>
+            <details>
+              <summary>Medium: Create a 1x2 subplot showing a line plot and a bar chart side by side.</summary>
+              <pre><code>import matplotlib.pyplot as plt
+
+scores = [45,55,60,65,70,75,80,85,90,95]
+subjects = ['Math','CS','AI','Stats']
+marks = [85,90,78,88]
+
+plt.subplot(1, 2, 1)
+plt.plot(range(len(scores)), scores)
+plt.title("Score Progression"); plt.xlabel("Student"); plt.ylabel("Score"); plt.grid()
+
+plt.subplot(1, 2, 2)
+plt.bar(subjects, marks)
+plt.title("Subject Marks"); plt.xlabel("Subject"); plt.ylabel("Marks")
+
+plt.tight_layout(); plt.show()</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Full dashboard — line plot, bar chart, histogram, and box plot for the given dataset.</summary>
+              <pre><code>import matplotlib.pyplot as plt
+import numpy as np
+
+scores   = [45,55,60,65,70,75,80,85,90,95]
+subjects = ['Math','CS','AI','Stats']
+marks    = [85,90,78,88]
+
+fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+
+# Top-left: Line plot
+axes[0,0].plot(range(len(scores)), scores, marker='o', color='steelblue')
+axes[0,0].set_title("Score Progression"); axes[0,0].grid(True)
+
+# Top-right: Bar chart
+axes[0,1].bar(subjects, marks, color='coral')
+axes[0,1].set_title("Subject-wise Marks")
+
+# Bottom-left: Histogram
+axes[1,0].hist(scores, bins=5, color='mediumseagreen')
+axes[1,0].set_title("Score Histogram")
+
+# Bottom-right: Box plot
+axes[1,1].boxplot(scores)
+axes[1,1].set_title("Score Box Plot")
+
+plt.tight_layout(); plt.show()</code></pre>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+      const topics = ["topic-1","topic-2","topic-3","topic-4"];
+      let currentTopicIndex = 0;
+      function getTopicTitle(id){const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){const n=lk.querySelector('.nav-num');return lk.textContent.replace(n?n.textContent:'','').trim();}const card=document.getElementById(id);if(card){const h=card.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return h.textContent.replace(n?n.textContent:'','').trim();}}return 'Topic';}
+      function toggleSidebar(){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.toggle('open');if(bd)bd.classList.toggle('active');}
+      function showTopic(id){document.querySelectorAll(".topic-card").forEach(c=>c.style.display="none");const t=document.getElementById(id);if(t)t.style.display="block";currentTopicIndex=topics.indexOf(id);document.querySelectorAll(".nav-sublist a").forEach(a=>a.classList.remove("active"));const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){lk.classList.add("active");const sl=lk.closest('.nav-sublist');if(sl&&sl.style.display==='none'){sl.style.display='block';const ch=sl.previousElementSibling?.querySelector('.chevron');if(ch)ch.style.transform='rotate(0deg)';}}const pb=document.getElementById("prev-btn"),nb=document.getElementById("next-btn"),pt=document.getElementById("prev-title"),nt=document.getElementById("next-title");if(currentTopicIndex>0){pb.style.display="flex";if(pt)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);}else{pb.style.display="none";}if(currentTopicIndex<topics.length-1){nb.style.display="flex";if(nt)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);}else{nb.style.display="none";}if(t)t.scrollIntoView({behavior:"smooth",block:"start"});if(window.innerWidth<=768){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.remove('open');if(bd)bd.classList.remove('active');}}
+      function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+      function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+      function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector(".chevron");if(s.style.display==="none"){s.style.display="block";c.style.transform="rotate(0deg)";}else{s.style.display="none";c.style.transform="rotate(-90deg)";}}
+      function filterContent(){const q=document.getElementById("search-input").value.toLowerCase();document.querySelectorAll(".nav-sublist li").forEach(i=>(i.style.display=i.textContent.toLowerCase().includes(q)?"":'none'));}
+      if(topics.length>0)showTopic(topics[0]);
+      const mc=document.getElementById("main-content"),bb=document.getElementById("back-to-top");
+      mc.addEventListener("scroll",()=>(bb.style.display=mc.scrollTop>300?"flex":"none"));
+    </script>
+  </body>
+</html>

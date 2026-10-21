@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Lab — Lab 4: OOP, File Handling and Blind Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">AI Lab Notes</div>
+          <div class="sidebar-title">Artificial Intelligence Lab</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Python Basics and Data Structures.html"><span class="nav-mod-num">L1</span>Python Basics</a></li>
+        <li><a class="nav-module-link" href="./2- NumPy, Pandas and Matplotlib.html"><span class="nav-mod-num">L3</span>NumPy, Pandas, Matplotlib</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Lab 4 — OOP and Blind Search</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>OOP and Inheritance</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Search Foundations</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>BFS — Breadth First Search</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>DFS — Depth First Search</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>UCS — Uniform Cost Search</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>IDS — Iterative Deepening</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>Algorithm Comparison</a></li>
+        <li><a class="nav-module-link" href="./4- Informed Search and Game Playing.html"><span class="nav-mod-num">L5&6</span>Informed Search and Games</a></li>
+        <li><a class="nav-module-link" href="./5- Hill Climbing.html"><span class="nav-mod-num">L7</span>Hill Climbing & GA</a></li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+        </li>
+        <li><a class="nav-module-link" href="./4- Informed Search and Game Playing.html"><span class="nav-mod-num">L5&6</span>Informed Search and Game Playing</a></li>
+        <li><a class="nav-module-link" href="./5- Hill Climbing.html"><span class="nav-mod-num">L7</span>Hill Climbing</a></li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence Lab</div>
+          <h1 class="module-title">Lab 4 — OOP, File Handling and Blind Search Algorithms</h1>
+        </div>
+
+        <!-- TOPIC 1: OOP -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>OOP and Inheritance</h2>
+          <p class="topic-subtitle">Classes, objects, methods — how to model real-world things in code</p>
+
+          <p>OOP (Object-Oriented Programming) lets you bundle <strong>data (attributes)</strong> and <strong>behaviour (methods)</strong> into one unit called a <strong>class</strong>. Create multiple objects from the same blueprint. Inheritance lets a subclass reuse and extend a parent class.</p>
+
+          <!-- Visual: class anatomy -->
+          <div style="background:var(--card-bg);border:2px solid var(--ac);border-radius:12px;padding:20px;margin:20px 0;font-family:monospace;font-size:.88rem;line-height:1.8;">
+            <div style="color:var(--ac);font-weight:700;">class Vehicle:</div>
+            <div style="padding-left:20px;color:var(--exp-bd);">school_name = "ABC"  <span style="color:var(--fg-muted);"># ← class variable (shared by ALL objects)</span></div>
+            <div style="padding-left:20px;">
+              <div style="color:var(--def-bd);">def __init__(self, brand, speed):  <span style="color:var(--fg-muted);"># ← constructor</span></div>
+              <div style="padding-left:20px;">self.brand = brand  <span style="color:var(--fg-muted);"># ← instance variable (unique per object)</span></div>
+              <div style="padding-left:20px;">self.speed = speed</div>
+            </div>
+            <div style="padding-left:20px;">
+              <div style="color:var(--qst-bd);">def move(self):  <span style="color:var(--fg-muted);"># ← instance method</span></div>
+              <div style="padding-left:20px;">print(f"{self.brand} moving at {self.speed}")</div>
+            </div>
+            <div style="padding-left:20px;">
+              <div style="color:var(--wrn-bd);">@classmethod</div>
+              <div style="color:var(--wrn-bd);">def change_name(cls, name): cls.school_name = name  <span style="color:var(--fg-muted);"># ← class method</span></div>
+            </div>
+            <div style="padding-left:20px;">
+              <div style="color:var(--crit-bd);">@staticmethod</div>
+              <div style="color:var(--crit-bd);">def validate_speed(s): return s > 0  <span style="color:var(--fg-muted);"># ← static method</span></div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Full OOP Hierarchy — Vehicle → Car → ElectricCar</h4>
+            <pre><code># ── BASE CLASS ───────────────────────────────────────
+class Vehicle:
+    school_name = "FAST"   # class variable — shared by all
+
+    def __init__(self, brand, speed):
+        self.brand = brand    # instance variable — unique per object
+        self.speed = speed
+
+    def move(self):
+        print(f"{self.brand} is moving at {self.speed} km/h")
+
+    @classmethod
+    def change_school(cls, name):   # modifies class variable
+        cls.school_name = name
+
+    @staticmethod
+    def validate_speed(s):          # no access to self or cls
+        return s > 0
+
+
+# ── SINGLE INHERITANCE ────────────────────────────────
+class Car(Vehicle):
+    def __init__(self, brand, speed, num_doors):
+        super().__init__(brand, speed)   # call parent constructor
+        self.num_doors = num_doors
+
+    def honk(self):
+        print(f"{self.brand} goes BEEP! ({self.num_doors} doors)")
+
+
+# ── ANOTHER DERIVED CLASS ─────────────────────────────
+class Bike(Vehicle):
+    def __init__(self, brand, speed, engine_capacity):
+        super().__init__(brand, speed)
+        self.engine_capacity = engine_capacity
+
+    def rev(self):
+        print(f"{self.brand} VROOOOM! {self.engine_capacity}cc")
+
+
+# ── MULTILEVEL INHERITANCE ────────────────────────────
+class ElectricCar(Car):   # ElectricCar → Car → Vehicle
+    def __init__(self, brand, speed, num_doors, battery):
+        super().__init__(brand, speed, num_doors)  # calls Car.__init__
+        self.battery = battery
+
+    def charge(self):
+        print(f"Charging {self.brand} ({self.battery}kWh battery)")
+
+
+# ── USAGE ─────────────────────────────────────────────
+v = Vehicle("Generic", 100)
+v.move()           # Generic is moving at 100 km/h
+
+c = Car("Toyota", 120, 4)
+c.move()           # inherited from Vehicle
+c.honk()           # own method
+
+b = Bike("Yamaha", 80, 150)
+b.rev()
+
+ec = ElectricCar("Tesla", 200, 4, 75)
+ec.move()          # from Vehicle (via Car)
+ec.honk()          # from Car
+ec.charge()        # own
+
+# Class method and static method
+Vehicle.change_school("MIT")
+print(Vehicle.school_name)  # "MIT"
+print(Vehicle.validate_speed(50))  # True</code></pre>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>super():</strong> Refers to the parent class. <code>super().__init__(...)</code> calls the parent's constructor, allowing the child to initialize inherited attributes without duplicating code. <strong>Always call super().__init__ in child constructors!</strong>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            Know the difference: <strong>Instance method</strong> takes <code>self</code> — accesses object data. <strong>Class method</strong> (@classmethod) takes <code>cls</code> — accesses class data. <strong>Static method</strong> (@staticmethod) takes neither — a utility function that happens to live in the class.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            Forgetting <code>self.</code> before instance variables. <code>brand = "Toyota"</code> inside __init__ creates a LOCAL variable that disappears. <code>self.brand = "Toyota"</code> creates an INSTANCE variable that persists.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Class variable: shared across all instances — defined outside __init__</li>
+              <li>Instance variable: unique per object — defined with <code>self.x = ...</code> in __init__</li>
+              <li>Inheritance: <code>class Child(Parent)</code> — child inherits all parent methods</li>
+              <li><code>super().__init__(...)</code> calls parent constructor — always do this</li>
+              <li>Multilevel: A → B → C — each calls super() to chain up</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 2: Search Foundations -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Search Algorithm Foundations</h2>
+          <p class="topic-subtitle">The shared building blocks: Node class, graph representation, path reconstruction</p>
+
+          <p>Before diving into specific algorithms, understand the shared components every search algorithm uses. This is the foundation that BFS, DFS, UCS, and IDS all build on.</p>
+
+          <!-- Visual: what a node contains -->
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0;">
+            <div style="flex:1;min-width:140px;background:var(--card-bg);border:2px solid var(--ac);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:1.5rem;">📍</div>
+              <strong style="color:var(--ac);">state</strong><br>
+              <small style="color:var(--fg-muted);">Current position<br>'A', (2,3), etc.</small>
+            </div>
+            <div style="flex:1;min-width:140px;background:var(--card-bg);border:2px solid var(--exp-bd);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:1.5rem;">👆</div>
+              <strong style="color:var(--exp-bd);">parent</strong><br>
+              <small style="color:var(--fg-muted);">Node we came from<br>Used to trace path</small>
+            </div>
+            <div style="flex:1;min-width:140px;background:var(--card-bg);border:2px solid var(--def-bd);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:1.5rem;">💰</div>
+              <strong style="color:var(--def-bd);">cost</strong><br>
+              <small style="color:var(--fg-muted);">Total cost to reach<br>this node (g(n))</small>
+            </div>
+            <div style="flex:1;min-width:140px;background:var(--card-bg);border:2px solid var(--qst-bd);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:1.5rem;">📏</div>
+              <strong style="color:var(--qst-bd);">depth</strong><br>
+              <small style="color:var(--fg-muted);">How many steps<br>from start</small>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>The Building Blocks — Copy These Into Every Search Program</h4>
+            <pre><code># ── NODE CLASS (used by ALL search algorithms) ────────
+class Node:
+    def __init__(self, state, parent=None, cost=0, depth=0):
+        self.state = state
+        self.parent = parent
+        self.cost = cost
+        self.depth = depth
+
+    # Required for heapq to compare nodes (UCS uses priority queue)
+    def __lt__(self, other):
+        return self.cost < other.cost
+
+
+# ── PATH RECONSTRUCTION ──────────────────────────────
+# When goal is found, trace back through parent pointers
+def get_path(node):
+    path = []
+    while node:
+        path.append(node.state)
+        node = node.parent
+    return path[::-1]   # reverse: start → goal
+
+
+# ── GRAPH REPRESENTATIONS ─────────────────────────────
+# Unweighted graph (for BFS, DFS, IDS)
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+# Weighted graph (for UCS, Greedy, A*)
+weighted_graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2)],
+    'C': [('D', 1)],
+    'D': []
+}
+
+# ── EXAMPLE USAGE ─────────────────────────────────────
+root = Node('A')
+child_b = Node('B', parent=root, cost=1, depth=1)
+child_d = Node('D', parent=child_b, cost=3, depth=2)
+
+print(get_path(child_d))  # ['A', 'B', 'D']</code></pre>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>State Space:</strong> The collection of all possible states of a problem and the transitions between them. Represented as a graph where nodes = states, edges = actions.<br><br>
+            <strong>Uninformed (Blind) Search:</strong> Algorithms that search without any knowledge of how far they are from the goal. They only know: start state, goal state, and available actions. No heuristic.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Every search algorithm uses a <strong>Node</strong> class: state, parent, cost, depth</li>
+              <li><strong>Path reconstruction</strong>: follow parent pointers from goal back to start, then reverse</li>
+              <li>Unweighted graph: <code>{'A': ['B','C']}</code> | Weighted: <code>{'A': [('B',1),('C',4)]}</code></li>
+              <li>Track visited states with a <code>visited = set()</code> to avoid infinite loops</li>
+              <li>The key differences between algorithms are the <strong>data structure</strong> used (queue vs stack vs priority queue)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 3: BFS -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>BFS — Breadth First Search</h2>
+          <p class="topic-subtitle">Explores level by level — finds the shortest path in unweighted graphs</p>
+
+          <p>BFS is like ripples in a pond — it explores all nodes at distance 1 first, then all at distance 2, etc. It uses a <strong>Queue (FIFO)</strong> — "First In, First Out" — which is what makes it explore level by level.</p>
+
+          <!-- Visual: BFS traversal -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;margin:20px 0;">
+            <div style="text-align:center;font-size:.85rem;color:var(--fg-muted);margin-bottom:12px;">BFS exploration order on example graph</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+              <!-- Level 0 -->
+              <div style="display:flex;gap:8px;align-items:center;">
+                <span style="background:var(--ac);color:#fff;padding:8px 16px;border-radius:20px;font-weight:700;">A</span>
+                <span style="color:var(--fg-muted);font-size:.8rem;">← Start (Level 0)</span>
+              </div>
+              <div style="color:var(--fg-muted);">↓</div>
+              <!-- Level 1 -->
+              <div style="display:flex;gap:16px;align-items:center;">
+                <span style="background:var(--exp-bg);border:1px solid var(--exp-bd);color:var(--exp-bd);padding:8px 16px;border-radius:20px;font-weight:700;">B</span>
+                <span style="background:var(--exp-bg);border:1px solid var(--exp-bd);color:var(--exp-bd);padding:8px 16px;border-radius:20px;font-weight:700;">C</span>
+                <span style="color:var(--fg-muted);font-size:.8rem;">← Level 1</span>
+              </div>
+              <div style="color:var(--fg-muted);">↓</div>
+              <!-- Level 2 -->
+              <div style="display:flex;gap:16px;align-items:center;">
+                <span style="background:var(--def-bg);border:1px solid var(--def-bd);color:var(--def-bd);padding:8px 16px;border-radius:20px;font-weight:700;">D</span>
+                <span style="background:var(--def-bg);border:1px solid var(--def-bd);color:var(--def-bd);padding:8px 16px;border-radius:20px;font-weight:700;">E</span>
+                <span style="background:var(--def-bg);border:1px solid var(--def-bd);color:var(--def-bd);padding:8px 16px;border-radius:20px;font-weight:700;">F</span>
+                <span style="color:var(--fg-muted);font-size:.8rem;">← Level 2</span>
+              </div>
+            </div>
+            <div style="margin-top:10px;font-size:.82rem;color:var(--fg-muted);text-align:center;">Order: A → B → C → D → E → F</div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>BFS Implementation</h4>
+            <pre><code>from collections import deque
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [], 'E': [], 'F': []
+}
+
+class Node:
+    def __init__(self, state, parent=None, cost=0, depth=0):
+        self.state = state; self.parent = parent
+        self.cost = cost; self.depth = depth
+
+def get_path(node):
+    path = []
+    while node:
+        path.append(node.state); node = node.parent
+    return path[::-1]
+
+def bfs(graph, start, goal):
+    queue = deque([Node(start)])   # FIFO queue
+    visited = set()
+
+    while queue:
+        current = queue.popleft()  # remove from FRONT
+        state = current.state
+
+        if state == goal:
+            return get_path(current)
+
+        if state in visited:
+            continue
+        visited.add(state)
+
+        for neighbor in graph[state]:
+            if neighbor not in visited:
+                child = Node(neighbor, parent=current,
+                             depth=current.depth + 1)
+                queue.append(child)  # add to BACK
+
+    return None   # no path found
+
+path = bfs(graph, 'A', 'F')
+print("BFS Path:", path)   # ['A', 'C', 'F']</code></pre>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Queue (FIFO):</strong> First In, First Out. <code>deque.popleft()</code> removes from front. New nodes are added to the back. This guarantees level-by-level exploration = shortest path (unweighted).
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Use <code>from collections import deque</code> for BFS — it's O(1) for popleft(). Never use a regular list for BFS because <code>list.pop(0)</code> is O(n) (slow — shifts all elements).
+          </div>
+
+          <div class="summary-box">
+            <h4>BFS Properties</h4>
+            <ul>
+              <li><strong>Data Structure:</strong> Queue (FIFO) — <code>deque</code></li>
+              <li><strong>Optimal:</strong> Yes — finds shortest path in unweighted graphs</li>
+              <li><strong>Complete:</strong> Yes — always finds a solution if one exists</li>
+              <li><strong>Memory:</strong> High — stores all nodes at current level</li>
+              <li><strong>Add:</strong> <code>queue.append()</code> to back | <strong>Remove:</strong> <code>queue.popleft()</code> from front</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 4: DFS -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>DFS — Depth First Search</h2>
+          <p class="topic-subtitle">Explores as deep as possible — memory efficient but may get lost in infinite depth</p>
+
+          <p>DFS is like exploring a maze by always taking the first new path you see, going as deep as possible before backtracking. It uses a <strong>Stack (LIFO)</strong> — "Last In, First Out" — which gives the deep-first behaviour.</p>
+
+          <!-- Visual: Stack vs Queue -->
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin:20px 0;">
+            <div style="flex:1;min-width:200px;background:var(--card-bg);border:2px solid var(--exp-bd);border-radius:10px;padding:16px;">
+              <strong style="color:var(--exp-bd);">Queue (BFS) — FIFO</strong>
+              <div style="margin:10px 0;font-family:monospace;font-size:.85rem;">
+                [A, B, C] → pop left → A<br>
+                [B, C] → pop left → B<br>
+                [C, D, E] → pop left → C
+              </div>
+              <small style="color:var(--fg-muted);">Level-by-level</small>
+            </div>
+            <div style="flex:1;min-width:200px;background:var(--card-bg);border:2px solid var(--def-bd);border-radius:10px;padding:16px;">
+              <strong style="color:var(--def-bd);">Stack (DFS) — LIFO</strong>
+              <div style="margin:10px 0;font-family:monospace;font-size:.85rem;">
+                [A] → pop → A<br>
+                [B, C] → pop → C<br>
+                [B, F] → pop → F
+              </div>
+              <small style="color:var(--fg-muted);">Deep-first</small>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>DFS Implementation</h4>
+            <pre><code>def dfs(graph, start, goal):
+    stack = [Node(start)]   # LIFO stack (regular list)
+    visited = set()
+
+    while stack:
+        current = stack.pop()   # remove from TOP (last item)
+        state = current.state
+
+        if state == goal:
+            return get_path(current)
+
+        if state in visited:
+            continue
+        visited.add(state)
+
+        # Add neighbors to stack — they'll be explored next
+        for neighbor in graph[state]:
+            if neighbor not in visited:
+                child = Node(neighbor, parent=current,
+                             depth=current.depth + 1)
+                stack.append(child)   # add to TOP
+
+    return None
+
+path = dfs(graph, 'A', 'F')
+print("DFS Path:", path)   # might be ['A', 'C', 'F'] or different</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            The ONLY difference between BFS and DFS code is: BFS uses <code>deque</code> + <code>popleft()</code>, DFS uses a regular list + <code>pop()</code>. Same structure, different data structure = completely different exploration order!
+          </div>
+
+          <div class="summary-box">
+            <h4>DFS Properties</h4>
+            <ul>
+              <li><strong>Data Structure:</strong> Stack (LIFO) — regular Python list, use <code>pop()</code></li>
+              <li><strong>Optimal:</strong> No — path found may not be shortest</li>
+              <li><strong>Complete:</strong> No — can get stuck in infinite depth/loops</li>
+              <li><strong>Memory:</strong> Low — only stores current path nodes</li>
+              <li><strong>Add:</strong> <code>stack.append()</code> | <strong>Remove:</strong> <code>stack.pop()</code> from top</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 5: UCS -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>UCS — Uniform Cost Search</h2>
+          <p class="topic-subtitle">Finds the cheapest path in a weighted graph — uses a priority queue</p>
+
+          <p>UCS is BFS for weighted graphs. Instead of exploring level-by-level, it explores by <strong>total path cost</strong> — always expanding the cheapest node first. It uses a <strong>Priority Queue (min-heap)</strong>.</p>
+
+          <!-- Visual: priority queue concept -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin:20px 0;font-size:.85rem;">
+            <strong style="color:var(--ac);">Priority Queue (min-heap): always pop the smallest cost first</strong>
+            <div style="margin-top:10px;font-family:monospace;">
+              <div>heappush: [(0, A), (1, B), (4, C)]   ← after expanding A</div>
+              <div>heappop → (1, B)   ← cheapest!</div>
+              <div>heappush: [(3, D), (4, C), (6, E)]   ← after expanding B(cost=1+2=3, 1+5=6)</div>
+              <div>heappop → (3, D)   ← cheapest!</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>UCS Implementation</h4>
+            <pre><code>import heapq
+
+# Weighted graph: each neighbor is (state, cost)
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2)],
+    'C': [('D', 1)],
+    'D': []
+}
+
+def ucs(graph, start, goal):
+    # Priority queue: (total_cost, node)
+    pq = []
+    start_node = Node(start, cost=0)
+    heapq.heappush(pq, (0, start_node))
+
+    visited = {}  # state → cheapest cost seen
+
+    while pq:
+        cost, current = heapq.heappop(pq)
+        state = current.state
+
+        if state == goal:
+            print(f"Total cost: {cost}")
+            return get_path(current)
+
+        # If we've already found a cheaper path, skip
+        if state in visited and visited[state] <= cost:
+            continue
+        visited[state] = cost
+
+        for neighbor, edge_cost in graph[state]:
+            new_cost = cost + edge_cost
+            child = Node(neighbor, parent=current, cost=new_cost)
+            heapq.heappush(pq, (new_cost, child))
+
+    return None
+
+path = ucs(graph, 'A', 'D')
+print("UCS Path:", path)   # ['A', 'B', 'D']  cost=3 (cheaper than A→C→D cost=5)</code></pre>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>heapq (min-heap):</strong> Python's priority queue. <code>heapq.heappush(pq, item)</code> inserts in sorted order. <code>heapq.heappop(pq)</code> removes and returns the smallest item. Items are tuples — compared element by element. Always push <code>(cost, node)</code> so cost is compared first.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            If two nodes have equal cost, heapq tries to compare Node objects directly, which causes a TypeError. Fix: add <code>def __lt__(self, other): return self.cost &lt; other.cost</code> to the Node class. OR use a counter as a tiebreaker: <code>(cost, counter, node)</code>.
+          </div>
+
+          <div class="summary-box">
+            <h4>UCS Properties</h4>
+            <ul>
+              <li><strong>Data Structure:</strong> Min-Heap Priority Queue — <code>import heapq</code></li>
+              <li><strong>Optimal:</strong> Yes — always finds cheapest path</li>
+              <li><strong>Complete:</strong> Yes</li>
+              <li><strong>Memory:</strong> High</li>
+              <li>Push: <code>heapq.heappush(pq, (cost, node))</code> | Pop: <code>heapq.heappop(pq)</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 6: IDS -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>IDS — Iterative Deepening Search</h2>
+          <p class="topic-subtitle">The best of both worlds — BFS optimality + DFS memory efficiency</p>
+
+          <p>IDS runs DFS multiple times, each time with a deeper depth limit. It starts with limit=0, then 1, then 2, etc. It's complete and optimal (like BFS) but uses very little memory (like DFS). The repeated work is acceptable because most nodes are at the deepest level.</p>
+
+          <!-- Visual: IDS iterations -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin:20px 0;font-size:.85rem;font-family:monospace;">
+            <div style="color:var(--ac);font-weight:700;">IDS Iterations:</div>
+            <div style="margin-top:8px;">
+              <div>Depth 0: try A → not goal, done</div>
+              <div>Depth 1: try A→B, A→C → not goal, done</div>
+              <div>Depth 2: try A→B→D, A→B→E, A→C→F → <span style="color:var(--def-bd);font-weight:700;">FOUND F!</span></div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>IDS Implementation</h4>
+            <pre><code># Step 1: Depth-Limited DFS (DFS with a max depth)
+def depth_limited_dfs(node, graph, goal, limit):
+    if node.state == goal:
+        return node    # found it!
+
+    if node.depth >= limit:
+        return None    # hit depth limit — backtrack
+
+    for neighbor in graph[node.state]:
+        child = Node(neighbor, parent=node, depth=node.depth + 1)
+        result = depth_limited_dfs(child, graph, goal, limit)
+        if result:
+            return result  # propagate success upward
+
+    return None   # not found within this branch
+
+
+# Step 2: IDS = run Depth-Limited DFS with increasing limits
+def ids(graph, start, goal, max_depth=10):
+    for depth in range(max_depth):
+        print(f"Trying depth limit: {depth}")
+        root = Node(start)
+        result = depth_limited_dfs(root, graph, goal, depth)
+        if result:
+            return get_path(result)
+
+    return None   # not found within max_depth
+
+path = ids(graph, 'A', 'F')
+print("IDS Path:", path)   # ['A', 'C', 'F']</code></pre>
+          </div>
+
+          <div class="summary-box">
+            <h4>IDS Properties</h4>
+            <ul>
+              <li><strong>Data Structure:</strong> Stack (recursive DFS) + outer loop</li>
+              <li><strong>Optimal:</strong> Yes (unweighted graphs)</li>
+              <li><strong>Complete:</strong> Yes</li>
+              <li><strong>Memory:</strong> Medium — only stores current path at each depth</li>
+              <li>Tradeoff: re-explores early nodes multiple times — acceptable because lower levels have fewer nodes</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 7: Comparison -->
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">7</span>Blind Search Algorithm Comparison</h2>
+          <p class="topic-subtitle">Side-by-side summary of all four algorithms — the exam always tests this</p>
+
+          <div style="overflow-x:auto;margin:20px 0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Data Structure</th>
+                  <th>Weighted?</th>
+                  <th>Optimal?</th>
+                  <th>Complete?</th>
+                  <th>Memory</th>
+                  <th>Key Operation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:rgba(218,119,87,.08);">
+                  <td><strong style="color:var(--ac);">BFS</strong></td>
+                  <td>Queue (deque)</td>
+                  <td>❌ Unweighted</td>
+                  <td>✅ Yes</td>
+                  <td>✅ Yes</td>
+                  <td>🔴 High</td>
+                  <td><code>popleft()</code></td>
+                </tr>
+                <tr style="background:rgba(100,160,255,.06);">
+                  <td><strong style="color:var(--exp-bd);">DFS</strong></td>
+                  <td>Stack (list)</td>
+                  <td>❌ Unweighted</td>
+                  <td>❌ No</td>
+                  <td>❌ No</td>
+                  <td>🟢 Low</td>
+                  <td><code>pop()</code></td>
+                </tr>
+                <tr style="background:rgba(52,211,153,.06);">
+                  <td><strong style="color:var(--def-bd);">UCS</strong></td>
+                  <td>Priority Queue (heapq)</td>
+                  <td>✅ Weighted</td>
+                  <td>✅ Yes</td>
+                  <td>✅ Yes</td>
+                  <td>🔴 High</td>
+                  <td><code>heappop()</code></td>
+                </tr>
+                <tr style="background:rgba(167,139,250,.06);">
+                  <td><strong style="color:var(--qst-bd);">IDS</strong></td>
+                  <td>Stack + Loop</td>
+                  <td>❌ Unweighted</td>
+                  <td>✅ Yes</td>
+                  <td>✅ Yes</td>
+                  <td>🟡 Medium</td>
+                  <td>Recursive DFS</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Visual: which algorithm to pick -->
+          <h3>When To Use Which?</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+            <div style="flex:1;min-width:180px;background:rgba(218,119,87,.1);border:1px solid var(--ac);border-radius:10px;padding:14px;">
+              <strong style="color:var(--ac);">Use BFS when:</strong><br>
+              <ul style="margin:8px 0 0;padding-left:18px;font-size:.88rem;">
+                <li>Unweighted graph</li>
+                <li>Need <strong>shortest path</strong></li>
+                <li>Memory is not a concern</li>
+              </ul>
+            </div>
+            <div style="flex:1;min-width:180px;background:rgba(100,160,255,.08);border:1px solid var(--exp-bd);border-radius:10px;padding:14px;">
+              <strong style="color:var(--exp-bd);">Use DFS when:</strong><br>
+              <ul style="margin:8px 0 0;padding-left:18px;font-size:.88rem;">
+                <li>Memory is tight</li>
+                <li>Any path is acceptable</li>
+                <li>Graph has no cycles (or track visited)</li>
+              </ul>
+            </div>
+            <div style="flex:1;min-width:180px;background:rgba(52,211,153,.08);border:1px solid var(--def-bd);border-radius:10px;padding:14px;">
+              <strong style="color:var(--def-bd);">Use UCS when:</strong><br>
+              <ul style="margin:8px 0 0;padding-left:18px;font-size:.88rem;">
+                <li>Weighted graph</li>
+                <li>Need <strong>cheapest path</strong></li>
+                <li>Edge costs vary</li>
+              </ul>
+            </div>
+            <div style="flex:1;min-width:180px;background:rgba(167,139,250,.08);border:1px solid var(--qst-bd);border-radius:10px;padding:14px;">
+              <strong style="color:var(--qst-bd);">Use IDS when:</strong><br>
+              <ul style="margin:8px 0 0;padding-left:18px;font-size:.88rem;">
+                <li>Memory is tight</li>
+                <li>Need optimal path</li>
+                <li>Graph depth unknown</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Complete Graph Search Simulator — BFS + DFS + UCS + IDS</h4>
+            <pre><code>from collections import deque
+import heapq
+
+class Node:
+    def __init__(self, state, parent=None, cost=0, depth=0):
+        self.state = state; self.parent = parent
+        self.cost = cost; self.depth = depth
+    def __lt__(self, other): return self.cost < other.cost
+
+def get_path(node):
+    path = []
+    while node: path.append(node.state); node = node.parent
+    return path[::-1]
+
+graph = {'A':['B','C'],'B':['D','E'],'C':['F'],'D':[],'E':[],'F':[]}
+weighted = {'A':[('B',1),('C',4)],'B':[('D',2)],'C':[('D',1)],'D':[]}
+
+# BFS
+def bfs(g, start, goal):
+    q = deque([Node(start)]); vis = set()
+    while q:
+        n = q.popleft()
+        if n.state == goal: return get_path(n)
+        if n.state in vis: continue
+        vis.add(n.state)
+        [q.append(Node(nb, n, depth=n.depth+1)) for nb in g[n.state] if nb not in vis]
+    return None
+
+# DFS
+def dfs(g, start, goal):
+    s = [Node(start)]; vis = set()
+    while s:
+        n = s.pop()
+        if n.state == goal: return get_path(n)
+        if n.state in vis: continue
+        vis.add(n.state)
+        [s.append(Node(nb, n, depth=n.depth+1)) for nb in g[n.state] if nb not in vis]
+    return None
+
+# UCS
+def ucs(g, start, goal):
+    pq = []; heapq.heappush(pq, (0, Node(start, cost=0))); vis = {}
+    while pq:
+        cost, n = heapq.heappop(pq)
+        if n.state == goal: print(f"Cost: {cost}"); return get_path(n)
+        if n.state in vis and vis[n.state] <= cost: continue
+        vis[n.state] = cost
+        for nb, ec in g[n.state]:
+            nc = cost + ec
+            heapq.heappush(pq, (nc, Node(nb, n, cost=nc)))
+    return None
+
+# IDS
+def dl_dfs(node, g, goal, limit):
+    if node.state == goal: return node
+    if node.depth >= limit: return None
+    for nb in g[node.state]:
+        r = dl_dfs(Node(nb, node, depth=node.depth+1), g, goal, limit)
+        if r: return r
+    return None
+
+def ids(g, start, goal, max_d=10):
+    for d in range(max_d):
+        r = dl_dfs(Node(start), g, goal, d)
+        if r: return get_path(r)
+    return None
+
+print("BFS:", bfs(graph, 'A', 'F'))   # ['A', 'C', 'F']
+print("DFS:", dfs(graph, 'A', 'F'))   # ['A', 'C', 'F'] or different
+print("UCS:", ucs(weighted, 'A', 'D'))# ['A', 'B', 'D'] — cost 3
+print("IDS:", ids(graph, 'A', 'F'))   # ['A', 'C', 'F']</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            The exam almost certainly asks you to implement one or more of these and trace the path. Key things to always include: (1) Node class with __lt__, (2) visited set, (3) get_path() function, (4) print the path and total cost.
+          </div>
+
+          <div class="summary-box">
+            <h4>Lab 4 Complete Summary</h4>
+            <ul>
+              <li><strong>OOP:</strong> class + __init__ + self + super() for inheritance</li>
+              <li><strong>BFS:</strong> deque + popleft() → shortest path (unweighted)</li>
+              <li><strong>DFS:</strong> list + pop() → deep path, low memory, not optimal</li>
+              <li><strong>UCS:</strong> heapq + (cost, node) → cheapest path (weighted)</li>
+              <li><strong>IDS:</strong> DFS with increasing depth limit → optimal + low memory</li>
+              <li>All use: Node class, visited set, get_path() reconstruction</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What data structure does BFS use and why does it find the shortest path?</summary>
+              <p><strong>Answer:</strong> BFS uses a <strong>Queue (FIFO)</strong> — deque with popleft(). It finds the shortest path because it explores all nodes at distance 1 before any at distance 2, so the first time it reaches the goal, it must have taken the fewest steps.</p>
+            </details>
+            <details>
+              <summary>Medium: What is the difference between BFS and DFS code? Show it clearly.</summary>
+              <pre><code># BFS — uses deque, popleft() → FIFO → level-by-level
+queue = deque([Node(start)])
+current = queue.popleft()    # ← FRONT (oldest node)
+queue.append(child)          # ← add to BACK
+
+# DFS — uses list, pop() → LIFO → deep-first
+stack = [Node(start)]
+current = stack.pop()        # ← TOP (newest node)
+stack.append(child)          # ← add to TOP
+
+# That's literally the only difference!</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Implement UCS on the given network graph and find path from A to F with minimum cost.</summary>
+              <pre><code>import heapq
+
+class Node:
+    def __init__(self, state, parent=None, cost=0):
+        self.state=state; self.parent=parent; self.cost=cost
+    def __lt__(self, other): return self.cost < other.cost
+
+def get_path(node):
+    path=[]
+    while node: path.append(node.state); node=node.parent
+    return path[::-1]
+
+graph = {
+    'A':[('B',2),('D',1)], 'B':[('A',2),('D',2),('C',4),('E',1)],
+    'C':[('B',4),('E',3),('F',6)], 'D':[('A',1),('B',2),('E',3)],
+    'E':[('B',1),('D',3),('C',3),('F',2)], 'F':[('C',6),('E',2)]
+}
+
+def ucs(g, start, goal):
+    pq = []; heapq.heappush(pq, (0, Node(start)))
+    vis = {}
+    while pq:
+        cost, n = heapq.heappop(pq)
+        if n.state == goal:
+            print(f"Path: {get_path(n)}, Cost: {cost}"); return
+        if n.state in vis and vis[n.state] <= cost: continue
+        vis[n.state] = cost
+        for nb, ec in g[n.state]:
+            nc = cost+ec
+            heapq.heappush(pq, (nc, Node(nb, n, nc)))
+    print("No path found")
+
+ucs(graph, 'A', 'F')
+# Path: ['A','D','B','E','F'], Cost: 6</code></pre>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+      const topics = ["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6","topic-7"];
+      let currentTopicIndex = 0;
+      function getTopicTitle(id){const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){const n=lk.querySelector('.nav-num');return lk.textContent.replace(n?n.textContent:'','').trim();}const card=document.getElementById(id);if(card){const h=card.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return h.textContent.replace(n?n.textContent:'','').trim();}}return 'Topic';}
+      function toggleSidebar(){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.toggle('open');if(bd)bd.classList.toggle('active');}
+      function showTopic(id){document.querySelectorAll(".topic-card").forEach(c=>c.style.display="none");const t=document.getElementById(id);if(t)t.style.display="block";currentTopicIndex=topics.indexOf(id);document.querySelectorAll(".nav-sublist a").forEach(a=>a.classList.remove("active"));const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){lk.classList.add("active");const sl=lk.closest('.nav-sublist');if(sl&&sl.style.display==='none'){sl.style.display='block';const ch=sl.previousElementSibling?.querySelector('.chevron');if(ch)ch.style.transform='rotate(0deg)';}}const pb=document.getElementById("prev-btn"),nb=document.getElementById("next-btn"),pt=document.getElementById("prev-title"),nt=document.getElementById("next-title");if(currentTopicIndex>0){pb.style.display="flex";if(pt)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);}else{pb.style.display="none";}if(currentTopicIndex<topics.length-1){nb.style.display="flex";if(nt)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);}else{nb.style.display="none";}if(t)t.scrollIntoView({behavior:"smooth",block:"start"});if(window.innerWidth<=768){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.remove('open');if(bd)bd.classList.remove('active');}}
+      function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+      function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+      function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector(".chevron");if(s.style.display==="none"){s.style.display="block";c.style.transform="rotate(0deg)";}else{s.style.display="none";c.style.transform="rotate(-90deg)";}}
+      function filterContent(){const q=document.getElementById("search-input").value.toLowerCase();document.querySelectorAll(".nav-sublist li").forEach(i=>(i.style.display=i.textContent.toLowerCase().includes(q)?"":'none'));}
+      if(topics.length>0)showTopic(topics[0]);
+      const mc=document.getElementById("main-content"),bb=document.getElementById("back-to-top");
+      mc.addEventListener("scroll",()=>(bb.style.display=mc.scrollTop>300?"flex":"none"));
+    </script>
+  </body>
+</html>

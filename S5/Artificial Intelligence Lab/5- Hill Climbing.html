@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Lab — Lab 7: Hill Climbing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">AI Lab Notes</div>
+          <div class="sidebar-title">Artificial Intelligence Lab</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Python Basics and Data Structures.html"><span class="nav-mod-num">L1</span>Python Basics</a></li>
+        <li><a class="nav-module-link" href="./2- NumPy, Pandas and Matplotlib.html"><span class="nav-mod-num">L3</span>NumPy, Pandas, Matplotlib</a></li>
+        <li><a class="nav-module-link" href="./3- OOP, File Handling and Blind Search.html"><span class="nav-mod-num">L4</span>OOP and Blind Search</a></li>
+        <li><a class="nav-module-link" href="./4- Informed Search and Game Playing.html"><span class="nav-mod-num">L5&6</span>Informed Search and Games</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Lab 7 — Hill Climbing & GA</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Hill Climbing Concept</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Variants and Limitations</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Implementation Examples</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Function Optimization</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Genetic Algorithms & Selection</a></li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+        </li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence Lab</div>
+          <h1 class="module-title">Lab 7 — Local Search: Hill Climbing & Genetic Algorithms</h1>
+        </div>
+
+        <!-- TOPIC 1: Concept -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Hill Climbing — The Concept</h2>
+          <p class="topic-subtitle">A local search algorithm that always moves to the best neighbouring state</p>
+
+          <p>Hill Climbing is like being in a foggy mountain range and always stepping uphill. You can't see the whole landscape — you just evaluate your immediate neighbours and move to the best one. When no neighbour is better, you stop. You might end up at a local peak, not the global summit.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Hill Climbing:</strong> A local search algorithm that iteratively moves to the best neighbouring state. It maintains only the <em>current state</em> in memory — not the full path. Useful for optimization problems where we want the best state, not necessarily the path to it.
+          </div>
+
+          <!-- Visual: landscape analogy -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;margin:20px 0;">
+            <div style="text-align:center;font-size:.85rem;color:var(--fg-muted);margin-bottom:16px;">State Landscape — Hill Climbing can get stuck</div>
+            <!-- ASCII landscape -->
+            <div style="font-family:monospace;font-size:.8rem;line-height:1.4;color:var(--fg-default);overflow-x:auto;">
+<pre style="margin:0;background:transparent;border:none;color:inherit;">
+         ★ Global Maximum
+        /\
+       /  \
+      /    \    ← Local Maximum
+     /      \  /\
+    /        \/  \
+   /              \
+Start ─────────────────▶
+  ↑ hill climbing starts here, gets stuck at local max!</pre>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:140px;background:var(--wrn-bg);border:1px solid var(--wrn-bd);border-radius:8px;padding:10px;font-size:.82rem;">
+                <strong style="color:var(--wrn-bd);">Local Maximum</strong><br>
+                Better than all neighbours but NOT the best overall
+              </div>
+              <div style="flex:1;min-width:140px;background:var(--exp-bg);border:1px solid var(--exp-bd);border-radius:8px;padding:10px;font-size:.82rem;">
+                <strong style="color:var(--exp-bd);">Plateau</strong><br>
+                Flat area — all neighbours equal, nowhere to go
+              </div>
+              <div style="flex:1;min-width:140px;background:var(--qst-bg);border:1px solid var(--qst-bd);border-radius:8px;padding:10px;font-size:.82rem;">
+                <strong style="color:var(--qst-bd);">Ridge</strong><br>
+                A narrow peak hard to follow with greedy steps
+              </div>
+            </div>
+          </div>
+
+          <h3>Key Concepts</h3>
+          <div style="overflow-x:auto;margin:16px 0;">
+            <table>
+              <thead><tr><th>Concept</th><th>What it means</th><th>Example</th></tr></thead>
+              <tbody>
+                <tr><td><strong>State</strong></td><td>A candidate solution</td><td>Current position on a landscape graph</td></tr>
+                <tr><td><strong>Neighbour</strong></td><td>A state reachable from current</td><td>Adjacent nodes in the graph</td></tr>
+                <tr><td><strong>Evaluation Function f(state)</strong></td><td>How good a state is (higher = better)</td><td>The value at that state</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Hill Climbing Steps</h3>
+          <div style="background:var(--card-bg);border-left:4px solid var(--ac);padding:16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:.9rem;">
+            <ol style="margin:0;padding-left:18px;line-height:2;">
+              <li>Choose an <strong>initial state</strong></li>
+              <li>Evaluate the <strong>current state</strong></li>
+              <li>Generate all <strong>neighbour states</strong></li>
+              <li>Pick the <strong>best neighbour</strong></li>
+              <li>If best neighbour is better than current → <strong>move to it</strong>, repeat from step 2</li>
+              <li>If no better neighbour exists → <strong>STOP</strong> (local optimum reached)</li>
+            </ol>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Hill Climbing only stores the <strong>current state</strong> — very memory efficient</li>
+              <li>Stops when no neighbour improves — may be local max, not global max</li>
+              <li>Good for large state spaces where storing all paths is impractical</li>
+              <li>Evaluation function: higher value = better state</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 2: Variants -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Variants and Limitations</h2>
+          <p class="topic-subtitle">Three flavours of hill climbing and how to escape its pitfalls</p>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin:20px 0;">
+            <div style="flex:1;min-width:180px;background:rgba(218,119,87,.08);border:2px solid var(--ac);border-radius:10px;padding:14px;">
+              <strong style="color:var(--ac);">Simple Hill Climbing</strong>
+              <p style="font-size:.85rem;margin:8px 0 0;">Checks neighbours <strong>one by one</strong>. Moves to the <em>first</em> better neighbour found. Fast per step but may miss better options.</p>
+            </div>
+            <div style="flex:1;min-width:180px;background:rgba(100,160,255,.08);border:2px solid var(--exp-bd);border-radius:10px;padding:14px;">
+              <strong style="color:var(--exp-bd);">Steepest-Ascent HC</strong>
+              <p style="font-size:.85rem;margin:8px 0 0;">Evaluates <strong>ALL neighbours</strong> and picks the <em>best</em> one. More thorough but more computation per step.</p>
+            </div>
+            <div style="flex:1;min-width:180px;background:rgba(52,211,153,.08);border:2px solid var(--def-bd);border-radius:10px;padding:14px;">
+              <strong style="color:var(--def-bd);">Stochastic HC</strong>
+              <p style="font-size:.85rem;margin:8px 0 0;">Picks a <strong>random</strong> improving neighbour. Avoids always following the same path — can escape some traps.</p>
+            </div>
+          </div>
+
+          <h3>Techniques to Escape Local Maxima</h3>
+          <div style="overflow-x:auto;margin:16px 0;">
+            <table>
+              <thead><tr><th>Technique</th><th>How it works</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Random Restart</strong></td><td>Run hill climbing multiple times from random starting states, keep the best result</td></tr>
+                <tr><td><strong>Sideways Moves</strong></td><td>Allow moving to a neighbour of equal value (to cross plateaus)</td></tr>
+                <tr><td><strong>Stochastic Hill Climbing</strong></td><td>Pick a random improving neighbour instead of always the best — introduces randomness</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Mistake</div>
+            Students confuse hill climbing with BFS/DFS. Hill Climbing does NOT maintain a frontier or visited set. It only keeps track of the <strong>current state</strong>. It can revisit states. It is NOT guaranteed to find the global optimum.
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            Questions often ask "Why does hill climbing stop at X?" — The answer is always: <strong>all neighbours of X have equal or lower value</strong>, so there's no improving move. This is either a local maximum, plateau, or ridge.
+          </div>
+        </div>
+
+        <!-- TOPIC 3: Implementation -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Implementation Examples</h2>
+          <p class="topic-subtitle">Graph-based hill climbing with state landscape</p>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Problem 1: Hill Climbing on State Landscape</h4>
+            <pre><code># State landscape: state → list of reachable neighbours
+landscape = {
+    1: [2, 3],
+    2: [4, 5],
+    3: [5],
+    4: [7],
+    5: [6],
+    6: [8],
+    7: [],    # dead end
+    8: []     # dead end (highest value!)
+}
+# The state number IS the evaluation value:
+# state 8 is better than state 7
+
+def hill_climbing(landscape, start):
+    current = start
+    visited = [current]
+    print(f"Start: {current}")
+
+    while True:
+        neighbours = landscape[current]
+
+        if not neighbours:
+            print(f"No neighbours — stuck at {current}")
+            break
+
+        # Find best neighbour (highest value = best state here)
+        best_neighbour = max(neighbours)
+
+        if best_neighbour > current:
+            print(f"  Moving: {current} → {best_neighbour}")
+            current = best_neighbour
+            visited.append(current)
+        else:
+            print(f"  No improvement — local max at {current}")
+            break
+
+    print(f"Path: {visited}")
+    print(f"Final local maximum: {current}")
+    return current
+
+hill_climbing(landscape, start=1)
+# Start: 1
+# Moving: 1 → 3  (3 > 2, so pick 3 as best of [2,3])
+# Moving: 3 → 5
+# Moving: 5 → 6
+# Moving: 6 → 8
+# Final local maximum: 8  ← this happens to be global max!</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Problem 2: Random Restart Hill Climbing</h4>
+            <pre><code">import random
+
+def hill_climb_once(landscape, start):
+    current = start
+    while True:
+        neighbours = landscape.get(current, [])
+        if not neighbours: break
+        best = max(neighbours)
+        if best > current:
+            current = best
+        else:
+            break
+    return current
+
+def random_restart_hc(landscape, num_restarts=5):
+    states = list(landscape.keys())
+    best_overall = None
+    results = []
+
+    for run in range(num_restarts):
+        start = random.choice(states)
+        local_max = hill_climb_once(landscape, start)
+        results.append((start, local_max))
+        print(f"Run {run+1}: start={start}, local max={local_max}")
+
+        if best_overall is None or local_max > best_overall:
+            best_overall = local_max
+
+    print(f"\nBest solution found: {best_overall}")
+    print(f"Total restarts: {num_restarts}")
+    return best_overall
+
+landscape = {1:[2,3],2:[4,5],3:[5],4:[7],5:[6],6:[8],7:[],8:[]}
+random_restart_hc(landscape, num_restarts=5)</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip</div>
+            Random Restart is the simplest fix for local maxima. More restarts = higher chance of finding the global optimum. The trade-off is time (each restart is a full hill climb run). For the exam: always say "Random restart can find a better solution because different starting points may lead to different local maxima."
+          </div>
+        </div>
+
+        <!-- TOPIC 4: Function Optimization -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Function Optimization with Hill Climbing</h2>
+          <p class="topic-subtitle">Finding the maximum of a mathematical function step by step</p>
+
+          <p>Hill Climbing can optimize continuous or discrete mathematical functions. The "state" is a value of x, "neighbours" are x+1 and x-1, and the evaluation function is f(x).</p>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Problem 3: Maximize f(x) = -(x-3)² + 9</h4>
+            <pre><code>def f(x):
+    return -(x - 3)**2 + 9
+    # Maximum at x=3, f(3)=9
+    # f(0)=0, f(1)=5, f(2)=8, f(3)=9, f(4)=8, ...
+
+def hill_climbing_function(f, start_x):
+    x = start_x
+    print(f"Start: x={x}, f(x)={f(x)}")
+
+    while True:
+        # Generate neighbours: x-1 and x+1
+        neighbours = [x - 1, x + 1]
+
+        # Evaluate all neighbours
+        best_x = max(neighbours, key=f)  # pick neighbour with best f value
+
+        print(f"  Current: x={x} f={f(x)} | Neighbours: {[f(n) for n in neighbours]}")
+
+        if f(best_x) > f(x):
+            print(f"  → Moving to x={best_x}")
+            x = best_x
+        else:
+            print(f"  → No improvement. Local max at x={x}")
+            break
+
+    print(f"\nFinal: x={x}, f(x)={f(x)}")
+    return x, f(x)
+
+hill_climbing_function(f, start_x=0)
+# x=0: neighbours x=-1(f=-7), x=1(f=5) → move to 1
+# x=1: neighbours x=0(f=0), x=2(f=8) → move to 2
+# x=2: neighbours x=1(f=5), x=3(f=9) → move to 3
+# x=3: neighbours x=2(f=8), x=4(f=8) → no improvement
+# Final: x=3, f(x)=9  ← GLOBAL MAX!</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Problem 4: Stochastic Hill Climbing — f(x) = -(x-4)² + 16</h4>
+            <pre><code">import random
+
+def f2(x):
+    return -(x - 4)**2 + 16
+    # Maximum at x=4, f(4)=16
+
+def stochastic_hill_climb(f, x_range, num_runs=5):
+    best_x, best_val = None, float('-inf')
+
+    for run in range(num_runs):
+        # Random starting x within range
+        x = random.randint(*x_range)
+        path = [x]
+        print(f"\nRun {run+1}: start x={x}, f(x)={f(x)}")
+
+        while True:
+            neighbours = [x - 1, x + 1]
+            # Filter: only keep IMPROVING neighbours
+            improving = [n for n in neighbours if f(n) > f(x) and x_range[0] <= n <= x_range[1]]
+
+            if not improving:
+                print(f"  Stuck at x={x}, f={f(x)}")
+                break
+
+            # STOCHASTIC: pick a RANDOM improving neighbour
+            x = random.choice(improving)
+            path.append(x)
+
+        print(f"  Path: {path}, Final: x={x}, f={f(x)}")
+        if f(x) > best_val:
+            best_val = f(x); best_x = x
+
+    print(f"\nBest across all runs: x={best_x}, f={best_val}")
+
+stochastic_hill_climb(f2, x_range=(0, 8), num_runs=5)</code></pre>
+          </div>
+
+          <div class="summary-box">
+            <h4>Lab 7 Complete Summary</h4>
+            <ul>
+              <li>Hill Climbing = greedy local search — only moves to improving neighbours</li>
+              <li>Stops at <strong>local maximum</strong> (no better neighbour) — may not be global max</li>
+              <li>3 variants: Simple (first better), Steepest-Ascent (best of all), Stochastic (random improving)</li>
+              <li>3 pitfalls: Local Maximum, Plateau, Ridge</li>
+              <li>Fix: <strong>Random Restart</strong> — run multiple times, keep best result</li>
+              <li>For functions: state=x, neighbours=x±1, eval=f(x)</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Why does hill climbing stop? What is a local maximum?</summary>
+              <p><strong>Answer:</strong> Hill climbing stops when no neighbour has a higher value than the current state. A <strong>local maximum</strong> is a state that is better than all its immediate neighbours but may not be the best state overall (global maximum). Hill climbing gets stuck here because it never makes moves that decrease the value.</p>
+            </details>
+            <details>
+              <summary>Medium: Why can Random Restart produce better solutions?</summary>
+              <p><strong>Answer:</strong> Different starting states lead to different local maxima. By running hill climbing multiple times from randomly chosen starting states, we explore different regions of the state space. The probability of at least one run finding the global maximum increases with the number of restarts.</p>
+            </details>
+            <details>
+              <summary>Hard: Implement steepest-ascent hill climbing on a landscape graph. Show it evaluates ALL neighbours before moving.</summary>
+              <pre><code">landscape = {1:[2,3],2:[4,5],3:[5],4:[7],5:[6],6:[8],7:[],8:[]}
+
+def steepest_ascent_hc(landscape, start):
+    current = start
+    print(f"Steepest Ascent Hill Climbing")
+    print(f"Start: {current}")
+
+    while True:
+        neighbours = landscape.get(current, [])
+        if not neighbours:
+            print(f"No neighbours — stuck at {current}"); break
+
+        # STEEPEST-ASCENT: evaluate ALL neighbours first
+        print(f"  Evaluating ALL neighbours of {current}: {neighbours}")
+        best_n = max(neighbours)   # best among all
+
+        if best_n > current:
+            print(f"  Best neighbour: {best_n} > {current} → MOVE")
+            current = best_n
+        else:
+            print(f"  No neighbour better than {current} → STOP")
+            break
+
+    print(f"Local maximum: {current}")
+    return current
+
+steepest_ascent_hc(landscape, 1)</code></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 5: Genetic Algorithms -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Genetic Algorithms (GA) — Evolutionary Search & Selection</h2>
+          <p class="topic-subtitle">Global stochastic optimization inspired by biological natural selection and genetics</p>
+
+          <p>Where <strong>Hill Climbing</strong> keeps a single state and moves to immediate neighbours (often getting trapped in local peaks), a <strong>Genetic Algorithm (GA)</strong> maintains an entire <em>population</em> of candidate solutions simultaneously. Solutions reproduce based on their <strong>fitness</strong>, pass traits forward, and explore new territory via <strong>mutation</strong>.</p>
+
+          <div class="definition">
+            <div class="callout-label">Core Anatomy of a Genetic Algorithm</div>
+            <ul style="margin:8px 0;padding-left:18px;line-height:2;">
+              <li><strong>Individual / Chromosome:</strong> A candidate solution (e.g. a scalar number <code>x</code>, bitstring <code>01101</code>, or array of genes).</li>
+              <li><strong>Population:</strong> A collection of <code>N</code> individuals evaluated together across iterations (generations).</li>
+              <li><strong>Fitness Function f(x):</strong> The objective function measuring how "good" an individual is. Higher fitness = greater chance of survival.</li>
+              <li><strong>Selection:</strong> Choosing which individuals survive and reproduce to form the next generation.</li>
+              <li><strong>Mutation:</strong> Adding random perturbation (e.g. <code>x = x + random.uniform(-1, 1)</code>) with probability <code>p_m</code> to maintain diversity and prevent stagnation.</li>
+            </ul>
+          </div>
+
+          <h3>Selection Strategies: Ranking vs Roulette Wheel</h3>
+          <p>The choice of selection method determines how the algorithm balances <strong>exploitation</strong> (focusing on currently best solutions) and <strong>exploration</strong> (preserving diverse solutions to discover new optima):</p>
+
+          <div style="overflow-x:auto;margin:18px 0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Selection Method</th>
+                  <th>How It Works</th>
+                  <th>Advantages</th>
+                  <th>Key Weakness / Exam Trap</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color:var(--ac);">Ranking Selection</strong></td>
+                  <td>Sort individuals by fitness from 1 to N. Selection depends <em>strictly on rank</em> (e.g. top 50%), completely ignoring numerical fitness differences.</td>
+                  <td><strong>Prevents premature convergence!</strong> A super-fit individual cannot monopolize reproduction because rank difference is fixed. Maintains stable selection pressure.</td>
+                  <td>Slower convergence rate when fitness differences are genuinely informative and large.</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--def-bd);">Roulette Wheel (Fitness-Proportionate)</strong></td>
+                  <td>Each individual gets a slice of a roulette wheel proportional to its fitness: <code>P(i) = f(i) / &sum; f(j)</code>. Random spin selects individuals.</td>
+                  <td>Directly rewards higher quality proportionally. Converges very quickly toward high-fitness regions.</td>
+                  <td><strong>Premature Convergence Risk:</strong> If one early individual has high fitness ("super-individual"), it dominates the wheel, clones itself everywhere, and population loses all diversity. Also requires strictly positive fitness values!</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--exp-bd);">Tournament Selection</strong></td>
+                  <td>Pick <code>k</code> individuals at random from population; the one with highest fitness wins the tournament and is selected.</td>
+                  <td>No sorting needed, easily parallelizable, adjustable selection pressure via tournament size <code>k</code>.</td>
+                  <td>Requires tuning tournament size <code>k</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Full Implementation: Optimizing f(x) = -x² + 10x + 5</h3>
+          <p>Let us maximize the function $f(x) = -x^2 + 10x + 5$ (which has a global maximum at $x=5$ where $f(5)=30$). We implement both <strong>Ranking Selection</strong> and <strong>Roulette Wheel Selection</strong> with controlled mutation:</p>
+
+          <div class="example">
+            <div class="callout-label">Complete Python GA Implementation (Exam Standard)</div>
+            <pre><code>import random
+
+def fitness_func(x):
+    """Objective: Maximize f(x) = -x^2 + 10x + 5. Peak is at x=5, f(5)=30."""
+    return -(x**2) + 10 * x + 5
+
+# ── 1. GA WITH RANKING SELECTION ──────────────────────────────────
+def ga_ranking(pop_size=10, generations=10, mutation_rate=0.2):
+    print("=" * 60)
+    print("GA EXPERIMENT 1: RANKING SELECTION (TOP 50% SURVIVAL)")
+    print("=" * 60)
+    
+    # Initialize random population in range [-5, 15]
+    random.seed(42)
+    population = [random.uniform(-5, 15) for _ in range(pop_size)]
+
+    for gen in range(1, generations + 1):
+        # Calculate fitness for each individual
+        fitness_values = [fitness_func(ind) for ind in population]
+
+        # Rank individuals: highest fitness -> Rank 1 (index 0)
+        ranked = sorted(zip(population, fitness_values), key=lambda item: item[1], reverse=True)
+        
+        best_individual, best_fitness = ranked[0]
+        print(f"Gen {gen:2d} | Best x: {best_individual:7.4f} | Fitness: {best_fitness:7.4f}")
+
+        # Select top 50% individuals based strictly on ranking
+        top_half = [ind for ind, fit in ranked[:pop_size // 2]]
+
+        # Reproduce: duplicate top individuals to restore full population size
+        new_population = []
+        while len(new_population) < pop_size:
+            new_population.extend(top_half[:pop_size - len(new_population)])
+
+        # Apply controlled mutation: x = x + uniform(-1, 1) with 20% probability
+        for i in range(len(new_population)):
+            if random.random() < mutation_rate:
+                mutation_offset = random.uniform(-1, 1)
+                new_population[i] = new_population[i] + mutation_offset
+
+        population = new_population
+
+    # Final best evaluation
+    final_ranked = sorted(zip(population, [fitness_func(x) for x in population]), key=lambda item: item[1], reverse=True)
+    best_x, max_fit = final_ranked[0]
+    print(f"\nFinal Best Solution after {generations} gens: x = {best_x:.4f}")
+    print(f"Maximum Fitness Achieved: {max_fit:.4f} (Theoretical max = 30.0000 at x=5)")
+    return best_x, max_fit
+
+# ── 2. GA WITH ROULETTE WHEEL SELECTION ───────────────────────────
+def ga_roulette(pop_size=10, generations=10, mutation_rate=0.2):
+    print("\n" + "=" * 60)
+    print("GA EXPERIMENT 2: ROULETTE WHEEL (FITNESS-PROPORTIONATE)")
+    print("=" * 60)
+    
+    random.seed(42)
+    population = [random.uniform(-5, 15) for _ in range(pop_size)]
+
+    for gen in range(1, generations + 1):
+        fitness_values = [fitness_func(ind) for ind in population]
+        
+        # Best individual of current generation
+        best_idx = max(range(pop_size), key=lambda i: fitness_values[i])
+        print(f"Gen {gen:2d} | Best x: {population[best_idx]:7.4f} | Fitness: {fitness_values[best_idx]:7.4f}")
+
+        # Roulette wheel requires strictly positive values: shift if any <= 0
+        min_fit = min(fitness_values)
+        shifted_fitness = [fit - min_fit + 1e-4 for fit in fitness_values] if min_fit <= 0 else fitness_values
+        total_fit = sum(shifted_fitness)
+        probabilities = [sf / total_fit for sf in shifted_fitness]
+
+        # Select individuals via cumulative roulette wheel spins
+        selected = []
+        for _ in range(pop_size // 2):
+            r = random.random()
+            cumulative = 0.0
+            for idx, prob in enumerate(probabilities):
+                cumulative += prob
+                if r <= cumulative:
+                    selected.append(population[idx])
+                    break
+            else:
+                selected.append(population[-1])
+
+        # Restore population size
+        new_population = []
+        while len(new_population) < pop_size:
+            new_population.extend(selected[:pop_size - len(new_population)])
+
+        # Controlled mutation
+        for i in range(len(new_population)):
+            if random.random() < mutation_rate:
+                new_population[i] = new_population[i] + random.uniform(-1, 1)
+
+        population = new_population
+
+    final_fitness = [fitness_func(x) for x in population]
+    best_final_idx = max(range(pop_size), key=lambda i: final_fitness[i])
+    print(f"\nFinal Best Solution after {generations} gens: x = {population[best_final_idx]:.4f}")
+    print(f"Maximum Fitness Achieved: {final_fitness[best_final_idx]:.4f}")
+
+# Execute both
+ga_ranking()
+ga_roulette()</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Why Ranking Avoids Premature Convergence (Exam Favorite)</div>
+            In Roulette Wheel Selection, probability depends directly on numeric fitness. If early in the run one individual has fitness 100 while others have 5, it gets 95% of the selections. The entire population quickly turns into copies of this single individual, extinguishing all genetic diversity. If that individual was trapped near a local maximum, the GA can never escape.<br><br>
+            <strong>Ranking Selection solves this:</strong> By mapping fitness strictly to ranks (1, 2, 3...), the top individual always has a bounded, constant advantage regardless of how huge its raw numerical score is. Diversity is preserved!
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Genetic Algorithm Coding Traps</div>
+            <ul style="margin:8px 0;padding-left:18px;line-height:2;">
+              <li><strong>Negative Fitness in Roulette:</strong> Raw fitness can be negative (e.g. $-(x^2)$). Roulette selection crashes or produces negative probabilities! Always shift fitness: <code>fit - min_fit + eps</code>.</li>
+              <li><strong>Losing the Best Individual:</strong> If you mutate every individual without elitism, you can accidentally destroy the best solution found so far! Keep the elite copy untouched.</li>
+              <li><strong>Mutation Range:</strong> Using integer addition <code>x + 1</code> instead of continuous floating perturbation <code>x + random.uniform(-1, 1)</code> turns a continuous problem into discrete stepping.</li>
+            </ul>
+          </div>
+
+          <h3>Practice Questions</h3>
+          <div class="example">
+            <details>
+              <summary>Easy: What is the purpose of mutation in a Genetic Algorithm?</summary>
+              <p><strong>Answer:</strong> Mutation introduces new genetic material (random diversity) into the population. Without mutation, crossover and selection can only recombine existing genes, inevitably causing the population to stagnate into identical copies (loss of diversity). Mutation allows the algorithm to escape local optima and explore unexplored regions of the search space.</p>
+            </details>
+            <details>
+              <summary>Medium: Compare convergence speed vs stability between Ranking Selection and Roulette Wheel Selection.</summary>
+              <p><strong>Answer:</strong>
+              <ul style="padding-left:18px;line-height:1.8;">
+                <li><strong>Convergence Speed:</strong> Roulette Wheel converges faster when a superior solution is found because it rewards high fitness exponentially/proportionately. Ranking converges at a steadier, moderate pace.</li>
+                <li><strong>Stability:</strong> Ranking Selection provides significantly more stable, monotonic improvement across generations because selection pressure is constant and unaffected by extreme fitness outliers. Roulette selection exhibits high variance and instability on small populations.</li>
+              </ul>
+              </p>
+            </details>
+            <details>
+              <summary>Hard: Write a Python function for Tournament Selection where k=3 individuals compete.</summary>
+              <pre><code>def tournament_selection(population, fitness_func, k=3):
+    """Pick k random candidates from population; return the one with best fitness."""
+    candidates = random.sample(population, k)
+    best_candidate = max(candidates, key=fitness_func)
+    return best_candidate</code></pre>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Topic 5 Takeaways</h4>
+            <ul>
+              <li>GA is a <strong>population-based global search</strong> that uses Darwinian principles: fitness, selection, reproduction, mutation.</li>
+              <li><strong>Ranking Selection:</strong> Sorts by fitness; selection depends on rank index. Guarantees constant selection pressure, avoids premature convergence.</li>
+              <li><strong>Roulette Wheel:</strong> Selection probability $P(i) \propto f(i)$. Fast but prone to super-individual takeover and requires positive fitness.</li>
+              <li><strong>Controlled Mutation:</strong> Applies small random perturbations ($x \leftarrow x + \Delta$) with probability $p_m$ (typically 10%–20%) to maintain diversity.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+      const topics=["topic-1","topic-2","topic-3","topic-4","topic-5"];
+      let currentTopicIndex=0;
+      function getTopicTitle(id){const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){const n=lk.querySelector('.nav-num');return lk.textContent.replace(n?n.textContent:'','').trim();}const card=document.getElementById(id);if(card){const h=card.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return h.textContent.replace(n?n.textContent:'','').trim();}}return 'Topic';}
+      function toggleSidebar(){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.toggle('open');if(bd)bd.classList.toggle('active');}
+      function showTopic(id){document.querySelectorAll(".topic-card").forEach(c=>c.style.display="none");const t=document.getElementById(id);if(t)t.style.display="block";currentTopicIndex=topics.indexOf(id);document.querySelectorAll(".nav-sublist a").forEach(a=>a.classList.remove("active"));const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){lk.classList.add("active");const sl=lk.closest('.nav-sublist');if(sl&&sl.style.display==='none'){sl.style.display='block';const ch=sl.previousElementSibling?.querySelector('.chevron');if(ch)ch.style.transform='rotate(0deg)';}}const pb=document.getElementById("prev-btn"),nb=document.getElementById("next-btn"),pt=document.getElementById("prev-title"),nt=document.getElementById("next-title");if(currentTopicIndex>0){pb.style.display="flex";if(pt)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);}else{pb.style.display="none";}if(currentTopicIndex<topics.length-1){nb.style.display="flex";if(nt)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);}else{nb.style.display="none";}if(t)t.scrollIntoView({behavior:"smooth",block:"start"});if(window.innerWidth<=768){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.remove('open');if(bd)bd.classList.remove('active');}}
+      function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+      function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+      function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector(".chevron");if(s.style.display==="none"){s.style.display="block";c.style.transform="rotate(0deg)";}else{s.style.display="none";c.style.transform="rotate(-90deg)";}}
+      function filterContent(){const q=document.getElementById("search-input").value.toLowerCase();document.querySelectorAll(".nav-sublist li").forEach(i=>(i.style.display=i.textContent.toLowerCase().includes(q)?"":'none'));}
+      if(topics.length>0)showTopic(topics[0]);
+      const mc=document.getElementById("main-content"),bb=document.getElementById("back-to-top");
+      mc.addEventListener("scroll",()=>(bb.style.display=mc.scrollTop>300?"flex":"none"));
+    </script>
+  </body>
+</html>

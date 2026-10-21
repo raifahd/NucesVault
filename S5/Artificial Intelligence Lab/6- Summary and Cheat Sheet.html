@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Lab — Summary and Cheat Sheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">AI Lab Notes</div>
+          <div class="sidebar-title">Artificial Intelligence Lab</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Python Basics and Data Structures.html"><span class="nav-mod-num">L1</span>Python Basics</a></li>
+        <li><a class="nav-module-link" href="./2- NumPy, Pandas and Matplotlib.html"><span class="nav-mod-num">L3</span>NumPy, Pandas, Matplotlib</a></li>
+        <li><a class="nav-module-link" href="./3- OOP, File Handling and Blind Search.html"><span class="nav-mod-num">L4</span>OOP and Blind Search</a></li>
+        <li><a class="nav-module-link" href="./4- Informed Search and Game Playing.html"><span class="nav-mod-num">L5&6</span>Informed Search and Games</a></li>
+        <li><a class="nav-module-link" href="./5- Hill Climbing.html"><span class="nav-mod-num">L7</span>Hill Climbing & GA</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>★ Summary and Cheat Sheet</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Data Structures Quick Ref</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Search Algorithms Master Table</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Complete Code Templates</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Exam Day Checklist</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+        </li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence Lab</div>
+          <h1 class="module-title">★ Summary and Cheat Sheet — Everything in One Place</h1>
+        </div>
+
+        <!-- TOPIC 1: Data Structures -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Python Data Structures — Quick Reference</h2>
+          <p class="topic-subtitle">The four core data structures and when to use each</p>
+
+          <div style="overflow-x:auto;margin:20px 0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Structure</th><th>Ordered</th><th>Mutable</th><th>Duplicates</th><th>Create</th><th>Best For</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color:var(--ac);">List</strong></td><td>✅</td><td>✅</td><td>✅</td>
+                  <td><code>[1,2,3]</code></td><td>Sequences, ordered data, stack/queue base</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--exp-bd);">Dict</strong></td><td>✅ 3.7+</td><td>✅</td><td>Keys: ❌</td>
+                  <td><code>{'k':v}</code></td><td>Counting, mapping, fast key lookup</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--def-bd);">Tuple</strong></td><td>✅</td><td>❌</td><td>✅</td>
+                  <td><code>(1,2)</code></td><td>Multiple return values, dict keys, immutable data</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--qst-bd);">Set</strong></td><td>❌</td><td>✅</td><td>❌ unique</td>
+                  <td><code>{1,2}</code> or <code>set()</code></td><td>Deduplication, visited tracking in search</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Critical Patterns — Memorise These</h3>
+          <div class="example">
+            <div class="callout-label">Must-Know Patterns</div>
+            <pre><code># ── PATTERN 1: Counting with dict ────────────────────
+counts = {}
+for item in items:
+    counts[item] = counts.get(item, 0) + 1
+
+# ── PATTERN 2: Sort dict by value (descending) ───────
+sorted_items = sorted(d.items(), key=lambda x: x[1], reverse=True)
+top_N = sorted_items[:N]
+
+# ── PATTERN 3: List comprehension ────────────────────
+result = [f(x) for x in iterable if condition(x)]
+
+# ── PATTERN 4: Safe dict access ──────────────────────
+val = d.get(key, default)    # never crashes
+
+# ── PATTERN 5: Multiple return values ────────────────
+def stats(lst): return min(lst), max(lst), sum(lst)/len(lst)
+lo, hi, avg = stats(nums)    # tuple unpacking
+
+# ── PATTERN 6: for...else (loop without break) ────────
+for attempt in range(3):
+    if check(): break
+else:
+    print("All attempts failed")
+
+# ── PATTERN 7: Set for visited tracking ──────────────
+visited = set()
+visited.add(state)
+if state not in visited: ...
+
+# ── PATTERN 8: Sensor data cleaning ──────────────────
+cleaned = [r for r in readings if r != FAULTY_VALUE]</code></pre>
+          </div>
+
+          <h3>NumPy Quick Reference</h3>
+          <div class="example">
+            <div class="callout-label">NumPy Cheatsheet</div>
+            <pre><code">import numpy as np
+
+# Create
+a = np.array([[1,2,3],[4,5,6]])
+np.zeros((3,4)); np.ones((2,3)); np.arange(0,10,2)
+
+# Properties
+a.shape   # (2,3)
+a.ndim    # 2
+a.dtype   # int64
+a.size    # 6
+
+# Index/Slice
+a[0]        # first row
+a[0,1]      # row 0, col 1 = 2
+a[:,1]      # all rows, col 1
+a[0:2,1:3]  # sub-array (is a VIEW not copy!)
+
+# Math (element-wise)
+a + 10; a * 2; np.sqrt(a); a**2
+np.sum(a); np.mean(a); np.min(a); np.max(a)</code></pre>
+          </div>
+
+          <h3>Pandas Quick Reference</h3>
+          <div class="example">
+            <div class="callout-label">Pandas Cheatsheet</div>
+            <pre><code">import pandas as pd
+
+df = pd.DataFrame({'A':[1,2],'B':[3,4]})
+
+# Inspect
+df.head(2); df.shape; df.columns; df.info(); df.describe()
+
+# Access
+df['A']                    # column → Series
+df[['A','B']]              # multi-column
+df.sort_values('A')        # sort
+df.loc['label']            # by label (after set_index)
+df.iloc[0]                 # by integer position
+df['A'].idxmax()           # index of max value
+
+# Aggregate
+df['A'].sum(); df['A'].max(); df['A'].mean()
+
+# CSV
+df.to_csv('f.csv'); df2 = pd.read_csv('f.csv')</code></pre>
+          </div>
+
+          <h3>Matplotlib Quick Reference</h3>
+          <div class="example">
+            <div class="callout-label">Matplotlib Cheatsheet</div>
+            <pre><code">import matplotlib.pyplot as plt
+
+plt.plot(x, y)          # Line plot
+plt.bar(x, y)           # Bar chart
+plt.scatter(x, y)       # Scatter plot
+plt.hist(data, bins=5)  # Histogram
+plt.pie(y, labels=l)    # Pie chart
+plt.boxplot(data)        # Box plot
+
+# Always add
+plt.title("Title"); plt.xlabel("X"); plt.ylabel("Y"); plt.grid()
+plt.show()
+
+# Subplots
+plt.subplot(1,2,1); plt.plot(...)  # 1 row, 2 cols, pos 1
+plt.subplot(1,2,2); plt.bar(...)   # pos 2</code></pre>
+          </div>
+        </div>
+
+        <!-- TOPIC 2: Search Master Table -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Search Algorithms — Master Reference Table</h2>
+          <p class="topic-subtitle">Every algorithm at a glance — for the exam</p>
+
+          <!-- Master comparison table -->
+          <div style="overflow-x:auto;margin:20px 0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Algorithm</th><th>Type</th><th>Data Structure</th><th>Priority</th><th>Optimal</th><th>Complete</th><th>Memory</th><th>Weighted?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:rgba(218,119,87,.07);">
+                  <td><strong style="color:var(--ac);">BFS</strong></td><td>Blind</td><td>Queue (deque)</td><td>FIFO</td><td>✅ Yes</td><td>✅ Yes</td><td>🔴 High</td><td>❌ No</td>
+                </tr>
+                <tr style="background:rgba(100,160,255,.05);">
+                  <td><strong style="color:var(--exp-bd);">DFS</strong></td><td>Blind</td><td>Stack (list)</td><td>LIFO</td><td>❌ No</td><td>❌ No</td><td>🟢 Low</td><td>❌ No</td>
+                </tr>
+                <tr style="background:rgba(52,211,153,.05);">
+                  <td><strong style="color:var(--def-bd);">UCS</strong></td><td>Blind</td><td>Min-Heap (heapq)</td><td>g(n)</td><td>✅ Yes</td><td>✅ Yes</td><td>🔴 High</td><td>✅ Yes</td>
+                </tr>
+                <tr style="background:rgba(167,139,250,.05);">
+                  <td><strong style="color:var(--qst-bd);">IDS</strong></td><td>Blind</td><td>Stack + Loop</td><td>Depth limit</td><td>✅ Yes</td><td>✅ Yes</td><td>🟡 Med</td><td>❌ No</td>
+                </tr>
+                <tr style="background:rgba(251,191,36,.05);">
+                  <td><strong style="color:var(--wrn-bd);">Greedy BFS</strong></td><td>Informed</td><td>Min-Heap</td><td>h(n)</td><td>❌ No</td><td>❌ No</td><td>🟡 Med</td><td>✅ Yes</td>
+                </tr>
+                <tr style="background:rgba(239,68,68,.05);">
+                  <td><strong style="color:var(--crit-bd);">A*</strong></td><td>Informed</td><td>Min-Heap</td><td>g(n)+h(n)</td><td>✅ Yes*</td><td>✅ Yes</td><td>🔴 High</td><td>✅ Yes</td>
+                </tr>
+                <tr style="background:rgba(20,184,166,.05);">
+                  <td><strong style="color:#14b8a6;">Hill Climbing</strong></td><td>Local</td><td>Current state only</td><td>f(current)</td><td>❌ No</td><td>❌ No</td><td>🟢 Minimal</td><td>N/A</td>
+                </tr>
+                <tr style="background:rgba(6,182,212,.06);">
+                  <td><strong style="color:#06b6d4;">Genetic Algorithm</strong></td><td>Evolutionary</td><td>Population (list)</td><td>Fitness + Mutation</td><td>❌ Stochastic</td><td>❌ No</td><td>🟡 Low-Med</td><td>N/A</td>
+                </tr>
+                <tr style="background:rgba(139,92,246,.05);">
+                  <td><strong style="color:#8b5cf6;">Minimax</strong></td><td>Game</td><td>Game Tree</td><td>MAX/MIN alt.</td><td>✅ Yes</td><td>✅ Yes</td><td>🔴 High</td><td>N/A</td>
+                </tr>
+                <tr style="background:rgba(59,130,246,.05);">
+                  <td><strong style="color:#3b82f6;">Alpha-Beta</strong></td><td>Game</td><td>Game Tree</td><td>α/β pruning</td><td>✅ Yes</td><td>✅ Yes</td><td>🟡 Med</td><td>N/A</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="font-size:.8rem;color:var(--fg-muted);margin-top:-10px;">*A* is optimal only when the heuristic is admissible (never overestimates).</div>
+
+          <h3>The Decision Tree — Which Algorithm to Use?</h3>
+          <!-- Visual decision tree -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;margin:20px 0;font-size:.85rem;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="background:rgba(218,119,87,.15);border:2px solid var(--ac);border-radius:8px;padding:10px;"><strong style="color:var(--ac);">Is it a TWO-PLAYER GAME (Tic-Tac-Toe, Chess)?</strong><br>→ <strong>Minimax</strong> (or <strong>Alpha-Beta Pruning</strong> for speed)</div>
+              <div style="padding-left:20px;color:var(--fg-muted);">↓ No, it's a path/search problem</div>
+              <div style="background:rgba(52,211,153,.1);border:1px solid var(--def-bd);border-radius:8px;padding:10px;"><strong style="color:var(--def-bd);">Do you have a HEURISTIC (estimate to goal)?</strong><br>→ Yes: Use <strong>A*</strong> (optimal) or <strong>Greedy</strong> (fast but not optimal)<br>→ No: Use blind search below</div>
+              <div style="padding-left:20px;color:var(--fg-muted);">↓ No heuristic, blind search</div>
+              <div style="background:rgba(100,160,255,.08);border:1px solid var(--exp-bd);border-radius:8px;padding:10px;"><strong style="color:var(--exp-bd);">Does the graph have EDGE COSTS (weighted)?</strong><br>→ Yes: Use <strong>UCS</strong> (cheapest path)<br>→ No: Continue below</div>
+              <div style="padding-left:20px;color:var(--fg-muted);">↓ Unweighted graph</div>
+              <div style="background:rgba(167,139,250,.08);border:1px solid var(--qst-bd);border-radius:8px;padding:10px;"><strong style="color:var(--qst-bd);">Do you need the SHORTEST path?</strong><br>→ Yes + low memory: <strong>IDS</strong> | Yes + memory OK: <strong>BFS</strong><br>→ No (any path): <strong>DFS</strong></div>
+              <div style="padding-left:20px;color:var(--fg-muted);">↓ Optimization (find best value, not path)</div>
+              <div style="background:rgba(20,184,166,.08);border:1px solid #14b8a6;border-radius:8px;padding:10px;"><strong style="color:#14b8a6;">Large state space, need best value (not path)?</strong><br>→ <strong>Hill Climbing</strong> (+ Random Restart if needed)</div>
+            </div>
+          </div>
+
+          <h3>Key Formula Summary</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+            <div style="flex:1;min-width:150px;background:rgba(218,119,87,.1);border:2px solid var(--ac);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:1.1rem;font-weight:700;color:var(--ac);font-family:monospace;">UCS: g(n)</div>
+              <small style="color:var(--fg-muted);">Actual cost from start</small>
+            </div>
+            <div style="flex:1;min-width:150px;background:rgba(251,191,36,.08);border:2px solid var(--wrn-bd);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:1.1rem;font-weight:700;color:var(--wrn-bd);font-family:monospace;">Greedy: h(n)</div>
+              <small style="color:var(--fg-muted);">Estimated cost to goal</small>
+            </div>
+            <div style="flex:1;min-width:150px;background:rgba(239,68,68,.08);border:2px solid var(--crit-bd);border-radius:10px;padding:14px;text-align:center;">
+              <div style="font-size:1.1rem;font-weight:700;color:var(--crit-bd);font-family:monospace;">A*: g(n)+h(n)</div>
+              <small style="color:var(--fg-muted);">Actual + estimated</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOPIC 3: Code Templates -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Complete Code Templates</h2>
+          <p class="topic-subtitle">Copy-paste-ready templates for every algorithm — study the structure</p>
+
+          <div class="example">
+            <div class="callout-label">Template — Node Class (use for ALL search algorithms)</div>
+            <pre><code>class Node:
+    def __init__(self, state, parent=None, cost=0, depth=0):
+        self.state = state
+        self.parent = parent
+        self.cost = cost
+        self.depth = depth
+    def __lt__(self, other):      # needed for heapq
+        return self.cost < other.cost
+
+def get_path(node):               # reconstruct path from goal to start
+    path = []
+    while node:
+        path.append(node.state)
+        node = node.parent
+    return path[::-1]             # reverse: start→goal</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Template — BFS (Queue/FIFO)</div>
+            <pre><code>from collections import deque
+
+def bfs(graph, start, goal):
+    queue = deque([Node(start)])
+    visited = set()
+    while queue:
+        n = queue.popleft()              # ← FRONT (FIFO)
+        if n.state == goal: return get_path(n)
+        if n.state in visited: continue
+        visited.add(n.state)
+        for nb in graph[n.state]:
+            if nb not in visited:
+                queue.append(Node(nb, n, depth=n.depth+1))
+    return None</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Template — DFS (Stack/LIFO)</div>
+            <pre><code>def dfs(graph, start, goal):
+    stack = [Node(start)]
+    visited = set()
+    while stack:
+        n = stack.pop()                  # ← TOP (LIFO)
+        if n.state == goal: return get_path(n)
+        if n.state in visited: continue
+        visited.add(n.state)
+        for nb in graph[n.state]:
+            if nb not in visited:
+                stack.append(Node(nb, n, depth=n.depth+1))
+    return None</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Template — UCS (Priority Queue / min-heap)</div>
+            <pre><code>import heapq
+
+def ucs(graph, start, goal):
+    pq = []; heapq.heappush(pq, (0, Node(start, cost=0)))
+    visited = {}
+    while pq:
+        cost, n = heapq.heappop(pq)      # ← LOWEST COST first
+        if n.state == goal:
+            print(f"Cost: {cost}"); return get_path(n)
+        if n.state in visited and visited[n.state] <= cost: continue
+        visited[n.state] = cost
+        for nb, ec in graph[n.state]:
+            nc = cost + ec
+            heapq.heappush(pq, (nc, Node(nb, n, cost=nc)))
+    return None</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Template — IDS (Iterative Deepening)</div>
+            <pre><code>def depth_limited_dfs(node, graph, goal, limit):
+    if node.state == goal: return node
+    if node.depth >= limit: return None
+    for nb in graph[node.state]:
+        child = Node(nb, node, depth=node.depth+1)
+        result = depth_limited_dfs(child, graph, goal, limit)
+        if result: return result
+    return None
+
+def ids(graph, start, goal, max_depth=20):
+    for depth in range(max_depth):
+        result = depth_limited_dfs(Node(start), graph, goal, depth)
+        if result: return get_path(result)
+    return None</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Template — A* Search</div>
+            <pre><code">import heapq
+
+def astar(graph, heuristic, start, goal):
+    pq = []; heapq.heappush(pq, (heuristic[start], Node(start, cost=0)))
+    visited = {}
+    while pq:
+        f, n = heapq.heappop(pq)
+        g = n.cost
+        if n.state == goal:
+            print(f"Cost: {g}"); return get_path(n)
+        if n.state in visited and visited[n.state] <= g: continue
+        visited[n.state] = g
+        for nb, ec in graph[n.state]:
+            ng = g + ec
+            nf = ng + heuristic[nb]           # f = g + h
+            heapq.heappush(pq, (nf, Node(nb, n, cost=ng)))
+    return None</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Template — Minimax with Alpha-Beta Pruning</div>
+            <pre><code">class GameNode:
+    def __init__(self, value=None, children=None):
+        self.value = value
+        self.children = children or []
+
+def minimax(node, is_max):
+    if not node.children: return node.value
+    if is_max:
+        return max(minimax(c, False) for c in node.children)
+    else:
+        return min(minimax(c, True)  for c in node.children)
+
+def alpha_beta(node, is_max, alpha=float('-inf'), beta=float('inf')):
+    if not node.children: return node.value
+    if is_max:
+        best = float('-inf')
+        for c in node.children:
+            best = max(best, alpha_beta(c, False, alpha, beta))
+            alpha = max(alpha, best)
+            if beta <= alpha: break          # Beta cut-off
+        return best
+    else:
+        best = float('inf')
+        for c in node.children:
+            best = min(best, alpha_beta(c, True, alpha, beta))
+            beta = min(beta, best)
+            if beta <= alpha: break          # Alpha cut-off
+        return best</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Template — Hill Climbing</div>
+            <pre><code">def hill_climbing(landscape, start):
+    current = start
+    while True:
+        neighbours = landscape.get(current, [])
+        if not neighbours: break
+        best = max(neighbours)        # steepest-ascent variant
+        if best > current:
+            current = best
+        else:
+            break                     # local maximum — stop
+    return current
+
+def random_restart_hc(landscape, num_restarts=5):
+    import random
+    states = list(landscape.keys())
+    best = None
+    for _ in range(num_restarts):
+        start = random.choice(states)
+        result = hill_climbing(landscape, start)
+        if best is None or result > best:
+            best = result
+    return best
+
+def hc_function(f, start_x, step=1):
+    x = start_x
+    while True:
+        neighbours = [x - step, x + step]
+        best_x = max(neighbours, key=f)
+        if f(best_x) > f(x): x = best_x
+        else: break
+    return x, f(x)</code></pre>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Template — Genetic Algorithm (GA) with Ranking & Mutation</div>
+            <pre><code>import random
+
+def ga_optimize(fitness_func, pop_size=10, gens=10, mutation_rate=0.2):
+    pop = [random.uniform(-5, 15) for _ in range(pop_size)]
+    for _ in range(gens):
+        # 1. Evaluate & Rank (highest fitness first)
+        ranked = sorted(pop, key=fitness_func, reverse=True)
+        # 2. Select top 50% (ranking selection)
+        survivors = ranked[:pop_size // 2]
+        # 3. Duplicate survivors to refill population
+        pop = (survivors * 2)[:pop_size]
+        # 4. Controlled mutation: x = x + uniform(-1, 1) with prob 0.2
+        for i in range(len(pop)):
+            if random.random() < mutation_rate:
+                pop[i] += random.uniform(-1, 1)
+    best = max(pop, key=fitness_func)
+    return best, fitness_func(best)</code></pre>
+          </div>
+        </div>
+
+        <!-- TOPIC 4: Exam Day Checklist -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Exam Day Checklist</h2>
+          <p class="topic-subtitle">Everything to remember when you sit down to code</p>
+
+          <h3>Before You Write Any Code</h3>
+          <div style="background:var(--card-bg);border:2px solid var(--ac);border-radius:12px;padding:20px;margin:16px 0;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" style="margin-top:2px;accent-color:var(--ac);">
+                <span><strong>Read the question twice.</strong> Note: weighted/unweighted? Path or value optimization? Single player or two-player?</span>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" style="margin-top:2px;accent-color:var(--ac);">
+                <span><strong>Identify the algorithm</strong> needed. Use the decision tree from Topic 2.</span>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" style="margin-top:2px;accent-color:var(--ac);">
+                <span><strong>Write the Node class first</strong> — with __lt__ if using heapq.</span>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" style="margin-top:2px;accent-color:var(--ac);">
+                <span><strong>Write get_path()</strong> — you'll need it for every search algorithm.</span>
+              </label>
+            </div>
+          </div>
+
+          <h3>Common Exam Mistakes to Avoid</h3>
+          <div class="warning-box">
+            <div class="callout-label">Avoid These</div>
+            <ul style="margin:8px 0;padding-left:18px;line-height:2;">
+              <li>Using <code>list.pop(0)</code> for BFS — use <code>deque.popleft()</code> instead</li>
+              <li>Forgetting <code>__lt__</code> in Node when using heapq (UCS, Greedy, A*)</li>
+              <li>Not reversing the path in get_path — always do <code>path[::-1]</code></li>
+              <li>Not adding goal check <em>before</em> the visited check (UCS/A*)</li>
+              <li>Using <code>{}</code> for empty set — use <code>set()</code></li>
+              <li>Forgetting <code>t = t.sort()</code> returns None — use <code>sorted(t)</code></li>
+              <li>Accessing dict key directly without checking: <code>d[k]</code> — use <code>d.get(k)</code></li>
+              <li>Forgetting trailing comma in single-item tuple: <code>(x,)</code> not <code>(x)</code></li>
+            </ul>
+          </div>
+
+          <h3>Algorithm Skeletons — Fill-In-the-Blank</h3>
+          <div class="note-box">
+            <div class="callout-label">BFS vs DFS — Only 1 Line Different</div>
+            <pre><code"># BFS  →  deque  +  popleft()  →  FIFO  →  level-by-level
+# DFS  →  list   +  pop()      →  LIFO  →  depth-first
+
+# UCS  →  heapq  +  (cost, node)  →  cheapest first
+# A*   →  heapq  +  (g+h, node)   →  g(n)+h(n) first</code></pre>
+          </div>
+
+          <h3>Quick OOP Cheatsheet</h3>
+          <div class="example">
+            <div class="callout-label">OOP in 20 Lines</div>
+            <pre><code">class Animal:
+    species = "Unknown"           # class variable (shared)
+    def __init__(self, name):
+        self.name = name          # instance variable (unique)
+    def speak(self): print(f"{self.name} speaks")
+    @classmethod
+    def set_species(cls, s): cls.species = s
+    @staticmethod
+    def is_valid(name): return len(name) > 0
+
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name)    # MUST call parent init
+        self.breed = breed
+    def speak(self):              # method override
+        print(f"{self.name} says WOOF")
+    def fetch(self): print(f"{self.name} fetches!")
+
+class GuideDog(Dog):              # multilevel: GuideDog→Dog→Animal
+    def __init__(self, name, breed, owner):
+        super().__init__(name, breed)
+        self.owner = owner
+    def guide(self): print(f"Guiding {self.owner}")</code></pre>
+          </div>
+
+          <div class="summary-box">
+            <h4>FINAL SUMMARY — The 10 Things You Must Know</h4>
+            <ul>
+              <li><strong>1.</strong> Counting pattern: <code>counts[x] = counts.get(x,0) + 1</code></li>
+              <li><strong>2.</strong> List comprehension: <code>[f(x) for x in lst if cond]</code></li>
+              <li><strong>3.</strong> Sort by value: <code>sorted(d.items(), key=lambda x:x[1], reverse=True)</code></li>
+              <li><strong>4.</strong> BFS = deque + popleft (FIFO). DFS = list + pop (LIFO)</li>
+              <li><strong>5.</strong> UCS: push <code>(cost, node)</code> to heapq, expand cheapest first</li>
+              <li><strong>6.</strong> A* = g(n) + h(n). Greedy = h(n) only. UCS = g(n) only</li>
+              <li><strong>7.</strong> All search needs: Node class + visited set + get_path()</li>
+              <li><strong>8.</strong> Minimax: MAX picks max of children, MIN picks min. Alternates.</li>
+              <li><strong>9.</strong> Alpha-Beta: prune when β ≤ α. Same result as Minimax.</li>
+              <li><strong>10.</strong> Hill Climbing: move to best neighbour, stop at local max. Fix: Random Restart.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+      const topics=["topic-1","topic-2","topic-3","topic-4"];
+      let currentTopicIndex=0;
+      function getTopicTitle(id){const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){const n=lk.querySelector('.nav-num');return lk.textContent.replace(n?n.textContent:'','').trim();}const card=document.getElementById(id);if(card){const h=card.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return h.textContent.replace(n?n.textContent:'','').trim();}}return 'Topic';}
+      function toggleSidebar(){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.toggle('open');if(bd)bd.classList.toggle('active');}
+      function showTopic(id){document.querySelectorAll(".topic-card").forEach(c=>c.style.display="none");const t=document.getElementById(id);if(t)t.style.display="block";currentTopicIndex=topics.indexOf(id);document.querySelectorAll(".nav-sublist a").forEach(a=>a.classList.remove("active"));const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){lk.classList.add("active");const sl=lk.closest('.nav-sublist');if(sl&&sl.style.display==='none'){sl.style.display='block';const ch=sl.previousElementSibling?.querySelector('.chevron');if(ch)ch.style.transform='rotate(0deg)';}}const pb=document.getElementById("prev-btn"),nb=document.getElementById("next-btn"),pt=document.getElementById("prev-title"),nt=document.getElementById("next-title");if(currentTopicIndex>0){pb.style.display="flex";if(pt)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);}else{pb.style.display="none";}if(currentTopicIndex<topics.length-1){nb.style.display="flex";if(nt)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);}else{nb.style.display="none";}if(t)t.scrollIntoView({behavior:"smooth",block:"start"});if(window.innerWidth<=768){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.remove('open');if(bd)bd.classList.remove('active');}}
+      function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+      function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+      function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector(".chevron");if(s.style.display==="none"){s.style.display="block";c.style.transform="rotate(0deg)";}else{s.style.display="none";c.style.transform="rotate(-90deg)";}}
+      function filterContent(){const q=document.getElementById("search-input").value.toLowerCase();document.querySelectorAll(".nav-sublist li").forEach(i=>(i.style.display=i.textContent.toLowerCase().includes(q)?"":'none'));}
+      if(topics.length>0)showTopic(topics[0]);
+      const mc=document.getElementById("main-content"),bb=document.getElementById("back-to-top");
+      mc.addEventListener("scroll",()=>(bb.style.display=mc.scrollTop>300?"flex":"none"));
+    </script>
+  </body>
+</html>

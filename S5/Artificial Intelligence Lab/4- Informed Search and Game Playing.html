@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Lab — Lab 5 and 6: Informed Search and Game Playing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">AI Lab Notes</div>
+          <div class="sidebar-title">Artificial Intelligence Lab</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Python Basics and Data Structures.html"><span class="nav-mod-num">L1</span>Python Basics</a></li>
+        <li><a class="nav-module-link" href="./2- NumPy, Pandas and Matplotlib.html"><span class="nav-mod-num">L3</span>NumPy, Pandas, Matplotlib</a></li>
+        <li><a class="nav-module-link" href="./3- OOP, File Handling and Blind Search.html"><span class="nav-mod-num">L4</span>OOP and Blind Search</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Lab 5 and 6 — Informed Search and Games</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>What is a Heuristic?</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Greedy Best-First Search</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>A* Search Algorithm</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Greedy vs A* Comparison</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Minimax Algorithm</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Alpha-Beta Pruning</a></li>
+        <li><a class="nav-module-link" href="./5- Hill Climbing.html"><span class="nav-mod-num">L7</span>Hill Climbing & GA</a></li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+        </li>
+        <li><a class="nav-module-link" href="./5- Hill Climbing.html"><span class="nav-mod-num">L7</span>Hill Climbing</a></li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li><a class="nav-module-link" href="./7- Past Paper Solutions.html"><span class="nav-mod-num">📝</span>Past Paper Solutions</a></li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence Lab</div>
+          <h1 class="module-title">Lab 5 and 6 — Informed Search and Game Playing</h1>
+        </div>
+
+        <!-- TOPIC 1: Heuristic -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>What is a Heuristic?</h2>
+          <p class="topic-subtitle">The "educated guess" that makes informed search smarter than blind search</p>
+
+          <p>In blind search (BFS/DFS/UCS), the algorithm has <strong>no idea</strong> which direction is closer to the goal — it just explores systematically. <strong>Informed search</strong> uses a <em>heuristic function</em> h(n) to estimate how far any node is from the goal, allowing it to prioritise promising paths.</p>
+
+          <!-- Visual: blind vs informed -->
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin:20px 0;">
+            <div style="flex:1;min-width:200px;background:var(--card-bg);border:2px solid var(--fg-muted);border-radius:10px;padding:16px;opacity:.8;">
+              <strong>Blind Search (BFS/DFS/UCS)</strong>
+              <p style="font-size:.88rem;margin:8px 0 0;color:var(--fg-muted);">No knowledge of goal location. Explores everything systematically. Like walking a maze blindfolded.</p>
+            </div>
+            <div style="display:flex;align-items:center;font-size:1.5rem;color:var(--ac);">vs</div>
+            <div style="flex:1;min-width:200px;background:var(--card-bg);border:2px solid var(--ac);border-radius:10px;padding:16px;">
+              <strong style="color:var(--ac);">Informed Search (Greedy / A*)</strong>
+              <p style="font-size:.88rem;margin:8px 0 0;">Uses h(n) to estimate distance to goal. Prioritises nodes that seem closer. Like following a compass in a maze.</p>
+            </div>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Heuristic function h(n):</strong> Estimates the cost from node n to the goal. It does NOT give the exact cost — it gives an estimate. A good heuristic is:<br>
+            &bull; <strong>Admissible:</strong> Never overestimates (required for A* to be optimal)<br>
+            &bull; <strong>Problem-specific:</strong> e.g., straight-line distance for maps, misplaced tiles for puzzles
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Heuristic Representation in Python</h4>
+            <pre><code># A heuristic is just a dictionary: state → estimated cost to goal
+heuristic = {
+    'A': 6,   # from A, estimated 6 steps to goal
+    'B': 4,
+    'C': 2,
+    'D': 3,
+    'E': 1,
+    'F': 0    # goal node always has h=0
+}
+
+# Access it like this:
+def h(state):
+    return heuristic[state]
+
+# Example:
+h('A')   # 6
+h('F')   # 0  (goal)</code></pre>
+          </div>
+
+          <!-- Visual: evaluation functions -->
+          <h3>Evaluation Functions — The Core Difference</h3>
+          <div style="overflow-x:auto;margin:16px 0;">
+            <table>
+              <thead><tr><th>Algorithm</th><th>Formula</th><th>What it means</th></tr></thead>
+              <tbody>
+                <tr><td><strong style="color:var(--exp-bd);">Greedy BFS</strong></td><td><code>f(n) = h(n)</code></td><td>Only considers estimated cost to goal — ignores path so far</td></tr>
+                <tr><td><strong style="color:var(--def-bd);">A* Search</strong></td><td><code>f(n) = g(n) + h(n)</code></td><td>g(n)=cost so far + h(n)=estimate to goal — balanced</td></tr>
+                <tr><td><strong style="color:var(--ac);">UCS</strong></td><td><code>f(n) = g(n)</code></td><td>Only considers actual cost — no estimate (blind)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            Memorise: <strong>Greedy = h(n) only</strong>. <strong>A* = g(n) + h(n)</strong>. <strong>UCS = g(n) only</strong>. A* is the most powerful because it balances what you've already spent (g) with what you expect to spend (h).
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>h(n) estimates cost from node n to goal — always 0 at goal</li>
+              <li>Greedy uses only h(n) — fast but not always optimal</li>
+              <li>A* uses g(n)+h(n) — optimal if heuristic is admissible</li>
+              <li>Heuristic must be admissible (never overestimate) for A* to guarantee optimal</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 2: Greedy -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Greedy Best-First Search</h2>
+          <p class="topic-subtitle">Always chases the node that looks closest to the goal — fast but can be fooled</p>
+
+          <p>Greedy BFS selects the node with the <strong>smallest h(n)</strong> — the one that <em>looks</em> closest to the goal, ignoring how expensive it was to get there. It's like a tourist who always takes the "shortest looking" road without checking actual travel time.</p>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Greedy BFS Implementation</h4>
+            <pre><code>import heapq
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2), ('E', 5)],
+    'C': [('F', 1)],
+    'D': [], 'E': [], 'F': []
+}
+heuristic = {'A':7, 'B':6, 'C':2, 'D':1, 'E':3, 'F':0}
+
+class Node:
+    def __init__(self, state, parent=None, cost=0):
+        self.state=state; self.parent=parent; self.cost=cost
+    def __lt__(self, other): return self.cost < other.cost
+
+def get_path(node):
+    path=[]
+    while node: path.append(node.state); node=node.parent
+    return path[::-1]
+
+def greedy(graph, heuristic, start, goal):
+    # Priority queue ordered by h(n) ONLY — ignores actual cost
+    pq = []
+    heapq.heappush(pq, (heuristic[start], Node(start)))
+    visited = set()
+
+    while pq:
+        h_val, current = heapq.heappop(pq)
+        state = current.state
+
+        if state == goal:
+            print(f"Greedy path: {get_path(current)}")
+            return get_path(current)
+
+        if state in visited:
+            continue
+        visited.add(state)
+
+        for neighbor, edge_cost in graph[state]:
+            if neighbor not in visited:
+                child = Node(neighbor, current, edge_cost)
+                # Push with h(neighbor) as priority — GREEDY
+                heapq.heappush(pq, (heuristic[neighbor], child))
+
+    return None
+
+greedy(graph, heuristic, 'A', 'F')
+# Greedy path: ['A', 'C', 'F']  (goes A→C because h(C)=2 < h(B)=6)</code></pre>
+          </div>
+
+          <div class="summary-box">
+            <h4>Greedy BFS Properties</h4>
+            <ul>
+              <li>Priority: <code>h(n)</code> — estimated cost to goal only</li>
+              <li><strong>Not optimal</strong> — can find a longer/more expensive path</li>
+              <li><strong>Not complete</strong> — can get stuck in loops</li>
+              <li>Fast — good when speed matters more than optimality</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 3: A* -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>A* Search Algorithm</h2>
+          <p class="topic-subtitle">The gold standard — balances actual cost and estimated remaining cost</p>
+
+          <p>A* (pronounced "A-star") combines UCS (knows the actual cost paid) and Greedy (estimates remaining cost). It's <strong>optimal and complete</strong> when the heuristic is admissible. It's the most widely used pathfinding algorithm in AI — used in GPS, games, robotics.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>A* Evaluation Function: f(n) = g(n) + h(n)</strong><br>
+            &bull; <strong>g(n)</strong> = exact cost from start to node n (what you've already paid)<br>
+            &bull; <strong>h(n)</strong> = estimated cost from n to goal (what you expect to pay)<br>
+            &bull; <strong>f(n)</strong> = estimated total cost of the cheapest path through n
+          </div>
+
+          <!-- Visual: A* concept -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin:20px 0;font-size:.88rem;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <div style="background:var(--exp-bg);border:1px solid var(--exp-bd);padding:10px 16px;border-radius:8px;text-align:center;">
+                <div style="font-weight:700;color:var(--exp-bd);">g(n)</div>
+                <div style="color:var(--fg-muted);font-size:.8rem;">Cost paid<br>so far</div>
+              </div>
+              <div style="font-size:1.5rem;color:var(--fg-muted);">+</div>
+              <div style="background:var(--def-bg);border:1px solid var(--def-bd);padding:10px 16px;border-radius:8px;text-align:center;">
+                <div style="font-weight:700;color:var(--def-bd);">h(n)</div>
+                <div style="color:var(--fg-muted);font-size:.8rem;">Estimated<br>remaining</div>
+              </div>
+              <div style="font-size:1.5rem;color:var(--fg-muted);">=</div>
+              <div style="background:rgba(218,119,87,.15);border:2px solid var(--ac);padding:10px 16px;border-radius:8px;text-align:center;">
+                <div style="font-weight:700;color:var(--ac);">f(n)</div>
+                <div style="color:var(--fg-muted);font-size:.8rem;">Estimated<br>total cost</div>
+              </div>
+              <div style="color:var(--fg-muted);padding:0 8px;">← A* always expands the node with the smallest f(n)</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>A* Implementation</h4>
+            <pre><code">import heapq
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2), ('E', 5)],
+    'C': [('F', 1)],
+    'D': [], 'E': [], 'F': []
+}
+heuristic = {'A':7, 'B':6, 'C':2, 'D':1, 'E':3, 'F':0}
+
+def astar(graph, heuristic, start, goal):
+    # Priority queue ordered by f(n) = g(n) + h(n)
+    pq = []
+    start_node = Node(start, cost=0)
+    heapq.heappush(pq, (heuristic[start], start_node))  # f=0+h(start)
+    visited = {}
+
+    while pq:
+        f_val, current = heapq.heappop(pq)
+        state = current.state
+        g = current.cost  # actual cost so far
+
+        if state == goal:
+            print(f"A* path: {get_path(current)}, Total cost: {g}")
+            return get_path(current)
+
+        if state in visited and visited[state] <= g:
+            continue
+        visited[state] = g
+
+        for neighbor, edge_cost in graph[state]:
+            new_g = g + edge_cost           # actual cost to neighbor
+            new_h = heuristic[neighbor]     # estimated remaining
+            new_f = new_g + new_h           # total estimate
+
+            child = Node(neighbor, current, cost=new_g)
+            heapq.heappush(pq, (new_f, child))
+
+    return None
+
+astar(graph, heuristic, 'A', 'F')
+# A* path: ['A', 'C', 'F'], Total cost: 5
+# Trace: A(f=7) → B(f=1+6=7) or C(f=4+2=6) → pick C → F(f=5+0=5)</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            The key insight: A* pushes <code>(f_value, node)</code> to the heap, where <code>f = g + h</code>. But it stores <code>g</code> (actual cost) in the node so you can compute <code>new_g = parent.cost + edge_cost</code> for children. The <strong>heuristic (h) is looked up from the dictionary</strong> for each node.
+          </div>
+
+          <div class="summary-box">
+            <h4>A* Properties</h4>
+            <ul>
+              <li>Priority: <code>f(n) = g(n) + h(n)</code></li>
+              <li><strong>Optimal:</strong> Yes — if heuristic is admissible (never overestimates)</li>
+              <li><strong>Complete:</strong> Yes</li>
+              <li>Memory: High — stores all explored nodes</li>
+              <li>Best general-purpose search algorithm in AI</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 4: Greedy vs A* -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Greedy vs A* — Side-by-Side Comparison</h2>
+          <p class="topic-subtitle">Same graph, different priorities — see why A* finds the better path</p>
+
+          <div style="overflow-x:auto;margin:20px 0;">
+            <table>
+              <thead>
+                <tr><th>Feature</th><th style="color:var(--exp-bd);">Greedy BFS</th><th style="color:var(--def-bd);">A* Search</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Priority formula</td><td><code>h(n)</code></td><td><code>g(n) + h(n)</code></td></tr>
+                <tr><td>Considers path cost</td><td>❌ No</td><td>✅ Yes</td></tr>
+                <tr><td>Considers heuristic</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+                <tr><td>Optimal</td><td>❌ No</td><td>✅ Yes (admissible h)</td></tr>
+                <tr><td>Complete</td><td>❌ No</td><td>✅ Yes</td></tr>
+                <tr><td>Speed</td><td>🟢 Fast</td><td>🟡 Slower than Greedy</td></tr>
+                <tr><td>Memory</td><td>🟢 Less</td><td>🔴 More</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Same graph — why paths can differ</h4>
+            <pre><code"># Graph: A→B(1), A→C(4), B→D(2), B→E(5), C→F(1)
+# Goal: F.  Heuristic: A=7,B=6,C=2,D=1,E=3,F=0
+
+# GREEDY (only h):
+# At A: h(B)=6, h(C)=2 → pick C (lower h)
+# At C: h(F)=0 → pick F. DONE.
+# Path: A→C→F   total cost = 4+1 = 5
+
+# A* (g+h):
+# At A: f(B)=1+6=7, f(C)=4+2=6 → pick C (lower f)
+# At C: f(F)=(4+1)+0=5 → DONE.
+# Path: A→C→F   total cost = 5
+
+# In THIS example both agree, but consider if h(C) was 10:
+# Greedy would pick B (h=6), go B→D, NOT find F
+# A* f(B)=1+6=7, f(C)=4+10=14 → picks B correctly
+
+# MORAL: Greedy can be misled by a bad heuristic.
+#        A* cannot be fooled as long as h is admissible.</code></pre>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What is h(goal) always equal to and why?</summary>
+              <p><strong>Answer:</strong> h(goal) = 0 because the estimated remaining cost from the goal to the goal is zero — you're already there.</p>
+            </details>
+            <details>
+              <summary>Medium: Implement Greedy and A* on the given graph and compare paths.</summary>
+              <pre><code>import heapq
+
+graph={'A':[('B',1),('C',4)],'B':[('D',2),('E',5)],'C':[('F',1)],'D':[],'E':[],'F':[]}
+h={'A':7,'B':6,'C':2,'D':1,'E':3,'F':0}
+
+class Node:
+    def __init__(self,state,parent=None,cost=0):
+        self.state=state;self.parent=parent;self.cost=cost
+    def __lt__(self,o): return self.cost<o.cost
+
+def get_path(n):
+    p=[]
+    while n: p.append(n.state);n=n.parent
+    return p[::-1]
+
+def search(graph,h,start,goal,use_astar=True):
+    pq=[];heapq.heappush(pq,(h[start],Node(start,cost=0)));vis={}
+    while pq:
+        f,n=heapq.heappop(pq);g=n.cost;s=n.state
+        if s==goal: print(f"{'A*' if use_astar else 'Greedy'}: {get_path(n)}, cost={g}");return
+        if s in vis and vis[s]<=g: continue
+        vis[s]=g
+        for nb,ec in graph[s]:
+            ng=g+ec; nh=h[nb]
+            nf=ng+nh if use_astar else nh   # KEY difference!
+            heapq.heappush(pq,(nf,Node(nb,n,ng)))
+
+search(graph,h,'A','F',use_astar=False)  # Greedy
+search(graph,h,'A','F',use_astar=True)   # A*</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Why is A* optimal but Greedy is not? Give a concrete counter-example.</summary>
+              <pre><code># Counter-example showing Greedy fails:
+# Graph: S→A(10), S→B(1), A→G(1), B→G(100)
+# Heuristic: h(S)=5, h(A)=0 (misleading!), h(B)=1, h(G)=0
+
+# Greedy: h(A)=0 < h(B)=1 → picks A → S→A→G, cost=11
+# A*:     f(A)=10+0=10, f(B)=1+1=2 → picks B → S→B→G, cost=101
+# Wait — here Greedy wins! Let's fix:
+
+# Graph: S→A(1), S→B(1), A→G(100), B→G(2)
+# h: h(A)=0 (overestimates advantage), h(B)=5, h(G)=0
+
+# Greedy: h(A)=0 < h(B)=5 → picks A → S→A→G, cost=101
+# A*:     f(A)=1+0=1, f(B)=1+5=6 → picks A → S→A→G, cost=101
+# A* and Greedy give same result if h(A)=0 is accidentally admissible
+
+# KEY: If heuristic OVERestimates (NOT admissible):
+# h(A)=0 is fine. But if h(B)=0 (overestimate):
+# Greedy picks B, goes B→G=2+1=3. Actually A*:
+# f(B)=1+0=1, picks B, cost=3 — happens to be better!
+# Greedy fails when h misleads it to a longer actual path.</code></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- TOPIC 5: Minimax -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Minimax Algorithm</h2>
+          <p class="topic-subtitle">Two-player game strategy — MAX wants high scores, MIN wants low scores</p>
+
+          <p>Minimax is how AI plays games like Tic-Tac-Toe and Chess. There are two players: <strong>MAX</strong> (the AI trying to win = maximise score) and <strong>MIN</strong> (the opponent trying to minimise the AI's score). Both are assumed to play <em>perfectly</em>.</p>
+
+          <!-- Visual: game tree -->
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin:20px 0;font-family:monospace;font-size:.82rem;overflow-x:auto;">
+            <div style="text-align:center;color:var(--fg-muted);margin-bottom:12px;">Minimax Game Tree (Root=MAX)</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <!-- Root MAX -->
+              <div style="background:var(--ac);color:#fff;padding:6px 16px;border-radius:8px;font-weight:700;">MAX: 3</div>
+              <div style="display:flex;gap:60px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                  <div style="width:1px;height:16px;background:var(--border);"></div>
+                  <div style="background:var(--exp-bg);border:1px solid var(--exp-bd);color:var(--exp-bd);padding:6px 12px;border-radius:8px;">MIN: 3</div>
+                  <div style="display:flex;gap:20px;">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                      <div style="width:1px;height:12px;background:var(--border);"></div>
+                      <div style="background:var(--def-bg);border:1px solid var(--def-bd);color:var(--def-bd);padding:4px 8px;border-radius:6px;">3</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                      <div style="width:1px;height:12px;background:var(--border);"></div>
+                      <div style="background:var(--def-bg);border:1px solid var(--def-bd);color:var(--def-bd);padding:4px 8px;border-radius:6px;">12</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                  <div style="width:1px;height:16px;background:var(--border);"></div>
+                  <div style="background:var(--exp-bg);border:1px solid var(--exp-bd);color:var(--exp-bd);padding:6px 12px;border-radius:8px;">MIN: 2</div>
+                  <div style="display:flex;gap:20px;">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                      <div style="width:1px;height:12px;background:var(--border);"></div>
+                      <div style="background:var(--def-bg);border:1px solid var(--def-bd);color:var(--def-bd);padding:4px 8px;border-radius:6px;">8</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                      <div style="width:1px;height:12px;background:var(--border);"></div>
+                      <div style="background:var(--def-bg);border:1px solid var(--def-bd);color:var(--def-bd);padding:4px 8px;border-radius:6px;">2</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:10px;color:var(--fg-muted);">MIN picks 3 (min of 3,12) and 2 (min of 8,2) → MAX picks 3 (max of 3,2)</div>
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Minimax Implementation</h4>
+            <pre><code>class GameNode:
+    def __init__(self, value=None, children=None):
+        self.value = value       # None for internal nodes, int for leaves
+        self.children = children or []
+
+def minimax(node, is_max):
+    # Base case: leaf node (no children)
+    if not node.children:
+        return node.value
+
+    if is_max:
+        # MAX player: choose maximum of children
+        best = float('-inf')
+        for child in node.children:
+            val = minimax(child, False)  # opponent's turn next
+            best = max(best, val)
+        return best
+    else:
+        # MIN player: choose minimum of children
+        best = float('inf')
+        for child in node.children:
+            val = minimax(child, True)   # our turn next
+            best = min(best, val)
+        return best
+
+# Build the tree from the diagram above
+# Leaves
+leaf_3  = GameNode(value=3)
+leaf_12 = GameNode(value=12)
+leaf_8  = GameNode(value=8)
+leaf_2  = GameNode(value=2)
+
+# MIN nodes (level 1)
+min1 = GameNode(children=[leaf_3, leaf_12])   # picks 3
+min2 = GameNode(children=[leaf_8, leaf_2])    # picks 2
+
+# MAX root
+root = GameNode(children=[min1, min2])        # picks 3
+
+result = minimax(root, is_max=True)
+print(f"Optimal value: {result}")   # 3</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint</div>
+            The minimax algorithm is <strong>recursive</strong>. At each call, the player alternates: if is_max=True → find max of children (each called with is_max=False), and vice versa. The recursion bottoms out at leaf nodes where you just return the value.
+          </div>
+
+          <div class="summary-box">
+            <h4>Minimax Key Points</h4>
+            <ul>
+              <li>Two players: MAX (maximise) and MIN (minimise)</li>
+              <li>Both players play <strong>optimally</strong> — no mistakes assumed</li>
+              <li>Recursive: MAX node returns max of children; MIN node returns min</li>
+              <li>Leaf nodes return their <strong>utility value</strong></li>
+              <li>Used in: Tic-Tac-Toe, Chess, Checkers, Connect Four</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 6: Alpha-Beta -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>Alpha-Beta Pruning</h2>
+          <p class="topic-subtitle">Same result as Minimax — but skips branches that can never change the outcome</p>
+
+          <p>Alpha-Beta Pruning is Minimax with a <em>shortcut</em>: if we've already found a better option elsewhere, we can skip evaluating a whole branch. The final answer is <strong>identical to Minimax</strong> — we just evaluate fewer nodes to get there.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Alpha (α):</strong> The best value MAX can guarantee so far. Starts at -∞.<br>
+            <strong>Beta (β):</strong> The best value MIN can guarantee so far. Starts at +∞.<br><br>
+            <strong>Pruning condition:</strong> When <code>β ≤ α</code> — remaining branches cannot change the outcome.<br>
+            &bull; At MAX node: if current value ≥ β → stop (<strong>Beta Cut-off</strong>)<br>
+            &bull; At MIN node: if current value ≤ α → stop (<strong>Alpha Cut-off</strong>)
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Alpha-Beta Pruning Implementation</h4>
+            <pre><code>def minimax_ab(node, is_max, alpha=float('-inf'), beta=float('inf')):
+    # Base case: leaf node
+    if not node.children:
+        return node.value
+
+    if is_max:
+        best = float('-inf')
+        for child in node.children:
+            val = minimax_ab(child, False, alpha, beta)
+            best = max(best, val)
+            alpha = max(alpha, best)   # update alpha (MAX's best)
+
+            if beta <= alpha:
+                break   # ← BETA CUT-OFF: MIN won't allow this branch
+                        # MIN already has something ≤ beta elsewhere
+
+        return best
+    else:
+        best = float('inf')
+        for child in node.children:
+            val = minimax_ab(child, True, alpha, beta)
+            best = min(best, val)
+            beta = min(beta, best)     # update beta (MIN's best)
+
+            if beta <= alpha:
+                break   # ← ALPHA CUT-OFF: MAX won't allow this branch
+                        # MAX already has something ≥ alpha elsewhere
+
+        return best
+
+# Same tree as before
+result = minimax_ab(root, is_max=True)
+print(f"Alpha-Beta result: {result}")   # Still 3 — same as Minimax!
+
+# Efficiency comparison
+nodes_minimax = 0
+nodes_ab = 0
+
+def minimax_count(node, is_max):
+    global nodes_minimax
+    nodes_minimax += 1
+    if not node.children: return node.value
+    if is_max: return max(minimax_count(c,False) for c in node.children)
+    else:      return min(minimax_count(c,True)  for c in node.children)
+
+def ab_count(node, is_max, a=float('-inf'), b=float('inf')):
+    global nodes_ab
+    nodes_ab += 1
+    if not node.children: return node.value
+    if is_max:
+        best=float('-inf')
+        for c in node.children:
+            best=max(best,ab_count(c,False,a,b)); a=max(a,best)
+            if b<=a: break
+        return best
+    else:
+        best=float('inf')
+        for c in node.children:
+            best=min(best,ab_count(c,True,a,b)); b=min(b,best)
+            if b<=a: break
+        return best
+
+minimax_count(root, True)
+ab_count(root, True)
+print(f"Minimax nodes: {nodes_minimax}")
+print(f"Alpha-Beta nodes: {nodes_ab}")
+print(f"Nodes saved: {nodes_minimax - nodes_ab}")</code></pre>
+          </div>
+
+          <!-- Visual: pruning explanation -->
+          <div style="background:var(--wrn-bg);border-left:4px solid var(--wrn-bd);padding:14px;border-radius:0 8px 8px 0;margin:16px 0;">
+            <strong style="color:var(--wrn-bd);">Intuition for Alpha-Beta:</strong>
+            <p style="margin:8px 0 0;font-size:.9rem;">Imagine MAX is deciding between two options. Option 1 is worth 10 (already confirmed). While evaluating Option 2, at a MIN node, we see a child worth 3. MIN would pick 3 (or lower). Since 3 &lt; 10, MAX would never choose Option 2 anyway — so we can stop evaluating Option 2's other children.</p>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Hint — 3 Key Facts</div>
+            <ol style="margin:8px 0;padding-left:18px;">
+              <li>Alpha-Beta gives the <strong>same result as Minimax</strong> — just faster</li>
+              <li>α = MAX's best guarantee (starts -∞, only goes up)</li>
+              <li>β = MIN's best guarantee (starts +∞, only goes down)</li>
+            </ol>
+          </div>
+
+          <div class="summary-box">
+            <h4>Alpha-Beta Key Points</h4>
+            <ul>
+              <li>Same optimal value as Minimax — just evaluates fewer nodes</li>
+              <li>Alpha (α): best MAX can guarantee — prune when value ≥ β (Beta cut-off)</li>
+              <li>Beta (β): best MIN can guarantee — prune when value ≤ α (Alpha cut-off)</li>
+              <li>Prune condition: <code>β ≤ α</code> → break out of the loop</li>
+              <li>Best case: reduces O(b^d) to O(b^(d/2)) — searches twice as deep!</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Does Alpha-Beta change the final Minimax value? Why?</summary>
+              <p><strong>Answer:</strong> No. Alpha-Beta pruning gives <strong>exactly the same result</strong> as Minimax. It only skips branches that provably cannot affect the final decision (because we've already found something better for the current player). It saves computation, not correctness.</p>
+            </details>
+            <details>
+              <summary>Medium: Build the tree with leaves [3,12], [8,2], [4,6]. Apply Minimax and compare node count with Alpha-Beta.</summary>
+              <pre><code">class GameNode:
+    def __init__(self, value=None, children=None):
+        self.value=value; self.children=children or []
+
+l3,l12,l8,l2,l4,l6=[GameNode(v) for v in [3,12,8,2,4,6]]
+min1=GameNode(children=[l3,l12])   # picks 3
+min2=GameNode(children=[l8,l2])    # picks 2
+min3=GameNode(children=[l4,l6])    # picks 4
+root=GameNode(children=[min1,min2,min3])  # MAX picks 4
+
+count=[0,0]
+def mm(n,mx,ci=0):
+    count[ci]+=1
+    if not n.children: return n.value
+    return (max if mx else min)(mm(c,not mx,ci) for c in n.children)
+
+def ab(n,mx,a=float('-inf'),b=float('inf'),ci=1):
+    count[ci]+=1
+    if not n.children: return n.value
+    if mx:
+        v=float('-inf')
+        for c in n.children:
+            v=max(v,ab(c,False,a,b,ci));a=max(a,v)
+            if b<=a: break
+        return v
+    else:
+        v=float('inf')
+        for c in n.children:
+            v=min(v,ab(c,True,a,b,ci));b=min(b,v)
+            if b<=a: break
+        return v
+
+print("Minimax:", mm(root,True),  "nodes:", count[0])
+print("A-Beta: ", ab(root,True),  "nodes:", count[1])
+print("Saved:  ", count[0]-count[1])</code></pre>
+            </details>
+            <details>
+              <summary>Hard: Explain when and why pruning occurs in a 3-level game tree with leaves [3,12,8,2,4,6].</summary>
+              <p><strong>Answer:</strong> After MIN evaluates child1=3 of min1, it knows min1's value is ≤3. MAX (root) already has alpha=-∞, so alpha=3 after min1. When evaluating min2: MIN sees 8 first, beta becomes 8. Then sees 2, value=2, beta=2. Since beta(2) ≤ alpha(3) from root, no pruning yet because min2 returns 2 which is less. After min2, MAX has 3 and 2, alpha=3. When evaluating min3: MIN sees 4, value=4, beta=4. Since beta(4) ≤ alpha(3) is FALSE (4 > 3), we continue. MIN sees 6, but min3 already has 4, and 4>3... Actually: min3 value becomes min(4,6)=4, root picks max(3,2,4)=4. With AB: min3's first child is 4. beta=4. alpha=3. beta(4) ≤ alpha(3)? No (4>3). Evaluates second child 6. min3=4. root=max(3,2,4)=4. Same result.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+      const topics=["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6"];
+      let currentTopicIndex=0;
+      function getTopicTitle(id){const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){const n=lk.querySelector('.nav-num');return lk.textContent.replace(n?n.textContent:'','').trim();}const card=document.getElementById(id);if(card){const h=card.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return h.textContent.replace(n?n.textContent:'','').trim();}}return 'Topic';}
+      function toggleSidebar(){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.toggle('open');if(bd)bd.classList.toggle('active');}
+      function showTopic(id){document.querySelectorAll(".topic-card").forEach(c=>c.style.display="none");const t=document.getElementById(id);if(t)t.style.display="block";currentTopicIndex=topics.indexOf(id);document.querySelectorAll(".nav-sublist a").forEach(a=>a.classList.remove("active"));const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){lk.classList.add("active");const sl=lk.closest('.nav-sublist');if(sl&&sl.style.display==='none'){sl.style.display='block';const ch=sl.previousElementSibling?.querySelector('.chevron');if(ch)ch.style.transform='rotate(0deg)';}}const pb=document.getElementById("prev-btn"),nb=document.getElementById("next-btn"),pt=document.getElementById("prev-title"),nt=document.getElementById("next-title");if(currentTopicIndex>0){pb.style.display="flex";if(pt)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);}else{pb.style.display="none";}if(currentTopicIndex<topics.length-1){nb.style.display="flex";if(nt)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);}else{nb.style.display="none";}if(t)t.scrollIntoView({behavior:"smooth",block:"start"});if(window.innerWidth<=768){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.remove('open');if(bd)bd.classList.remove('active');}}
+      function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+      function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+      function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector(".chevron");if(s.style.display==="none"){s.style.display="block";c.style.transform="rotate(0deg)";}else{s.style.display="none";c.style.transform="rotate(-90deg)";}}
+      function filterContent(){const q=document.getElementById("search-input").value.toLowerCase();document.querySelectorAll(".nav-sublist li").forEach(i=>(i.style.display=i.textContent.toLowerCase().includes(q)?"":'none'));}
+      if(topics.length>0)showTopic(topics[0]);
+      const mc=document.getElementById("main-content"),bb=document.getElementById("back-to-top");
+      mc.addEventListener("scroll",()=>(bb.style.display=mc.scrollTop>300?"flex":"none"));
+    </script>
+  </body>
+</html>

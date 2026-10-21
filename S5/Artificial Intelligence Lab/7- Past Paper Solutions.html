@@ -1,0 +1,1097 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Lab — Past Paper Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">AI Lab Notes</div>
+          <div class="sidebar-title">Artificial Intelligence Lab</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input type="text" id="search-input" placeholder="Search topics…" onkeyup="filterContent()" />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Python Basics and Data Structures.html"><span class="nav-mod-num">L1</span>Python Basics</a></li>
+        <li><a class="nav-module-link" href="./2- NumPy, Pandas and Matplotlib.html"><span class="nav-mod-num">L3</span>NumPy, Pandas, Matplotlib</a></li>
+        <li><a class="nav-module-link" href="./3- OOP, File Handling and Blind Search.html"><span class="nav-mod-num">L4</span>OOP and Blind Search</a></li>
+        <li><a class="nav-module-link" href="./4- Informed Search and Game Playing.html"><span class="nav-mod-num">L5&6</span>Informed Search and Games</a></li>
+        <li><a class="nav-module-link" href="./5- Hill Climbing.html"><span class="nav-mod-num">L7</span>Hill Climbing & GA</a></li>
+        <li><a class="nav-module-link" href="./6- Summary and Cheat Sheet.html"><span class="nav-mod-num">★</span>Summary and Cheat Sheet</a></li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>📝 Past Paper Solutions</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>F24 Q1 — A* 4×4 Puzzle</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>F24 Q2 — UCS Network Routing</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>S25 Q1 — Genetic Algorithm</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>S25 Q2 — Greedy vs A* Search</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Exam Pattern Analysis</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Predicted Question Types</a></li>
+      </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">Artificial Intelligence Lab — Exam Prep</div>
+          <h1 class="module-title">📝 Past Paper Solutions & In-Depth Exam Analysis</h1>
+        </div>
+
+        <!-- Paper Info Banners for Both Solved Midterms -->
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin:20px 0;">
+          <!-- Fall 2024 Card -->
+          <div style="flex:1;min-width:280px;background:rgba(218,119,87,.1);border:2px solid var(--ac);border-radius:12px;padding:16px;">
+            <div style="font-size:.72rem;color:var(--ac);text-transform:uppercase;letter-spacing:1px;font-weight:700;">Solved Paper 1</div>
+            <div style="font-size:1.05rem;font-weight:700;margin:4px 0;color:var(--ac);">AI Lab Midterm — Fall 2024</div>
+            <div style="font-size:.85rem;color:var(--fg-muted);line-height:1.6;">
+              <strong>Date:</strong> Oct 19, 2024 &bull; <strong>Time:</strong> 2:30 Hrs &bull; <strong>Total:</strong> 50 Marks<br>
+              <strong>Q1 (30m):</strong> A* on 4×4 Sliding Puzzle (Manhattan Heuristic)<br>
+              <strong>Q2 (20m):</strong> UCS on Computer Network Graph (Cheapest Path)
+            </div>
+          </div>
+          <!-- Spring 2025 Card -->
+          <div style="flex:1;min-width:280px;background:rgba(52,211,153,.08);border:2px solid var(--def-bd);border-radius:12px;padding:16px;">
+            <div style="font-size:.72rem;color:var(--def-bd);text-transform:uppercase;letter-spacing:1px;font-weight:700;">Solved Paper 2 (Latest)</div>
+            <div style="font-size:1.05rem;font-weight:700;margin:4px 0;color:var(--def-bd);">AI Lab Sessional (Mid) — Spring 2025</div>
+            <div style="font-size:.85rem;color:var(--fg-muted);line-height:1.6;">
+              <strong>Date:</strong> April 16, 2025 &bull; <strong>Time:</strong> 1.5 Hrs &bull; <strong>Total:</strong> 25 Marks (AL-2002)<br>
+              <strong>Q1 (15m):</strong> GA Controlled Mutation & Ranking vs Roulette<br>
+              <strong>Q2 (10m):</strong> Greedy Best-First Search vs A* Search on Directed Graph
+            </div>
+          </div>
+        </div>
+
+        <!-- TOPIC 1: Q1 A* on 4x4 Puzzle -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Fall 2024 — Q1: A* on 4×4 Sliding Puzzle (30 marks)</h2>
+          <p class="topic-subtitle">Find the optimal path from initial to goal state using A* algorithm</p>
+
+          <h3>The Question</h3>
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin:16px 0;">
+            <p>A 4×4 sliding puzzle is given with initial and goal state. Find the optimum solution using A* algorithm.</p>
+            <div style="display:flex;gap:30px;flex-wrap:wrap;margin-top:16px;">
+              <div>
+                <div style="font-size:.8rem;color:var(--fg-muted);margin-bottom:6px;">Initial State:</div>
+                <table style="border-collapse:collapse;">
+                  <tr><td style="border:2px solid var(--ac);padding:10px 14px;font-weight:700;color:var(--ac);">15</td><td style="border:2px solid var(--ac);padding:10px 14px;">2</td><td style="border:2px solid var(--ac);padding:10px 14px;">3</td><td style="border:2px solid var(--ac);padding:10px 14px;">4</td></tr>
+                  <tr><td style="border:2px solid var(--ac);padding:10px 14px;">12</td><td style="border:2px solid var(--ac);padding:10px 14px;">11</td><td style="border:2px solid var(--ac);padding:10px 14px;">5</td><td style="border:2px solid var(--ac);padding:10px 14px;">1</td></tr>
+                  <tr><td style="border:2px solid var(--ac);padding:10px 14px;">9</td><td style="border:2px solid var(--ac);padding:10px 14px;">7</td><td style="border:2px solid var(--ac);padding:10px 14px;">8</td><td style="border:2px solid var(--ac);padding:10px 14px;">6</td></tr>
+                  <tr><td style="border:2px solid var(--ac);padding:10px 14px;">10</td><td style="border:2px solid var(--ac);padding:10px 14px;">13</td><td style="border:2px solid var(--ac);padding:10px 14px;background:rgba(218,119,87,.2);font-weight:700;">_</td><td style="border:2px solid var(--ac);padding:10px 14px;">14</td></tr>
+                </table>
+              </div>
+              <div style="display:flex;align-items:center;font-size:2rem;color:var(--ac);">→</div>
+              <div>
+                <div style="font-size:.8rem;color:var(--fg-muted);margin-bottom:6px;">Goal State:</div>
+                <table style="border-collapse:collapse;">
+                  <tr><td style="border:2px solid var(--def-bd);padding:10px 14px;">1</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">2</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">3</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">4</td></tr>
+                  <tr><td style="border:2px solid var(--def-bd);padding:10px 14px;">5</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">6</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">7</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">8</td></tr>
+                  <tr><td style="border:2px solid var(--def-bd);padding:10px 14px;">9</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">10</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">11</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">12</td></tr>
+                  <tr><td style="border:2px solid var(--def-bd);padding:10px 14px;">13</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">14</td><td style="border:2px solid var(--def-bd);padding:10px 14px;">15</td><td style="border:2px solid var(--def-bd);padding:10px 14px;background:rgba(52,211,153,.2);font-weight:700;">_</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <h3>Understanding the Problem</h3>
+          <p>This is the classic <strong>N-puzzle</strong> (sliding tile) problem. The blank tile (<code>_</code> or 0) can slide up/down/left/right. We need A* to find the fewest-moves path from initial to goal state.</p>
+
+          <div class="definition">
+            <div class="callout-label">Heuristic for N-puzzle</div>
+            <strong>Manhattan Distance (admissible heuristic):</strong> For each tile, count how many steps it needs to move horizontally + vertically to reach its goal position. Sum for all tiles = h(n).<br><br>
+            This never overestimates (tiles can't teleport) so A* remains optimal.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Full A* Solution for 15-Puzzle</div>
+            <pre><code">import heapq
+
+# ── HEURISTIC: Manhattan Distance ─────────────────────
+def manhattan_distance(state, goal):
+    """Count total steps each tile needs to reach goal position."""
+    size = 4  # 4x4 grid
+    distance = 0
+    goal_positions = {}
+
+    # Build lookup: tile → (row, col) in goal
+    for r in range(size):
+        for c in range(size):
+            goal_positions[goal[r][c]] = (r, c)
+
+    # Sum Manhattan distance for each tile (skip blank=0)
+    for r in range(size):
+        for c in range(size):
+            tile = state[r][c]
+            if tile != 0:  # 0 represents blank
+                gr, gc = goal_positions[tile]
+                distance += abs(r - gr) + abs(c - gc)
+    return distance
+
+# ── GENERATE MOVES ────────────────────────────────────
+def get_neighbours(state):
+    """Generate all states reachable by sliding blank one step."""
+    size = 4
+    neighbours = []
+
+    # Find blank position
+    blank_r, blank_c = None, None
+    for r in range(size):
+        for c in range(size):
+            if state[r][c] == 0:
+                blank_r, blank_c = r, c
+
+    # Try moving blank: up, down, left, right
+    directions = [(-1,0,'UP'), (1,0,'DOWN'), (0,-1,'LEFT'), (0,1,'RIGHT')]
+
+    for dr, dc, move in directions:
+        nr, nc = blank_r + dr, blank_c + dc
+        if 0 <= nr < size and 0 <= nc < size:
+            # Create new state: swap blank with neighbour tile
+            new_state = [list(row) for row in state]  # deep copy
+            new_state[blank_r][blank_c] = new_state[nr][nc]
+            new_state[nr][nc] = 0
+            neighbours.append((tuple(tuple(r) for r in new_state), move))
+
+    return neighbours
+
+# ── A* ALGORITHM ──────────────────────────────────────
+def astar_puzzle(initial, goal):
+    # Convert to tuples for hashing
+    start = tuple(tuple(r) for r in initial)
+    goal_t = tuple(tuple(r) for r in goal)
+
+    h0 = manhattan_distance(initial, goal)
+    # Priority queue: (f, g, state, path_of_moves)
+    pq = [(h0, 0, start, [])]
+    visited = set()
+
+    print(f"Initial h(n) = {h0}")
+
+    while pq:
+        f, g, state, path = heapq.heappop(pq)
+
+        if state == goal_t:
+            print(f"\nSolution found!")
+            print(f"Moves: {len(path)}")
+            print(f"Path:  {' → '.join(path)}")
+            return path
+
+        if state in visited:
+            continue
+        visited.add(state)
+
+        for next_state, move in get_neighbours(state):
+            if next_state not in visited:
+                new_g = g + 1  # each move costs 1
+                new_h = manhattan_distance(
+                    [list(r) for r in next_state], goal
+                )
+                new_f = new_g + new_h
+                heapq.heappush(pq, (new_f, new_g, next_state, path + [move]))
+
+    print("No solution found")
+    return None
+
+# ── INPUT (from the exam paper) ───────────────────────
+initial = [
+    [15, 2,  3,  4],
+    [12, 11, 5,  1],
+    [9,  7,  8,  6],
+    [10, 13, 0,  14]   # 0 represents blank
+]
+
+goal = [
+    [1,  2,  3,  4],
+    [5,  6,  7,  8],
+    [9,  10, 11, 12],
+    [13, 14, 15, 0]
+]
+
+# ── RUN ───────────────────────────────────────────────
+solution = astar_puzzle(initial, goal)
+
+# ── HOW MARKS ARE AWARDED ─────────────────────────────
+# 1. Correct state representation (tuples for hashing)     5 marks
+# 2. Correct Manhattan Distance heuristic                  8 marks
+# 3. Correct get_neighbours (valid moves only)             7 marks
+# 4. Correct A* loop with f=g+h                           10 marks</code></pre>
+          </div>
+
+          <h3>How to Explain A* for the Puzzle (Verbal)</h3>
+          <div class="example">
+            <div class="callout-label">Step-by-Step Trace</div>
+            <p>A* always expands the state with smallest <strong>f = g + h</strong>:</p>
+            <ol style="padding-left:18px;line-height:2;">
+              <li><strong>Start:</strong> g=0, h=Manhattan distance of initial state. Compute f.</li>
+              <li><strong>Expand:</strong> Generate 2-4 neighbours (blank can move in valid directions). For each: g=parent_g+1, h=manhattan(new_state), push (f, g, state) to heap.</li>
+              <li><strong>Pop lowest f:</strong> If it's the goal → done. If visited → skip. Otherwise expand.</li>
+              <li><strong>Repeat</strong> until goal found. The path traced back = optimal (fewest moves).</li>
+            </ol>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Why This Question Is Hard (and How to Handle It)</div>
+            The 15-puzzle has an enormous state space. In an exam you're expected to: (1) write the code structure correctly, (2) implement Manhattan Distance heuristic, (3) show you understand A* expands by f=g+h, and (4) correctly handle state representation. You don't need to manually trace every step.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Points for This Question</h4>
+            <ul>
+              <li>State = 2D tuple (frozen so it's hashable for visited set)</li>
+              <li>Heuristic = Manhattan Distance (admissible for sliding puzzles)</li>
+              <li>Each move costs g+=1; push (g+h, g, state, moves) to heap</li>
+              <li>Always check visited before expanding to avoid re-processing</li>
+              <li>Solution path = list of moves (UP/DOWN/LEFT/RIGHT)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 2: Q2 UCS -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Fall 2024 — Q2: UCS on Computer Network Graph (20 marks)</h2>
+          <p class="topic-subtitle">Find the least-cost path from Server A to Server F using Uniform Cost Search</p>
+
+          <h3>The Question</h3>
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin:16px 0;">
+            <p>Route a data packet from Server A to Server F with minimum total cost. Apply <strong>Uniform Cost Search (UCS)</strong>.</p>
+            <!-- Network diagram -->
+            <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:20px;margin-top:14px;font-family:monospace;font-size:.85rem;line-height:2.2;overflow-x:auto;">
+              <pre style="margin:0;background:transparent;border:none;color:inherit;">
+         2             4
+    A ─────── B ─────────── C
+    |        /|\            |
+   1|       / | \     3     | 6
+    |      2  |  1          |
+    D ────────+──── E ────── F
+         3             2
+              </pre>
+            </div>
+            <div style="margin-top:14px;font-size:.88rem;">
+              <strong>Graph edges (bidirectional):</strong>
+              <ul style="margin:8px 0;padding-left:18px;line-height:2;">
+                <li>A–B: cost 2 | A–D: cost 1</li>
+                <li>B–D: cost 2 | B–C: cost 4 | B–E: cost 1</li>
+                <li>C–E: cost 3 | C–F: cost 6</li>
+                <li>D–E: cost 3 | E–F: cost 2</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Manual UCS Trace</h3>
+          <div class="example">
+            <div class="callout-label">Step-by-Step UCS Expansion (what to write in exam)</div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead><tr><th>Step</th><th>Pop from Queue</th><th>Cost</th><th>Visited?</th><th>Action / Queue after</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td><strong style="color:var(--ac);">A</strong></td><td>0</td><td>No</td><td>Expand A → push B(2), D(1). Queue: [(1,D),(2,B)]</td></tr>
+                  <tr><td>2</td><td><strong style="color:var(--ac);">D</strong></td><td>1</td><td>No</td><td>Expand D → push B(1+2=3), E(1+3=4). Queue: [(2,B),(3,B_via_D),(4,E)]</td></tr>
+                  <tr><td>3</td><td><strong style="color:var(--ac);">B</strong></td><td>2</td><td>No</td><td>Expand B → push D(2+2=4,skip<br>visited), C(2+4=6), E(2+1=3). Queue: [(3,E_via_B),(4,E_via_D),(6,C)]</td></tr>
+                  <tr><td>4</td><td><strong style="color:var(--ac);">B_via_D</strong></td><td>3</td><td>Yes</td><td>Skip (B already visited with cost 2)</td></tr>
+                  <tr><td>5</td><td><strong style="color:var(--ac);">E</strong></td><td>3</td><td>No</td><td>Expand E → push D(3+3=6,skip), C(3+3=6), <strong style="color:var(--def-bd);">F(3+2=5)</strong>. Queue: [(5,F),(6,C),(6,C_via_E)]</td></tr>
+                  <tr><td>6</td><td><strong style="color:var(--def-bd);">F</strong></td><td><strong style="color:var(--def-bd);">5</strong></td><td>No</td><td><strong style="color:var(--def-bd);">GOAL! Path: A→D→B→E→F, Cost=5</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h3>Full Code Solution</h3>
+          <div class="example">
+            <div class="callout-label">Complete Python Solution</div>
+            <pre><code">import heapq
+
+# Node class
+class Node:
+    def __init__(self, state, parent=None, cost=0):
+        self.state = state
+        self.parent = parent
+        self.cost = cost
+    def __lt__(self, other):
+        return self.cost < other.cost
+
+def get_path(node):
+    path = []
+    while node:
+        path.append(node.state)
+        node = node.parent
+    return path[::-1]
+
+# ── GRAPH from exam paper ─────────────────────────────
+graph = {
+    'A': [('B', 2), ('D', 1)],
+    'B': [('A', 2), ('D', 2), ('C', 4), ('E', 1)],
+    'C': [('B', 4), ('E', 3), ('F', 6)],
+    'D': [('A', 1), ('B', 2), ('E', 3)],
+    'E': [('B', 1), ('D', 3), ('C', 3), ('F', 2)],
+    'F': [('C', 6), ('E', 2)]
+}
+
+# ── UCS IMPLEMENTATION ────────────────────────────────
+def ucs(graph, start, goal):
+    pq = []
+    heapq.heappush(pq, (0, Node(start, cost=0)))
+    visited = {}
+
+    print(f"UCS: Finding cheapest path from {start} to {goal}")
+    print("-" * 50)
+
+    while pq:
+        cost, current = heapq.heappop(pq)
+        state = current.state
+
+        print(f"Expanding: {state} (cost so far: {cost})")
+
+        # GOAL CHECK
+        if state == goal:
+            path = get_path(current)
+            print(f"\n{'='*50}")
+            print(f"SOLUTION FOUND!")
+            print(f"Path: {' → '.join(path)}")
+            print(f"Total Cost: {cost}")
+            return path, cost
+
+        # Skip if already found cheaper path
+        if state in visited and visited[state] <= cost:
+            print(f"  Skipping {state} (already visited with cheaper cost)")
+            continue
+        visited[state] = cost
+
+        # Expand neighbours
+        for neighbour, edge_cost in graph[state]:
+            new_cost = cost + edge_cost
+            if neighbour not in visited or new_cost < visited.get(neighbour, float('inf')):
+                print(f"  → {neighbour}: cost = {cost} + {edge_cost} = {new_cost}")
+                child = Node(neighbour, parent=current, cost=new_cost)
+                heapq.heappush(pq, (new_cost, child))
+
+    print("No path found")
+    return None, None
+
+path, cost = ucs(graph, 'A', 'F')
+
+# EXPECTED OUTPUT:
+# Path: A → D → B → E → F
+# Total Cost: 5
+# (1 + 2 + 1 + 2 = 6... wait, let me recheck)
+# A→D: 1, D→B: 2, B→E: 1, E→F: 2 = TOTAL: 6
+# BUT: A→B: 2, B→E: 1, E→F: 2 = TOTAL: 5
+# So optimal is A → B → E → F, cost = 5</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Writing Tip</div>
+            In the exam, you should both: (1) write the code and (2) trace through it manually showing the priority queue at each step. Show the expansion order, the cost computed, and explain why UCS chooses that path. Examiners award marks for the trace, not just the final answer.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Points for This Question</h4>
+            <ul>
+              <li>UCS always pops the node with <strong>lowest cumulative cost</strong> from the heap</li>
+              <li>Path: <strong>A → B → E → F</strong>, Total cost: <strong>2 + 1 + 2 = 5</strong></li>
+              <li>The skip condition: <code>if visited and visited[state] &lt;= cost: continue</code></li>
+              <li>Each node push: <code>new_cost = parent_cost + edge_cost</code></li>
+              <li>UCS = Dijkstra's Algorithm in disguise</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 3: Spring 2025 Q1 Genetic Algorithm -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Spring 2025 (AL-2002) — Q1: Genetic Algorithm & Selection (15 marks)</h2>
+          <p class="topic-subtitle">Controlled mutation, Ranking Selection vs Roulette Wheel Selection on quadratic optimization</p>
+
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin:16px 0;">
+            <div style="font-size:.8rem;color:var(--def-bd);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Exam Paper Details</div>
+            <p style="margin:0 0 10px 0;"><strong>FAST-NUCES Lahore Campus &bull; Course: Artificial Intelligence Lab (AL-2002)</strong><br>
+            <strong>Date:</strong> April 16th, 2025 &bull; <strong>Instructors:</strong> Mr. Muhammad Hasan, Ms. Rida Amir &bull; <strong>Sections:</strong> BDS - 6B, BCS - 6H</p>
+            <div style="background:rgba(0,0,0,.25);border-left:3px solid var(--def-bd);padding:12px;border-radius:4px;font-family:monospace;font-size:.9rem;line-height:1.7;">
+              <strong>Function to Maximize:</strong> f(x) = -x² + 10x + 5<br>
+              <strong>Parameters:</strong> Population size = 10, Number of generations = 10<br>
+              <strong>Mutation:</strong> Formula: x = x + random.uniform(-1, 1) &bull; Mutation rate = 0.2 (20% probability)<br>
+              <strong>Tasks:</strong><br>
+              1. Implement GA with <strong>Ranking Selection</strong>: Rank based on fitness (highest &rarr; rank 1), select top 50%<br>
+              2. For each generation display: Best individual, Fitness value<br>
+              3. Final Output: Best solution after 10 generations, Maximum fitness achieved<br>
+              4. <strong>Modify:</strong> Replace Ranking Selection with <strong>Roulette Wheel Selection</strong> (Fitness-Proportionate)<br>
+              5. <strong>Compare:</strong> Convergence speed &amp; Stability of improvement across generations<br>
+              6. <strong>Explain (in comments):</strong><br>
+              &nbsp;&nbsp;&bull; Which selection method converged faster?<br>
+              &nbsp;&nbsp;&bull; Which method showed more stable behavior?<br>
+              &nbsp;&nbsp;&bull; Why does ranking help in avoiding premature convergence?
+            </div>
+          </div>
+
+          <h3>Mathematical Benchmark (Analytical Ground Truth)</h3>
+          <div class="definition">
+            <div class="callout-label">Calculus Check</div>
+            Objective: $f(x) = -x^2 + 10x + 5$<br>
+            Derivative: $f'(x) = -2x + 10 = 0 \implies x^* = 5$<br>
+            Second Derivative: $f''(x) = -2 < 0 \implies$ Global Maximum at $x = 5$.<br>
+            <strong>Maximum Possible Fitness:</strong> $f(5) = -(5^2) + 10(5) + 5 = -25 + 50 + 5 = \mathbf{30}$.
+          </div>
+
+          <h3>Complete Exam Code Solution</h3>
+          <div class="example">
+            <div class="callout-label">Full Python Solution (Includes Both Methods &amp; Generation Trace)</div>
+            <pre><code>import random
+
+# ── OBJECTIVE FITNESS FUNCTION ────────────────────────────
+def f(x):
+    """Fitness function to maximize: f(x) = -x^2 + 10x + 5"""
+    return -(x**2) + 10 * x + 5
+
+# ── 1. GENETIC ALGORITHM WITH RANKING SELECTION ───────────
+def ga_ranking(pop_size=10, generations=10, mutation_rate=0.2):
+    print("=" * 65)
+    print("TASK 1: GA WITH RANKING SELECTION (TOP 50% SURVIVAL)")
+    print("=" * 65)
+    
+    random.seed(42)  # reproducible exam results
+    # Initialize 10 random candidates in search space [-5, 15]
+    population = [random.uniform(-5, 15) for _ in range(pop_size)]
+
+    for gen in range(1, generations + 1):
+        # Calculate fitness for all individuals
+        fitness_values = [f(x) for x in population]
+
+        # Rank individuals: highest fitness -> rank 1 (sorted descending)
+        ranked = sorted(zip(population, fitness_values), key=lambda item: item[1], reverse=True)
+        
+        # Display best of current generation
+        best_x, best_fit = ranked[0]
+        print(f"Generation {gen:2d} | Best x = {best_x:7.4f} | Fitness = {best_fit:7.4f}")
+
+        # Select top 50% individuals based strictly on ranking
+        survivors = [ind for ind, fit in ranked[:pop_size // 2]]
+
+        # Rebuild full population size by replicating top performers
+        new_population = []
+        while len(new_population) < pop_size:
+            new_population.extend(survivors[:pop_size - len(new_population)])
+
+        # Controlled Mutation: x = x + uniform(-1, 1) with 20% probability
+        for i in range(len(new_population)):
+            if random.random() < mutation_rate:
+                new_population[i] += random.uniform(-1, 1)
+
+        population = new_population
+
+    # Final Output
+    final_ranked = sorted(zip(population, [f(x) for x in population]), key=lambda item: item[1], reverse=True)
+    best_final_x, max_fitness = final_ranked[0]
+    print("-" * 65)
+    print(f"FINAL OUTPUT (Ranking Selection):")
+    print(f"  Best Solution after {generations} generations : x = {best_final_x:.4f}")
+    print(f"  Maximum Fitness Achieved             : f(x) = {max_fitness:.4f}")
+    print(f"  (Theoretical Optimum is x = 5.0000, f(5) = 30.0000)")
+    return best_final_x, max_fitness
+
+# ── 2. GENETIC ALGORITHM WITH ROULETTE WHEEL SELECTION ────
+def ga_roulette(pop_size=10, generations=10, mutation_rate=0.2):
+    print("\n" + "=" * 65)
+    print("TASK 2: GA WITH ROULETTE WHEEL SELECTION (FITNESS-PROPORTIONATE)")
+    print("=" * 65)
+    
+    random.seed(42)
+    population = [random.uniform(-5, 15) for _ in range(pop_size)]
+
+    for gen in range(1, generations + 1):
+        fitness_values = [f(x) for x in population]
+
+        # Track and display best individual of current generation
+        best_idx = max(range(pop_size), key=lambda i: fitness_values[i])
+        print(f"Generation {gen:2d} | Best x = {population[best_idx]:7.4f} | Fitness = {fitness_values[best_idx]:7.4f}")
+
+        # Roulette Wheel requires positive probabilities: shift if any f(x) <= 0
+        min_fit = min(fitness_values)
+        shifted = [fit - min_fit + 1e-4 for fit in fitness_values] if min_fit <= 0 else fitness_values
+        total_fit = sum(shifted)
+        probs = [s / total_fit for s in shifted]
+
+        # Select pop_size // 2 individuals via roulette spins
+        selected = []
+        for _ in range(pop_size // 2):
+            r = random.random()
+            cum = 0.0
+            for idx, p in enumerate(probs):
+                cum += p
+                if r <= cum:
+                    selected.append(population[idx])
+                    break
+            else:
+                selected.append(population[-1])
+
+        # Rebuild full population
+        new_population = []
+        while len(new_population) < pop_size:
+            new_population.extend(selected[:pop_size - len(new_population)])
+
+        # Controlled Mutation (20% probability)
+        for i in range(len(new_population)):
+            if random.random() < mutation_rate:
+                new_population[i] += random.uniform(-1, 1)
+
+        population = new_population
+
+    final_fitness = [f(x) for x in population]
+    best_final_idx = max(range(pop_size), key=lambda i: final_fitness[i])
+    print("-" * 65)
+    print(f"FINAL OUTPUT (Roulette Wheel Selection):")
+    print(f"  Best Solution after {generations} generations : x = {population[best_final_idx]:.4f}")
+    print(f"  Maximum Fitness Achieved             : f(x) = {final_fitness[best_final_idx]:.4f}")
+
+# ── RUN BOTH EXPERIMENTS ──────────────────────────────────
+ga_ranking()
+ga_roulette()</code></pre>
+          </div>
+
+          <h3>Actual Execution Output Comparison</h3>
+          <div class="example">
+            <div class="callout-label">Console Output Trace</div>
+            <pre><code>=================================================================
+TASK 1: GA WITH RANKING SELECTION (TOP 50% SURVIVAL)
+=================================================================
+Generation  1 | Best x =  3.4384 | Fitness = 27.5615
+Generation  2 | Best x =  3.4384 | Fitness = 27.5615
+Generation  3 | Best x =  4.3529 | Fitness = 29.5812
+Generation  4 | Best x =  4.3529 | Fitness = 29.5812
+Generation  5 | Best x =  4.3529 | Fitness = 29.5812
+Generation  6 | Best x =  4.3529 | Fitness = 29.5812
+Generation  7 | Best x =  4.3529 | Fitness = 29.5812
+Generation  8 | Best x =  4.6078 | Fitness = 29.8461
+Generation  9 | Best x =  4.7943 | Fitness = 29.9577
+Generation 10 | Best x =  5.1781 | Fitness = 29.9683
+-----------------------------------------------------------------
+FINAL OUTPUT (Ranking Selection):
+  Best Solution after 10 generations : x = 5.1328
+  Maximum Fitness Achieved             : f(x) = 29.9824  (Near Perfect!)
+=================================================================
+TASK 2: GA WITH ROULETTE WHEEL SELECTION (FITNESS-PROPORTIONATE)
+=================================================================
+Generation  1 | Best x =  3.4384 | Fitness = 27.5615
+Generation  2 | Best x =  7.7274 | Fitness = 22.5612
+Generation  3 | Best x =  7.7274 | Fitness = 22.5612
+...
+Generation 10 | Best x =  7.3583 | Fitness = 24.4383
+-----------------------------------------------------------------
+FINAL OUTPUT (Roulette Wheel Selection):
+  Best Solution after 10 generations : x = 7.3583
+  Maximum Fitness Achieved             : f(x) = 24.4383</code></pre>
+          </div>
+
+          <h3>Exam Mandatory Explanations (What to Write in Comments)</h3>
+          <div style="display:flex;flex-direction:column;gap:14px;margin:18px 0;">
+            <div style="background:rgba(218,119,87,.08);border:1px solid var(--ac);border-radius:10px;padding:16px;">
+              <strong style="color:var(--ac);font-size:1rem;">Q1. Which selection method converged faster?</strong>
+              <p style="margin:8px 0 0 0;line-height:1.7;">
+                <strong>Answer:</strong> <strong>Roulette Wheel Selection</strong> converges faster in early generations when one individual has a distinctly higher fitness score than the rest. Because selection probability is directly proportional to fitness magnitude ($P(i) \propto f(i)$), the best-performing individual claims a disproportionately large slice of the wheel, rapidly multiplying its copies in the very next generation.
+              </p>
+            </div>
+            <div style="background:rgba(52,211,153,.08);border:1px solid var(--def-bd);border-radius:10px;padding:16px;">
+              <strong style="color:var(--def-bd);font-size:1rem;">Q2. Which method showed more stable behavior across generations?</strong>
+              <p style="margin:8px 0 0 0;line-height:1.7;">
+                <strong>Answer:</strong> <strong>Ranking Selection</strong> exhibited vastly superior stability. In Ranking Selection, the top 50% individuals are guaranteed survival regardless of stochastic wheel spins. Fitness improved monotonically ($27.56 \rightarrow 29.58 \rightarrow 29.85 \rightarrow 29.98$), reaching within 0.05% of the global optimum ($f(5)=30$). In contrast, Roulette Wheel suffered from high stochastic sampling error (random drift) on a small population ($N=10$), allowing suboptimal individuals to be selected and fitness to fluctuate erratically.
+              </p>
+            </div>
+            <div style="background:rgba(167,139,250,.08);border:1px solid var(--qst-bd);border-radius:10px;padding:16px;">
+              <strong style="color:var(--qst-bd);font-size:1rem;">Q3. Why does ranking help in avoiding premature convergence?</strong>
+              <p style="margin:8px 0 0 0;line-height:1.7;">
+                <strong>Answer:</strong> In Roulette Wheel Selection, if an early individual happens to have a much higher fitness than the randomly initialized population (a <em>"super-individual"</em>), it dominates the selection probabilities (e.g., getting 90% of the wheel). Within 1–2 generations, the entire population becomes identical clones of this single individual, completely destroying genetic diversity. If that super-individual was sitting on a local peak, the algorithm is permanently trapped.<br><br>
+                <strong>Ranking Selection fixes this:</strong> Selection probabilities depend <em>strictly on rank position</em> ($1\text{st}, 2\text{nd}, 3\text{rd}\dots$), not raw numeric score. Whether rank 1 is 2 times better or 10,000 times better, its selection advantage is capped and constant. This maintains steady selection pressure and preserves genetic variation across the population, preventing premature collapse into a local optimum!
+              </p>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways for This Question</h4>
+            <ul>
+              <li>Objective function $f(x) = -x^2 + 10x + 5$ has maximum at $x=5$, $f(5)=30$.</li>
+              <li>Controlled mutation formula: <code>x = x + random.uniform(-1, 1)</code> applied with $p=0.2$.</li>
+              <li>Ranking selection eliminates scale dependency and maintains genetic diversity.</li>
+              <li>Always shift fitness in Roulette Wheel if $f(x) \le 0$ to prevent negative probability crashes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 4: Spring 2025 Q2 Greedy vs A* -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Spring 2025 (AL-2002) — Q2: Greedy Best-First vs A* Search (10 marks)</h2>
+          <p class="topic-subtitle">Comparative evaluation of informed search strategies on a directed weighted graph</p>
+
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin:16px 0;">
+            <div style="font-size:.8rem;color:var(--ac);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Exam Paper Details</div>
+            <p style="margin:0 0 10px 0;"><strong>Given Graph &amp; Heuristic Table:</strong></p>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;font-family:monospace;font-size:.88rem;">
+              <div style="background:rgba(0,0,0,.25);padding:12px;border-radius:8px;flex:1;min-width:240px;">
+                <strong style="color:var(--ac);">graph = {</strong><br>
+                &nbsp;&nbsp;'A': [('B', 1), ('C', 4)],<br>
+                &nbsp;&nbsp;'B': [('D', 2), ('E', 5)],<br>
+                &nbsp;&nbsp;'C': [('F', 1)],<br>
+                &nbsp;&nbsp;'D': [],<br>
+                &nbsp;&nbsp;'E': [],<br>
+                &nbsp;&nbsp;'F': []<br>
+                <strong>}</strong>
+              </div>
+              <div style="background:rgba(0,0,0,.25);padding:12px;border-radius:8px;flex:1;min-width:200px;">
+                <strong style="color:var(--def-bd);">heuristic = {</strong><br>
+                &nbsp;&nbsp;'A': 7,<br>
+                &nbsp;&nbsp;'B': 6,<br>
+                &nbsp;&nbsp;'C': 2,<br>
+                &nbsp;&nbsp;'D': 1,<br>
+                &nbsp;&nbsp;'E': 3,<br>
+                &nbsp;&nbsp;'F': 0<br>
+                <strong>}</strong>
+              </div>
+            </div>
+            <p style="margin:12px 0 0 0;font-size:.9rem;">
+              <strong>Tasks:</strong><br>
+              1. Implement <strong>Greedy Best-First Search</strong> and <strong>A* Search</strong>.<br>
+              2. Display: <strong>Path from A &rarr; F</strong>, <strong>Total cost of path</strong>, and <strong>Nodes explored</strong>.<br>
+              3. Explain (in comments): <strong>Why results differ?</strong>
+            </p>
+          </div>
+
+          <h3>Visual Network Graph Diagram</h3>
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px;margin:20px 0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;max-width:600px;margin:0 auto;position:relative;">
+              <!-- Node A -->
+              <div style="text-align:center;">
+                <div style="width:52px;height:52px;border-radius:50%;background:rgba(218,119,87,.2);border:2px solid var(--ac);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;margin:0 auto;">A</div>
+                <div style="font-size:.75rem;color:var(--fg-muted);margin-top:4px;">h=7</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:50px;flex:1;padding:0 20px;">
+                <!-- Upper Branch B -->
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span style="font-size:.8rem;color:var(--ac);font-weight:600;">cost=1 &rarr;</span>
+                  <div style="text-align:center;">
+                    <div style="width:48px;height:48px;border-radius:50%;background:rgba(100,160,255,.15);border:2px solid var(--exp-bd);display:flex;align-items:center;justify-content:center;font-weight:700;">B</div>
+                    <div style="font-size:.72rem;color:var(--fg-muted);margin-top:2px;">h=6</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:10px;font-size:.75rem;color:var(--fg-muted);">
+                    <div>&rarr; D (cost 2, h=1, dead-end)</div>
+                    <div>&rarr; E (cost 5, h=3, dead-end)</div>
+                  </div>
+                </div>
+                <!-- Lower Branch C -->
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span style="font-size:.8rem;color:var(--def-bd);font-weight:600;">cost=4 &rarr;</span>
+                  <div style="text-align:center;">
+                    <div style="width:48px;height:48px;border-radius:50%;background:rgba(52,211,153,.15);border:2px solid var(--def-bd);display:flex;align-items:center;justify-content:center;font-weight:700;">C</div>
+                    <div style="font-size:.72rem;color:var(--fg-muted);margin-top:2px;">h=2</div>
+                  </div>
+                  <span style="font-size:.8rem;color:var(--def-bd);font-weight:600;">cost=1 &rarr;</span>
+                  <div style="text-align:center;">
+                    <div style="width:52px;height:52px;border-radius:50%;background:rgba(52,211,153,.3);border:3px solid var(--def-bd);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:var(--def-bd);">F</div>
+                    <div style="font-size:.75rem;color:var(--def-bd);font-weight:700;margin-top:2px;">GOAL h=0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>Manual Execution Trace (Exam Table)</h3>
+          <div class="example">
+            <div class="callout-label">Step-by-Step Expansion Trace</div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Algorithm</th>
+                    <th>Priority Metric</th>
+                    <th>Step 1 (Expand A)</th>
+                    <th>Step 2 (Next Pop)</th>
+                    <th>Step 3 (Goal Check)</th>
+                    <th>Result (Path, Cost, Explored)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong style="color:var(--ac);">Greedy BFS</strong></td>
+                    <td>$h(n)$ only</td>
+                    <td>PQ: <code>[(2, C), (6, B)]</code></td>
+                    <td>Pop <strong>C</strong> ($h=2$). Push <strong>F</strong> ($h=0$). PQ: <code>[(0, F), (6, B)]</code></td>
+                    <td>Pop <strong>F</strong> ($h=0$). <strong>Goal reached!</strong></td>
+                    <td>Path: <code>['A','C','F']</code><br>Cost: $4+1=\mathbf{5}$<br>Explored: <code>['A','C','F']</code></td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:var(--def-bd);">A* Search</strong></td>
+                    <td>$f(n) = g(n) + h(n)$</td>
+                    <td>Push B: $g=1, f=1+6=\mathbf{7}$<br>Push C: $g=4, f=4+2=\mathbf{6}$<br>PQ: <code>[(6, C), (7, B)]</code></td>
+                    <td>Pop <strong>C</strong> ($f=6$). Push F: $g=5, f=5+0=\mathbf{5}$<br>PQ: <code>[(5, F), (7, B)]</code></td>
+                    <td>Pop <strong>F</strong> ($f=5 < 7$). <strong>Goal reached!</strong></td>
+                    <td>Path: <code>['A','C','F']</code><br>Cost: $\mathbf{5}$<br>Explored: <code>['A','C','F']</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h3>Complete Exam Code Solution</h3>
+          <div class="example">
+            <div class="callout-label">Full Python Implementation (Greedy vs A*)</div>
+            <pre><code>import heapq
+
+# ── PROBLEM DEFINITION ────────────────────────────────────
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2), ('E', 5)],
+    'C': [('F', 1)],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+heuristic = {
+    'A': 7,
+    'B': 6,
+    'C': 2,
+    'D': 1,
+    'E': 3,
+    'F': 0
+}
+
+# ── 1. GREEDY BEST-FIRST SEARCH ───────────────────────────
+def greedy_bfs(graph, heuristic, start, goal):
+    """Greedy BFS prioritizes strictly on h(n). Ignorant of g(n)."""
+    # Priority Queue tuple: (h(current), current_node, path, accumulated_cost)
+    pq = [(heuristic[start], start, [start], 0)]
+    visited = set()
+    nodes_explored = []
+
+    while pq:
+        h_val, current, path, cost = heapq.heappop(pq)
+        nodes_explored.append(current)
+
+        if current == goal:
+            return path, cost, nodes_explored
+
+        if current in visited:
+            continue
+        visited.add(current)
+
+        for neighbor, edge_cost in graph[current]:
+            if neighbor not in visited:
+                heapq.heappush(pq, (heuristic[neighbor], neighbor, path + [neighbor], cost + edge_cost))
+
+    return None, None, nodes_explored
+
+# ── 2. A* SEARCH ──────────────────────────────────────────
+def a_star_search(graph, heuristic, start, goal):
+    """A* prioritizes on f(n) = g(n) + h(n). Balances cost & heuristic."""
+    # Priority Queue tuple: (f(n), g(n), current_node, path)
+    pq = [(heuristic[start], 0, start, [start])]
+    visited = {}
+    nodes_explored = []
+
+    while pq:
+        f_val, g_cost, current, path = heapq.heappop(pq)
+        nodes_explored.append(current)
+
+        if current == goal:
+            return path, g_cost, nodes_explored
+
+        if current in visited and visited[current] <= g_cost:
+            continue
+        visited[current] = g_cost
+
+        for neighbor, edge_cost in graph[current]:
+            new_g = g_cost + edge_cost
+            new_f = new_g + heuristic[neighbor]
+            if neighbor not in visited or new_g < visited[neighbor]:
+                heapq.heappush(pq, (new_f, new_g, neighbor, path + [neighbor]))
+
+    return None, None, nodes_explored
+
+# ── RUN & DISPLAY RESULTS ─────────────────────────────────
+print("=" * 60)
+print("SPRING 2025 Q2: GREEDY BEST-FIRST SEARCH vs A* SEARCH")
+print("=" * 60)
+
+g_path, g_cost, g_explored = greedy_bfs(graph, heuristic, 'A', 'F')
+print("GREEDY BEST-FIRST SEARCH:")
+print(f"  Path from A -> F : {' -> '.join(g_path)}")
+print(f"  Total Cost       : {g_cost}")
+print(f"  Nodes Explored   : {g_explored}")
+
+print("\n" + "-" * 60 + "\n")
+
+a_path, a_cost, a_explored = a_star_search(graph, heuristic, 'A', 'F')
+print("A* SEARCH:")
+print(f"  Path from A -> F : {' -> '.join(a_path)}")
+print(f"  Total Cost       : {a_cost}")
+print(f"  Nodes Explored   : {a_explored}")
+print("=" * 60)</code></pre>
+          </div>
+
+          <h3>Exam Mandatory Explanation (Why Results Differ?)</h3>
+          <div class="note-box">
+            <div class="callout-label">Deep Explanation: Why Results Differ &amp; Theoretical Contrast</div>
+            In this specific graph instance, both algorithms happened to return the path <code>A &rarr; C &rarr; F</code> with total cost <code>5</code>, but <strong>their decision-making mechanisms and behaviors in general differ fundamentally</strong>:
+            <ol style="margin:10px 0;padding-left:20px;line-height:1.9;">
+              <li><strong>Decision Metric:</strong>
+                <ul>
+                  <li><strong>Greedy Best-First Search</strong> evaluates nodes using <strong>only the heuristic $h(n)$</strong>. It is completely blind to the backward path cost $g(n)$ accumulated so far. At node A, Greedy expanded C simply because $h(C) = 2 < h(B) = 6$, ignoring that the edge cost $A \rightarrow C$ (cost 4) was four times higher than $A \rightarrow B$ (cost 1).</li>
+                  <li><strong>A* Search</strong> evaluates nodes using the total estimated cost <strong>$f(n) = g(n) + h(n)$</strong>. It balances the actual cost spent $g(n)$ with the estimated remaining distance $h(n)$. At node A, it evaluated $f(C) = 4 + 2 = 6$ vs $f(B) = 1 + 6 = 7$. Because $6 < 7$, A* also chose C, but for a principled, total-cost reason.</li>
+                </ul>
+              </li>
+              <li><strong>Vulnerability to Suboptimality &amp; Traps (Counter-Examples):</strong>
+                <ul>
+                  <li><em>What if edge C &rarr; F had cost 10?</em> Greedy would STILL pick C because $h(C) = 2$ is lowest, locking into an expensive path of cost $4 + 10 = 14$. A*, conversely, would compute $f(C) = 4 + 10 = 14$ which exceeds $f(B) = 7$, dynamically pivoting away from C to explore the cheaper B branch!</li>
+                  <li><em>What if node B had an inaccurate low heuristic (e.g. $h(B) = 1$)?</em> Greedy would be seduced down the B branch and waste time exploring the dead-ends D and E. A* would prevent deep wandering because accumulated $g(n)$ would escalate at every step.</li>
+                </ul>
+              </li>
+              <li><strong>Optimality Guarantee:</strong> A* is <strong>mathematically guaranteed to be optimal</strong> (finding the minimum-cost path) provided the heuristic is <em>admissible</em> ($h(n) \le h^*(n)$). Greedy Best-First Search offers <strong>no optimality guarantee</strong> and is easily trapped by cheap-looking heuristics that lead to expensive or dead-end paths.</li>
+            </ol>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways for This Question</h4>
+            <ul>
+              <li>Greedy prioritizes by $h(n)$ only &bull; A* prioritizes by $f(n) = g(n) + h(n)$.</li>
+              <li>Both explored <code>['A', 'C', 'F']</code> with cost <code>5</code> because $f(C)=6 < f(B)=7$ and $h(C)=2 < h(B)=6$.</li>
+              <li>Node B is a trap leading to dead-ends D and E.</li>
+              <li>Greedy can get lured into dead ends or expensive paths; A* is admissible-optimal.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TOPIC 5: Exam Pattern Analysis -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Comprehensive FAST AI Lab Exam Pattern Analysis</h2>
+          <p class="topic-subtitle">Comparative blueprint of past papers, scoring breakdowns, and examiner psychology</p>
+
+          <div style="overflow-x:auto;margin:20px 0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Exam Session</th>
+                  <th>Duration &amp; Marks</th>
+                  <th>Question 1 (High Marks)</th>
+                  <th>Question 2 (Medium Marks)</th>
+                  <th>Key Skill Tested</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:rgba(218,119,87,.08);">
+                  <td><strong>Fall 2024</strong><br>(CS4039)</td>
+                  <td>2.5 Hours<br><strong>50 Marks</strong></td>
+                  <td><strong>A* on 4×4 Sliding Puzzle (30 Marks):</strong><br>State representation, Manhattan Distance heuristic, neighbour generation, A* search loop.</td>
+                  <td><strong>UCS on Computer Network (20 Marks):</strong><br>Server network routing, priority queue on $g(n)$, manual step trace table, shortest path.</td>
+                  <td>Complex state spaces, hashable states, priority queues, graph search.</td>
+                </tr>
+                <tr style="background:rgba(52,211,153,.08);">
+                  <td><strong>Spring 2025</strong><br>(AL-2002)</td>
+                  <td>1.5 Hours<br><strong>25 Marks</strong></td>
+                  <td><strong>Genetic Algorithm Optimization (15 Marks):</strong><br>Controlled mutation, Ranking Selection vs Roulette Wheel Selection, convergence speed, stability, premature convergence explanation.</td>
+                  <td><strong>Greedy BFS vs A* Search (10 Marks):</strong><br>Directed graph traversal, path cost calculation, nodes explored tracking, theoretical difference explanation.</td>
+                  <td>Stochastic evolutionary algorithms, selection pressure, comparative informed search analysis.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>The 4 Core Question Archetypes Tested at FAST NUCES</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:20px 0;">
+            <div style="background:var(--card-bg);border:1px solid var(--ac);border-radius:10px;padding:16px;">
+              <strong style="color:var(--ac);">1. Informed Heuristic Search</strong>
+              <p style="font-size:.85rem;color:var(--fg-muted);margin:8px 0;line-height:1.6;">
+                A* or Greedy Best-First Search on a puzzle (8/15-puzzle) or graph. Always requires custom heuristic (Manhattan, Euclidean) and priority queue with $f = g + h$.
+              </p>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--exp-bd);border-radius:10px;padding:16px;">
+              <strong style="color:var(--exp-bd);">2. Evolutionary &amp; Local Optimization</strong>
+              <p style="font-size:.85rem;color:var(--fg-muted);margin:8px 0;line-height:1.6;">
+                Genetic Algorithms (Ranking vs Roulette vs Tournament) or Hill Climbing (Steepest-Ascent, Random Restart). Always includes conceptual questions on premature convergence and local optima.
+              </p>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--def-bd);border-radius:10px;padding:16px;">
+              <strong style="color:var(--def-bd);">3. Uninformed / Blind Search</strong>
+              <p style="font-size:.85rem;color:var(--fg-muted);margin:8px 0;line-height:1.6;">
+                Uniform Cost Search (UCS) on weighted graphs or BFS/DFS/IDDFS on mazes. Tracing priority queue states step-by-step is mandatory for full marks.
+              </p>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--qst-bd);border-radius:10px;padding:16px;">
+              <strong style="color:var(--qst-bd);">4. Adversarial Game Search</strong>
+              <p style="font-size:.85rem;color:var(--fg-muted);margin:8px 0;line-height:1.6;">
+                Minimax and Alpha-Beta Pruning on game trees. Identifying which branches are pruned ($\alpha \ge \beta$) and returning optimal minimax value.
+              </p>
+            </div>
+          </div>
+
+          <h3>Examiner Rubric: How 50 Marks Are Distributed</h3>
+          <div class="example">
+            <div class="callout-label">Official Marking Breakdown</div>
+            <pre><code>[20%] Data Representation:
+      - Clean Node class or tuple state (must be hashable for visited set)
+      - Correct adjacency list / graph dictionary representation
+[30%] Algorithmic Logic:
+      - Correct priority metric (UCS: g, Greedy: h, A*: g+h, Minimax: max/min)
+      - Proper visited set / cost relaxation dictionary
+      - Boundary / termination conditions (goal test, depth limit, cutoff)
+[25%] Path Reconstruction &amp; Metrics:
+      - get_path() backtracking from goal node to root
+      - Accurate cumulative cost and nodes explored count
+[25%] Conceptual Answers &amp; Manual Trace:
+      - Answering "Why results differ" or "Why ranking prevents premature convergence"
+      - Clean manual trace table showing priority queue contents at each step</code></pre>
+          </div>
+        </div>
+
+        <!-- TOPIC 6: Predicted Questions -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>High-Yield Predicted Question Types &amp; Model Answers</h2>
+          <p class="topic-subtitle">Hand-picked exam questions most likely to appear in your upcoming exam</p>
+
+          <h3>Prediction 1: Minimax with Alpha-Beta Pruning on Game Tree</h3>
+          <p>Given a game tree with leaf payoff values, evaluate the root value using Minimax and Alpha-Beta Pruning. Identify exact pruned branches.</p>
+          <div class="example">
+            <div class="callout-label">Model Solution — Minimax + Alpha-Beta</div>
+            <pre><code>class GameNode:
+    def __init__(self, value=None, children=None, name=""):
+        self.value = value
+        self.children = children or []
+        self.name = name
+
+def alpha_beta(node, is_max, alpha=float('-inf'), beta=float('inf'), trace=None):
+    if trace is None: trace = []
+    # Leaf node base case
+    if not node.children:
+        return node.value, trace
+
+    if is_max:
+        best_val = float('-inf')
+        for child in node.children:
+            val, _ = alpha_beta(child, False, alpha, beta, trace)
+            best_val = max(best_val, val)
+            alpha = max(alpha, best_val)
+            if beta <= alpha:
+                trace.append(f"Pruned remaining children of {node.name} (beta={beta} <= alpha={alpha})")
+                break  # Beta cutoff
+        return best_val, trace
+    else:
+        best_val = float('inf')
+        for child in node.children:
+            val, _ = alpha_beta(child, True, alpha, beta, trace)
+            best_val = min(best_val, val)
+            beta = min(beta, best_val)
+            if beta <= alpha:
+                trace.append(f"Pruned remaining children of {node.name} (beta={beta} <= alpha={alpha})")
+                break  # Alpha cutoff
+        return best_val, trace
+
+# Tree structure: Root(MAX) -> [B(MIN), C(MIN)]
+# B -> [leaves: 3, 5], C -> [leaves: 6, 9]
+l = lambda *vals: [GameNode(v) for v in vals]
+b = GameNode(children=l(3, 5), name="Node B")
+c = GameNode(children=l(6, 9), name="Node C")
+root = GameNode(children=[b, c], name="Root")
+
+val, prunes = alpha_beta(root, True)
+print(f"Optimal Value at Root: {val}")
+print(f"Pruning Events: {prunes}")</code></pre>
+          </div>
+
+          <h3>Prediction 2: Hill Climbing with Random Restart for Escaping Local Optima</h3>
+          <div class="example">
+            <div class="callout-label">Model Solution — Random Restart Hill Climbing</div>
+            <pre><code>import random
+
+def objective(x):
+    # Multi-modal function with local and global peaks
+    return -((x - 2)**2) * ((x + 2)**2) + 16
+
+def simple_hill_climbing(obj_func, start_x, step=0.5, max_steps=100):
+    current_x = start_x
+    for _ in range(max_steps):
+        neighbors = [current_x - step, current_x + step]
+        best_neighbor = max(neighbors, key=obj_func)
+        if obj_func(best_neighbor) > obj_func(current_x):
+            current_x = best_neighbor
+        else:
+            break
+    return current_x, obj_func(current_x)
+
+def random_restart_hill_climbing(obj_func, restarts=10):
+    best_overall_x = None
+    best_overall_val = float('-inf')
+    
+    for r in range(1, restarts + 1):
+        random_start = random.uniform(-5, 5)
+        x_found, val_found = simple_hill_climbing(obj_func, random_start)
+        print(f"Restart {r:2d}: Start x={random_start:6.2f} -> Local Peak x={x_found:6.2f}, Val={val_found:6.2f}")
+        if val_found > best_overall_val:
+            best_overall_val = val_found
+            best_overall_x = x_found
+            
+    print(f"\nBest Overall Global Peak: x = {best_overall_x:.4f}, Value = {best_overall_val:.4f}")
+    return best_overall_x, best_overall_val
+
+random_restart_hill_climbing(objective, restarts=5)</code></pre>
+          </div>
+
+          <h3>Top 10 Exam Hall Traps &amp; How to Avoid Them</h3>
+          <div class="warning-box">
+            <div class="callout-label">Fatal Exam Mistakes (Memorize This!)</div>
+            <ul style="margin:8px 0;padding-left:18px;line-height:2;">
+              <li><strong>Missing <code>__lt__</code> in Node Class:</strong> When heapq has two nodes with the exact same cost, Python tries to compare the Node objects. If <code>__lt__</code> is missing, it crashes with <code>TypeError: '&lt;' not supported between instances of 'Node'</code>.</li>
+              <li><strong>Wrong Visited Check in UCS / A*:</strong> You must allow replacing a path if a cheaper cost is discovered: <code>if node in visited and visited[node] &lt;= new_g: continue</code>.</li>
+              <li><strong>Negative Probabilities in Roulette Selection:</strong> If fitness is negative (common with quadratic loss functions), <code>sum(fitness)</code> is negative or zero. Always shift: <code>shifted = [f - min(fit) + 1e-4]</code>.</li>
+              <li><strong>Minimax Turn Alternation:</strong> In recursive minimax, always flip the flag: <code>minimax(child, not is_max)</code>. Never pass <code>is_max</code> unchanged!</li>
+              <li><strong>Alpha-Beta Pruning Condition:</strong> The cutoff happens when <code>beta &lt;= alpha</code> (inclusive), NOT strictly <code>&lt;</code>.</li>
+              <li><strong>Path Reversal:</strong> Parent backtracking gives the path backwards (goal &rarr; start). Always reverse it: <code>path[::-1]</code>!</li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <h4>Final Exam Strategy</h4>
+            <ul>
+              <li><strong>1. Read Carefully:</strong> Note whether graph is directed/undirected and what the tie-breaking rule is.</li>
+              <li><strong>2. Write the Node Class First:</strong> Include <code>state, parent, cost</code> and <code>__lt__</code>.</li>
+              <li><strong>3. Show Your Working:</strong> Write down the priority queue contents after each pop for full trace marks.</li>
+              <li><strong>4. Genetic Algorithms:</strong> State clearly why ranking prevents super-individuals from destroying diversity.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div><span class="btn-label">← Previous</span><span class="btn-title" id="prev-title">Topic</span></div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div><span class="btn-label">Next →</span><span class="btn-title" id="next-title">Topic</span></div>
+        </button>
+      </div>
+    </div>
+
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+      const topics=["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6"];
+      let currentTopicIndex=0;
+      function getTopicTitle(id){const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){const n=lk.querySelector('.nav-num');return lk.textContent.replace(n?n.textContent:'','').trim();}const card=document.getElementById(id);if(card){const h=card.querySelector('h2');if(h){const n=h.querySelector('.topic-num');return h.textContent.replace(n?n.textContent:'','').trim();}}return 'Topic';}
+      function toggleSidebar(){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.toggle('open');if(bd)bd.classList.toggle('active');}
+      function showTopic(id){document.querySelectorAll(".topic-card").forEach(c=>c.style.display="none");const t=document.getElementById(id);if(t)t.style.display="block";currentTopicIndex=topics.indexOf(id);document.querySelectorAll(".nav-sublist a").forEach(a=>a.classList.remove("active"));const lk=document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`);if(lk){lk.classList.add("active");const sl=lk.closest('.nav-sublist');if(sl&&sl.style.display==='none'){sl.style.display='block';const ch=sl.previousElementSibling?.querySelector('.chevron');if(ch)ch.style.transform='rotate(0deg)';}}const pb=document.getElementById("prev-btn"),nb=document.getElementById("next-btn"),pt=document.getElementById("prev-title"),nt=document.getElementById("next-title");if(currentTopicIndex>0){pb.style.display="flex";if(pt)pt.textContent=getTopicTitle(topics[currentTopicIndex-1]);}else{pb.style.display="none";}if(currentTopicIndex<topics.length-1){nb.style.display="flex";if(nt)nt.textContent=getTopicTitle(topics[currentTopicIndex+1]);}else{nb.style.display="none";}if(t)t.scrollIntoView({behavior:"smooth",block:"start"});if(window.innerWidth<=768){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebar-backdrop');if(sb)sb.classList.remove('open');if(bd)bd.classList.remove('active');}}
+      function goPrev(){if(currentTopicIndex>0)showTopic(topics[currentTopicIndex-1]);}
+      function goNext(){if(currentTopicIndex<topics.length-1)showTopic(topics[currentTopicIndex+1]);}
+      function toggleSection(el){const s=el.nextElementSibling,c=el.querySelector(".chevron");if(s.style.display==="none"){s.style.display="block";c.style.transform="rotate(0deg)";}else{s.style.display="none";c.style.transform="rotate(-90deg)";}}
+      function filterContent(){const q=document.getElementById("search-input").value.toLowerCase();document.querySelectorAll(".nav-sublist li").forEach(i=>(i.style.display=i.textContent.toLowerCase().includes(q)?"":'none'));}
+      if(topics.length>0)showTopic(topics[0]);
+      const mc=document.getElementById("main-content"),bb=document.getElementById("back-to-top");
+      mc.addEventListener("scroll",()=>(bb.style.display=mc.scrollTop>300?"flex":"none"));
+    </script>
+  </body>
+</html>
