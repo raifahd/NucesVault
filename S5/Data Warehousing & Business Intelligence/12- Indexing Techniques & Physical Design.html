@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Warehousing &amp; BI — Indexing Techniques &amp; Physical Design</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      .math-box {
+        background: #141418;
+        border: 1px solid #27272a;
+        border-left: 4px solid var(--ac);
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin: 14px 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.85rem;
+        color: #e4e4e7;
+        overflow-x: auto;
+      }
+      .math-box .math-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--ac);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .math-box .formula { color: #38bdf8; font-weight: 600; }
+      .math-box .highlight { color: #f87171; font-weight: bold; }
+      .math-box .good { color: #4ade80; font-weight: bold; }
+
+      .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+        font-size: 0.83rem;
+      }
+      .styled-table th {
+        background: #1a1a20;
+        color: var(--ac);
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 2px solid #2d2d35;
+        font-weight: 600;
+      }
+      .styled-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #222228;
+        color: var(--tx);
+      }
+      .styled-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+      .mcq-card {
+        background: #141418;
+        border: 1px solid #27272a;
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin: 10px 0;
+      }
+      .mcq-q { font-weight: 600; font-size: 0.88rem; color: var(--tx); margin-bottom: 8px; }
+      .mcq-opts { list-style: none; padding: 0; margin: 0 0 8px 0; }
+      .mcq-opts li {
+        padding: 5px 10px;
+        margin: 3px 0;
+        border-radius: 5px;
+        background: #1c1c22;
+        border: 1px solid #2d2d34;
+        font-size: 0.82rem;
+      }
+      .mcq-opts li.correct-ans {
+        border-color: #4fbf8b;
+        background: rgba(79, 191, 139, 0.12);
+        color: #a7f3d0;
+        font-weight: 600;
+      }
+      .mcq-explain {
+        font-size: 0.78rem;
+        color: var(--mt);
+        border-top: 1px solid #27272a;
+        padding-top: 6px;
+        margin-top: 6px;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+     ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing &amp; BI</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- Introduction to DW.html"><span class="nav-mod-num">01</span>Introduction to DW</a></li>
+        <li><a class="nav-module-link" href="./2- Quiz Prep - Intro to DW.html"><span class="nav-mod-num">02</span>Quiz Prep: Intro to DW</a></li>
+        <li><a class="nav-module-link" href="./3- High Performance DSS Database Design.html"><span class="nav-mod-num">03</span>Logical &amp; Physical Modeling</a></li>
+        <li><a class="nav-module-link" href="./4- Quiz Prep - DSS Database Design.html"><span class="nav-mod-num">04</span>Quiz Prep: DSS Design</a></li>
+        <li><a class="nav-module-link" href="./5- OLAP Implementation Techniques.html"><span class="nav-mod-num">05</span>OLAP Techniques</a></li>
+        <li><a class="nav-module-link" href="./6- Dimensional Modeling.html"><span class="nav-mod-num">06</span>Dimensional Modeling</a></li>
+        <li><a class="nav-module-link" href="./7- Solved Sample Midterm.html"><span class="nav-mod-num">07</span>Solved Sample Midterm</a></li>
+        <li><a class="nav-module-link" href="./8- Dimensional Modeling Concepts.html"><span class="nav-mod-num">08</span>Dimensional Modeling Concepts</a></li>
+        <li><a class="nav-module-link" href="./9- Lab Midterm Prep.html"><span class="nav-mod-num">09</span>Lab Archive (Labs 1–6 Survey)</a></li>
+        <li><a class="nav-module-link" href="./10- Query Processing, Join Techniques & ETL.html"><span class="nav-mod-num">10</span>Query Processing &amp; Joins</a></li>
+        <li><a class="nav-module-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html"><span class="nav-mod-num">11</span>🎯 Lab Midterm — Sequential Guide</a></li>
+
+        <!-- CURRENT ACTIVE MODULE: MODULE 12 -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>12- Indexing Techniques &amp; Physical Design</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>B-Tree vs. Hash Indexing</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Primary &amp; Secondary (Teradata)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Selectivity &amp; Break-Even Math</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Bitmap, Composite &amp; Covered</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Physical Design &amp; Storage</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Quiz Review &amp; Solved MCQs</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container" id="module-12">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Warehousing &amp; Business Intelligence</div>
+          <h1 class="module-title">Indexing Techniques &amp; Physical Design</h1>
+        </div>
+
+        <!-- ─────────────────────────────────────────────────────────
+             TOPIC 1: B-TREE VS HASH INDEXING
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Indexing Fundamentals: B-Tree vs. Hash Indexing</h2>
+          <p class="topic-subtitle">Disk I/O minimization, search mechanics, and range query trade-offs.</p>
+
+          <p>
+            Disk I/O is the slowest operation in database systems. The goal of indexing is simple: <strong>reduce the number of block I/Os required to find records</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Database Index:</strong> An auxiliary data structure mapping search-key values to physical row addresses (ROWIDs).<br>
+            <em>Library Analogy:</em> Like a library card catalog that points directly to a shelf rather than walking through every aisle (full table scan).
+          </div>
+
+          <h3>OLTP vs. Data Warehouse Workloads</h3>
+          <ul>
+            <li><strong>OLTP:</strong> High concurrency, tiny lookups ($S \approx 0.000005\%$), single-row inserts/updates $\rightarrow$ <strong>B-Trees excel</strong>.</li>
+            <li><strong>Data Warehouse (DSS):</strong> Large analytical scans across thousands/millions of rows. Unclustered single indexes often perform <strong>worse than a full table scan</strong> due to random I/O. Bulk loading also suffers heavy write amplification from index maintenance.</li>
+          </ul>
+
+          <h3>B-Tree Indexing ($O(\log n)$)</h3>
+          <ul>
+            <li>Balanced hierarchical tree with Root, Branch, and Leaf nodes.</li>
+            <li>Leaf nodes store sorted <code>(Key, ROWID)</code> pairs and are connected via a <strong>doubly-linked list</strong>.</li>
+            <li><strong>Strength:</strong> Excels at point lookups, range queries (<code>BETWEEN</code>, <code>&gt;</code>, <code>&lt;</code>), prefix matches (<code>LIKE 'A%'</code>), and sorted output (<code>ORDER BY</code>).</li>
+          </ul>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>B-Tree Leaf Range Scan</h4>
+            <p>For <code>WHERE order_date BETWEEN '2024-01-01' AND '2024-01-31'</code>:</p>
+            <pre><code>1. Traverse Root &rarr; Leaf for '2024-01-01' in O(log n) steps.
+2. Follow doubly-linked leaf pointers sequentially until '2024-01-31'.
+3. Zero tree re-traversals needed!</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip: Range Query Optimization</div>
+            B-Trees navigate root-to-leaf once, then walk horizontally across leaf blocks. Hash indexes cannot do this and force a full table scan on any range predicate.
+          </div>
+
+          <h3>Hash Indexing ($O(1)$)</h3>
+          <ul>
+            <li>Passes key through a hash function: $\text{Hash}(Key) \rightarrow \text{Bucket ID} \rightarrow \text{ROWIDs}$.</li>
+            <li>Keys are <strong>not stored in sorted order</strong>, but ROWIDs within each bucket <strong>are sorted</strong> for sequential disk reading.</li>
+            <li><strong>Strength:</strong> Instant single-I/O point lookup for exact equality (<code>WHERE id = 1234</code>).</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="callout-label">Critical Exam Trap: Hash Range Queries</div>
+            Hash indexes <strong>fail completely on range queries, inequalities, and sorting</strong> (<code>&gt;</code>, <code>&lt;</code>, <code>BETWEEN</code>, <code>ORDER BY</code>). Contiguous keys hash to random buckets. Any range predicate triggers a full table scan!
+          </div>
+
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>B-Tree Index</th>
+                <th>Hash Index</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Complexity</strong></td>
+                <td>$O(\log n)$ block traversals</td>
+                <td>$O(1)$ constant time</td>
+              </tr>
+              <tr>
+                <td><strong>Key Ordering</strong></td>
+                <td>Strictly sorted throughout</td>
+                <td>Unsorted / pseudo-random</td>
+              </tr>
+              <tr>
+                <td><strong>Point Lookups (<code>=</code>)</strong></td>
+                <td>Fast ($2-4$ block reads)</td>
+                <td>Extremely fast ($1$ block read)</td>
+              </tr>
+              <tr>
+                <td><strong>Range Queries &amp; Sorting</strong></td>
+                <td>Native and efficient</td>
+                <td><strong>Unsupported</strong> (triggers full scan)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: How do B-tree and Hash indexes differ regarding key ordering?</summary>
+              <p><strong>Answer:</strong> B-Trees store keys in strict sorted order across all levels with linked leaves. Hash indexes store keys in unsorted, pseudo-random order determined by hash calculations (though ROWIDs inside buckets are sorted).</p>
+            </details>
+            <details>
+              <summary>Medium: Why does a query with <code>BETWEEN '2024-01-01' AND '2024-01-31'</code> fail to use a Hash index?</summary>
+              <p><strong>Answer:</strong> Hashing randomizes key locations across storage buckets; contiguous dates do not hash to contiguous buckets. A hash index cannot evaluate inequalities or ranges, forcing the optimizer to use a full table scan.</p>
+            </details>
+            <details>
+              <summary>Hard: When would a Hash index be preferred over a B-Tree in a DW fact table?</summary>
+              <p><strong>Answer:</strong> Only when access is strictly limited to exact equality point lookups or equi-joins on a surrogate key, where $O(1)$ single-I/O access beats B-Tree's $O(\log n)$ multi-level traversal.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 1</h4>
+            <ul>
+              <li>B-Trees maintain sorted order and linked leaves—ideal for range queries, point lookups, and sorting.</li>
+              <li>Hash indexes provide $O(1)$ direct point lookups but fail completely on range queries.</li>
+              <li>In DW, single traditional indexes rarely beat sequential scans due to block clustering.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────────────────────
+             TOPIC 2: TERADATA PRIMARY & SECONDARY INDEXING
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-2" style="display: none">
+          <h2><span class="topic-num">2</span>Primary &amp; Secondary Indexing: Teradata MPP</h2>
+          <p class="topic-subtitle">UPI, NUPI, USI, and NUSI mechanics, AMP co-location, and data skew traps.</p>
+
+          <p>
+            In MPP systems (e.g. Teradata), data is partitioned across parallel processors called <strong>AMPs (Access Module Processors)</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Primary Index (PI):</strong> The column(s) hashed to determine <em>which physical AMP and disk block stores each row</em>. Only <strong>one PI per table</strong>.
+          </div>
+
+          <h3>1. Primary Index: UPI vs. NUPI</h3>
+          <ul>
+            <li><strong>UPI (Unique Primary Index):</strong> Guarantees uniqueness. Retrieval is a guaranteed <strong>1-AMP, 1-I/O operation</strong>.</li>
+            <li><strong>NUPI (Non-Unique Primary Index):</strong> Duplicate keys hash to the <strong>exact same AMP</strong>. 1-AMP operation (1 I/O if all duplicate rows fit in one block).</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">High-Yield Exam Concept: Why PI is "FREE"</div>
+            Teradata uses a <strong>hash-based file system</strong>. The Primary Index <em>is</em> the physical placement mechanism. It requires <strong>0 bytes of extra storage and 0 index-build time</strong>.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Trap: Data Skew on NUPI</div>
+            Never choose a low-cardinality column (e.g. <code>status</code> or <code>country</code>) as NUPI. In a 100-AMP cluster, a column with 4 values causes 4 AMPs to run out of spool space while 96 AMPs sit idle at 0% CPU!
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Case Study</div>
+            <h4>Financial Transaction Table Dilemma</h4>
+            <pre><code>CREATE TABLE tx (tx_id, account_id, tx_amt, tx_dt, tx_cd) PRIMARY INDEX (???);</code></pre>
+            <ul>
+              <li><strong>If queries filter by account:</strong> Choose <code>account_id</code> as NUPI for 1-AMP lookups.</li>
+              <li><strong>If account activity is skewed:</strong> (e.g., corporate accounts with 100,000+ txns), <code>account_id</code> creates hot AMPs. Solution: Choose <code>tx_id</code> as <strong>UPI</strong> (100% even row distribution) and add a secondary index on <code>account_id</code>.</li>
+            </ul>
+          </div>
+
+          <h3>2. Secondary Index: USI vs. NUSI</h3>
+          <p>Secondary indexes are stored in separate <strong>subtables</strong>. They are <strong>NOT free</strong> (consume storage and slow down ETL loads). Up to 32 per table.</p>
+
+          <ul>
+            <li><strong>NUSI (Non-Unique Secondary Index):</strong>
+              <ul>
+                <li><strong>Co-located:</strong> Index entries reside on the <strong>same AMP</strong> as the base row.</li>
+                <li><strong>All-AMP Parallel:</strong> Every AMP scans its local NUSI in parallel (zero inter-AMP network traffic).</li>
+                <li><strong>Rule of thumb:</strong> Only use NUSI if <strong>Selected Rows &lt; Total Table Blocks</strong>.</li>
+              </ul>
+            </li>
+            <li><strong>USI (Unique Secondary Index):</strong>
+              <ul>
+                <li><strong>2-AMP Operation:</strong> Partitioned by USI key $\rightarrow$ AMP 1 reads USI subtable to get ROWID $\rightarrow$ sends BYNET message to AMP 2 holding base row.</li>
+                <li><strong>Use Case:</strong> Unique point lookups, or eliminating all-AMP join spool redistribution (e.g., joining <code>order_header</code> with <code>order_detail</code>).</li>
+              </ul>
+            </li>
+          </ul>
+
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Index Type</th>
+                <th>Storage</th>
+                <th>AMPs Involved</th>
+                <th>Co-located?</th>
+                <th>Primary Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>UPI</strong></td>
+                <td><strong>Free (0 B)</strong></td>
+                <td><strong>1 AMP</strong> (1 I/O)</td>
+                <td>Yes (Is base data)</td>
+                <td>Primary key, perfect uniform row distribution</td>
+              </tr>
+              <tr>
+                <td><strong>NUPI</strong></td>
+                <td><strong>Free (0 B)</strong></td>
+                <td><strong>1 AMP</strong> (1 I/O if 1 block)</td>
+                <td>Yes (Is base data)</td>
+                <td>Frequent join/retrieval column (check for skew!)</td>
+              </tr>
+              <tr>
+                <td><strong>USI</strong></td>
+                <td>Subtable</td>
+                <td><strong>2 AMPs</strong> (Cross-BYNET)</td>
+                <td><strong>No</strong> (Hashed by USI)</td>
+                <td>Alternate unique keys, eliminating join spool redistribution</td>
+              </tr>
+              <tr>
+                <td><strong>NUSI</strong></td>
+                <td>Subtable</td>
+                <td><strong>All AMPs parallel</strong></td>
+                <td><strong>Yes</strong> (Same AMP)</td>
+                <td>High selectivity filters (Selected Rows &lt; Blocks)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Why is a Teradata Primary Index considered "free"?</summary>
+              <p><strong>Answer:</strong> Teradata uses a hash-based file system where the Primary Index defines row placement on disk directly. No auxiliary subtable or separate index tree is created, meaning 0 additional storage and 0 index build time.</p>
+            </details>
+            <details>
+              <summary>Medium: Contrast how NUSI and USI execute across AMPs.</summary>
+              <p><strong>Answer:</strong> A NUSI is co-located on the same AMP as the base data; all AMPs scan their local subtable in parallel (1-AMP per row, zero network hop). A USI is partitioned by the USI key, requiring a 2-AMP operation (AMP 1 reads USI subtable, sends BYNET message to AMP 2 to fetch the base row).</p>
+            </details>
+            <details>
+              <summary>Hard: Why does defining a USI on <code>order_header(order_id)</code> speed up joins with <code>order_detail(PI: order_id)</code> when <code>order_header</code> has PI <code>customer_id</code>?</summary>
+              <p><strong>Answer:</strong> Since tables have different PIs, joining them normally requires redistributing intermediate spool across all AMPs. The USI subtable is partitioned on <code>order_id</code>, matching <code>order_detail</code>'s partitioning and allowing a direct join without expensive all-AMP spool redistribution.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 2</h4>
+            <ul>
+              <li>UPI guarantees 1-AMP, 1-I/O access with zero storage cost.</li>
+              <li>NUPI places duplicate keys on the same AMP—watch out for hot AMP data skew.</li>
+              <li>NUSI is co-located and executes in parallel across all AMPs; use only if selected rows &lt; table blocks.</li>
+              <li>USI is a 2-AMP cross-network operation that prevents all-AMP scans and join spool copying.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────────────────────
+             TOPIC 3: SELECTIVITY MATH & BREAK-EVEN ANALYSIS
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-3" style="display: none">
+          <h2><span class="topic-num">3</span>Selectivity Math &amp; Break-Even Analysis</h2>
+          <p class="topic-subtitle">The 20M customer benchmark, break-even selectivity (&lt;2%), and multi-index combining.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Selectivity ($S$):</strong> Ratio of matching rows to total table rows: $S = \frac{\text{Rows Selected}}{\text{Total Rows}}$. (Lower $S$ = higher filtering power).
+          </div>
+
+          <h3>The 20M Customer Benchmark</h3>
+          <div class="math-box">
+            <div class="math-title">Demographics &amp; Block Calculations</div>
+            &bull; $N = 20,000,000 \text{ rows}$ | Row $= 128 \text{ B}$ | Block $= 64 \text{ KB}$ | ROWID $= 8 \text{ B}$<br>
+            &bull; Rows per Block: $\lfloor 65,536 / 128 \rfloor = \mathbf{512 \text{ rows/block}}$<br>
+            &bull; Total Blocks ($B_{total}$): $\lceil 20,000,000 / 512 \rceil = \mathbf{39,063 \text{ blocks}}$<br>
+            &bull; RIDs per Block: $\lfloor 65,536 / 8 \rfloor = \mathbf{8,192 \text{ RIDs/block}}$
+          </div>
+
+          <h3>Full Scan vs. Single Index (4% Selectivity)</h3>
+          <ul>
+            <li><strong>Full Table Scan:</strong> Always reads exactly $\mathbf{39,063 \text{ blocks}}$ (constant cost, unaffected by query demographics).</li>
+            <li><strong>Single Index on 4% Selectivity ($800,000 \text{ rows}$):</strong>
+              <ul>
+                <li>Index RID blocks to read: $800,000 / 8,192 = \mathbf{99 \text{ blocks}}$.</li>
+                <li>Base table blocks touched: $\frac{800,000 \text{ rows}}{39,063 \text{ blocks}} \approx 20.5 \text{ rows/block} \rightarrow$ <strong>every single block contains matching rows!</strong></li>
+                <li>Total I/O $= 39,063 + 99 = \mathbf{39,162 \text{ I/Os}}$ (<span class="highlight">Worse than full table scan!</span>).</li>
+              </ul>
+            </li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="callout-label">Rule of Thumb: Break-Even Selectivity</div>
+            An unclustered single index is justified ONLY when $\text{Selected Rows} &lt; B_{total}$. For typical tables, <strong>break-even selectivity is strictly $S &lt; 2\%$</strong>. Single indexes on DW attributes ($S = 5\%-20\%$) always degrade performance!
+          </div>
+
+          <h3>Solution: Combining Multiple Indexes (RID List ANDing)</h3>
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>4 Combined Predicates</h4>
+            <p>State (12%) $\times$ Education (4%) $\times$ Occupation (6%) $\times$ Hobby (5%):</p>
+            <pre><code>Combined S = 0.12 * 0.04 * 0.06 * 0.05 = 0.00144% &rarr; 288 matching rows.
+Index RID Blocks: State(297) + Edu(99) + Occ(149) + Hobby(124) = 669 I/Os.
+Base Table Blocks for 288 rows: &le; 288 I/Os.
+Total I/O = 669 + 288 = 957 I/Os (vs. 39,063 for scan &rarr; 40x speedup!).</code></pre>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Super-Optimization: Index-Only Reads</div>
+            If a query only counts rows (<code>SELECT COUNT(*) ...</code>), base table reads $= 0$. Total I/O drops to just **669 I/Os**!
+          </div>
+
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Access Method</th>
+                <th>Index I/O</th>
+                <th>Base Table I/O</th>
+                <th>Total I/O</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Full Table Scan</strong></td>
+                <td>0</td>
+                <td>39,063</td>
+                <td><strong>39,063</strong></td>
+                <td>Baseline constant</td>
+              </tr>
+              <tr>
+                <td><strong>Single Index (4% S)</strong></td>
+                <td>99</td>
+                <td>39,063</td>
+                <td><strong>39,162</strong></td>
+                <td><span class="highlight">Slower than scan (+99 I/Os)</span></td>
+              </tr>
+              <tr>
+                <td><strong>4 Combined Indexes</strong></td>
+                <td>669</td>
+                <td>288</td>
+                <td><strong>957</strong></td>
+                <td><span class="good">40x Faster than scan</span></td>
+              </tr>
+              <tr>
+                <td><strong>Index-Only Read (COUNT)</strong></td>
+                <td>669</td>
+                <td>0</td>
+                <td><strong>669</strong></td>
+                <td><span class="good">58x Faster (Zero base reads)</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: What is the typical break-even selectivity threshold for single unclustered B-tree indexes?</summary>
+              <p><strong>Answer:</strong> Less than 2% ($S &lt; 2\%$). Above 2%, unclustered indexes touch nearly every base block while adding index-read overhead.</p>
+            </details>
+            <details>
+              <summary>Medium: A table has 10M rows of 256 bytes with 64KB blocks. How many rows can a query select before a single index becomes inefficient?</summary>
+              <p><strong>Answer:</strong> Rows/block $= 65,536 / 256 = 256$. Total blocks $= 10,000,000 / 256 = 39,063$. An index is justified only when selected rows &lt; total blocks, meaning <strong>fewer than 39,063 rows ($S &lt; 0.39\%$)</strong>.</p>
+            </details>
+            <details>
+              <summary>Hard: Why does increasing row width (e.g. 128B to 512B) increase break-even selectivity percentage?</summary>
+              <p><strong>Answer:</strong> Fewer rows fit per block, distributing the table over more total blocks. This increases the probability that blocks will contain zero matching rows, allowing indexed access to remain competitive at higher selectivity percentages.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 3</h4>
+            <ul>
+              <li>Full table scan I/O is constant ($B_{total}$); query demographics do not affect it.</li>
+              <li>Single unclustered indexes fail in DW because $S &gt; 2\%$ touches virtually every base block.</li>
+              <li>Combining multiple low-selectivity indexes via RID list ANDing delivers 40x+ I/O reductions.</li>
+              <li>Index-only reads bypass the base table completely for aggregation queries.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────────────────────
+             TOPIC 4: BITMAP, COMPOSITE & COVERED INDEXES
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-4" style="display: none">
+          <h2><span class="topic-num">4</span>Advanced Indexing: Bitmaps, Composite &amp; Covered</h2>
+          <p class="topic-subtitle">Static vs. dynamic bitmaps, false positive resolution, and the leading column rule.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Bitmap Index:</strong> Uses raw bit vectors where bit $n = 1$ if row $n$ matches a specific attribute value. Built for low-cardinality attributes and fast CPU bitwise logic.
+          </div>
+
+          <h3>1. Static Bitmap Indexes</h3>
+          <ul>
+            <li>One bitmap per distinct value; length = total table rows.</li>
+            <li><strong>Storage Break-Even:</strong> $\approx \mathbf{64 \text{ distinct values}}$ uncompressed ($64 \times 1\text{ bit} = 64\text{ bits} = 8\text{-byte RID}$). With compression (WAH/Roaring), breaks even at <strong>thousands of values</strong>.</li>
+            <li><strong>Performance:</strong> 4-predicate query scan takes only $\mathbf{240 \text{ I/Os}}$ (vs. 669 for RID lists $\rightarrow$ <strong>2.8x faster</strong>).</li>
+            <li><strong>Limitation:</strong> Poor for OLTP updates/deletes (requires shifting bit positions). Great for read-only DW append loads.</li>
+          </ul>
+
+          <h3>2. Dynamic Bitmap Indexes</h3>
+          <ul>
+            <li>Constructed <strong>in RAM on-the-fly</strong> during query execution from index scans to avoid RID sorting.</li>
+            <li>$(n-1)$ worst-selectivity indexes are hashed into RAM bitmaps and ANDed; best-selectivity index probes the result.</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="callout-label">Exam Trap: Dynamic Bitmap False Positives</div>
+            Hash collisions can cause two disparate rows to set the same bit position, falsely signaling a match.<br>
+            <strong>Resolution:</strong> The RDBMS <strong>always re-validates predicates against the actual base row</strong> after fetching it, discarding false positives with zero data corruption.
+          </div>
+
+          <h3>3. Composite &amp; Covered Indexes</h3>
+          <ul>
+            <li><strong>Composite Index:</strong> Built on multiple columns: <code>(col1, col2, col3)</code>.
+              <ul>
+                <li><strong>The Leading Column Rule:</strong> The query <code>WHERE</code> clause <strong>must include the leading column</strong>. Omitting it forces an expensive <strong>Full Index Scan (2,500 I/Os vs 1 I/O)</strong>!</li>
+              </ul>
+            </li>
+            <li><strong>Covered Index:</strong> Contains all columns requested by a query (using <code>INCLUDE</code> for payload metrics).
+              <ul>
+                <li><strong>Zero base table reads.</strong> Optimizers can join covered indexes directly to other tables without touching base data!</li>
+              </ul>
+            </li>
+            <li><strong>Clustered Index:</strong> Physically orders table rows on disk (max 1 per table). Reduces I/O from 39,162 to <strong>1,662 I/Os</strong> for 4% selectivity queries.</li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip: Covered Index Joins</div>
+            When a query joins two tables and selects only columns present in a Covered Index, the optimizer joins the index directly, bypassing both base tables completely.
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Covered Index with INCLUDE Clause</h4>
+            <pre><code>CREATE UNIQUE INDEX acct_cov ON account (account_id, open_dt) 
+INCLUDE (balance_amt);
+
+-- Evaluated 100% out of the index without touching the account base table:
+SELECT balance_amt FROM account WHERE account_id = 9021 AND open_dt > '2024-01-01';</code></pre>
+          </div>
+
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Index Type</th>
+                <th>Storage</th>
+                <th>Update Cost</th>
+                <th>Sweet Spot</th>
+                <th>Key Benefit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Static Bitmap</strong></td>
+                <td>Disk</td>
+                <td>Very High</td>
+                <td>Low cardinality (&lt; 64 unique)</td>
+                <td>CPU bitwise AND/OR/NOT registers</td>
+              </tr>
+              <tr>
+                <td><strong>Dynamic Bitmap</strong></td>
+                <td>RAM</td>
+                <td>None (ephemeral)</td>
+                <td>Runtime multi-index query</td>
+                <td>Avoids expensive RID-list sorting</td>
+              </tr>
+              <tr>
+                <td><strong>Composite B-Tree</strong></td>
+                <td>Disk</td>
+                <td>Moderate</td>
+                <td>Multiple co-queried columns</td>
+                <td>1-I/O tuple lookup (Leading column required!)</td>
+              </tr>
+              <tr>
+                <td><strong>Covered Index</strong></td>
+                <td>Disk</td>
+                <td>High (wide leaves)</td>
+                <td>High-frequency queries</td>
+                <td>Eliminates base table reads completely</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: At what distinct value threshold does an uncompressed static bitmap break even with an 8-byte RID index?</summary>
+              <p><strong>Answer:</strong> Exactly <strong>64 distinct values</strong> ($64 \times 1\text{ bit} = 64\text{ bits} = 8\text{ bytes}$).</p>
+            </details>
+            <details>
+              <summary>Medium: What causes false positives in dynamic bitmaps and how does the engine prevent incorrect query results?</summary>
+              <p><strong>Answer:</strong> Hash collisions map different rows to the same bit position. The engine prevents incorrect results by re-evaluating all query predicates against the actual base row fetched from disk.</p>
+            </details>
+            <details>
+              <summary>Hard: An index exists on <code>(region, year, product_id)</code>. Why is <code>WHERE year = 2024</code> slow while <code>WHERE region = 'US' AND year = 2024</code> is fast?</summary>
+              <p><strong>Answer:</strong> The Leading Column Rule. The tree is sorted primarily by <code>region</code>. Omitting <code>region</code> prevents hierarchical navigation, forcing a full index scan across all leaf blocks.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 4</h4>
+            <ul>
+              <li>Static bitmaps excel on low-cardinality attributes; break even at 64 unique values (thousands compressed).</li>
+              <li>Dynamic bitmaps combine traditional indexes in RAM; false positives are eliminated via base-row re-validation.</li>
+              <li>Composite indexes require the leading column in the <code>WHERE</code> clause to avoid full index scans.</li>
+              <li>Covered indexes eliminate base table I/O completely and support direct index-to-index joins.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────────────────────
+             TOPIC 5: PHYSICAL DESIGN & STORAGE (PONNIAH CH 18)
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-5" style="display: none">
+          <h2><span class="topic-num">5</span>Physical Storage &amp; Ponniah Chapter 18</h2>
+          <p class="topic-subtitle">The 7 design steps, PCTFREE/PCTUSED tuning, fact vs. dimension indexing, and RI suspension.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Physical Database Design:</strong> Translating the logical dimensional model into storage parameters, file structures, and indexing strategies optimized for hardware and query response times.
+          </div>
+
+          <h3>The 7-Step Physical Design Process</h3>
+          <ol>
+            <li><strong>Develop Standards:</strong> Strict naming conventions for tables, columns, indexes, and partitions.</li>
+            <li><strong>Create Aggregates Plan:</strong> Pre-calculate summaries at key hierarchy levels (80/20 rule).</li>
+            <li><strong>Determine Partitioning Scheme:</strong> Horizontal (by date) and vertical (wide dimensions).</li>
+            <li><strong>Establish Clustering Options:</strong> Physically co-locate related records for sequential prefetch.</li>
+            <li><strong>Prepare Indexing Strategy:</strong> Fact concatenated keys vs. dimension bitmap indexes.</li>
+            <li><strong>Assign Storage Structures:</strong> RAID levels, tablespaces, and file striping.</li>
+            <li><strong>Complete Physical Model:</strong> DDL, block parameters (<code>PCTFREE</code>, <code>PCTUSED</code>), and initialization settings.</li>
+          </ol>
+
+          <h3>Block Parameters: <code>PCTFREE</code> vs. <code>PCTUSED</code></h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>OLTP Setting</th>
+                <th>Data Warehouse (DW) Setting &amp; Rationale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>PCTFREE</strong></td>
+                <td>High (20%–30%)</td>
+                <td><strong>Set AS LOW AS POSSIBLE (0%–5%)!</strong><br>DW data is read-only / bulk-loaded. Setting it high wastes massive disk space and forces scans to read thousands of empty blocks.</td>
+              </tr>
+              <tr>
+                <td><strong>PCTUSED</strong></td>
+                <td>Moderate (40%–50%)</td>
+                <td><strong>Set AS HIGH AS POSSIBLE (80%–90%)!</strong><br>Virtually no deletes occur. Pack blocks to maximum capacity to maximize throughput during sequential table scans.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="warning-box">
+            <div class="callout-label">Exam Tip: The 3 "Never" Rules of DW Indexing</div>
+            1. <strong>NEVER build bitmapped indexes on Fact tables</strong> (high cardinality breaks them).<br>
+            2. <strong>NEVER set PCTFREE high (&gt; 5%) in DW repositories</strong> (wastes massive storage).<br>
+            3. <strong>NEVER leave referential integrity checks enabled during bulk ETL loading</strong>.
+          </div>
+
+          <h3>Fact vs. Dimension Indexing Strategy</h3>
+          <ul>
+            <li><strong>Fact Tables:</strong>
+              <ul>
+                <li>Concatenated B-Tree index on the composite primary key.</li>
+                <li>Place the <strong>most heavily filtered dimension key first</strong> (leading column rule).</li>
+                <li>Index metric columns (e.g. <code>amount</code>) only if frequent range queries filter on them.</li>
+              </ul>
+            </li>
+            <li><strong>Dimension Tables:</strong>
+              <ul>
+                <li>Unique B-Tree on the surrogate primary key.</li>
+                <li><strong>Static Bitmap Indexes</strong> on low-cardinality attributes (<code>gender</code>, <code>status</code>, <code>region</code>).</li>
+                <li>Composite B-Trees on drill-down hierarchies: <code>(country, state, city)</code>.</li>
+              </ul>
+            </li>
+          </ul>
+
+          <div class="note-box">
+            <div class="callout-label">Pro Tip: Disable Referential Integrity (RI) During Bulk Load</div>
+            Data is already cleansed and verified in the <strong>staging area</strong>. Checking RI row-by-row during bulk load is redundant and causes severe performance penalties. Suspend RI during load!
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Example</div>
+            <h4>Data Array Denormalization for Time-Series</h4>
+            <p>Store 12 monthly balance columns inside one customer row (intentional 1NF violation):</p>
+            <pre><code>CREATE TABLE cust_monthly_bal (
+    cust_id   DECIMAL(10,0) PRIMARY KEY,
+    year_num  SMALLINT NOT NULL,
+    m_bal     DECIMAL(15,2)[12] -- bal_01 through bal_12
+);</code></pre>
+            <p>Slashes row count by 12x, eliminates 11 self-joins, and answers annual trend queries in 1 read!</p>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Why should PCTFREE be set to 0–5% in a data warehouse?</summary>
+              <p><strong>Answer:</strong> DW records are historical and read-only; they do not expand through in-place updates. High PCTFREE leaves empty space in every block, bloating table size and slowing full scans.</p>
+            </details>
+            <details>
+              <summary>Medium: Why should referential integrity (RI) checks be suspended during DW loading?</summary>
+              <p><strong>Answer:</strong> Relational integrity is already verified in the Data Staging Area during ETL transformation. Runtime RI verification during bulk load adds massive locking and CPU overhead.</p>
+            </details>
+            <details>
+              <summary>Hard: How should the concatenated primary key on a Fact table be ordered among Store, Date, and Product?</summary>
+              <p><strong>Answer:</strong> Place the most frequently filtered dimension first (typically <code>DateKey</code> or <code>ProductKey</code>). This satisfies the Leading Column Rule, allowing the B-Tree to navigate directly for time-range and product queries.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 5</h4>
+            <ul>
+              <li>The 7-step physical design process bridges logical schemas and physical hardware.</li>
+              <li>Set <code>PCTFREE</code> low (0-5%) and <code>PCTUSED</code> high (80-90%) to eliminate wasted space.</li>
+              <li>Fact tables use concatenated B-Trees with heavily filtered dimensions first; never use bitmaps on facts.</li>
+              <li>Dimension tables use unique B-Trees on surrogate keys and bitmaps on low-selectivity attributes.</li>
+              <li>Suspend RI checking during bulk ETL loading.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────────────────────
+             TOPIC 6: QUIZ REVIEW & SOLVED MCQS
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-6" style="display: none">
+          <h2><span class="topic-num">6</span>Quiz Review &amp; Solved MCQs</h2>
+          <p class="topic-subtitle">Ponniah Chapter 18 matching, worked calculation problem, and 8 high-yield exam MCQs.</p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Physical Optimization Matrix:</strong> Balancing block parameters, partitioning, clustering, and index choices to optimize ETL load windows against sub-minute DSS query response times.
+          </div>
+
+          <h3>Ponniah Chapter 18 Matching Exercise</h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Match</th>
+                <th>Technical Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Fact Table</td><td>Candidate for partitioning</td><td>Massive size requires horizontal partitioning by date for pruning</td></tr>
+              <tr><td>Dynamic Extension</td><td>DBMS finds new extent</td><td>Occurs when extents fill; prevent via large initial allocations</td></tr>
+              <tr><td>File Striping</td><td>Store on separate devices</td><td>Spreads data across drives for concurrent I/O</td></tr>
+              <tr><td>PCTUSED</td><td>Set at high level (80-90%)</td><td>Packs blocks tightly for full table scans</td></tr>
+              <tr><td>B-Tree Index</td><td>Data addresses in leaf nodes</td><td>Hierarchical tree pointing to ROWIDs in leaves</td></tr>
+              <tr><td>RI Checks</td><td>Suspend for loading</td><td>Data verified in staging; avoids ETL bottleneck</td></tr>
+              <tr><td>Clustered Index</td><td>Combined data &amp; index</td><td>Physically reorders base table rows on disk</td></tr>
+              <tr><td>PCTFREE</td><td>Set at low level (0-5%)</td><td>Read-only DW data has no in-place row expansion</td></tr>
+              <tr><td>Bitmapped Index</td><td>Data address in each entry</td><td>Bit ordinal positions directly map to row numbers</td></tr>
+              <tr><td>Data Array</td><td>Repeating data group</td><td>Stores time series columns in 1 row (violates 1NF)</td></tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Tip: Calculation Steps</div>
+            1. $\text{Rows/Block} = \lfloor \text{BlockSize} / \text{RowWidth} \rfloor$<br>
+            2. $\text{Total Blocks} = \lceil \text{TotalRows} / \text{RowsPerBlock} \rceil$<br>
+            3. $\text{Selected Rows} = \text{TotalRows} \times S$<br>
+            4. If $\text{Selected Rows} \ge \text{Total Blocks}$, base table I/O $=$ **Total Blocks**!
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Common Student Mistake in Calculations</div>
+            Do not assume base table I/Os equal matching rows. If $800,000$ rows match across $39,063$ blocks, every block contains matching rows, so base I/O is all $39,063$ blocks!
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Worked Problem</div>
+            <h4>Full Scan vs. Single Index</h4>
+            <p>Table: 5M rows, 256B rows, 32KB block, 8B RID, Selectivity $S = 3\%$.</p>
+            <pre><code>1. Rows/Block = 32,768 / 256 = 128 rows/block.
+2. Total Blocks = 5,000,000 / 128 = 39,063 blocks (Full scan = 39,063 I/Os).
+3. Selected Rows = 5,000,000 * 0.03 = 150,000 rows.
+4. RIDs/Block = 32,768 / 8 = 4,096 RIDs/block.
+5. Index Blocks = 150,000 / 4,096 = 37 blocks.
+6. Base Blocks = 150,000 / 39,063 = ~3.8 rows/block &rarr; All 39,063 blocks touched!
+Total Index I/O = 39,063 + 37 = 39,100 I/Os. Full scan (39,063) WINS!</code></pre>
+          </div>
+
+          <h3>High-Yield Exam MCQs</h3>
+
+          <div class="mcq-card">
+            <div class="mcq-q">Q1. Why is a Primary Index (PI) considered "free" in Teradata?</div>
+            <ul class="mcq-opts">
+              <li>A) It is cached in RAM buffer pool</li>
+              <li class="correct-ans">&check; B) Teradata uses a hash-based file system where the PI defines row placement on disk without creating a subtable</li>
+              <li>C) Teradata builds the index asynchronously in the background</li>
+              <li>D) It uses compressed B-Tree leaves</li>
+            </ul>
+            <div class="mcq-explain"><strong>Explanation:</strong> Row addresses are derived mathematically from hashing the PI column directly. No secondary index structure is constructed.</div>
+          </div>
+
+          <div class="mcq-card">
+            <div class="mcq-q">Q2. Accessing a row via a Teradata Unique Secondary Index (USI) requires:</div>
+            <ul class="mcq-opts">
+              <li>A) A single-AMP operation because USI is co-located with base data</li>
+              <li class="correct-ans">&check; B) A two-AMP operation involving a message across the BYNET</li>
+              <li>C) An all-AMP broadcast scan</li>
+              <li>D) Zero AMP operations</li>
+            </ul>
+            <div class="mcq-explain"><strong>Explanation:</strong> USI subtables are partitioned by the secondary key. AMP 1 reads the USI subtable to get the ROWID and sends a message across the BYNET to AMP 2 to read the base row.</div>
+          </div>
+
+          <div class="mcq-card">
+            <div class="mcq-q">Q3. For a table with 512 rows per block, what is the approximate break-even selectivity of an unclustered single index?</div>
+            <ul class="mcq-opts">
+              <li>A) 25%</li>
+              <li>B) 10%</li>
+              <li class="correct-ans">&check; C) Less than 2%</li>
+              <li>D) 50%</li>
+            </ul>
+            <div class="mcq-explain"><strong>Explanation:</strong> At &gt;2% selectivity, matching rows scatter across virtually every physical block in the table, making indexed access slower than a sequential scan.</div>
+          </div>
+
+          <div class="mcq-card">
+            <div class="mcq-q">Q4. How do Dynamic Bitmap indexes resolve false positives?</div>
+            <ul class="mcq-opts">
+              <li>A) By using 512-bit SHA hashing</li>
+              <li class="correct-ans">&check; B) By re-validating all query predicates against the actual base table row after fetching it</li>
+              <li>C) By rolling back uncommitted transactions</li>
+              <li>D) Dynamic bitmaps cannot produce false positives</li>
+            </ul>
+            <div class="mcq-explain"><strong>Explanation:</strong> Hash collisions in memory bitmaps can falsely turn bits ON. The RDBMS re-evaluates the query predicates against the fetched base row to guarantee accuracy.</div>
+          </div>
+
+          <div class="mcq-card">
+            <div class="mcq-q">Q5. A composite index exists on <code>(state, education, hobby)</code>. Why does <code>WHERE education = 'G'</code> trigger a full index scan?</div>
+            <ul class="mcq-opts">
+              <li>A) Education is a low-cardinality column</li>
+              <li class="correct-ans">&check; B) The Leading Column Rule: the index is sorted primarily by state; omitting state prevents hierarchical navigation</li>
+              <li>C) Composite indexes require all columns in the WHERE clause</li>
+              <li>D) The query lacks an ORDER BY clause</li>
+            </ul>
+            <div class="mcq-explain"><strong>Explanation:</strong> The high-order column (<code>state</code>) must be constrained to navigate down the B-Tree; otherwise, the engine must scan all leaf blocks.</div>
+          </div>
+
+          <div class="mcq-card">
+            <div class="mcq-q">Q6. What are the recommended settings for PCTFREE and PCTUSED in a Data Warehouse?</div>
+            <ul class="mcq-opts">
+              <li>A) PCTFREE 30%, PCTUSED 40%</li>
+              <li>B) PCTFREE 50%, PCTUSED 50%</li>
+              <li class="correct-ans">&check; C) PCTFREE 0%–5%, PCTUSED 80%–90%</li>
+              <li>D) PCTFREE 20%, PCTUSED 40%</li>
+            </ul>
+            <div class="mcq-explain"><strong>Explanation:</strong> DW data is read-only and historical (low PCTFREE prevents empty space waste; high PCTUSED packs blocks tightly for fast scans).</div>
+          </div>
+
+          <div class="mcq-card">
+            <div class="mcq-q">Q7. Where should Bitmapped Indexes be deployed in a Star Schema?</div>
+            <ul class="mcq-opts">
+              <li>A) On the composite primary key of the Fact table</li>
+              <li>B) On metric columns inside the Fact table</li>
+              <li class="correct-ans">&check; C) On low-cardinality descriptive columns in Dimension tables</li>
+              <li>D) On fact table surrogate keys</li>
+            </ul>
+            <div class="mcq-explain"><strong>Explanation:</strong> Bitmaps are designed for low-cardinality data with repeated values. Fact tables have millions of high-cardinality rows and should never use bitmaps.</div>
+          </div>
+
+          <div class="mcq-card">
+            <div class="mcq-q">Q8. What is the benefit of a Covered Index?</div>
+            <ul class="mcq-opts">
+              <li>A) Compresses data using run-length encoding</li>
+              <li class="correct-ans">&check; B) Satisfies queries completely out of the index, eliminating all base table I/O</li>
+              <li>C) Enforces unique constraints across tables</li>
+              <li>D) Decreases the size of index leaf blocks</li>
+            </ul>
+            <div class="mcq-explain"><strong>Explanation:</strong> Because all requested columns exist in the index leaf blocks, the engine never touches base table blocks.</div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Final Review Practice Questions</div>
+            <details>
+              <summary>Easy: Which block parameter directly controls empty space waste during full table scans in a DW?</summary>
+              <p><strong>Answer:</strong> <code>PCTFREE</code>. Setting it too high reserves empty space for updates that never happen, forcing scans to read empty space.</p>
+            </details>
+            <details>
+              <summary>Medium: Why does NUSI in Teradata require an all-AMP scan?</summary>
+              <p><strong>Answer:</strong> NUSI entries are co-located on the same AMP as base data. Rows are distributed across all AMPs by Primary Index, so matching values could reside on any AMP, requiring all AMPs to scan their local NUSI in parallel.</p>
+            </details>
+            <details>
+              <summary>Hard: Why does adding 15 B-Tree indexes to a 500M-row Fact table cause batch load failure?</summary>
+              <p><strong>Answer:</strong> Every inserted row must update and rebalance all 15 B-Tree hierarchies, causing massive random I/O, leaf splits, and lock contention that blows past the ETL window.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Master Quiz Preparation Checklist</h4>
+            <ul>
+              <li><strong>Teradata:</strong> UPI (1 AMP, free), NUPI (1 AMP, free, skew risk), USI (2 AMPs, BYNET), NUSI (All AMPs parallel, co-located).</li>
+              <li><strong>Selectivity:</strong> Break-even is strictly &lt; 2%. Single indexes fail in DW; combine multiple indexes with RID ANDing.</li>
+              <li><strong>Bitmaps:</strong> Break-even at 64 unique values; dynamic bitmaps resolve false positives via base row re-validation.</li>
+              <li><strong>Physical Design:</strong> PCTFREE low (0-5%), PCTUSED high (80-90%). Suspend RI checks during load. Never put bitmaps on Fact tables!</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+      <!-- end module-container -->
+
+      <!-- ═══════════════════════════════════════════════════════
+       BOTTOM PAGINATION
+       ═══════════════════════════════════════════════════════ -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })"
+    >
+      ↑
+    </button>
+
+    <!-- ═══════════════════════════════════════════════════════
+     DYNAMIC PAGE SCRIPT
+     ═══════════════════════════════════════════════════════ -->
+    <script>
+      const topics = [
+        "topic-1",
+        "topic-2",
+        "topic-3",
+        "topic-4",
+        "topic-5",
+        "topic-6"
+      ];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling;
+        const c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          if (c) c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          if (c) c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach((i) => {
+            i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+          });
+      }
+
+      // Initialise
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none")
+      );
+    </script>
+  </body>
+</html>
