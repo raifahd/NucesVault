@@ -1,0 +1,3027 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Analysis &amp; Visualization — Visualizing Time Series &amp; Trends</title>
+    <meta
+      name="description"
+      content="High-yield, comprehensive exam preparation notes for Claus O. Wilke's Fundamentals of Data Visualization (Chapters 13 and 14) and Notes on Time Series and Trends. Covers line graphs, area zero-baseline law, connected scatterplots, LOESS 6-step algorithm, cubic splines, roughness penalty, eager vs lazy learning, the OLS exponential trap, data straightening (log-linear, log-log, linear-log), base conversions, Keeling curve STL decomposition, master summary cheat sheet, and interactive 32-question MCQ exam quiz."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      /* ── Enhanced Visual Card & Diagram Styles ── */
+      .citation-header {
+        background: rgba(217, 119, 87, 0.08);
+        border: 1px solid rgba(217, 119, 87, 0.25);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.84rem;
+        color: var(--mt);
+        margin-bottom: 24px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+      }
+      .citation-header strong {
+        color: var(--ac);
+      }
+      .citation-tag {
+        background: rgba(217, 119, 87, 0.15);
+        color: var(--ac);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .visual-card {
+        background: rgba(24, 24, 27, 0.75);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 22px 0;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
+      }
+      .visual-card h4 {
+        margin: 0 0 6px;
+        color: var(--tx);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .visual-card p.visual-caption {
+        font-size: 0.8rem;
+        color: var(--mt);
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      /* Diagrams & Strategy Comparisons */
+      .diagram-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .diagram-box {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.2s, border-color 0.2s;
+      }
+      .diagram-box:hover {
+        transform: translateY(-2px);
+        border-color: var(--ac);
+      }
+      .diagram-box-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--tx);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .tag-status {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .tag-bad {
+        background: rgba(240, 82, 79, 0.2);
+        color: #f87171;
+        border: 1px solid rgba(240, 82, 79, 0.4);
+      }
+      .tag-good {
+        background: rgba(79, 191, 139, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(79, 191, 139, 0.4);
+      }
+      .tag-warn {
+        background: rgba(240, 169, 78, 0.2);
+        color: #fbbf24;
+        border: 1px solid rgba(240, 169, 78, 0.4);
+      }
+
+      /* SVG Graphic Containers */
+      .svg-canvas-wrap {
+        width: 100%;
+        background: #111114;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+      .svg-canvas-wrap svg {
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* Comparison Matrices & Tables */
+      .matrix-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        margin: 16px 0;
+      }
+      .matrix-table th {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--tx);
+        text-align: left;
+        padding: 10px 14px;
+        border-bottom: 2px solid var(--bd);
+        font-weight: 600;
+      }
+      .matrix-table td {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--bd);
+        color: var(--tx);
+      }
+      .matrix-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      /* ── Interactive Quiz Styles ── */
+      .quiz-header-banner {
+        background: linear-gradient(135deg, rgba(217, 119, 87, 0.14), rgba(139, 92, 246, 0.14));
+        border: 1px solid rgba(217, 119, 87, 0.35);
+        border-radius: 14px;
+        padding: 22px 24px;
+        margin-bottom: 24px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      .quiz-title-wrap h3 {
+        margin: 0 0 4px;
+        font-size: 1.25rem;
+        color: #fff;
+      }
+      .quiz-title-wrap p {
+        margin: 0;
+        font-size: 0.84rem;
+        color: var(--mt);
+      }
+      .score-board {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .score-pill {
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid var(--bd);
+        padding: 7px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--ac);
+        letter-spacing: 0.3px;
+        transition: all 0.25s;
+      }
+      .reset-quiz-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--bd);
+        color: var(--tx);
+        padding: 7px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .reset-quiz-btn:hover {
+        background: var(--hv);
+        border-color: var(--ac);
+        color: var(--ac);
+      }
+
+      /* Quiz Category Filter Buttons */
+      .quiz-filter-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 22px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--bd);
+      }
+      .quiz-filter-btn {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--bd);
+        color: var(--mt);
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-family: inherit;
+      }
+      .quiz-filter-btn:hover {
+        border-color: var(--ac);
+        color: var(--tx);
+      }
+      .quiz-filter-btn.active {
+        background: rgba(217, 119, 87, 0.18);
+        border-color: var(--ac);
+        color: var(--ac);
+        font-weight: 600;
+      }
+
+      .mcq-card {
+        background: rgba(24, 24, 27, 0.7);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .mcq-card:hover {
+        border-color: rgba(217, 119, 87, 0.35);
+      }
+      .mcq-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .mcq-qnum {
+        font-size: 0.7rem;
+        font-weight: 700;
+        background: rgba(217, 119, 87, 0.15);
+        color: var(--ac);
+        padding: 3px 8px;
+        border-radius: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+      }
+      .mcq-category-tag {
+        font-size: 0.68rem;
+        color: var(--mt);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--bd);
+        padding: 2px 7px;
+        border-radius: 4px;
+        margin-left: 8px;
+      }
+      .mcq-question {
+        font-size: 0.94rem;
+        font-weight: 600;
+        color: var(--tx);
+        line-height: 1.5;
+        flex: 1;
+      }
+      .mcq-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 14px 0 10px;
+      }
+      .mcq-opt {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 10px 14px;
+        text-align: left;
+        color: var(--tx);
+        font-family: inherit;
+        font-size: 0.85rem;
+        line-height: 1.45;
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        transition: all 0.15s ease;
+      }
+      .mcq-opt:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: var(--ac);
+      }
+      .opt-letter {
+        font-weight: 700;
+        font-size: 0.78rem;
+        color: var(--mt);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 2px 7px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .mcq-opt.selected-correct {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: #10b981;
+        color: #a7f3d0;
+      }
+      .mcq-opt.selected-correct .opt-letter {
+        background: #10b981;
+        color: #064e3b;
+      }
+      .mcq-opt.selected-incorrect {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: #ef4444;
+        color: #fca5a5;
+      }
+      .mcq-opt.selected-incorrect .opt-letter {
+        background: #ef4444;
+        color: #450a0a;
+      }
+      .mcq-opt.show-correct {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.08);
+      }
+      .mcq-feedback {
+        display: none;
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 0.83rem;
+        line-height: 1.55;
+      }
+      .mcq-feedback.visible {
+        display: block;
+      }
+      .mcq-feedback.correct {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        color: #a7f3d0;
+      }
+      .mcq-feedback.incorrect {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        color: #fca5a5;
+      }
+
+      /* ── Bottom Navigation Styling ── */
+      .bottom-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid var(--bd);
+        padding: 24px 0 16px;
+        margin-top: 48px;
+        gap: 16px;
+      }
+      .bottom-nav button {
+        display: flex;
+        flex-direction: column;
+        background: var(--sb);
+        color: var(--mt);
+        border: 1px solid var(--bd);
+        padding: 12px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s;
+        max-width: 48%;
+        min-width: 170px;
+      }
+      .bottom-nav button .btn-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        color: var(--mt);
+        margin-bottom: 3px;
+        display: block;
+      }
+      .bottom-nav button .btn-title {
+        color: var(--tx);
+        font-size: 0.88rem;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        display: block;
+      }
+      .bottom-nav button:hover:not(:disabled) {
+        border-color: var(--ac);
+        background: var(--hv);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      }
+      .bottom-nav button:hover:not(:disabled) .btn-label {
+        color: var(--ac);
+      }
+      .bottom-nav button:disabled {
+        opacity: 0.28;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      #prev-btn {
+        align-items: flex-start;
+      }
+      #prev-btn div {
+        text-align: left;
+        max-width: 100%;
+      }
+      #next-btn {
+        align-items: flex-end;
+      }
+      #next-btn div {
+        text-align: right;
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+     ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Analysis &amp; Visualization</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <!-- Current Module (Active & Expandable) -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 10 — Time Series &amp; Trends</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')">
+                <span class="nav-num">01</span>Time Series Foundations &amp; Lines
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                <span class="nav-num">02</span>Connected Scatterplots &amp; Cycles
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                <span class="nav-num">03</span>Smoothing &amp; LOESS Mechanics
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')">
+                <span class="nav-num">04</span>Splines vs. LOESS (Eager vs Lazy)
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-5')">
+                <span class="nav-num">05</span>The OLS Trap &amp; Data Straightening
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-6')">
+                <span class="nav-num">06</span>Detrending &amp; STL Decomposition
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-7')">
+                <span class="nav-num">07</span>📋 Master Summary &amp; Formulas
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-8')">
+                <span class="nav-num">08</span>🎯 Interactive MCQ Exam Quiz
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Other Course Modules (Cross-File Links) -->
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
+            <span class="nav-num">01</span>Introduction to DAV
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
+            <span class="nav-num">02</span>Data Analysis Lifecycle
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Data Preparation.html">
+            <span class="nav-num">03</span>Data Preparation
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
+            <span class="nav-num">04</span>Exploratory Data Analysis
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
+            <span class="nav-num">05</span>Evolution of Data Architecture
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./6- Distributed Data Processing & Apache Spark.html">
+            <span class="nav-num">06</span>Distributed Processing &amp; Spark
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
+            <span class="nav-num">07</span>Visualizing Data (Ch 2 &amp; 3)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./8- Lab Midterm Sequential Codes & Exam Guide.html">
+            <span class="nav-num">08</span>Lab Midterm Sequential Codes &amp; Guide
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./9- Principles of Figure Design & Visualization Pitfalls.html">
+            <span class="nav-num">09</span>Figure Design &amp; Pitfalls
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT WRAPPER
+     ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container" id="module-10">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Analysis &amp; Visualization • Wilke Ch. 13–14 &amp; Time Series Notes</div>
+          <h1 class="module-title">Visualizing Time Series &amp; Trends</h1>
+        </div>
+
+        <div class="citation-header">
+          <span class="citation-tag">Textbook &amp; Lecture References</span>
+          <span>
+            Claus O. Wilke: <em>Fundamentals of Data Visualization</em>, Chapter 13 (Time Series &amp; Independent Variables) &amp; Chapter 14 (Visualizing Trends) • Course Handout: <em>Notes on Time Series and Trends</em> (Local Regression, LOESS, Splines, Eager vs. Lazy Computation, Data Straightening &amp; Conversions).
+          </span>
+        </div>
+
+        <!-- ── TOPIC CARDS ── -->
+
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Time Series Foundations &amp; Line Graph Principles</h2>
+          <p class="topic-subtitle">Temporal ordering, points vs. lines, shaded area baselines, direct labeling, and dose–response curves (Wilke Ch. 13)</p>
+
+          <p>
+            When visualizing quantitative variables against one another, standard scatterplots treat both axes symmetrically with no assumed sequence. However, when the independent variable is <strong>time</strong> (or a controlled, ordered experimental dose), the data acquires an <strong>inherent sequential structure</strong>. Every observation has an unambiguous predecessor and successor. Line graphs exist specifically to communicate and emphasize this temporal progression.
+          </p>
+
+          <div class="definition">
+            <strong>Time Series:</strong> A sequence of data points recorded at successive, ordered intervals of an independent variable (typically time $t$).<br />
+            <strong>Line Graph:</strong> A chart that connects consecutive data points along an ordered independent axis with straight line segments to guide the human eye along the trajectory of change.
+            <div class="def-sub">Intuitive one-liner: A line graph turns discrete snapshots of time into a continuous visual story.</div>
+          </div>
+
+          <h3>1. The Visual Spectrum: Dots, Lines, and Guides to the Eye</h3>
+          <p>
+            How should discrete time points be rendered? Claus O. Wilke outlines four distinct visual treatments, each suited to specific data densities and analytical goals:
+          </p>
+
+          <div class="diagram-grid">
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>1. Dots Only (Scatterplot)</span>
+                <span class="tag-status tag-warn">Discrete Only</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                Plots raw observations without connecting segments. Emphasizes individual measurements, but forces the viewer to mentally connect neighbors. Poor for tracking rapid fluctuations.
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>2. Dots + Connecting Lines</span>
+                <span class="tag-status tag-good">Guide to Eye</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                Explicitly highlights sequence while preserving exact measurement points. Ideal for sparse, irregularly spaced, or moderate-sized series where individual samples matter.
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>3. Lines Only (No Dots)</span>
+                <span class="tag-status tag-good">Dense Data Best</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                Omits dots entirely to reduce visual clutter. Maximizes focus on macro-trends and curvature. Recommended when time points are densely spaced (e.g., daily stock prices or monthly submissions over years).
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>4. Filled Area Under Curve</span>
+                <span class="tag-status tag-warn">Strict Baseline</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                Shades the region between the line and the horizontal axis. Emphasizes cumulative volume or magnitude. <strong>Valid ONLY if the vertical axis begins at absolute zero</strong>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Native SVG Diagram 1: Line Graph Treatments & Area Rule -->
+          <div class="visual-card">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+              Architectural Visual: The 4 Renderings of a Time Series &amp; The Zero-Baseline Law
+            </h4>
+            <p class="visual-caption">Comparison of representation modes for the bioRxiv monthly submission series and the visual hazard of truncated baselines.</p>
+            <div class="svg-canvas-wrap">
+              <svg viewBox="0 0 920 280" style="width:100%; max-width:920px; font-family:Poppins, sans-serif;">
+                <!-- Panel 1: Dots Only -->
+                <g transform="translate(10, 20)">
+                  <rect width="210" height="230" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="105" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">1. Dots Only (Scatter)</text>
+                  <!-- Axes -->
+                  <line x1="30" y1="190" x2="190" y2="190" stroke="#52525b" stroke-width="1.5"/>
+                  <line x1="30" y1="190" x2="30" y2="40" stroke="#52525b" stroke-width="1.5"/>
+                  <!-- Points -->
+                  <circle cx="50" cy="180" r="4" fill="#3b82f6"/>
+                  <circle cx="75" cy="170" r="4" fill="#3b82f6"/>
+                  <circle cx="100" cy="155" r="4" fill="#3b82f6"/>
+                  <circle cx="125" cy="130" r="4" fill="#3b82f6"/>
+                  <circle cx="150" cy="95" r="4" fill="#3b82f6"/>
+                  <circle cx="175" cy="55" r="4" fill="#3b82f6"/>
+                  <text x="105" y="215" fill="#a1a1aa" font-size="10" text-anchor="middle">Shows discrete points</text>
+                </g>
+
+                <!-- Panel 2: Dots + Line -->
+                <g transform="translate(235, 20)">
+                  <rect width="210" height="230" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="105" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">2. Dots + Connecting Line</text>
+                  <!-- Axes -->
+                  <line x1="30" y1="190" x2="190" y2="190" stroke="#52525b" stroke-width="1.5"/>
+                  <line x1="30" y1="190" x2="30" y2="40" stroke="#52525b" stroke-width="1.5"/>
+                  <!-- Line -->
+                  <path d="M50 180 L75 170 L100 155 L125 130 L150 95 L175 55" fill="none" stroke="#d97757" stroke-width="2"/>
+                  <!-- Points -->
+                  <circle cx="50" cy="180" r="3.5" fill="#fff" stroke="#d97757" stroke-width="1.5"/>
+                  <circle cx="75" cy="170" r="3.5" fill="#fff" stroke="#d97757" stroke-width="1.5"/>
+                  <circle cx="100" cy="155" r="3.5" fill="#fff" stroke="#d97757" stroke-width="1.5"/>
+                  <circle cx="125" cy="130" r="3.5" fill="#fff" stroke="#d97757" stroke-width="1.5"/>
+                  <circle cx="150" cy="95" r="3.5" fill="#fff" stroke="#d97757" stroke-width="1.5"/>
+                  <circle cx="175" cy="55" r="3.5" fill="#fff" stroke="#d97757" stroke-width="1.5"/>
+                  <text x="105" y="215" fill="#4fbf8b" font-size="10" text-anchor="middle">"Guide to the eye"</text>
+                </g>
+
+                <!-- Panel 3: Line Only -->
+                <g transform="translate(460, 20)">
+                  <rect width="210" height="230" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="105" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">3. Line Only (Dense Data)</text>
+                  <!-- Axes -->
+                  <line x1="30" y1="190" x2="190" y2="190" stroke="#52525b" stroke-width="1.5"/>
+                  <line x1="30" y1="190" x2="30" y2="40" stroke="#52525b" stroke-width="1.5"/>
+                  <!-- Smooth or dense curve -->
+                  <path d="M35 185 Q 90 170 120 135 T 180 50" fill="none" stroke="#4fa3e3" stroke-width="2.5"/>
+                  <text x="105" y="215" fill="#a1a1aa" font-size="10" text-anchor="middle">Zero dot clutter • Macro focus</text>
+                </g>
+
+                <!-- Panel 4: Area Baseline Law -->
+                <g transform="translate(685, 20)">
+                  <rect width="225" height="230" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="112" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">4. Area Baseline Rule</text>
+                  <!-- Good Area: Starts at 0 -->
+                  <g transform="translate(10, 35)">
+                    <rect x="15" y="10" width="85" height="120" fill="#111114" rx="4"/>
+                    <line x1="25" y1="110" x2="90" y2="110" stroke="#52525b" stroke-width="1"/>
+                    <line x1="25" y1="110" x2="25" y2="25" stroke="#52525b" stroke-width="1"/>
+                    <!-- Area polygon -->
+                    <polygon points="25,110 35,100 55,85 75,55 88,35 88,110" fill="rgba(79, 191, 139, 0.35)"/>
+                    <path d="M25 110 L35 100 L55 85 L75 55 L88 35" fill="none" stroke="#4fbf8b" stroke-width="1.8"/>
+                    <text x="20" y="113" fill="#4fbf8b" font-size="9" text-anchor="end">y=0</text>
+                    <text x="55" y="125" fill="#4fbf8b" font-size="9" font-weight="600" text-anchor="middle">✓ Valid (y=0)</text>
+                  </g>
+                  <!-- Bad Area: Truncated baseline -->
+                  <g transform="translate(115, 35)">
+                    <rect x="15" y="10" width="85" height="120" fill="#111114" rx="4"/>
+                    <line x1="25" y1="110" x2="90" y2="110" stroke="#f0524f" stroke-width="1"/>
+                    <line x1="25" y1="110" x2="25" y2="25" stroke="#52525b" stroke-width="1"/>
+                    <!-- Area truncated -->
+                    <polygon points="25,110 35,90 55,65 75,40 88,25 88,110" fill="rgba(240, 82, 79, 0.35)"/>
+                    <path d="M25 110 L35 90 L55 65 L75 40 L88 25" fill="none" stroke="#f0524f" stroke-width="1.8"/>
+                    <text x="20" y="113" fill="#f0524f" font-size="8" text-anchor="end">y=50</text>
+                    <text x="55" y="125" fill="#f0524f" font-size="9" font-weight="600" text-anchor="middle">✗ Distorted!</text>
+                  </g>
+                  <text x="112" y="215" fill="#f0a94e" font-size="10" text-anchor="middle">Area MUST map to zero baseline</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <strong>The "Guide to the Eye" Philosophical Debate:</strong> Some purists object to line graphs because connecting segments represent <em>unobserved, interpolated data</em>. If measurements had been taken at midpoints, they would almost certainly not have landed squarely on the linear segment. Wilke resolves this dilemma: connecting lines are not claims of physical intermediate values; they are purely <strong>perceptual guides</strong> that exploit human Gestalt continuity to trace time's arrow. It is standard practice to state in captions: <em>"Lines are meant as a guide to the eye."</em>
+          </div>
+
+          <div class="warning-box">
+            <strong>Critical Exam Pitfall — Truncated Area Charts:</strong> In a regular line chart, truncating the vertical axis (e.g., showing Dow Jones between 24,000 and 26,000) is often acceptable to reveal small percentage variations. <strong>In an area chart, this is strictly forbidden.</strong> The human visual cortex automatically equates shaded pixel area with physical quantity. Truncating the axis causes an item with value 25,000 to look 10× larger than one with 24,100. Never shade under a curve unless the baseline is true zero.
+          </div>
+
+          <h3>2. Multiple Time Series: Spaghetti Plots vs. Direct Labeling</h3>
+          <p>
+            When tracking multiple categories over time (e.g., bioRxiv, arXiv q-bio, and PeerJ Preprints), plotting unadorned points yields a confusing jumble of overlapping marks (a <strong>spaghetti plot</strong>).
+          </p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Implementation</th>
+                <th>Cognitive Load</th>
+                <th>Best Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Separate Legend</strong></td>
+                <td>Different colors/glyphs linked to an external box</td>
+                <td><span class="tag-status tag-warn">High</span> (Continuous saccadic eye jumping between key &amp; curves)</td>
+                <td>More than 5–6 series where end-of-line space is strictly constrained.</td>
+              </tr>
+              <tr>
+                <td><strong>Direct Labeling</strong></td>
+                <td>Text label placed immediately adjacent to the terminus of each line</td>
+                <td><span class="tag-status tag-good">Lowest</span> (Direct foveal reading without translation)</td>
+                <td><strong>Preferred gold standard</strong> for 2–5 distinct series. Eliminates glyph variety requirements.</td>
+              </tr>
+              <tr>
+                <td><strong>Small Multiples (Faceting)</strong></td>
+                <td>Separate synchronized subpanels sharing identical scales</td>
+                <td><span class="tag-status tag-good">Low</span> (Isolates trajectories, avoids overlap)</td>
+                <td>Many overlapping series with heavy intersection or crossing trajectories.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>3. Extending Beyond Time: Dose–Response Curves</h3>
+          <p>
+            Line graphs are fundamentally applicable whenever the independent variable imposes an order on the data, even if that variable is not chronological time. A prime scientific example is the <strong>dose–response curve</strong>.
+          </p>
+
+          <div class="example">
+            <strong>Case Study: Oat Yield vs. Manure Fertilization (Yates 1935):</strong>
+            <p>
+              In agricultural experiments, researchers measured oat yield (bushels/acre) across three distinct oat varieties as a function of nitrogen fertilization (manure application in hundredweight [cwt] per acre; $1	ext{ cwt} = 112	ext{ lbs} pprox 50.8	ext{ kg}$).
+            </p>
+            <ol style="margin-left: 20px; line-height: 1.65; color: var(--tx);">
+              <li><strong>Ordered Independent Variable:</strong> Manure dose ($x$: 0.0, 0.2, 0.4, 0.6 cwt/acre) is controlled and strictly monotonically increasing.</li>
+              <li><strong>Visual Insight:</strong> Connecting the mean yield per dose with lines immediately reveals that all three oat varieties share an identical diminishing-returns slope, but differ in baseline intercept (Variety 1 has naturally superior yield in unfertilized soil).</li>
+              <li><strong>Takeaway:</strong> Line plots expose whether treatments alter response trajectories or merely shift baseline performance.</li>
+            </ol>
+          </div>
+
+          <h3>Self-Assessment Practice Questions</h3>
+          <details>
+            <summary>Question 1 (Easy): Under what specific condition is shading the area underneath a line graph statistically valid?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> Only when the vertical ($y$) axis begins at <strong>absolute zero</strong>.
+              <p><em>Explanation:</em> The visual area of a polygon communicates cumulative magnitude. If the $y$-axis starts at a non-zero number, the geometric area is artificially truncated and does not scale proportionally with the actual data values, creating severe visual distortion.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 2 (Medium): Why does Wilke strongly recommend direct labeling over external legends for multiple line series?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> To eliminate cognitive load caused by saccadic eye movement and working memory buffering.
+              <p><em>Explanation:</em> External legends force the reader's eyes to constantly scan back and forth between the plot area and the legend key, matching colors or symbols. Placing labels directly at the end of each line allows immediate comprehension and removes the need for contrasting symbol shapes.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 3 (Hard): When is it preferable to omit the data dots entirely in a time-series line graph?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> When observations are sampled densely over time.
+              <p><em>Explanation:</em> With dense sampling (e.g., hundreds or thousands of daily stock quotes or monthly submissions), displaying individual dots adds visual noise and creates an inky overplotted smudge. Omitting dots highlights the underlying trajectory and curvature without sacrificing meaningful resolution.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Topic 1 Key Takeaways</h4>
+            <ul>
+              <li><strong>Order Imposes Linearity:</strong> Time and ordered experimental doses turn unordered point clouds into chronological paths where lines guide visual continuity.</li>
+              <li><strong>Dots vs. Lines:</strong> Sparse data benefits from dots + lines; dense data demands lines only. Connecting lines are guides to the eye, not verified data points.</li>
+              <li><strong>Zero-Baseline Law:</strong> Area charts must anchor at $y=0$. Truncated area charts mislead the human perception of volume.</li>
+              <li><strong>Direct Labeling:</strong> Always prefer labeling lines at their endpoints over external legends for 2–5 distinct series.</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Multiple Response Variables &amp; Connected Scatterplots</h2>
+          <p class="topic-subtitle">Dual time series, phase portraits, cyclical spirals, readability trade-offs, and PCA trajectories (Wilke Ch. 13)</p>
+
+          <p>
+            In macroeconomic and multi-sensor systems, analysts frequently monitor <strong>two or more continuous response variables</strong> evolving simultaneously over time (such as the 12-month percent change in house prices alongside the national unemployment rate). Visualizing their joint dynamic relationship presents a profound design choice: stack separate line graphs, or fuse them into a <strong>connected scatterplot</strong>.
+          </p>
+
+          <div class="definition">
+            <strong>Connected Scatterplot (Phase Portrait):</strong> A bivariate visualization that maps two response variables to Cartesian coordinates ($x$ and $y$) and connects consecutive time points in chronological order with directed line segments.<br />
+            <strong>Phase Space:</strong> A conceptual space where all possible states of a system are represented, with each instantaneous state corresponding to a unique coordinate point.
+            <div class="def-sub">Intuitive one-liner: Instead of showing time on an axis, time becomes the path traveled through the coordinate space.</div>
+          </div>
+
+          <h3>1. Stacked Line Graphs vs. Connected Scatterplots</h3>
+          <p>
+            When two variables are shown as separate stacked line plots sharing a synchronized horizontal time axis, reading individual values is straightforward. However, identifying cross-variable correlations requires awkward, back-and-forth cognitive slope comparisons.
+          </p>
+
+          <!-- Native SVG Diagram 2: Stacked Line Graphs vs Connected Scatterplot -->
+          <div class="visual-card">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              Architectural Visual: Stacked Line Graphs vs. Connected Scatterplot Phase Dynamics
+            </h4>
+            <p class="visual-caption">Macroeconomic case study: House price index 12-month change (%) vs. Unemployment rate (%) over time.</p>
+            <div class="svg-canvas-wrap">
+              <svg viewBox="0 0 920 340" style="width:100%; max-width:920px; font-family:Poppins, sans-serif;">
+                <!-- Left: Stacked Line Graphs -->
+                <g transform="translate(15, 20)">
+                  <rect width="420" height="295" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="210" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">Method A: Stacked Synchronized Line Graphs</text>
+
+                  <!-- Panel A1: House Prices -->
+                  <g transform="translate(20, 35)">
+                    <rect x="35" y="10" width="345" height="100" fill="#111114" rx="4"/>
+                    <line x1="45" y1="95" x2="365" y2="95" stroke="#3f3f46" stroke-width="1"/>
+                    <line x1="45" y1="95" x2="45" y2="20" stroke="#3f3f46" stroke-width="1"/>
+                    <text x="40" y="25" fill="#d97757" font-size="9" text-anchor="end">+15%</text>
+                    <text x="40" y="60" fill="#71717a" font-size="9" text-anchor="end">0%</text>
+                    <text x="40" y="95" fill="#71717a" font-size="9" text-anchor="end">-15%</text>
+                    <!-- House price curve -->
+                    <path d="M45 50 Q 110 20 180 30 T 260 90 T 360 45" fill="none" stroke="#d97757" stroke-width="2.2"/>
+                    <text x="200" y="25" fill="#d97757" font-size="10" font-weight="600">House Price Change (%)</text>
+                  </g>
+
+                  <!-- Panel A2: Unemployment Rate -->
+                  <g transform="translate(20, 155)">
+                    <rect x="35" y="10" width="345" height="100" fill="#111114" rx="4"/>
+                    <line x1="45" y1="95" x2="365" y2="95" stroke="#3f3f46" stroke-width="1"/>
+                    <line x1="45" y1="95" x2="45" y2="20" stroke="#3f3f46" stroke-width="1"/>
+                    <text x="40" y="25" fill="#4fa3e3" font-size="9" text-anchor="end">10%</text>
+                    <text x="40" y="60" fill="#71717a" font-size="9" text-anchor="end">6%</text>
+                    <text x="40" y="95" fill="#71717a" font-size="9" text-anchor="end">4%</text>
+                    <!-- Unemployment curve (anticorrelated) -->
+                    <path d="M45 80 Q 110 95 180 85 T 260 25 T 360 80" fill="none" stroke="#4fa3e3" stroke-width="2.2"/>
+                    <text x="200" y="25" fill="#4fa3e3" font-size="10" font-weight="600">Unemployment Rate (%)</text>
+                    <text x="210" y="118" fill="#a1a1aa" font-size="9" text-anchor="middle">Shared Time Axis (2001 — 2018)</text>
+                  </g>
+                  <text x="210" y="285" fill="#fbbf24" font-size="10" text-anchor="middle">Hard to perceive cyclical phase shifts</text>
+                </g>
+
+                <!-- Right: Connected Scatterplot -->
+                <g transform="translate(460, 20)">
+                  <rect width="445" height="295" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="222" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">Method B: Connected Scatterplot (Phase Portrait)</text>
+
+                  <g transform="translate(30, 40)">
+                    <rect x="25" y="10" width="375" height="215" fill="#111114" rx="4"/>
+                    <!-- Axes -->
+                    <line x1="40" y1="200" x2="380" y2="200" stroke="#52525b" stroke-width="1.2"/>
+                    <line x1="40" y1="200" x2="40" y2="20" stroke="#52525b" stroke-width="1.2"/>
+                    <text x="210" y="220" fill="#a1a1aa" font-size="10" text-anchor="middle">Unemployment Rate → (Higher)</text>
+                    <text x="20" y="110" fill="#a1a1aa" font-size="10" transform="rotate(-90 20 110)" text-anchor="middle">House Price Change →</text>
+
+                    <!-- Quadrant Vector Guides -->
+                    <line x1="60" y1="180" x2="130" y2="130" stroke="rgba(79, 191, 139, 0.4)" stroke-dasharray="3,3" stroke-width="1.5"/>
+                    <text x="135" y="125" fill="#4fbf8b" font-size="8.5">Positive Corr (↗)</text>
+
+                    <line x1="130" y1="50" x2="200" y2="100" stroke="rgba(240, 82, 79, 0.4)" stroke-dasharray="3,3" stroke-width="1.5"/>
+                    <text x="205" y="105" fill="#f0524f" font-size="8.5">Anticorrelation (↘)</text>
+
+                    <!-- Spiral Trajectory (Counterclockwise Cycle) -->
+                    <!-- Early cycle (2001-2005): Small loop -->
+                    <path d="M 120,130 C 100,100 130,70 170,80 C 190,90 180,120 150,135 Z" fill="none" stroke="#d97757" stroke-width="2" opacity="0.6"/>
+                    <circle cx="120" cy="130" r="4" fill="#d97757"/>
+                    <text x="100" y="145" fill="#d97757" font-size="9" font-weight="600">2001</text>
+
+                    <!-- Late cycle (2005-2017): Giant counterclockwise loop -->
+                    <path d="M 150,135 C 130,50 240,40 310,120 C 350,170 260,195 190,185 C 130,175 110,140 140,110" fill="none" stroke="#b385f0" stroke-width="2.5"/>
+                    <!-- Arrows indicating direction -->
+                    <polygon points="230,42 245,45 235,55" fill="#b385f0"/>
+                    <polygon points="335,145 330,160 320,150" fill="#b385f0"/>
+                    <polygon points="160,182 145,180 155,170" fill="#b385f0"/>
+
+                    <circle cx="210" cy="45" r="4" fill="#b385f0"/>
+                    <text x="220" y="38" fill="#b385f0" font-size="9" font-weight="600">2005 (Boom)</text>
+
+                    <circle cx="330" cy="150" r="4" fill="#b385f0"/>
+                    <text x="340" y="160" fill="#b385f0" font-size="9" font-weight="600">2009 (Crash)</text>
+
+                    <circle cx="140" cy="110" r="4" fill="#10b981"/>
+                    <text x="95" y="105" fill="#10b981" font-size="9" font-weight="600">2017 (Recovery)</text>
+                  </g>
+                  <text x="222" y="285" fill="#4fbf8b" font-size="10" text-anchor="middle">Counterclockwise spiral reveals cyclical boom-bust loop!</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <h3>2. Reading Geometric Vectors in Connected Scatterplots</h3>
+          <p>
+            Connected scatterplots transform time-series interpretation from chronological slopes into spatial vector directions:
+          </p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Vector Trajectory</th>
+                <th>Mathematical Relationship</th>
+                <th>Physical / Economic Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Lower-Left to Upper-Right ($
+earrow$)</strong></td>
+                <td>Positive Correlation ($\Delta y / \Delta x > 0$)</td>
+                <td>Both variables expand or contract concurrently.</td>
+              </tr>
+              <tr>
+                <td><strong>Upper-Left to Lower-Right ($\searrow$)</strong></td>
+                <td>Negative / Anticorrelation ($\Delta y / \Delta x < 0$)</td>
+                <td>Trade-off state: as variable $x$ expands, variable $y$ contracts.</td>
+              </tr>
+              <tr>
+                <td><strong>Closed Circles / Spirals ($\circlearrowleft$ or $\circlearrowright$)</strong></td>
+                <td>Cyclical / Oscillatory Dynamic (Phase Shift)</td>
+                <td>One variable leads the other in an out-of-phase feedback loop (e.g., boom $	o$ bust $	o$ recovery).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="warning-box">
+            <strong>The "Meaningless Scribble" Failure Mode:</strong> If an author creates a connected scatterplot without <strong>directional indicators</strong> (arrowheads or temporal color gradients) and without <strong>date landmark labels</strong>, the chart completely degenerates into an illegible tangle of spaghetti (Wilke Fig 13-11). The viewer has no way of knowing where the trajectory began, which way time is flowing, or how quickly transitions occurred.
+          </div>
+
+          <h3>3. Cognitive Trade-offs &amp; Empirical Findings</h3>
+          <p>
+            In an influential perceptual study, researchers tested reader comprehension between dual line graphs and connected scatterplots:
+          </p>
+          <div class="note-box">
+            <strong>Haroz, Kosara, and Franconeri (2016) Findings:</strong>
+            <ul style="margin: 6px 0 0 16px; line-height: 1.6;">
+              <li><strong>Comprehension Cost:</strong> Readers are significantly more prone to confusing chronological order and misjudging raw correlation in connected scatterplots compared to dual line graphs. Line graphs remain cognitively simpler.</li>
+              <li><strong>Engagement Benefit:</strong> Connected scatterplots generate markedly higher user engagement, captivate reader curiosity, and make narrative data exploration memorable.</li>
+              <li><strong>Golden Rule:</strong> Use line graphs for quick, effortless reference. Use connected scatterplots when presenting <em>cyclical, looping relationships</em> where narrative engagement is paramount.</li>
+            </ul>
+          </div>
+
+          <h3>4. High-Dimensional Time Series in PCA Space</h3>
+          <p>
+            Although Cartesian space is limited to two dimensions ($x$ and $y$), connected scatterplots can visualize systems with <strong>hundreds of concurrent time series</strong> by performing <strong>Principal Components Analysis (PCA)</strong> first.
+          </p>
+
+          <div class="example">
+            <strong>Case Study: 100+ Macroeconomic Indicators (St. Louis Fed):</strong>
+            <p>
+              The Federal Reserve Bank of St. Louis maintains over 100 monthly economic metrics (employment, GDP, inflation, bond yields, housing starts).
+            </p>
+            <ol style="margin-left: 20px; line-height: 1.65; color: var(--tx);">
+              <li><strong>PC1 (System Scale):</strong> In macroeconomic PCA, the first principal component (PC1) almost always captures overall economic expansion. In a plot of PC2 vs. PC1, time moves almost linearly from left to right.</li>
+              <li><strong>Recessions in PC2:</strong> Recessions correspond to sudden vertical plunges in PC2 (March 1991, November 2001, June 2009).</li>
+              <li><strong>The Clockwise Spiral in PC2 vs. PC3:</strong> When plotting PC2 against PC3, the economic path forms a distinct <strong>clockwise spiral</strong>. Recessions drop precipitously along PC2, while recoveries correspond to transitions along PC3, visually cementing the cyclical clockwork of macroeconomic dynamics.</li>
+            </ol>
+          </div>
+
+          <h3>Self-Assessment Practice Questions</h3>
+          <details>
+            <summary>Question 1 (Easy): In a connected scatterplot, what does a trajectory moving from the upper-left to the lower-right signify?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> An anticorrelated (negative) relationship between the two variables during that time period.
+              <p><em>Explanation:</em> Moving from upper-left to lower-right means that the $y$-axis variable is decreasing while the $x$-axis variable is increasing ($\Delta y < 0, \Delta x > 0$), which is the geometric signature of negative correlation.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 2 (Medium): What two mandatory visual elements must be present to prevent a connected scatterplot from becoming a "meaningless scribble"?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> 1) Clear directional cues (such as arrowheads or continuous light-to-dark color shading), and 2) Chronological time markers (labeled key years or milestone dates).
+              <p><em>Explanation:</em> Because time is mapped along a winding path rather than a straight Cartesian axis, viewers cannot deduce the flow of time or the speed of transitions without explicit directional markers and date tags.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 3 (Hard): How does Principal Components Analysis (PCA) enable connected scatterplots to visualize high-dimensional time series?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> By reducing $N$ dimensional time-series variables to 2 or 3 orthogonal principal components, allowing joint trajectory plotting in reduced phase space.
+              <p><em>Explanation:</em> PCA condenses high-dimensional variance into orthogonal components (e.g., PC1 measuring overall economic size, PC2 and PC3 capturing cyclical shocks and recoveries). Plotting PC2 vs. PC3 creates a phase portrait revealing complex multidimensional cycles (like economic recessions).</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Topic 2 Key Takeaways</h4>
+            <ul>
+              <li><strong>Phase Portraits:</strong> Connected scatterplots map two dependent variables on $x$ and $y$, turning time into a traveled trajectory.</li>
+              <li><strong>Geometry of Loops:</strong> Diagonal lines show correlation; circular loops and spirals reveal cyclical feedback loops that remain obscured in separate line graphs.</li>
+              <li><strong>Design Essentials:</strong> Never publish a connected scatterplot without directional flow (arrows/shading) and key date labels.</li>
+              <li><strong>PCA Dimension Reduction:</strong> Reduces 100+ variables into 2D phase space trajectories (e.g., macroeconomic clockwise boom-bust cycles).</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Smoothing Techniques &amp; Local Regression (LOESS)</h2>
+          <p class="topic-subtitle">Moving average limitations, the 6-step LOESS algorithm, tricube weighting, span tuning, and Savitzky–Golay connection (Wilke Ch. 14 &amp; Handout)</p>
+
+          <p>
+            When visualizing noisy time series (e.g., daily Dow Jones Industrial Average values) or scatterplots with large point clouds, the overarching trend is often obscured by high-frequency variance. <strong>Smoothing</strong> extracts the underlying deterministic signal while filtering out stochastic noise.
+          </p>
+
+          <div class="definition">
+            <strong>Moving Average (Rolling Mean):</strong> A naive smoothing technique where each data point is replaced by the arithmetic mean of $k$ neighboring observations inside a sliding window.<br />
+            <strong>LOESS (Locally Estimated Scatterplot Smoothing):</strong> A non-parametric regression method that builds a smooth trend line point-by-point by fitting localized, weighted polynomials to subsets of the data.<br />
+            <strong>LOWESS (Locally Weighted Scatterplot Smoothing):</strong> The linear (degree-1) variant of local regression. Both terms are pronounced <em>"LOH-ess"</em>.
+            <div class="def-sub">Intuitive one-liner: Instead of forcing one rigid equation onto the entire dataset, LOESS fits thousands of tiny, localized lines and glues their centers together.</div>
+          </div>
+
+          <h3>1. Why Moving Averages Fail: The Window Boundary Problem</h3>
+          <p>
+            While moving averages are simple to compute, they suffer from three fundamental mathematical defects:
+          </p>
+          <div class="diagram-grid">
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>1. Boundary Wiggles (Square Wave Weight)</span>
+                <span class="tag-status tag-bad">Defect</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                All points inside the window are weighted <strong>equally ($1/k$)</strong>, while points outside have weight $0$. As an extreme outlier enters or exits the boundary of the window, the moving average produces an artificial, abrupt jerk or "wiggle" (Wilke Fig 14-2).
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>2. Boundary Data Truncation</span>
+                <span class="tag-status tag-bad">Defect</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                A centered $k$-point moving average cannot evaluate points within $k/2$ steps of the dataset edges. For a 100-day average, the first and last 50 days of data are completely discarded.
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>3. The Noise vs. Lag Dilemma</span>
+                <span class="tag-status tag-warn">Trade-off</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                A short window (e.g., 20 days) remains jagged and noisy. A long window (e.g., 100 days) oversmooths and severely lags behind sharp market turns and real inflections.
+              </p>
+            </div>
+          </div>
+
+          <!-- Native SVG Diagram 3: Moving Average vs LOESS Sliding Window -->
+          <div class="visual-card">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+              Architectural Visual: Moving Average Equal-Weighting vs. LOESS Tricube Weighting
+            </h4>
+            <p class="visual-caption">Comparison of window mechanics: Rectangular box filtering vs. smooth localized weighted polynomial regression.</p>
+            <div class="svg-canvas-wrap">
+              <svg viewBox="0 0 920 330" style="width:100%; max-width:920px; font-family:Poppins, sans-serif;">
+                <!-- Left: Moving Average Window -->
+                <g transform="translate(15, 20)">
+                  <rect width="425" height="285" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="212" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">Method A: Moving Average (Box Filter)</text>
+
+                  <g transform="translate(25, 40)">
+                    <rect x="20" y="10" width="365" height="200" fill="#111114" rx="4"/>
+                    <!-- Axes -->
+                    <line x1="35" y1="180" x2="370" y2="180" stroke="#52525b" stroke-width="1.2"/>
+                    <line x1="35" y1="180" x2="35" y2="20" stroke="#52525b" stroke-width="1.2"/>
+                    <text x="375" y="184" fill="#a1a1aa" font-size="9">x</text>
+                    <text x="25" y="25" fill="#a1a1aa" font-size="9">Weight</text>
+
+                    <!-- Rectangular Weight Box -->
+                    <rect x="120" y="50" width="160" height="130" fill="rgba(240, 82, 79, 0.15)" stroke="#f0524f" stroke-width="2" stroke-dasharray="4,4"/>
+                    <line x1="120" y1="50" x2="280" y2="50" stroke="#f0524f" stroke-width="2.5"/>
+                    <text x="200" y="42" fill="#f0524f" font-size="10" font-weight="600" text-anchor="middle">Equal Weight: w = 1/k</text>
+
+                    <!-- Points in and out -->
+                    <circle cx="80" cy="180" r="4" fill="#71717a"/>
+                    <circle cx="100" cy="180" r="4" fill="#71717a"/>
+                    <text x="90" y="170" fill="#71717a" font-size="9" text-anchor="middle">Weight = 0</text>
+
+                    <circle cx="140" cy="50" r="4" fill="#3b82f6"/>
+                    <circle cx="170" cy="50" r="4" fill="#3b82f6"/>
+                    <circle cx="200" cy="50" r="5" fill="#d97757"/>
+                    <circle cx="230" cy="50" r="4" fill="#3b82f6"/>
+                    <circle cx="260" cy="50" r="4" fill="#3b82f6"/>
+                    <text x="200" y="75" fill="#d97757" font-size="9" text-anchor="middle">Target x₀</text>
+
+                    <circle cx="300" cy="180" r="4" fill="#71717a"/>
+                    <circle cx="330" cy="180" r="4" fill="#71717a"/>
+
+                    <!-- Boundary drop arrow -->
+                    <path d="M120 50 L120 180" stroke="#f0524f" stroke-width="2"/>
+                    <path d="M280 50 L280 180" stroke="#f0524f" stroke-width="2"/>
+                    <text x="120" y="195" fill="#f0524f" font-size="8.5" text-anchor="middle">Cliff edge</text>
+                    <text x="280" y="195" fill="#f0524f" font-size="8.5" text-anchor="middle">Cliff edge</text>
+                  </g>
+                  <text x="212" y="270" fill="#f0524f" font-size="9.5" text-anchor="middle">Outliers crossing boundary cause sudden artificial wiggles</text>
+                </g>
+
+                <!-- Right: LOESS Tricube Window -->
+                <g transform="translate(460, 20)">
+                  <rect width="445" height="285" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="222" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">Method B: LOESS Local Tricube Bell Curve</text>
+
+                  <g transform="translate(25, 40)">
+                    <rect x="20" y="10" width="385" height="200" fill="#111114" rx="4"/>
+                    <!-- Axes -->
+                    <line x1="35" y1="180" x2="390" y2="180" stroke="#52525b" stroke-width="1.2"/>
+                    <line x1="35" y1="180" x2="35" y2="20" stroke="#52525b" stroke-width="1.2"/>
+                    <text x="395" y="184" fill="#a1a1aa" font-size="9">x</text>
+                    <text x="25" y="25" fill="#a1a1aa" font-size="9">Weight</text>
+
+                    <!-- Tricube Bell Curve -->
+                    <!-- Center at x=210, span width 200 (from x=110 to x=310) -->
+                    <path d="M 110,180 C 140,180 170,45 210,45 C 250,45 280,180 310,180 Z" fill="rgba(79, 191, 139, 0.2)" stroke="#4fbf8b" stroke-width="2.5"/>
+                    <text x="210" y="35" fill="#4fbf8b" font-size="10" font-weight="600" text-anchor="middle">Tricube: W(u) = (1 - |u|³)³</text>
+
+                    <!-- Span Marker -->
+                    <line x1="110" y1="185" x2="310" y2="185" stroke="#b385f0" stroke-width="2"/>
+                    <circle cx="110" cy="185" r="3" fill="#b385f0"/>
+                    <circle cx="310" cy="185" r="3" fill="#b385f0"/>
+                    <text x="210" y="200" fill="#b385f0" font-size="9" font-weight="600" text-anchor="middle">Local Neighborhood Span (α)</text>
+
+                    <!-- Points with weighted heights -->
+                    <circle cx="210" cy="45" r="5" fill="#d97757"/>
+                    <text x="210" y="65" fill="#d97757" font-size="8.5" text-anchor="middle">Max Weight</text>
+
+                    <circle cx="170" cy="95" r="4" fill="#3b82f6"/>
+                    <circle cx="250" cy="95" r="4" fill="#3b82f6"/>
+                    <circle cx="130" cy="165" r="4" fill="#3b82f6"/>
+                    <circle cx="290" cy="165" r="4" fill="#3b82f6"/>
+
+                    <text x="100" y="172" fill="#4fbf8b" font-size="8.5" text-anchor="end">Weight → 0</text>
+                    <text x="320" y="172" fill="#4fbf8b" font-size="8.5" text-anchor="start">Weight → 0</text>
+                  </g>
+                  <text x="222" y="270" fill="#4fbf8b" font-size="9.5" text-anchor="middle">Smooth zero-tapering guarantees seamless curve without wiggles</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <h3>2. The Exact 6-Step LOESS Algorithmic Mechanism</h3>
+          <p>
+            The LOESS algorithm executes the following rigorous sequence point-by-point across the domain:
+          </p>
+
+          <ol style="margin-left: 20px; line-height: 1.7; color: var(--tx);">
+            <li><strong>Target Selection:</strong> The algorithm selects a target $x$-value ($x_0$) along the horizontal axis where it seeks to estimate a smoothed value $\hat{y}_0$.</li>
+            <li><strong>Neighborhood Construction (Span $\alpha$):</strong> It defines a local neighborhood window of nearby data points. The window size is governed by the <strong>span parameter ($\alpha$)</strong>. For example, if $\alpha = 0.3$, the algorithm selects the $30\%$ of total observations closest in distance to $x_0$.</li>
+            <li><strong>Distance Weight Assignment (Tricube Function):</strong> Every point $x_i$ inside the neighborhood is assigned a continuous weight $w_i$ based on its normalized distance $u_i = \frac{|x_i - x_0|}{\Delta(x_0)}$, where $\Delta(x_0)$ is the distance to the furthest point in the neighborhood:
+              <div style="background:rgba(0,0,0,0.4); border-left:3px solid var(--def-bd); padding:8px 12px; margin:8px 0; border-radius:4px; font-family:monospace; font-size:0.88rem;">
+                W(u) = (1 - |u|³)³ &nbsp;&nbsp;for |u| ≤ 1, &nbsp;&nbsp;and W(u) = 0 &nbsp;&nbsp;for |u| > 1
+              </div>
+              The closest point receives weight $\approx 1.0$, weights smoothly decrease to $0.0$ at the neighborhood boundary, and points outside receive strictly $0$.
+            </li>
+            <li><strong>Weighted Least Squares (WLS) Regression:</strong> Using <em>only</em> points in the neighborhood and their assigned weights $w_i$, the algorithm fits a localized regression:
+              <ul style="margin:4px 0 4px 18px;">
+                <li><strong>Degree 1 (Linear):</strong> Fits $\hat{y} = \beta_0 + \beta_1 x$ (Standard LOWESS).</li>
+                <li><strong>Degree 2 (Quadratic):</strong> Fits $\hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2$ (Standard LOESS; significantly superior at capturing local peaks and troughs).</li>
+              </ul>
+            </li>
+            <li><strong>Record Smoothed Value:</strong> The algorithm evaluates the fitted polynomial at the exact target coordinate $x_0$ to obtain $\hat{y}_0$. <strong>The rest of this local regression line is immediately discarded!</strong></li>
+            <li><strong>Slide and Repeat:</strong> The algorithm advances to the next $x$-value and repeats steps 1–5 from scratch. Connecting all recorded $\hat{y}$ points forms the continuous smoothed curve.</li>
+          </ol>
+
+          <div class="note-box">
+            <strong>Historical Note — Savitzky–Golay Filter Equivalence:</strong> In analytical chemistry, spectroscopy, and digital signal processing, LOESS is widely known as the <strong>Savitzky–Golay filter</strong>, which was published by Abraham Savitzky and Marcel J. E. Golay in 1964 (15 years before Cleveland's 1979 LOESS paper). Both methods share the identical core mechanism: fitting localized low-degree polynomials via moving weighted least squares.
+          </div>
+
+          <h3>3. Key Tuning Parameters &amp; Real-World Scatterplot Application</h3>
+          <p>
+            LOESS behavior is controlled by two primary parameters:
+          </p>
+          <ul style="margin-left: 20px; line-height: 1.65; color: var(--tx);">
+            <li><strong>Span ($\alpha$ or bandwidth):</strong> The fraction of total data points included in each local regression. Small $\alpha$ ($0.1–0.2$) creates an erratic, highly wiggly curve that overfits local noise. Large $\alpha$ ($0.7–0.9$) creates an ultra-stiff curve that washes out real inflection points.</li>
+            <li><strong>Polynomial Degree ($d$ or $\lambda$):</strong> Degree 1 (LOWESS line) vs. Degree 2 (LOESS parabola). Degree 2 is favored when datasets contain inflection points or curvature.</li>
+          </ul>
+
+          <div class="example">
+            <strong>Case Study: Fuel-Tank Capacity vs. Car Price (Wilke Fig 14-4, Robin Lock 1993):</strong>
+            <p>
+              In a scatterplot of 93 automobiles released in 1993, fuel-tank capacity (gallons) is plotted against vehicle retail price ($).
+            </p>
+            <ol style="margin-left: 20px; line-height: 1.65; color: var(--tx);">
+              <li><strong>Non-Linear Discovery:</strong> A LOESS smooth immediately reveals an economic threshold: for budget cars (<$20,000), fuel tank capacity scales <em>linearly</em> with price.</li>
+              <li><strong>The Plateau:</strong> Above $20,000, the LOESS curve completely flattens out. Buying an expensive luxury car does not yield a larger fuel tank.</li>
+              <li><strong>Model-Free Power:</strong> The analyst did not need to guess a mathematical saturation function; LOESS revealed the threshold purely from localized data weighting.</li>
+            </ol>
+          </div>
+
+          <div class="warning-box">
+            <strong>Critical Limitations of LOESS:</strong>
+            <ul style="margin: 4px 0 0 16px; line-height: 1.6;">
+              <li><strong>Computational Cost:</strong> LOESS requires fitting a brand-new matrix regression for every point you wish to visualize ($O(n^2)$ complexity). It scales poorly to massive datasets ($>100,000$ points).</li>
+              <li><strong>Zero Extrapolation:</strong> LOESS cannot predict values outside the observed minimum and maximum $x$-range. Because it possesses no global mathematical equation, attempting to extrapolate beyond the data boundaries is mathematically undefined.</li>
+            </ul>
+          </div>
+
+          <h3>Self-Assessment Practice Questions</h3>
+          <details>
+            <summary>Question 1 (Easy): What is the primary cause of artificial wiggles in moving averages that LOESS successfully eliminates?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> The abrupt, equal weighting of points inside the sliding window box filter.
+              <p><em>Explanation:</em> Moving averages assign identical weights ($1/k$) to all points in the window and 0 to points outside. When an extreme outlier crosses the window boundary, the average abruptly jumps. LOESS eliminates this by using smooth tricube weighting where boundary points smoothly taper to weight zero.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 2 (Medium): What happens to the LOESS curve when the span parameter ($\alpha$) approaches 1.0 vs. when it approaches 0.05?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> At $\alpha \to 1.0$, the curve becomes ultra-smooth and stiff (approaching a global linear/quadratic regression). At $\alpha \to 0.05$, the curve becomes extremely wiggly and overfits random noise.
+              <p><em>Explanation:</em> Span controls the neighborhood size. A small span includes few points, capturing high-frequency noise (high variance). A large span includes nearly all points, flattening local trends and introducing high bias.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 3 (Hard): Why does LOESS discard the local regression line immediately after calculating $\hat{y}_0$ for target $x_0$?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> Because the local regression model is valid <em>only</em> at that localized neighborhood around $x_0$; each target $x$ requires its own uniquely weighted regression.
+              <p><em>Explanation:</em> LOESS is a non-parametric "lazy learner." It never builds a single global function. The polynomial fit at $x_0$ is only optimized for points around $x_0$. To evaluate $x_0 + \Delta x$, a new set of weights and a new regression must be computed from scratch.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Topic 3 Key Takeaways</h4>
+            <ul>
+              <li><strong>Moving Average Deficiencies:</strong> Box filtering causes boundary wiggles, loses boundary points, and forces a bad noise-vs-lag trade-off.</li>
+              <li><strong>LOESS 6-Step Engine:</strong> Pick target $x_0$ $\to$ define span window $\alpha$ $\to$ compute tricube weights $\to$ fit local WLS (degree 1 or 2) $\to$ record $\hat{y}_0$ $\to$ discard model and repeat.</li>
+              <li><strong>Tricube Weighting:</strong> $W(u) = (1 - |u|^3)^3$ smoothly damps influence to zero at neighborhood edges.</li>
+              <li><strong>Trade-Offs:</strong> Superb visual quality and model-free flexibility, but computationally expensive and unable to extrapolate.</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Splines vs. LOESS: Mechanics, Penalties &amp; Efficiency</h2>
+          <p class="topic-subtitle">Piecewise cubic polynomials, knot continuity constraints, roughness penalty ($\lambda$), and Eager vs. Lazy learning (Wilke Ch. 14 &amp; Handout)</p>
+
+          <p>
+            While LOESS produces visually pleasing curves, its computational overhead becomes prohibitive as datasets expand. <strong>Spline smoothing</strong> solves this bottleneck through piecewise polynomial mathematics, providing instantaneous predictions once trained. Understanding why splines outpace LOESS reveals fundamental architectural concepts in statistical learning.
+          </p>
+
+          <div class="definition">
+            <strong>Smoothing Spline:</strong> A curve constructed by dividing the independent variable into segments and fitting low-degree polynomials (typically cubic) within each segment, joined smoothly at boundaries called <strong>knots</strong>.<br />
+            <strong>Knots:</strong> The boundary locations along the $x$-axis that separate adjacent piecewise polynomial segments.<br />
+            <strong>Generalized Additive Model (GAM):</strong> A flexible regression modeling framework that replaces standard linear predictors with sum of smooth spline functions: $y = \beta_0 + f_1(x_1) + f_2(x_2) + \dots + \epsilon$.
+            <div class="def-sub">Intuitive one-liner: Splines are piecewise curves welded together so smoothly at joints (knots) that the seams are mathematically invisible.</div>
+          </div>
+
+          <h3>1. The Three Continuity Constraints: Mathematical "Welding"</h3>
+          <p>
+            To prevent a piecewise curve from looking disjointed or jagged where segments meet at knot $t_k$, the algorithm enforces three strict mathematical continuity constraints:
+          </p>
+
+          <div class="diagram-grid">
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>1. Position ($C^0$ Continuity)</span>
+                <span class="tag-status tag-good">No Gaps</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                The curves must touch at the boundary: $f_i(t_k) = f_{i+1}(t_k)$. Prevents vertical tears or steps.
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>2. Slope ($C^1$ Continuity)</span>
+                <span class="tag-status tag-good">No Kinks</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                The first derivatives must match: $f'_i(t_k) = f'_{i+1}(t_k)$. Prevents sharp corners or angles.
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>3. Curvature ($C^2$ Continuity)</span>
+                <span class="tag-status tag-good">Seamless Bend</span>
+              </div>
+              <p style="font-size:0.83rem; color:var(--mt); margin:0;">
+                The second derivatives must match: $f''_i(t_k) = f''_{i+1}(t_k)$. Guarantees smooth rate of bending across the seam.
+              </p>
+            </div>
+          </div>
+
+          <h3>2. The Roughness Penalty &amp; Loss Function</h3>
+          <p>
+            In a true smoothing spline, a knot is placed at <strong>every unique $x$-value</strong> in the dataset. If left unconstrained, a cubic spline with $N$ knots would simply violently zig-zag to interpolate every single point (catastrophic overfitting). To prevent this, the algorithm minimizes a dual-objective loss function with a <strong>roughness penalty</strong>:
+          </p>
+
+          <div style="background:rgba(0,0,0,0.45); border:1px solid var(--bd); border-radius:10px; padding:16px 20px; margin:16px 0; font-family:monospace; font-size:1rem; color:var(--tx); text-align:center;">
+            $\text{Loss} = \underbrace{\sum_{i=1}^n \left(y_i - f(x_i)\right)^2}_{\text{Sum of Squared Errors (Fit)}} \;+\; \lambda \underbrace{\int \left[f''(x)\right]^2 dx}_{\text{Roughness Penalty (Curvature)}}$
+          </div>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Smoothing Parameter ($\lambda$)</th>
+                <th>Behavior of Loss Function</th>
+                <th>Resulting Spline Fit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$\lambda \to 0$ (Near Zero)</strong></td>
+                <td>Curvature penalty is ignored; algorithm only minimizes squared residuals.</td>
+                <td><span class="tag-status tag-bad">Overfit</span>: Spline violently interpolates all points, creating a hyper-wiggly curve.</td>
+              </tr>
+              <tr>
+                <td><strong>$\lambda \to \infty$ (Extremely Large)</strong></td>
+                <td>Curvature penalty dominates; algorithm forces $\int [f''(x)]^2 dx \to 0$, eliminating all bending.</td>
+                <td><span class="tag-status tag-good">Linear Regression</span>: With zero curvature ($f''(x) = 0$), the spline collapses into a <strong>single straight line</strong>!</td>
+              </tr>
+              <tr>
+                <td><strong>Optimal $\lambda$ (Balanced)</strong></td>
+                <td>Balances fidelity to data against curve stiffness.</td>
+                <td>Selected automatically by statistical packages using <strong>Generalized Cross-Validation (GCV)</strong>.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Native SVG Diagram 4: Knots & Eager vs Lazy Learning -->
+          <div class="visual-card">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Architectural Visual: Spline Knot Welding &amp; The Eager vs. Lazy Learning Paradigm
+            </h4>
+            <p class="visual-caption">Panel A: Piecewise cubic polynomials welded at knots. Panel B: Architectural execution flow of Splines (Eager) vs. LOESS (Lazy).</p>
+            <div class="svg-canvas-wrap">
+              <svg viewBox="0 0 920 330" style="width:100%; max-width:920px; font-family:Poppins, sans-serif;">
+                <!-- Panel A: Spline Knots -->
+                <g transform="translate(15, 20)">
+                  <rect width="425" height="285" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="212" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">A. Spline Continuity at Knots</text>
+
+                  <g transform="translate(25, 40)">
+                    <rect x="20" y="10" width="365" height="200" fill="#111114" rx="4"/>
+                    <!-- Axes -->
+                    <line x1="35" y1="180" x2="370" y2="180" stroke="#52525b" stroke-width="1.2"/>
+                    <line x1="35" y1="180" x2="35" y2="20" stroke="#52525b" stroke-width="1.2"/>
+
+                    <!-- Vertical Knot Boundary Lines -->
+                    <line x1="130" y1="20" x2="130" y2="180" stroke="#3f3f46" stroke-dasharray="3,3" stroke-width="1.2"/>
+                    <text x="130" y="195" fill="#d97757" font-size="9" text-anchor="middle">Knot t₁</text>
+
+                    <line x1="250" y1="20" x2="250" y2="180" stroke="#3f3f46" stroke-dasharray="3,3" stroke-width="1.2"/>
+                    <text x="250" y="195" fill="#d97757" font-size="9" text-anchor="middle">Knot t₂</text>
+
+                    <!-- Segment 1: Cubic Polynomial 1 -->
+                    <path d="M 45,150 Q 80,140 130,95" fill="none" stroke="#4fa3e3" stroke-width="2.5"/>
+                    <text x="80" y="165" fill="#4fa3e3" font-size="9" text-anchor="middle">Segment 1 (Cubic)</text>
+
+                    <!-- Segment 2: Cubic Polynomial 2 (Welded at t1) -->
+                    <path d="M 130,95 Q 180,50 250,75" fill="none" stroke="#4fbf8b" stroke-width="2.5"/>
+                    <text x="190" y="45" fill="#4fbf8b" font-size="9" text-anchor="middle">Segment 2 (Cubic)</text>
+
+                    <!-- Segment 3: Cubic Polynomial 3 (Welded at t2) -->
+                    <path d="M 250,75 Q 310,100 360,60" fill="none" stroke="#b385f0" stroke-width="2.5"/>
+                    <text x="310" y="115" fill="#b385f0" font-size="9" text-anchor="middle">Segment 3 (Cubic)</text>
+
+                    <!-- Knot weld points -->
+                    <circle cx="130" cy="95" r="4.5" fill="#d97757"/>
+                    <circle cx="250" cy="75" r="4.5" fill="#d97757"/>
+
+                    <!-- Annotation Box -->
+                    <rect x="50" y="25" width="130" height="40" rx="4" fill="rgba(217, 119, 87, 0.15)" stroke="#d97757"/>
+                    <text x="115" y="40" fill="#d97757" font-size="8.5" font-weight="600" text-anchor="middle">C⁰ (Equal Position)</text>
+                    <text x="115" y="52" fill="#d97757" font-size="8" text-anchor="middle">C¹ (Equal Slope: f')</text>
+                    <text x="115" y="62" fill="#d97757" font-size="8" text-anchor="middle">C² (Equal Curvature: f'')</text>
+                  </g>
+                  <text x="212" y="270" fill="#ededed" font-size="9.5" text-anchor="middle">Knots segment the domain; constraints weld curves invisibly</text>
+                </g>
+
+                <!-- Panel B: Eager vs Lazy Learning -->
+                <g transform="translate(460, 20)">
+                  <rect width="445" height="285" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="222" y="25" fill="#ededed" font-size="12" font-weight="600" text-anchor="middle">B. Eager Learning (Spline) vs. Lazy Learning (LOESS)</text>
+
+                  <g transform="translate(20, 40)">
+                    <!-- Spline Track (Eager) -->
+                    <rect x="15" y="10" width="395" height="95" rx="6" fill="#111114" stroke="#4fbf8b" stroke-width="1.2"/>
+                    <text x="25" y="28" fill="#4fbf8b" font-size="10" font-weight="700">SPLINE: Eager Learner (Solve Once, Use Forever)</text>
+
+                    <rect x="25" y="40" width="105" height="50" rx="4" fill="rgba(79, 191, 139, 0.15)"/>
+                    <text x="77" y="58" fill="#4fbf8b" font-size="8.5" font-weight="600" text-anchor="middle">Training Phase</text>
+                    <text x="77" y="72" fill="#ededed" font-size="7.5" text-anchor="middle">Solves matrix once;</text>
+                    <text x="77" y="82" fill="#ededed" font-size="7.5" text-anchor="middle">finds β-coefficients</text>
+
+                    <text x="145" y="68" fill="#a1a1aa" font-size="12">→</text>
+
+                    <rect x="160" y="40" width="105" height="50" rx="4" fill="rgba(79, 191, 139, 0.15)"/>
+                    <text x="212" y="58" fill="#4fbf8b" font-size="8.5" font-weight="600" text-anchor="middle">Lookup Table</text>
+                    <text x="212" y="72" fill="#ededed" font-size="7.5" text-anchor="middle">Stores [β₀,β₁,β₂,β₃]</text>
+                    <text x="212" y="82" fill="#f0524f" font-size="7.5" text-anchor="middle">Discards raw data!</text>
+
+                    <text x="280" y="68" fill="#a1a1aa" font-size="12">→</text>
+
+                    <rect x="295" y="40" width="105" height="50" rx="4" fill="rgba(79, 191, 139, 0.25)" stroke="#4fbf8b"/>
+                    <text x="347" y="58" fill="#4fbf8b" font-size="8.5" font-weight="600" text-anchor="middle">Inference: O(1)</text>
+                    <text x="347" y="72" fill="#a7f3d0" font-size="7.5" text-anchor="middle">Instant plug &amp; chug</text>
+                    <text x="347" y="82" fill="#a7f3d0" font-size="7.5" text-anchor="middle">Millions / sec</text>
+
+                    <!-- LOESS Track (Lazy) -->
+                    <rect x="15" y="118" width="395" height="95" rx="6" fill="#111114" stroke="#f0524f" stroke-width="1.2"/>
+                    <text x="25" y="136" fill="#f0524f" font-size="10" font-weight="700">LOESS: Lazy Learner (Solve Every Single Time)</text>
+
+                    <rect x="25" y="148" width="105" height="50" rx="4" fill="rgba(240, 82, 79, 0.15)"/>
+                    <text x="77" y="166" fill="#f0524f" font-size="8.5" font-weight="600" text-anchor="middle">Training Phase</text>
+                    <text x="77" y="180" fill="#ededed" font-size="7.5" text-anchor="middle">Zero math upfront;</text>
+                    <text x="77" y="190" fill="#ededed" font-size="7.5" text-anchor="middle">memorizes raw data</text>
+
+                    <text x="145" y="176" fill="#a1a1aa" font-size="12">→</text>
+
+                    <rect x="160" y="148" width="105" height="50" rx="4" fill="rgba(240, 82, 79, 0.15)"/>
+                    <text x="212" y="166" fill="#f0524f" font-size="8.5" font-weight="600" text-anchor="middle">Prediction Tax</text>
+                    <text x="212" y="180" fill="#ededed" font-size="7.5" text-anchor="middle">Scans all points;</text>
+                    <text x="212" y="190" fill="#ededed" font-size="7.5" text-anchor="middle">computes weights</text>
+
+                    <text x="280" y="176" fill="#a1a1aa" font-size="12">→</text>
+
+                    <rect x="295" y="148" width="105" height="50" rx="4" fill="rgba(240, 82, 79, 0.25)" stroke="#f0524f"/>
+                    <text x="347" y="166" fill="#f0524f" font-size="8.5" font-weight="600" text-anchor="middle">Inference: O(n)</text>
+                    <text x="347" y="180" fill="#fca5a5" font-size="7.5" text-anchor="middle">Runs full matrix WLS;</text>
+                    <text x="347" y="190" fill="#fca5a5" font-size="7.5" text-anchor="middle">throws model away!</text>
+                  </g>
+                  <text x="222" y="270" fill="#fbbf24" font-size="9.5" text-anchor="middle">Splines do the hard math upfront; LOESS does it at query time</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <h3>3. Eager Learning vs. Lazy Learning: Why Splines Outperform LOESS</h3>
+          <p>
+            The difference between Splines and LOESS represents a classical dichotomy in computer science:
+          </p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Feature / Dimension</th>
+                <th>Spline Smoothing (Eager Learning)</th>
+                <th>LOESS / LOWESS (Lazy Learning)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Learning Paradigm</strong></td>
+                <td><strong>Eager:</strong> Solves global system of equations during training.</td>
+                <td><strong>Lazy:</strong> Merely memorizes data; delays all computation to query time.</td>
+              </tr>
+              <tr>
+                <td><strong>Training Overhead</strong></td>
+                <td>Moderate upfront matrix inversion to compute polynomial $\beta$ coefficients.</td>
+                <td>Virtually zero upfront computation.</td>
+              </tr>
+              <tr>
+                <td><strong>Prediction Speed (Inference)</strong></td>
+                <td><span class="tag-status tag-good">Instantaneous ($O(1)$)</span>: Plugs query $x$ into segment equation: $y = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3$.</td>
+                <td><span class="tag-status tag-bad">Extremely Slow ($O(n)$)</span>: Must calculate weights, invert local matrices, and fit a new WLS for every single predicted point.</td>
+              </tr>
+              <tr>
+                <td><strong>Raw Data Retention</strong></td>
+                <td><strong>Discards training points.</strong> Only stores small lookup table of knot coordinates and $\beta$ coefficients.</td>
+                <td><strong>Must retain entire raw dataset</strong> in memory indefinitely to calculate neighbor distances.</td>
+              </tr>
+              <tr>
+                <td><strong>Scalability</strong></td>
+                <td>Handles millions of inference points effortlessly.</td>
+                <td>Chokes on large datasets ($>50,000$ points).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="warning-box">
+            <strong>The Spline Uncertainty Trap (Wilke Fig 14-5):</strong> Be cautious when presenting spline curves in publications. Different spline architectures (cubic regression splines, B-splines, thin-plate splines, Gaussian process splines) and different knot choices produce <strong>radically different boundary behaviors</strong> on identical datasets. Readers must be informed of the exact spline model and knot count used, because default software settings can drastically alter visual conclusions.
+          </div>
+
+          <h3>Self-Assessment Practice Questions</h3>
+          <details>
+            <summary>Question 1 (Easy): What mathematical curve does a smoothing spline collapse into when the smoothing parameter $\lambda$ approaches infinity?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> A standard straight-line linear regression ($y = \beta_0 + \beta_1 x$).
+              <p><em>Explanation:</em> As $\lambda \to \infty$, the roughness penalty $\lambda \int [f''(x)]^2 dx$ dominates the loss function. To prevent the loss from exploding to infinity, the algorithm must force the curvature $f''(x) = 0$ everywhere. A function with zero second derivative is strictly a straight line.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 2 (Medium): Why can a fitted spline model make predictions without access to the original training data, while LOESS cannot?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> Because splines are "eager learners" that encapsulate the entire trend into a compact global set of pre-calculated polynomial coefficients for each segment.
+              <p><em>Explanation:</em> Once the knot boundaries and polynomial $\beta$ values are determined, the original points are unnecessary; predicting $y$ only requires evaluating that segment's polynomial. LOESS is a "lazy learner" that has no saved coefficients; it must re-scan the raw data to compute distances and weights for every single query point.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 3 (Hard): What are the three continuity constraints enforced at spline knots, and what visual flaw would occur if $C^1$ continuity were omitted?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> 1) $C^0$ (equal position / function value), 2) $C^1$ (equal slope / first derivative), and 3) $C^2$ (equal curvature / second derivative). Omitting $C^1$ continuity would result in <strong>sharp kinks or corners</strong> where polynomial segments meet.
+              <p><em>Explanation:</em> If slopes differ at knot $t_k$, the incoming segment arrives at one angle and the outgoing segment departs at another, creating an abrupt corner. Enforcing $f'_i(t_k) = f'_{i+1}(t_k)$ guarantees a perfectly smooth slope across the seam.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Topic 4 Key Takeaways</h4>
+            <ul>
+              <li><strong>Piecewise Cubic Structure:</strong> Splines divide the domain into segments bounded by knots, enforcing $C^0$ (value), $C^1$ (slope), and $C^2$ (curvature) continuity.</li>
+              <li><strong>Roughness Penalty:</strong> Loss balances Sum of Squared Errors against $\lambda \int [f''(x)]^2 dx$. $\lambda \to 0$ overfits; $\lambda \to \infty$ yields a linear regression line.</li>
+              <li><strong>Eager vs. Lazy Learning:</strong> Splines compute coefficients upfront and discard raw data for instant $O(1)$ inference; LOESS recomputes WLS at every query point.</li>
+              <li><strong>Software Defaults Warning:</strong> Spline types (cubic, thin-plate, Gaussian) vary widely at edges; always document knot counts and parameters.</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Functional Forms, The OLS Trap &amp; Data Straightening</h2>
+          <p class="topic-subtitle">The Sum-of-Squares exponential trap, log-transform linearization, Log-Linear, Log-Log, Linear-Log plots, and base conversions (Wilke Ch. 14 &amp; Handout)</p>
+
+          <p>
+            General smoothers (like LOESS or splines) produce flexible curves, but their parameters lack physical or theoretical interpretability. In contrast, fitting an <strong>explicit analytical model</strong> (such as an exponential, power-law, or logarithmic equation) provides meaningful constants that describe governing natural laws. However, fitting non-linear curves directly to raw data using standard regression algorithms contains a notorious mathematical trap.
+          </p>
+
+          <div class="definition">
+            <strong>Data Straightening:</strong> The technique of applying mathematical transformations (most commonly logarithms) to the independent axis ($x$), the dependent axis ($y$), or both, such that non-linear curves are mapped into straight lines ($Y = mX + c$).<br />
+            <strong>Power Law:</strong> A functional relationship where one quantity varies as a constant power of another ($y = c x^\alpha$), characterized by scale invariance.
+            <div class="def-sub">Intuitive one-liner: Human eyes are terrible at evaluating curves, but brilliant at spotting straight lines. Straightening data lets our eyes detect minute anomalies.</div>
+          </div>
+
+          <h3>1. The "Sum of Squares" Trap in Direct Non-Linear Fitting</h3>
+          <p>
+            When statistical software fits a non-linear curve directly to raw data points, it almost universally uses <strong>Ordinary Least Squares (OLS)</strong>, seeking parameters that minimize the total sum of squared residuals: $\text{SSE} = \sum (y_i - \hat{y}_i)^2$.
+          </p>
+
+          <div class="warning-box">
+            <strong>The OLS Distortion Mechanism (Wilke Fig 14-8 &amp; 14-9):</strong>
+            <p>In an exponentially growing time series (such as preprint submissions or epidemic cases), late-stage observations are orders of magnitude larger than early-stage observations:</p>
+            <ul style="margin: 6px 0 0 16px; line-height: 1.65;">
+              <li><strong>Late Points Dominate:</strong> An error of $1,000$ on a late point produces a catastrophic squared penalty of $1,000^2 = 1,000,000$.</li>
+              <li><strong>Early Points Are Sacrificed:</strong> An error of $5$ on an early point produces a negligible squared penalty of $5^2 = 25$.</li>
+              <li><strong>Systematic Bias:</strong> To minimize the total sum, the algorithm aggressively bends the curve to fit the massive late-stage numbers, happily sacrificing the early points. Consequently, the fitted curve systematically <strong>overshoots or undershoots</strong> early observations.</li>
+            </ul>
+          </div>
+
+          <div class="note-box">
+            <strong>The Log-Transform Solution — Equalizing Proportional Error:</strong>
+            Instead of fitting a non-linear curve directly to raw $y$, take the logarithm of the values first ($\ln y$) and fit a standard linear regression: $\ln(y) = \ln(a) + bx$.
+            <br />
+            Because $\ln(y_1) - \ln(y_2) = \ln(y_1 / y_2)$, logarithmic differences represent <em>relative percentage changes</em> rather than absolute additive differences. A $10\%$ deviation on a small value receives the exact same mathematical penalty as a $10\%$ deviation on a massive value. Proportional fidelity is preserved across the entire time series!
+            <br /><br />
+            <strong>Wilke's Golden Axiom:</strong> <em>"It is usually better to fit a straight line to transformed data than to fit a nonlinear curve to untransformed data."</em>
+          </div>
+
+          <!-- Native SVG Diagram 5: OLS Trap & The 3 Straightening Transformations -->
+          <div class="visual-card">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Architectural Visual: The OLS Distortion Trap &amp; The 3 Data Straightening Architectures
+            </h4>
+            <p class="visual-caption">Top: Why OLS distorts raw exponential data vs. log-transform fidelity. Bottom: The 3 core coordinate transformations.</p>
+            <div class="svg-canvas-wrap">
+              <svg viewBox="0 0 920 380" style="width:100%; max-width:920px; font-family:Poppins, sans-serif;">
+                <!-- Top Left: Raw OLS Fit Failure -->
+                <g transform="translate(15, 15)">
+                  <rect width="430" height="165" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="215" y="22" fill="#f0524f" font-size="11" font-weight="600" text-anchor="middle">A1. Direct Non-Linear OLS on Raw Data (Biased)</text>
+                  <!-- Axes -->
+                  <line x1="35" y1="140" x2="400" y2="140" stroke="#52525b" stroke-width="1.2"/>
+                  <line x1="35" y1="140" x2="35" y2="30" stroke="#52525b" stroke-width="1.2"/>
+                  <!-- Raw Exponential Curve -->
+                  <path d="M 45,135 Q 200,130 280,100 T 385,35" fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+                  <!-- Distorted OLS fit line (overshooting early points) -->
+                  <path d="M 45,115 Q 200,118 280,95 T 385,35" fill="none" stroke="#f0524f" stroke-width="2" stroke-dasharray="4,4"/>
+                  <!-- Error annotation -->
+                  <rect x="55" y="45" width="160" height="36" rx="4" fill="rgba(240, 82, 79, 0.2)" stroke="#f0524f"/>
+                  <text x="135" y="60" fill="#fca5a5" font-size="8.5" font-weight="600" text-anchor="middle">Large points dictate SSE;</text>
+                  <text x="135" y="73" fill="#fca5a5" font-size="8" text-anchor="middle">early points systematically biased!</text>
+                  <circle cx="55" cy="135" r="3.5" fill="#3b82f6"/>
+                  <line x1="55" y1="135" x2="55" y2="116" stroke="#f0524f" stroke-width="2"/>
+                </g>
+
+                <!-- Top Right: Log-Transform Linear Fit -->
+                <g transform="translate(470, 15)">
+                  <rect width="435" height="165" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="217" y="22" fill="#4fbf8b" font-size="11" font-weight="600" text-anchor="middle">A2. Linear Fit on Log-Transformed Data (Unbiased)</text>
+                  <!-- Axes -->
+                  <line x1="35" y1="140" x2="405" y2="140" stroke="#52525b" stroke-width="1.2"/>
+                  <line x1="35" y1="140" x2="35" y2="30" stroke="#52525b" stroke-width="1.2"/>
+                  <text x="25" y="35" fill="#4fbf8b" font-size="8.5">ln(y)</text>
+                  <!-- Perfectly Straightened line -->
+                  <line x1="45" y1="135" x2="385" y2="40" stroke="#4fbf8b" stroke-width="2.5"/>
+                  <!-- Uniform points around line -->
+                  <circle cx="70" cy="125" r="3" fill="#4fbf8b"/>
+                  <circle cx="130" cy="112" r="3" fill="#4fbf8b"/>
+                  <circle cx="210" cy="88" r="3" fill="#4fbf8b"/>
+                  <circle cx="290" cy="65" r="3" fill="#4fbf8b"/>
+                  <circle cx="360" cy="48" r="3" fill="#4fbf8b"/>
+                  <rect x="65" y="45" width="165" height="36" rx="4" fill="rgba(79, 191, 139, 0.2)" stroke="#4fbf8b"/>
+                  <text x="147" y="60" fill="#a7f3d0" font-size="8.5" font-weight="600" text-anchor="middle">Equal relative weighting;</text>
+                  <text x="147" y="73" fill="#a7f3d0" font-size="8" text-anchor="middle">constant proportional accuracy!</text>
+                </g>
+
+                <!-- Bottom: The 3 Data Straightening Architectures -->
+                <g transform="translate(15, 195)">
+                  <rect width="890" height="170" rx="8" fill="#18181b" stroke="#27272a"/>
+                  <text x="445" y="22" fill="#ededed" font-size="11" font-weight="600" text-anchor="middle">B. The Three Canonical Data Straightening Transformations</text>
+
+                  <!-- Panel B1: Log-Linear -->
+                  <g transform="translate(15, 32)">
+                    <rect width="270" height="125" rx="6" fill="#111114" stroke="#3b82f6" stroke-width="1"/>
+                    <text x="135" y="18" fill="#3b82f6" font-size="10" font-weight="700" text-anchor="middle">1. Log-Linear (Semi-Log)</text>
+                    <text x="135" y="35" fill="#a1a1aa" font-size="8.5" text-anchor="middle">x: Linear &nbsp;|&nbsp; y: Logarithmic</text>
+                    <text x="135" y="55" fill="#ededed" font-size="9" font-weight="600" text-anchor="middle">y = a · e^(bx) &nbsp;⟹&nbsp; ln(y) = ln(a) + bx</text>
+                    <rect x="15" y="68" width="240" height="48" rx="4" fill="rgba(59, 130, 246, 0.1)"/>
+                    <text x="135" y="84" fill="#93c5fd" font-size="8" font-weight="600" text-anchor="middle">Slope (b) = Continuous Growth Rate</text>
+                    <text x="135" y="100" fill="#a1a1aa" font-size="7.5" text-anchor="middle">E.g., Bacterial Doubling (y = 2ˣ, slope = 0.693)</text>
+                  </g>
+
+                  <!-- Panel B2: Log-Log -->
+                  <g transform="translate(310, 32)">
+                    <rect width="270" height="125" rx="6" fill="#111114" stroke="#b385f0" stroke-width="1"/>
+                    <text x="135" y="18" fill="#b385f0" font-size="10" font-weight="700" text-anchor="middle">2. Log-Log (Double-Log)</text>
+                    <text x="135" y="35" fill="#a1a1aa" font-size="8.5" text-anchor="middle">x: Logarithmic &nbsp;|&nbsp; y: Logarithmic</text>
+                    <text x="135" y="55" fill="#ededed" font-size="9" font-weight="600" text-anchor="middle">y = c · x^α &nbsp;⟹&nbsp; ln(y) = ln(c) + α·ln(x)</text>
+                    <rect x="15" y="68" width="240" height="48" rx="4" fill="rgba(179, 133, 240, 0.1)"/>
+                    <text x="135" y="84" fill="#c4b5fd" font-size="8" font-weight="600" text-anchor="middle">Slope (α) = Power-Law Exponent</text>
+                    <text x="135" y="100" fill="#a1a1aa" font-size="7.5" text-anchor="middle">E.g., Kleiber's Law (Metabolism ~ Mass⁰·⁷⁵)</text>
+                  </g>
+
+                  <!-- Panel B3: Linear-Log -->
+                  <g transform="translate(605, 32)">
+                    <rect width="270" height="125" rx="6" fill="#111114" stroke="#d97757" stroke-width="1"/>
+                    <text x="135" y="18" fill="#d97757" font-size="10" font-weight="700" text-anchor="middle">3. Linear-Log</text>
+                    <text x="135" y="35" fill="#a1a1aa" font-size="8.5" text-anchor="middle">x: Logarithmic &nbsp;|&nbsp; y: Linear</text>
+                    <text x="135" y="55" fill="#ededed" font-size="9" font-weight="600" text-anchor="middle">y = a · ln(x) + b &nbsp;⟹&nbsp; y = a·X + b</text>
+                    <rect x="15" y="68" width="240" height="48" rx="4" fill="rgba(217, 119, 87, 0.1)"/>
+                    <text x="135" y="84" fill="#fdba74" font-size="8" font-weight="600" text-anchor="middle">Slope (a) = Gain per Order of Magnitude</text>
+                    <text x="135" y="100" fill="#a1a1aa" font-size="7.5" text-anchor="middle">E.g., Marketing Budget Diminishing Returns</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <h3>2. The Three Canonical Data Straightening Transformations</h3>
+          <p>
+            By strategically choosing which axes to transform logarithmically, data scientists can convert distinct non-linear dynamics into standard straight lines:
+          </p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Plot Type</th>
+                <th>X-Axis / Y-Axis</th>
+                <th>Target Mathematical Law</th>
+                <th>Transformed Equation</th>
+                <th>Physical Interpretation of Slope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Log-Linear (Semi-Log)</strong></td>
+                <td>$x$: Linear<br />$y$: Logarithmic</td>
+                <td><strong>Exponential Growth:</strong><br />$y = a e^{bx}$ or $y = a \cdot 2^{bx}$</td>
+                <td>$\ln(y) = \ln(a) + bx$</td>
+                <td>The slope ($b$) is the <strong>continuous growth rate</strong>.</td>
+              </tr>
+              <tr>
+                <td><strong>Log-Log (Double-Log)</strong></td>
+                <td>$x$: Logarithmic<br />$y$: Logarithmic</td>
+                <td><strong>Power Law:</strong><br />$y = c x^\alpha$</td>
+                <td>$\ln(y) = \ln(c) + \alpha \ln(x)$</td>
+                <td>The slope ($\alpha$) is the <strong>power-law scaling exponent</strong>.</td>
+              </tr>
+              <tr>
+                <td><strong>Linear-Log</strong></td>
+                <td>$x$: Logarithmic<br />$y$: Linear</td>
+                <td><strong>Logarithmic Saturation:</strong><br />$y = a \log(x) + b$</td>
+                <td>$y = a X + b$ &nbsp;$(X = \log x)$</td>
+                <td>The slope ($a$) is the <strong>absolute gain per order of magnitude increase</strong> in $x$.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>3. Real-World Case Studies with Numerical Walk-Throughs</h3>
+          <div class="example">
+            <strong>Case Study 1: Log-Linear Straightening — Bacterial Doubling</strong>
+            <p>A bacterial culture doubles every hour ($y = 2^x$).</p>
+            <ul style="margin: 4px 0 0 16px; line-height:1.6; color:var(--tx);">
+              <li><strong>Original Raw Data (Curved):</strong> $x = [1, 2, 3, 4, 5]$, &nbsp;$y = [2, 4, 8, 16, 32]$.</li>
+              <li><strong>Transformation:</strong> Leave $x$ linear; compute natural log of $y$: $\ln(y) = [0.693, 1.386, 2.079, 2.773, 3.466]$.</li>
+              <li><strong>Resulting Linear Model:</strong> $Y = 0.693 x + 0$. The slope is exactly $\ln(2) \approx 0.6931$, representing the hourly continuous compound growth rate.</li>
+            </ul>
+          </div>
+
+          <div class="example">
+            <strong>Case Study 2: Log-Log Straightening — Kleiber’s Law of Metabolic Scaling</strong>
+            <p>In biology, Max Kleiber demonstrated that an animal's basal metabolic rate ($y$, kcal/day) scales as the $3/4$ power of its body mass ($x$, kg): $y = 50 x^{0.75}$.</p>
+            <ul style="margin: 4px 0 0 16px; line-height:1.6; color:var(--tx);">
+              <li><strong>Original Raw Data (Curved):</strong> Mass $x = [1, 10, 100, 1000]$, &nbsp;Metabolism $y = [50, 281, 1581, 8891]$.</li>
+              <li><strong>Transformation:</strong> Take the log of both axes: $\ln(x) = [0, 2.30, 4.61, 6.91]$, &nbsp;$\ln(y) = [3.91, 5.64, 7.37, 9.09]$.</li>
+              <li><strong>Resulting Linear Model:</strong> $Y = 0.75 X + 3.91$. The slope ($0.75$) exactly unmasks the theoretical sub-linear scaling exponent.</li>
+            </ul>
+          </div>
+
+          <div class="example">
+            <strong>Case Study 3: Linear-Log Straightening — Diminishing Returns in Marketing</strong>
+            <p>Spending $\$100$ attracts $50$ customers; spending $\$1,000$ attracts $100$; spending $\$10,000$ attracts $150$: $y = 50 \log_{10}(x)$.</p>
+            <ul style="margin: 4px 0 0 16px; line-height:1.6; color:var(--tx);">
+              <li><strong>Transformation:</strong> Compress the $x$-axis using $\log_{10}(x)$: $\log_{10}(x) = [1, 2, 3, 4]$, &nbsp;$y = [50, 100, 150, 200]$.</li>
+              <li><strong>Resulting Linear Model:</strong> $Y = 50 X + 0$. The slope ($50$) tells the VP of Marketing: <em>"Every time you multiply advertising budget by 10×, you obtain exactly 50 additional customers."</em></li>
+            </ul>
+          </div>
+
+          <h3>4. The "Programming Trap" &amp; Base Conversions</h3>
+          <div class="warning-box">
+            <strong>The Programming Trap:</strong> In high school mathematics, $\log(x)$ implies base 10 ($\log_{10}$). However, in virtually all programming languages (Python `math.log` / `numpy.log`, R `log()`, C++, Java), <strong>`log(x)` defaults to the natural logarithm (base $e \approx 2.71828$)!</strong>
+            <br />
+            To obtain base 10 in Python or R, you must explicitly call <code>log10(x)</code>. Calling `log(x)` when expecting base 10 introduces a hidden error factor of $\ln(10) \approx 2.3026$!
+          </div>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Logarithm Base</th>
+                <th>Standard Notation</th>
+                <th>Primary Use Cases</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Base 10</strong></td>
+                <td>$\log_{10}(x)$</td>
+                <td><strong>Human orders of magnitude:</strong> Richter earthquake scale, chemical pH values, acoustic decibels, financial orders of magnitude.</td>
+              </tr>
+              <tr>
+                <td><strong>Natural Base $e$</strong></td>
+                <td>$\ln(x)$ or $\log_e(x)$</td>
+                <td><strong>Calculus and rates:</strong> Continuous compound growth, derivatives, statistical regression modeling, physics decay laws.</td>
+              </tr>
+              <tr>
+                <td><strong>Base 2</strong></td>
+                <td>$\log_2(x)$</td>
+                <td><strong>Computer science:</strong> Binary search algorithms ($O(\log_2 n)$), tree depths, information theory (bits/entropy), doubling times.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <strong>Mathematical Base Conversion Formulas:</strong>
+            <ul style="margin: 4px 0 0 16px; line-height: 1.65;">
+              <li><strong>Change-of-Base Formula:</strong> To calculate base-10 using natural logs on a calculator:
+                $$\log_{10}(x) = \frac{\ln(x)}{\ln(10)} \approx \frac{\ln(x)}{2.3026}$$
+              </li>
+              <li><strong>Converting Any Exponential Base $a$ to Natural Base $e$:</strong> Any exponential $y = a^x$ can be rewritten as continuous growth $y = e^{kx}$ by setting $k = \ln(a)$.
+                <br />
+                <em>Example:</em> Convert $y = 10^x$ to base $e$: since $\ln(10) \approx 2.3026$, $y = 10^x \iff y = e^{2.3026 x}$. Both equations produce the identical curve!
+              </li>
+            </ul>
+          </div>
+
+          <h3>Self-Assessment Practice Questions</h3>
+          <details>
+            <summary>Question 1 (Easy): Which axis or axes must be transformed logarithmically to straighten a power-law relationship ($y = c x^\alpha$)?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> Both the $x$-axis and the $y$-axis (a Log-Log plot).
+              <p><em>Explanation:</em> Taking the logarithm of both sides of $y = c x^\alpha$ yields $\ln(y) = \ln(c) + \alpha \ln(x)$. Plotting $\ln(y)$ against $\ln(x)$ results in a straight line with slope $\alpha$ and intercept $\ln(c)$.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 2 (Medium): Why does fitting an exponential curve directly to raw data with OLS systematically misfit early observations?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> Because OLS minimizes squared absolute residuals ($\sum (y_i - \hat{y}_i)^2$). Large values at the tail produce massive squared penalties, forcing the optimizer to fit large numbers while ignoring small errors on early points.
+              <p><em>Explanation:</em> In raw units, an error of 100 on an early small value (say 10) is a 1000% error, but in absolute squared terms ($10,000$) it is dwarfed by a 2% error on a point of 100,000 (absolute error $2,000 \implies$ squared penalty $4,000,000$). Log-transforming first converts differences to proportional ratios, equalizing weights.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 3 (Hard): In Python, a student executes `slope = np.polyfit(x, np.log(y), 1)[0]` on bacterial doubling data ($y = 2^x$). What numerical slope will Python return, and why does it differ from 1.0?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> Python will return approximately $0.6931$ (which is $\ln(2)$), rather than $1.0$.
+              <p><em>Explanation:</em> `np.log` computes the natural logarithm (base $e$), not base 2 or base 10. The equation is $\ln(y) = \ln(2^x) = x \cdot \ln(2) \approx 0.6931 x$. If the student wanted a slope of 1.0, they would need to use `np.log2(y)`.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Topic 5 Key Takeaways</h4>
+            <ul>
+              <li><strong>The OLS Exponential Trap:</strong> Fitting curves directly to raw exponential data produces heavy bias; log-transforming first ensures equal proportional weighting across all scales.</li>
+              <li><strong>The 3 Straightening Transforms:</strong> Log-Linear straightens exponentials (slope = growth rate $b$); Log-Log straightens power laws (slope = exponent $\alpha$); Linear-Log straightens logarithms (slope = gain per 10×).</li>
+              <li><strong>The Programming Trap:</strong> In Python/R, `log()` is base $e$ ($\ln$). Explicitly use `log10()` for orders of magnitude.</li>
+              <li><strong>Base Conversions:</strong> $\log_{10}(x) = \ln(x) / \ln(10)$; and $a^x = e^{kx}$ where $k = \ln(a)$.</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>Detrending &amp; Time-Series Decomposition (Keeling Curve)</h2>
+          <p class="topic-subtitle">Multiplicative detrending, the 3 time-series components, STL by LOESS, and the Mauna Loa CO₂ Keeling curve (Wilke Ch. 14)</p>
+
+          <p>
+            When a time series exhibits a powerful secular upward or downward trajectory, the sheer magnitude of the long-term trend can swallow vital cyclical behaviors, seasonal fluctuations, and unexpected economic or environmental shocks. <strong>Detrending</strong> and <strong>time-series decomposition</strong> isolate these distinct temporal forces.
+          </p>
+
+          <div class="definition">
+            <strong>Detrending:</strong> The mathematical removal of the dominant long-term baseline trend from a time series to highlight unexpected deviations, bubbles, or cyclical oscillations.<br />
+            <strong>Time-Series Decomposition:</strong> The process of deconstructing an observed series into three distinct additive or multiplicative structural components: Long-Term Trend, Seasonal/Cyclical Variations, and the Remainder.<br />
+            <strong>STL Decomposition:</strong> <em>Seasonal and Trend decomposition using LOESS</em> (Cleveland et al. 1990), a versatile non-parametric algorithm that uses iterative LOESS smoothers to separate trend from seasonality.
+            <div class="def-sub">Intuitive one-liner: Decomposition dissects a messy signal into its slow climate (trend), its annual seasons (cycle), and its unpredictable daily weather (noise).</div>
+          </div>
+
+          <h3>1. Detrending: Unmasking Hidden Bubbles (Freddie Mac Case Study)</h3>
+          <p>
+            In economics, assets often compound in percentage increments (exponential growth). The Freddie Mac House Price Index tracks relative housing values across US states (indexed to $100$ in Dec 2000).
+          </p>
+
+          <div class="example">
+            <strong>The California Housing Illusion (Wilke Fig 14-10 &amp; 14-11):</strong>
+            <ul style="margin: 4px 0 0 16px; line-height: 1.65; color: var(--tx);">
+              <li><strong>The Raw Time Series:</strong> Between 1980 and 2017, California home prices grew along an exponential trend of $4.7\%$ annually (represented by a straight gray line on a logarithmic $y$-axis). Between 1990 and 1998, California prices appeared to decline only modestly in raw dollar terms.</li>
+              <li><strong>The Multiplicative Detrending Formula:</strong>
+                $$\text{Detrended Index}_t = \frac{\text{Actual Index}_t}{\text{Expected Trend}_t}$$
+                On a logarithmic scale, dividing raw values is graphically identical to <em>subtracting the straight trend line</em>.
+              </li>
+              <li><strong>The Revelation:</strong> Relative to what buyers expected based on continuous 4.7% compounding, California home prices actually collapsed by <strong>25% at their lowest point in 1998</strong>! Detrending unmasked a massive housing bubble and severe bust that was completely camouflaged in the raw chart.</li>
+              <li><strong>Cross-State Comparison:</strong> Nevada showed a single extreme speculative bubble in the mid-2000s, whereas Texas and West Virginia tracked their $2.8\%$ annual trends with virtually zero speculative deviation.</li>
+            </ul>
+          </div>
+
+          <h3>2. The Three Structural Components of a Time Series</h3>
+          <p>
+            Classical decomposition expresses any observed time series $Y_t$ as the mathematical combination of three distinct signals:
+          </p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Mathematical Role</th>
+                <th>Underlying Real-World Mechanism</th>
+                <th>Timescale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Long-Term Trend ($T_t$)</strong></td>
+                <td>The smooth, secular direction of the data over decades or centuries.</td>
+                <td>Population growth, economic expansion, technological evolution, global greenhouse gas accumulation.</td>
+                <td>Decades / Centuries</td>
+              </tr>
+              <tr>
+                <td><strong>2. Seasonal Variation ($S_t$)</strong></td>
+                <td>Repetitive, periodic oscillations with known constant period.</td>
+                <td>Calendar events, summer vs. winter temperatures, annual agricultural harvests, holiday retail surges.</td>
+                <td>Daily, Weekly, or Annual (Months/Quarters)</td>
+              </tr>
+              <tr>
+                <td><strong>3. Remainder / Noise ($R_t$)</strong></td>
+                <td>The residual difference: $R_t = Y_t - (T_t + S_t)$.</td>
+                <td>Stochastic white noise, random measuring errors, or <strong>unique catastrophic external shocks</strong> (e.g., massive volcanic eruptions, pandemic shutdowns, wars).</td>
+                <td>Unpredictable / High Frequency</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Native SVG Diagram 6: STL Keeling Curve Decomposition -->
+          <div class="visual-card">
+            <h4>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M3 3v18h18"/><path d="M3 15h18"/><path d="M3 9h18"/></svg>
+              Architectural Visual: STL Decomposition of the Mauna Loa Atmospheric CO₂ Keeling Curve
+            </h4>
+            <p class="visual-caption">Deconstructing 30 years of monthly readings into Long-Term Trend (>50 ppm), Seasonal Biosphere Cycle (~8 ppm), and Remainder Noise (<1.6 ppm).</p>
+            <div class="svg-canvas-wrap">
+              <svg viewBox="0 0 920 400" style="width:100%; max-width:920px; font-family:Poppins, sans-serif;">
+                <!-- Panel 1: Observed Series -->
+                <g transform="translate(20, 15)">
+                  <rect width="880" height="80" rx="6" fill="#18181b" stroke="#27272a"/>
+                  <text x="30" y="22" fill="#d97757" font-size="11" font-weight="700">1. Observed CO₂ Readings (ppm)</text>
+                  <text x="860" y="22" fill="#a1a1aa" font-size="9" text-anchor="end">Y_t</text>
+                  <!-- Baseline & Curve -->
+                  <line x1="40" y1="65" x2="850" y2="65" stroke="#3f3f46" stroke-width="1"/>
+                  <path d="M 50,60 Q 250,55 450,45 T 850,25" fill="none" stroke="#d97757" stroke-width="2"/>
+                  <!-- Overlaid annual ripples -->
+                  <path d="M 50,60 q 15,-6 30,0 t 30,0 t 30,-1 t 30,0 t 30,-2 t 30,0 t 30,-2 t 30,0 t 30,-2 t 30,0 t 30,-3 t 30,0 t 30,-3 t 30,0 t 30,-3 t 30,0 t 30,-4 t 30,0 t 30,-4 t 30,0 t 30,-4 t 30,0 t 30,-5 t 30,0 t 30,-5 t 30,0 t 30,-5 t 30,0" fill="none" stroke="#d97757" stroke-width="1.8"/>
+                  <text x="80" y="42" fill="#ededed" font-size="8.5">~350 ppm (1988)</text>
+                  <text x="800" y="18" fill="#ededed" font-size="8.5">>410 ppm (2018)</text>
+                </g>
+
+                <!-- Panel 2: Trend Component -->
+                <g transform="translate(20, 105)">
+                  <rect width="880" height="80" rx="6" fill="#18181b" stroke="#27272a"/>
+                  <text x="30" y="22" fill="#4fa3e3" font-size="11" font-weight="700">2. Long-Term Trend Component (T_t)</text>
+                  <text x="860" y="22" fill="#4fa3e3" font-size="9" text-anchor="end">> 50 ppm Net Increase</text>
+                  <line x1="40" y1="65" x2="850" y2="65" stroke="#3f3f46" stroke-width="1"/>
+                  <!-- Pure smooth upward curve -->
+                  <path d="M 50,62 C 280,58 550,45 850,22" fill="none" stroke="#4fa3e3" stroke-width="2.5"/>
+                  <text x="450" y="60" fill="#93c5fd" font-size="9" text-anchor="middle">Driven by secular industrial &amp; fossil fuel emissions (Non-linear acceleration)</text>
+                </g>
+
+                <!-- Panel 3: Seasonal Component -->
+                <g transform="translate(20, 195)">
+                  <rect width="880" height="80" rx="6" fill="#18181b" stroke="#27272a"/>
+                  <text x="30" y="22" fill="#4fbf8b" font-size="11" font-weight="700">3. Seasonal Variation Component (S_t)</text>
+                  <text x="860" y="22" fill="#4fbf8b" font-size="9" text-anchor="end">~8 ppm Peak-to-Trough (±4 ppm)</text>
+                  <line x1="40" y1="50" x2="850" y2="50" stroke="#52525b" stroke-width="1" stroke-dasharray="2,2"/>
+                  <!-- Sine-like periodic wave -->
+                  <path d="M 50,50 Q 65,30 80,50 T 110,50 T 140,50 T 170,50 T 200,50 T 230,50 T 260,50 T 290,50 T 320,50 T 350,50 T 380,50 T 410,50 T 440,50 T 470,50 T 500,50 T 530,50 T 560,50 T 590,50 T 620,50 T 650,50 T 680,50 T 710,50 T 740,50 T 770,50 T 800,50 T 830,50" fill="none" stroke="#4fbf8b" stroke-width="1.8"/>
+                  <text x="250" y="72" fill="#a7f3d0" font-size="8.5">Spring/Summer Northern Photosynthesis Drawdown (Trough)</text>
+                  <text x="650" y="72" fill="#a7f3d0" font-size="8.5">Winter Vegetation Decay Release (Peak)</text>
+                </g>
+
+                <!-- Panel 4: Remainder Component -->
+                <g transform="translate(20, 285)">
+                  <rect width="880" height="85" rx="6" fill="#18181b" stroke="#27272a"/>
+                  <text x="30" y="22" fill="#b385f0" font-size="11" font-weight="700">4. Remainder / Noise Component (R_t)</text>
+                  <text x="860" y="22" fill="#b385f0" font-size="9" text-anchor="end">&lt; 1.6 ppm White Noise</text>
+                  <line x1="40" y1="52" x2="850" y2="52" stroke="#52525b" stroke-width="1" stroke-dasharray="2,2"/>
+                  <!-- Small jagged noise -->
+                  <path d="M 50,52 L 60,49 L 70,54 L 80,51 L 90,53 L 100,50 L 110,55 L 120,51 L 130,53 L 140,49 L 150,54 L 160,51 L 170,53 L 180,50 L 190,55 L 200,52 L 210,48 L 220,54 L 230,51 L 240,53 L 250,50 L 260,54 L 270,51 L 280,53 L 290,49 L 300,53 L 310,50 L 320,54 L 330,51 L 340,53 L 350,50 L 360,55 L 370,52 L 380,49 L 390,53 L 400,50 L 410,54 L 420,51 L 430,53 L 440,50 L 450,55 L 460,52 L 470,49 L 480,53 L 490,50 L 500,54 L 510,51 L 520,53 L 530,50 L 540,55 L 550,52 L 560,49 L 570,53 L 580,50 L 590,54 L 600,51 L 610,53 L 620,50 L 630,55 L 640,52 L 650,49 L 660,53 L 670,50 L 680,54 L 690,51 L 700,53 L 710,50 L 720,55 L 730,52 L 740,49 L 750,53 L 760,50 L 770,54 L 780,51 L 790,53 L 800,50 L 810,55 L 820,52 L 830,49 L 840,53" fill="none" stroke="#b385f0" stroke-width="1.2"/>
+                  <text x="450" y="74" fill="#c4b5fd" font-size="8.5" text-anchor="middle">Tiny random residuals indicate absence of major volcanic or catastrophic shocks</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <h3>3. Case Study: The Mauna Loa Keeling Curve</h3>
+          <p>
+            Monitored continuously since 1958 by Charles David Keeling at 11,135 feet elevation atop the Mauna Loa volcano in Hawaii, the <strong>Keeling Curve</strong> provides the definitive empirical proof of global climate change.
+          </p>
+
+          <div class="note-box">
+            <strong>Biological Mechanism of the Seasonal Oscillation:</strong>
+            Why does atmospheric $\text{CO}_2$ dip every single northern summer?
+            <ul style="margin: 4px 0 0 16px; line-height: 1.65;">
+              <li><strong>Hemispheric Asymmetry:</strong> The Earth's landmasses and terrestrial forests are heavily concentrated in the <strong>Northern Hemisphere</strong>.</li>
+              <li><strong>Photosynthetic Drawdown:</strong> From May through September, northern deciduous forests burst into leaf. Intense photosynthesis consumes billions of tons of atmospheric $\text{CO}_2$, causing global concentrations to drop by $\sim 8\text{ ppm}$.</li>
+              <li><strong>Winter Respiration &amp; Decay:</strong> From October through April, northern plant foliage dies and soil respiration releases stored carbon back into the atmosphere, causing global concentrations to climb back to their annual peak.</li>
+            </ul>
+          </div>
+
+          <h3>Self-Assessment Practice Questions</h3>
+          <details>
+            <summary>Question 1 (Easy): In the STL decomposition of a time series, what does the "Remainder" component capture?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> Random high-frequency noise, measurement errors, and sudden unique external shock events (e.g., volcanic eruptions, sudden financial crises).
+              <p><em>Explanation:</em> The remainder is what remains after subtracting the long-term secular trend and regular seasonal cycles ($R_t = Y_t - T_t - S_t$). If no catastrophic shock occurs, it resembles white noise.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 2 (Medium): Why did detrending California's housing price index reveal a 25% collapse in 1998, even though raw dollar prices declined only modestly?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> Because California was on an expected exponential growth trajectory of 4.7% annually; relative to where prices <em>should have been</em>, actual prices were 25% lower.
+              <p><em>Explanation:</em> Raw prices reflect inflation and baseline compounding. When prices merely stay flat or drop slightly during an era of expected 4.7% compound growth, the shortfall compounds over 8 years, representing a massive destruction of real asset value.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Question 3 (Hard): How does the STL algorithm separate the seasonal component from the trend component without requiring a predefined mathematical equation?</summary>
+            <div class="example" style="margin-top: 10px;">
+              <strong>Answer:</strong> By applying an alternating, iterative sequence of LOESS smoothers across seasonal sub-series and across the overall timeline.
+              <p><em>Explanation:</em> STL uses LOESS smoothing within each monthly sub-series (e.g., all Januaries across years) to extract the seasonal pattern, then applies a long-window LOESS smoother to the seasonally adjusted data to isolate the secular trend.</p>
+            </div>
+          </details>
+
+          <div class="summary-box">
+            <h4>Topic 6 Key Takeaways</h4>
+            <ul>
+              <li><strong>Detrending:</strong> Dividing raw values by trend removes dominant growth, unmasking hidden cyclical crashes (e.g., California's 25% relative housing drop in 1998).</li>
+              <li><strong>3 Core Signals:</strong> Any time series is decomposed into Long-Term Trend ($T_t$), Seasonal Cycles ($S_t$), and Remainder Noise ($R_t$).</li>
+              <li><strong>STL by LOESS:</strong> Iterative non-parametric filtering that extracts flexible trends and seasonal shapes without rigid mathematical equations.</li>
+              <li><strong>Keeling Curve Architecture:</strong> Demonstrates a >50 ppm secular rise, an 8 ppm annual biosphere breathing cycle, and <1.6 ppm random noise.</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">7</span>📋 Master High-Yield Exam Summary &amp; Formula Cheat Sheet</h2>
+          <p class="topic-subtitle">Rapid-fire review tables, core mathematical formulas, architectural comparisons, and high-stakes exam pitfalls</p>
+
+          <p>
+            This master summary condenses the fundamental concepts from Claus O. Wilke (Chapters 13–14) and the course handout on Time Series &amp; Trends into an ultra-dense, high-yield revision reference designed for rapid exam recall.
+          </p>
+
+          <h3>1. Comparative Matrix: Smoothing Architectures at a Glance</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Mathematical Engine</th>
+                <th>Weighting Function</th>
+                <th>Boundary &amp; Extrapolation</th>
+                <th>Inference Speed</th>
+                <th>Primary Flaw</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Moving Average</strong></td>
+                <td>Arithmetic mean of $k$ surrounding points</td>
+                <td>Flat box filter ($1/k$ equal weights)</td>
+                <td>Discards $k/2$ edge points; no extrapolation</td>
+                <td><span class="tag-status tag-good">Fast</span></td>
+                <td>Artificial wiggles from boundary points entering/exiting window; lag.</td>
+              </tr>
+              <tr>
+                <td><strong>LOWESS</strong></td>
+                <td>Local degree-1 polynomial (linear) via WLS</td>
+                <td>Tricube: $W(u) = (1-|u|^3)^3$</td>
+                <td>Smooth boundary tapering; cannot extrapolate</td>
+                <td><span class="tag-status tag-bad">Very Slow ($O(n)$)</span></td>
+                <td>Lazy learner: fits a new matrix regression for every single query point.</td>
+              </tr>
+              <tr>
+                <td><strong>LOESS</strong></td>
+                <td>Local degree-2 polynomial (quadratic parabola) via WLS</td>
+                <td>Tricube: $W(u) = (1-|u|^3)^3$</td>
+                <td>Smooth boundary tapering; cannot extrapolate</td>
+                <td><span class="tag-status tag-bad">Very Slow ($O(n)$)</span></td>
+                <td>Superior capture of peaks/valleys, but high computational cost on large $N$.</td>
+              </tr>
+              <tr>
+                <td><strong>Spline Smoothing</strong></td>
+                <td>Piecewise cubic polynomials joined at knots</td>
+                <td>Global roughness penalty: $\lambda \int [f''(x)]^2 dx$</td>
+                <td>Welded at knots; boundary behaviors vary by spline type</td>
+                <td><span class="tag-status tag-good">Instant ($O(1)$)</span></td>
+                <td>Eager learner: solves upfront; results vary drastically by default spline type.</td>
+              </tr>
+              <tr>
+                <td><strong>Linear Regression (OLS)</strong></td>
+                <td>Global straight line: $y = mx + c$</td>
+                <td>Equal weighting across all points</td>
+                <td>Covers full domain and extrapolates linearly</td>
+                <td><span class="tag-status tag-good">Instant ($O(1)$)</span></td>
+                <td>Rigid: incapable of modeling non-linear curvature without transforms.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>2. Master Data Straightening Reference Matrix</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Transformation</th>
+                <th>X-Axis Scale</th>
+                <th>Y-Axis Scale</th>
+                <th>Underlying Natural Law</th>
+                <th>Linearized Equation</th>
+                <th>Meaning of Slope ($m$)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Log-Linear (Semi-Log)</strong></td>
+                <td>Linear ($x$)</td>
+                <td>Logarithmic ($\ln y$)</td>
+                <td><strong>Exponential Growth:</strong><br />$y = a e^{bx}$ or $y = a \cdot 2^{bx}$</td>
+                <td>$\ln(y) = \ln(a) + bx$</td>
+                <td>Slope ($b$) = <strong>Continuous Growth Rate</strong> (e.g., $b = \ln(2) \approx 0.693$ for hourly doubling).</td>
+              </tr>
+              <tr>
+                <td><strong>Log-Log (Double-Log)</strong></td>
+                <td>Logarithmic ($\ln x$)</td>
+                <td>Logarithmic ($\ln y$)</td>
+                <td><strong>Power Law:</strong><br />$y = c x^\alpha$</td>
+                <td>$\ln(y) = \ln(c) + \alpha \ln(x)$</td>
+                <td>Slope ($\alpha$) = <strong>Power-Law Scaling Exponent</strong> (e.g., $\alpha = 0.75$ in Kleiber's Law).</td>
+              </tr>
+              <tr>
+                <td><strong>Linear-Log</strong></td>
+                <td>Logarithmic ($\log x$)</td>
+                <td>Linear ($y$)</td>
+                <td><strong>Logarithmic Saturation:</strong><br />$y = a \log(x) + b$</td>
+                <td>$y = a X + b$ &nbsp;$(X = \log x)$</td>
+                <td>Slope ($a$) = <strong>Gain per Order of Magnitude Increase in $x$</strong> (e.g., $+50$ customers per 10× spend).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>3. Core Formulas &amp; Algorithmic Quick Reference</h3>
+          <div class="diagram-grid">
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>LOESS Tricube Weight Function</span>
+                <span class="tag-status tag-good">Formula</span>
+              </div>
+              <p style="font-family:monospace; font-size:0.85rem; color:var(--ac); margin:0;">
+                W(u) = (1 - |u|³)³ &nbsp;&nbsp;for |u| ≤ 1<br />
+                W(u) = 0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for |u| > 1
+              </p>
+              <p style="font-size:0.75rem; color:var(--mt); margin:4px 0 0;">Where $u = |x_i - x_0| / \Delta(x_0)$. Gives weight 1 at center, smoothly tapers to 0 at boundary.</p>
+            </div>
+
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Spline Loss Function</span>
+                <span class="tag-status tag-good">Formula</span>
+              </div>
+              <p style="font-family:monospace; font-size:0.85rem; color:var(--def-bd); margin:0;">
+                Loss = ∑(yᵢ - f(xᵢ))² + λ ∫[f''(x)]² dx
+              </p>
+              <p style="font-size:0.75rem; color:var(--mt); margin:4px 0 0;">$\lambda \to 0$: Overfits (interpolates all points).<br />$\lambda \to \infty$: Forces zero curvature $\implies$ Straight line linear regression.</p>
+            </div>
+
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Change of Base &amp; Exponential Bridge</span>
+                <span class="tag-status tag-good">Formula</span>
+              </div>
+              <p style="font-family:monospace; font-size:0.85rem; color:var(--exp-bd); margin:0;">
+                log₁₀(x) = ln(x) / ln(10) ≈ ln(x) / 2.3026<br />
+                y = aˣ ⟺ y = e^(kx) &nbsp;where k = ln(a)
+              </p>
+              <p style="font-size:0.75rem; color:var(--mt); margin:4px 0 0;">Converts between calculator bases and continuous calculus rates.</p>
+            </div>
+
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>STL Time-Series Decomposition</span>
+                <span class="tag-status tag-good">Formula</span>
+              </div>
+              <p style="font-family:monospace; font-size:0.85rem; color:var(--qst-bd); margin:0;">
+                Y_t = Trend_t + Seasonal_t + Remainder_t
+              </p>
+              <p style="font-size:0.75rem; color:var(--mt); margin:4px 0 0;">Keeling Curve: Trend > 50 ppm, Seasonal ~ 8 ppm (Northern photosynthesis), Remainder < 1.6 ppm.</p>
+            </div>
+          </div>
+
+          <h3>4. Top 10 Red-Flag Exam Traps &amp; Anti-Patterns</h3>
+          <div class="warning-box">
+            <ol style="margin-left: 20px; line-height: 1.7; color: var(--tx);">
+              <li><strong>The Non-Zero Baseline in Area Charts:</strong> An area chart whose vertical axis does not start at <strong>absolute zero ($y=0$)</strong> is statistically invalid because the shaded pixel area misrepresents relative physical magnitudes.</li>
+              <li><strong>The OLS Sum-of-Squares Exponential Trap:</strong> Fitting an exponential curve directly to raw data with OLS produces heavy bias because huge squared errors on large late points dominate the loss function, sacrificing early small points. <em>Always fit a straight line to log-transformed data instead.</em></li>
+              <li><strong>The Meaningless Scribble in Connected Scatterplots:</strong> Omitting directional arrowheads/color gradients and key date landmarks turns a connected scatterplot into an illegible tangle of spaghetti.</li>
+              <li><strong>The Python `log()` Trap:</strong> In Python (`math.log`, `np.log`) and R, `log()` computes the <strong>natural logarithm ($\ln$)</strong>, NOT base 10! Base 10 requires `log10()`.</li>
+              <li><strong>LOESS Cannot Extrapolate:</strong> Because LOESS builds local models point-by-point without a global analytical function, it is mathematically incapable of making predictions outside the domain of observed $x$-values.</li>
+              <li><strong>Moving Average Boundary Wiggles:</strong> Moving average wiggles are NOT real data trends; they are mathematical artifacts caused by abrupt $0 \leftrightarrow 1/k$ transitions at window edges.</li>
+              <li><strong>Connecting Unordered Categories:</strong> Connecting points with a line is only legitimate if the independent axis possesses a strict, continuous physical order (time, dose). Never connect nominal categorical categories!</li>
+              <li><strong>Splines at $\lambda \to \infty$:</strong> As the roughness penalty $\lambda \to \infty$, the spline does NOT disappear; it collapses into a <strong>standard straight-line linear regression</strong> because its second derivative is forced to zero everywhere.</li>
+              <li><strong>Reading Connected Scatterplot Vectors:</strong> Up-Right ($\nearrow$) = Positive Correlation; Up-Left to Down-Right ($\searrow$) = Anticorrelation; Loops/Spirals = Cyclical phase-lagging cycles.</li>
+              <li><strong>The Biological Cause of the Keeling Cycle:</strong> The annual ~8 ppm dip in global atmospheric $\text{CO}_2$ occurs during <strong>Northern Hemisphere summer</strong> because Earth's landmasses and terrestrial forests are overwhelmingly concentrated in the Northern Hemisphere, where massive seasonal photosynthesis draws down carbon.</li>
+            </ol>
+          </div>
+
+          <div class="summary-box">
+            <h4>Quick Flashcard Self-Drill Prompts</h4>
+            <ul>
+              <li><strong>Q:</strong> What is LOWESS vs LOESS? &nbsp;<strong>A:</strong> LOWESS is degree-1 (linear); LOESS is degree-2 (quadratic/parabolic).</li>
+              <li><strong>Q:</strong> What is Eager vs Lazy learning? &nbsp;<strong>A:</strong> Splines = Eager (solves once upfront, instant $O(1)$ lookup); LOESS = Lazy (fits WLS every query point).</li>
+              <li><strong>Q:</strong> What are the 3 spline knot constraints? &nbsp;<strong>A:</strong> $C^0$ equal value, $C^1$ equal slope, $C^2$ equal curvature.</li>
+              <li><strong>Q:</strong> What does the slope of a Log-Log plot mean? &nbsp;<strong>A:</strong> The exact power-law scaling exponent ($\alpha$).</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div class="topic-card" id="topic-8">
+          <h2><span class="topic-num">8</span>🎯 Interactive Exam MCQ Quiz</h2>
+          <p class="topic-subtitle">32 high-yield, exam-style practice questions with live scoring, instant rationales, and category filters</p>
+
+          <div class="quiz-header-banner">
+            <div class="quiz-title-wrap">
+              <h3>DAV Midterm &amp; Quiz Exam Drill</h3>
+              <p>Test your conceptual mastery across Time Series, LOESS, Splines, Straightening, and Decomposition.</p>
+            </div>
+            <div class="score-board">
+              <div class="score-pill" id="score-display">Score: 0 / 32 (0%)</div>
+              <button class="reset-quiz-btn" onclick="resetQuiz()">↺ Reset Quiz</button>
+            </div>
+          </div>
+
+          <div class="quiz-filter-wrap">
+            <button class="quiz-filter-btn active" onclick="filterQuizCategory('all', this)">All Questions (32)</button>
+            <button class="quiz-filter-btn" onclick="filterQuizCategory('time-series', this)">Time Series &amp; Lines (5)</button>
+            <button class="quiz-filter-btn" onclick="filterQuizCategory('connected-scatter', this)">Connected Scatterplots (5)</button>
+            <button class="quiz-filter-btn" onclick="filterQuizCategory('loess', this)">LOESS &amp; Moving Avg (6)</button>
+            <button class="quiz-filter-btn" onclick="filterQuizCategory('splines', this)">Splines &amp; Computation (6)</button>
+            <button class="quiz-filter-btn" onclick="filterQuizCategory('straightening', this)">Data Straightening (6)</button>
+            <button class="quiz-filter-btn" onclick="filterQuizCategory('decomposition', this)">Decomposition &amp; Trends (4)</button>
+          </div>
+
+          <div id="quiz-container">
+            <!-- Quiz cards will be rendered dynamically by JavaScript -->
+          </div>
+        </div>
+        <!-- end topic-8 -->
+      </div>
+      <!-- end module-container -->
+
+      <!-- ── BOTTOM NAVIGATION ── -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Start</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic Two</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Back to top button -->
+    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+    <!-- ═══════════════════════════════════════════════════════
+     INTERACTIVE JAVASCRIPT LOGIC
+     ═══════════════════════════════════════════════════════ -->
+    <script>
+      const topics = [
+        "topic-1",
+        "topic-2",
+        "topic-3",
+        "topic-4",
+        "topic-5",
+        "topic-6",
+        "topic-7",
+        "topic-8"
+      ];
+      let currentTopicIndex = 0;
+
+      // ── Quiz Data Store ────────────────────────────────────
+      const quizData = [
+  {
+    "id": 1,
+    "category": "time-series",
+    "categoryLabel": "Time Series Foundations",
+    "question": "What imposes the inherent sequential order on a time-series dataset that distinguishes it from a generic scatterplot?",
+    "options": [
+      "A categorical grouping variable that clusters observations into distinct classes.",
+      "Time acts as an ordered independent variable where every point has a definite predecessor and successor.",
+      "The dependent variable is strictly monotonic and continuously increasing.",
+      "Observations must be measured at equal, identical sub-second intervals."
+    ],
+    "answer": 1,
+    "explanation": "In a regular scatterplot, points can be shuffled without loss of meaning. When the independent variable is time (or an ordered experimental dose), it imposes an inherent 1D sequential order where every observation (except boundaries) has an unambiguous predecessor and successor."
+  },
+  {
+    "id": 2,
+    "category": "time-series",
+    "categoryLabel": "Time Series Foundations",
+    "question": "Under what condition is it statistically valid and non-deceptive to shade the area underneath a time-series line graph?",
+    "options": [
+      "Only when the time series consists of fewer than 50 total data points.",
+      "Only when the vertical (y) axis begins at absolute zero.",
+      "Whenever the line graph represents a financial index or currency value.",
+      "Only if a logarithmic transformation has been applied to the horizontal axis."
+    ],
+    "answer": 1,
+    "explanation": "The human visual cortex automatically equates shaded geometric area with physical quantity. If the y-axis is truncated (starting at a non-zero value like 100), the area under the curve does not scale proportionally with the actual data values, creating severe perceptual distortion."
+  },
+  {
+    "id": 3,
+    "category": "time-series",
+    "categoryLabel": "Time Series Foundations",
+    "question": "Why does Claus O. Wilke argue that omitting individual data dots in a time-series line graph is often preferable for dense datasets?",
+    "options": [
+      "Because dots imply that data was collected using analog instruments rather than digital sensors.",
+      "Because densely spaced dots create visual clutter and ink overplotting, whereas omitting them emphasizes the macro-trend.",
+      "Because statistical guidelines forbid drawing dots if data contains more than 10 observations.",
+      "Because dots automatically force the graph to be displayed as a step function."
+    ],
+    "answer": 1,
+    "explanation": "When data points are sampled densely (e.g., hundreds of daily stock prices or monthly submissions over years), individual dots clutter the visualization. Omitting dots declutters the graphic and directs visual attention to the overarching trajectory and curvature."
+  },
+  {
+    "id": 4,
+    "category": "time-series",
+    "categoryLabel": "Time Series Foundations",
+    "question": "When visualizing multiple competing time series (e.g., bioRxiv, arXiv, and PeerJ), why is direct labeling superior to a separate legend?",
+    "options": [
+      "Direct labeling eliminates saccadic eye movements and reduces cognitive load by placing identity immediately next to the curves.",
+      "Direct labeling allows lines to be plotted in grayscale without any colors.",
+      "Legends are mathematically invalid for datasets containing more than two series.",
+      "Direct labeling increases the ink-to-data ratio recommended by Edward Tufte."
+    ],
+    "answer": 0,
+    "explanation": "A separate legend forces the reader's eyes to constantly scan back and forth between the plot area and the legend box, memorizing color/glyph keys. Direct labeling places names right at line endpoints, allowing immediate comprehension and eliminating the need for contrasting dot shapes."
+  },
+  {
+    "id": 5,
+    "category": "time-series",
+    "categoryLabel": "Time Series Foundations",
+    "question": "In agricultural dose\u2013response experiments (such as oat yields vs. manure fertilization), what does connecting sequential doses with lines primarily reveal?",
+    "options": [
+      "That the response variable fluctuates randomly at every fertilizer level.",
+      "Whether different varieties share the same response curve shape while differing in baseline intercept.",
+      "That dose\u2013response relationships must strictly follow an exponential doubling law.",
+      "That time is the only legitimate independent variable for line plots."
+    ],
+    "answer": 1,
+    "explanation": "In Yates' 1935 oat yield study, connecting points along the monotonically increasing fertilizer dose revealed that all three oat varieties had nearly identical diminishing-returns slopes, but differed in their baseline starting yield in unfertilized soil."
+  },
+  {
+    "id": 6,
+    "category": "connected-scatter",
+    "categoryLabel": "Connected Scatterplots",
+    "question": "In a connected scatterplot (phase portrait), what does a segment oriented from the upper-left to the lower-right indicate?",
+    "options": [
+      "A positive correlation where both variables grow simultaneously.",
+      "An anticorrelated relationship where one variable increases as the other decreases.",
+      "A period of complete statistical stagnation with zero rate of change.",
+      "An error in data collection where time is flowing backward."
+    ],
+    "answer": 1,
+    "explanation": "Moving from upper-left to lower-right means that the horizontal variable ($x$) is increasing while the vertical variable ($y$) is decreasing ($\\Delta y / \\Delta x < 0$), which is the geometric vector representation of negative correlation (anticorrelation)."
+  },
+  {
+    "id": 7,
+    "category": "connected-scatter",
+    "categoryLabel": "Connected Scatterplots",
+    "question": "What dynamic behavior in a system produces closed circular loops or spirals in a connected scatterplot?",
+    "options": [
+      "Pure exponential growth with a constant compound doubling time.",
+      "A linear relationship with high random white noise.",
+      "Cyclical, oscillatory relationships where one variable leads or lags another across a feedback cycle.",
+      "A permanent structural break where data ceases to be continuous."
+    ],
+    "answer": 2,
+    "explanation": "In phase space, closed loops or spirals represent cyclical dynamics (such as economic boom-and-bust cycles). In Wilke's house prices vs. unemployment rate plot, the trajectory forms counterclockwise spirals tracing economic cycles."
+  },
+  {
+    "id": 8,
+    "category": "connected-scatter",
+    "categoryLabel": "Connected Scatterplots",
+    "question": "Why did Claus O. Wilke label a connected scatterplot without directional arrows/shading and date labels as 'bad'?",
+    "options": [
+      "Because without directional cues and time markers, the trajectory degenerates into an unreadable 'meaningless scribble'.",
+      "Because connected scatterplots are patented and require software copyright watermarks.",
+      "Because omitting date labels violates the principle of orthogonal projection.",
+      "Because axes in connected scatterplots must always be displayed on logarithmic scales."
+    ],
+    "answer": 0,
+    "explanation": "Because time is mapped along a winding path rather than along an axis, viewers cannot deduce the flow of time or the speed of transitions without explicit directional indicators (arrows or color gradients) and landmark date labels (Wilke Fig 13-11)."
+  },
+  {
+    "id": 9,
+    "category": "connected-scatter",
+    "categoryLabel": "Connected Scatterplots",
+    "question": "According to perceptual research by Haroz, Kosara, and Franconeri (2016), what is the primary cognitive trade-off of connected scatterplots compared to separate line graphs?",
+    "options": [
+      "Connected scatterplots are faster to read but convey less emotional impact.",
+      "Connected scatterplots cause higher confusion regarding order and correlation, but generate markedly higher engagement.",
+      "Readers universally prefer connected scatterplots for high-precision quantitative value lookup.",
+      "Connected scatterplots eliminate all optical illusions associated with line charts."
+    ],
+    "answer": 1,
+    "explanation": "Empirical testing showed readers are more likely to confuse chronological order and misreport correlation in connected scatterplots compared to line graphs, but connected scatterplots yield significantly higher engagement and narrative intrigue."
+  },
+  {
+    "id": 10,
+    "category": "connected-scatter",
+    "categoryLabel": "Connected Scatterplots",
+    "question": "When visualizing over 100 macroeconomic indicators in PCA phase space, what pattern emerges when plotting PC2 versus PC3?",
+    "options": [
+      "A completely random scatter of points with zero discernible structure.",
+      "A single vertical line indicating that PC3 contains no unique variance.",
+      "A distinct clockwise spiral that highlights cyclical transitions between economic recessions and recoveries.",
+      "A parabolic arch that proves the economy grows at an exponential rate."
+    ],
+    "answer": 2,
+    "explanation": "In Wilke's analysis of Federal Reserve macroeconomic indicators (Fig 13-12b), plotting PC2 vs PC3 produced a striking clockwise spiral, where economic recessions corresponded to sharp drops in PC2 and recoveries were traced through PC3."
+  },
+  {
+    "id": 11,
+    "category": "loess",
+    "categoryLabel": "LOESS & Moving Averages",
+    "question": "What is the fundamental cause of artificial boundary 'wiggles' in moving average curves?",
+    "options": [
+      "The calculation of weighted median instead of arithmetic mean.",
+      "The equal weighting of points inside the sliding box window as extreme outliers abruptly enter or exit.",
+      "The use of high-degree polynomial regression inside the moving window.",
+      "Numerical rounding errors in 64-bit floating point hardware."
+    ],
+    "answer": 1,
+    "explanation": "A moving average applies an equal weight of $1/k$ to all points inside the window and $0$ to points outside. When an extreme data value enters or exits this rectangular window, the computed mean abruptly jerks, creating artificial wiggles."
+  },
+  {
+    "id": 12,
+    "category": "loess",
+    "categoryLabel": "LOESS & Moving Averages",
+    "question": "In the LOESS smoothing algorithm, which weighting function is utilized to smoothly taper the influence of neighboring points to zero at the neighborhood edge?",
+    "options": [
+      "The Gaussian bell curve with infinite support.",
+      "The Tricube weight function: W(u) = (1 - |u|\u00b3)\u00b3 for |u| \u2264 1.",
+      "A uniform rectangular step function with sharp cutoffs.",
+      "The Dirac delta function centered at the target point."
+    ],
+    "answer": 1,
+    "explanation": "LOESS uses the tricube weighting function: $W(u) = (1 - |u|^3)^3$ for $|u| \\le 1$. The closest point gets weight $\u0007pprox 1$, and weights smoothly decay to exactly 0 at the boundary of the neighborhood, ensuring perfectly smooth curve transitions without boundary wiggles."
+  },
+  {
+    "id": 13,
+    "category": "loess",
+    "categoryLabel": "LOESS & Moving Averages",
+    "question": "What is the operational distinction between LOWESS and LOESS in terms of local polynomial degree?",
+    "options": [
+      "LOWESS fits a degree-1 straight line; LOESS fits a degree-2 quadratic parabola in each local window.",
+      "LOWESS uses spline knots; LOESS uses moving averages.",
+      "LOWESS is parametric; LOESS is strictly non-parametric.",
+      "LOWESS works only on 3D data; LOESS works only on 2D data."
+    ],
+    "answer": 0,
+    "explanation": "LOWESS (locally weighted scatterplot smoothing) typically fits a linear (degree 1) polynomial in each local neighborhood. LOESS (locally estimated scatterplot smoothing) commonly fits a quadratic (degree 2) polynomial, which significantly better captures local peaks, valleys, and curvature."
+  },
+  {
+    "id": 14,
+    "category": "loess",
+    "categoryLabel": "LOESS & Moving Averages",
+    "question": "What occurs when the LOESS span parameter (\u03b1) is set to an extremely small value (e.g., \u03b1 = 0.05)?",
+    "options": [
+      "The curve becomes a perfectly straight line identical to linear regression.",
+      "The curve becomes highly wiggly and overfits random high-frequency noise.",
+      "The algorithm refuses to execute due to matrix singularity.",
+      "The curve automatically switches to a cubic spline."
+    ],
+    "answer": 1,
+    "explanation": "The span parameter $\u0007lpha$ controls neighborhood window size. A tiny span ($\u0007lpha = 0.05$) includes only 5% of data points in each local fit, resulting in a hyper-flexible, wiggly curve that captures noise rather than true underlying trends (high variance / overfitting)."
+  },
+  {
+    "id": 15,
+    "category": "loess",
+    "categoryLabel": "LOESS & Moving Averages",
+    "question": "In analytical chemistry and digital signal processing, which filter proposed in 1964 is mathematically equivalent to LOESS?",
+    "options": [
+      "The Kalman filter.",
+      "The Savitzky\u2013Golay filter.",
+      "The Fourier transform bandpass filter.",
+      "The Butterworth high-pass filter."
+    ],
+    "answer": 1,
+    "explanation": "The Savitzky\u2013Golay filter (proposed in 1964, 15 years prior to Cleveland's 1979 LOESS publication) performs local polynomial least-squares smoothing across sliding subsets, which is mathematically equivalent to the local polynomial regression core of LOESS."
+  },
+  {
+    "id": 16,
+    "category": "loess",
+    "categoryLabel": "LOESS & Moving Averages",
+    "question": "Why is LOESS unable to perform reliable extrapolation beyond the minimum and maximum range of the observed x data?",
+    "options": [
+      "Because LOESS is prohibited by IEEE standards from calculating values outside the bounding box.",
+      "Because LOESS builds localized models point-by-point and estimates no global analytical mathematical function.",
+      "Because the tricube weight function produces complex imaginary numbers outside the data domain.",
+      "Because LOESS can only run on integer coordinate values."
+    ],
+    "answer": 1,
+    "explanation": "LOESS is non-parametric; it never estimates a single global functional equation. Each smoothed point is the product of an isolated local regression that is discarded immediately. Outside the range of observed data, there are no neighborhood points to weight, making extrapolation mathematically undefined."
+  },
+  {
+    "id": 17,
+    "category": "splines",
+    "categoryLabel": "Splines & Computation",
+    "question": "What are the boundary points along the independent variable axis where adjacent polynomial segments meet in a spline called?",
+    "options": [
+      "Vertices",
+      "Knots",
+      "Anchors",
+      "Centroids"
+    ],
+    "answer": 1,
+    "explanation": "In spline terminology, 'knots' are the fixed boundary values along the independent variable axis that separate the individual piecewise polynomial segments. Fitting a spline with $k$ segments requires $k+1$ knots."
+  },
+  {
+    "id": 18,
+    "category": "splines",
+    "categoryLabel": "Splines & Computation",
+    "question": "To ensure a cubic smoothing spline looks continuous and seamless without sharp kinks, which three continuity constraints are enforced at each knot?",
+    "options": [
+      "Equal position (C\u2070), equal slope (C\u00b9), and equal curvature (C\u00b2).",
+      "Equal mean, equal variance, and equal skewness.",
+      "Zero first derivative, zero second derivative, and zero third derivative.",
+      "Equal area, equal perimeter, and equal centroid coordinates."
+    ],
+    "answer": 0,
+    "explanation": "Spline segments are welded at knots by strictly matching: 1) Position/value ($f_i(t) = f_{i+1}(t)$, $C^0$), 2) Slope/first derivative ($f'_i(t) = f'_{i+1}(t)$, $C^1$, preventing sharp corners), and 3) Curvature/second derivative ($f''_i(t) = f''_{i+1}(t)$, $C^2$, ensuring smooth bending)."
+  },
+  {
+    "id": 19,
+    "category": "splines",
+    "categoryLabel": "Splines & Computation",
+    "question": "In the smoothing spline loss function Loss = \u2211(y\u1d62 - f(x\u1d62))\u00b2 + \u03bb \u222b[f''(x)]\u00b2 dx, what mathematical curve does the spline collapse into as \u03bb \u2192 \u221e?",
+    "options": [
+      "A horizontal line at y = 0.",
+      "A standard straight-line linear regression.",
+      "A parabola with maximum curvature.",
+      "A high-frequency sine wave."
+    ],
+    "answer": 1,
+    "explanation": "As the roughness penalty $\\lambda \to \\infty$, the penalty for any curvature becomes infinitely costly. To minimize the loss, the algorithm must force the curvature integral $\\int [f''(x)]^2 dx \to 0$. A function with zero second derivative everywhere ($f''(x) = 0$) is strictly a straight line, reducing the spline to standard OLS linear regression."
+  },
+  {
+    "id": 20,
+    "category": "splines",
+    "categoryLabel": "Splines & Computation",
+    "question": "Why are smoothing splines classified as 'eager learners' while LOESS is classified as a 'lazy learner'?",
+    "options": [
+      "Splines require active user input during runtime; LOESS runs fully automated.",
+      "Splines solve a global system of equations during training and save a compact coefficient table, whereas LOESS performs all heavy matrix regressions at query time.",
+      "Splines train instantly in O(1) time; LOESS trains in O(n\u00b3) time.",
+      "Splines use gradient descent; LOESS uses neural network backpropagation."
+    ],
+    "answer": 1,
+    "explanation": "Splines do their heavy mathematical work upfront during training, computing permanent polynomial coefficients for each segment and discarding the raw training data (eager learning). LOESS does zero math upfront, memorizes the raw data, and pays a heavy computational tax at prediction time by running a new WLS regression for every query point (lazy learning)."
+  },
+  {
+    "id": 21,
+    "category": "splines",
+    "categoryLabel": "Splines & Computation",
+    "question": "What is the computational time complexity for evaluating a prediction at a new point x using a pre-fitted spline model?",
+    "options": [
+      "O(1) constant time.",
+      "O(n) linear time.",
+      "O(n\u00b2) quadratic time.",
+      "O(2\u207f) exponential time."
+    ],
+    "answer": 0,
+    "explanation": "Once a spline model is trained, the computer simply looks up which knot segment contains $x$ and evaluates that segment's pre-saved polynomial: $y = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3$. This requires only a few basic multiplications and additions, executing in $O(1)$ constant time."
+  },
+  {
+    "id": 22,
+    "category": "splines",
+    "categoryLabel": "Splines & Computation",
+    "question": "Which statistical technique is commonly employed by software packages to automatically determine the optimal roughness penalty \u03bb in spline models?",
+    "options": [
+      "Generalized Cross-Validation (GCV).",
+      "Principal Components Analysis (PCA).",
+      "Markov Chain Monte Carlo (MCMC).",
+      "Fast Fourier Transform (FFT)."
+    ],
+    "answer": 0,
+    "explanation": "Generalized Cross-Validation (GCV) is the standard automated algorithm used to balance goodness-of-fit against curve roughness, selecting the optimal tuning parameter $\\lambda$ without requiring manual trial-and-error."
+  },
+  {
+    "id": 23,
+    "category": "straightening",
+    "categoryLabel": "Data Straightening",
+    "question": "Why does fitting an exponential curve (y = a \u00b7 e^(bx)) directly to raw data using Ordinary Least Squares (OLS) produce a biased model?",
+    "options": [
+      "Because OLS cannot compute derivatives of transcendental exponential functions.",
+      "Because OLS minimizes squared absolute errors, so huge values at the tail dominate the loss and force the curve to sacrifice accuracy on early points.",
+      "Because exponential curves strictly require non-Euclidean hyperbolic geometry.",
+      "Because raw data must always contain negative values for OLS to converge."
+    ],
+    "answer": 1,
+    "explanation": "OLS minimizes $\\sum (y_i - \\hat{y}_i)^2$. On raw exponential scales, an error of 1,000 on a late point yields a squared penalty of $1,000,000$, whereas an error of 5 on an early point yields only 25. The optimizer aggressively bends to satisfy the huge numbers at the end, systematically overshooting or undershooting early data points."
+  },
+  {
+    "id": 24,
+    "category": "straightening",
+    "categoryLabel": "Data Straightening",
+    "question": "How does taking the natural logarithm of y-values prior to fitting solve the OLS distortion problem in exponential growth?",
+    "options": [
+      "It turns all negative values into positive values.",
+      "It equalizes relative percentage errors across all orders of magnitude, giving equal weight to deviations on small and large numbers.",
+      "It eliminates the need to calculate regression residuals.",
+      "It forces the correlation coefficient r to equal exactly 1.0."
+    ],
+    "answer": 1,
+    "explanation": "Logarithmic differences represent proportional percentage ratios ($\\ln y_1 - \\ln y_2 = \\ln(y_1 / y_2)$). A 10% error on an early small value receives the exact same squared penalty as a 10% error on a massive late value, guaranteeing constant proportional fidelity across the entire series."
+  },
+  {
+    "id": 25,
+    "category": "straightening",
+    "categoryLabel": "Data Straightening",
+    "question": "Which coordinate transformation will straighten a power-law relationship (y = c \u00b7 x^\u03b1) into a linear equation?",
+    "options": [
+      "Log-Linear (linear x, log y).",
+      "Linear-Log (log x, linear y).",
+      "Log-Log (log x, log y).",
+      "Reciprocal-Linear (1/x, linear y)."
+    ],
+    "answer": 2,
+    "explanation": "Taking the logarithm of both sides of $y = c x^\u0007lpha$ yields $\\ln(y) = \\ln(c) + \u0007lpha \\ln(x)$. Plotting $\\ln(y)$ against $\\ln(x)$ (a Log-Log plot) converts the power law into a straight line with slope $\u0007lpha$ and vertical intercept $\\ln(c)$."
+  },
+  {
+    "id": 26,
+    "category": "straightening",
+    "categoryLabel": "Data Straightening",
+    "question": "In a Log-Linear (semi-log) plot where ln(y) is plotted against linear x, what does the slope of the fitted straight line represent?",
+    "options": [
+      "The power-law scaling exponent \u03b1.",
+      "The continuous compound growth rate b.",
+      "The initial population intercept a.",
+      "The saturation capacity asymptote."
+    ],
+    "answer": 1,
+    "explanation": "In $\\ln(y) = \\ln(a) + bx$, the equation matches $Y = mx + c$, where the slope $m = b$. The slope $b$ is the continuous compound growth rate (e.g., in bacterial doubling $y = 2^x$, $b = \\ln(2) \u0007pprox 0.693$ per hour)."
+  },
+  {
+    "id": 27,
+    "category": "straightening",
+    "categoryLabel": "Data Straightening",
+    "question": "In a Log-Log plot of metabolic rate vs. animal body mass (Kleiber\u2019s Law: y = 50 \u00b7 x^0.75), what does the slope of the straightened line represent?",
+    "options": [
+      "The base metabolic rate of a 1 kg organism (50 kcal).",
+      "The power-law scaling exponent (0.75).",
+      "The total lifespan of the mammal in years.",
+      "The ratio of brain size to body volume."
+    ],
+    "answer": 1,
+    "explanation": "Taking logarithms yields $\\ln(y) = \\ln(50) + 0.75 \\ln(x)$. In a Log-Log coordinate system, the slope of the straight line is identically the power-law exponent $\u0007lpha = 0.75$."
+  },
+  {
+    "id": 28,
+    "category": "straightening",
+    "categoryLabel": "Data Straightening",
+    "question": "What is the 'Programming Trap' regarding logarithmic functions in languages like Python and R?",
+    "options": [
+      "Programming languages cannot compute logarithms of non-integers.",
+      "`log()` defaults to natural logarithm base e (ln), whereas textbook math implies base 10; base 10 requires `log10()`.",
+      "`log()` automatically rounds all values to the nearest integer.",
+      "`log()` evaluates in base 2 unless specified otherwise in the OS kernel."
+    ],
+    "answer": 1,
+    "explanation": "In standard high-school mathematics, $\\log(x)$ implies base 10. In Python (`math.log`, `np.log`), R, C++, and Java, `log(x)` defaults to the natural logarithm ($\\ln$, base $e$). To compute base-10 in Python/R, you must explicitly call `log10(x)`. Missing this creates a hidden scale error of $\\ln(10) \u0007pprox 2.3026$."
+  },
+  {
+    "id": 29,
+    "category": "decomposition",
+    "categoryLabel": "Decomposition & Trends",
+    "question": "In the Freddie Mac House Price Index study, how was the detrended price index calculated for each state?",
+    "options": [
+      "By subtracting the 10-year Treasury yield from nominal price index.",
+      "By dividing the actual index by the expected value from the long-term exponential trend.",
+      "By computing a 36-month moving average of median sales volume.",
+      "By multiplying the price index by the state unemployment rate."
+    ],
+    "answer": 1,
+    "explanation": "Because house prices compound exponentially, detrending is performed multiplicatively by dividing the actual observed index by the long-term exponential trend line ($\text{Detrended}_t = \text{Actual}_t / \text{Trend}_t$). On a logarithmic axis, this is graphically equivalent to subtracting the straight trend line."
+  },
+  {
+    "id": 30,
+    "category": "decomposition",
+    "categoryLabel": "Decomposition & Trends",
+    "question": "What was the major economic revelation uncovered by detrending California's housing price index between 1990 and 1998?",
+    "options": [
+      "California house prices were completely immune to inflation.",
+      "California home prices suffered a 25% collapse relative to expected long-term trend, despite appearing modest in raw nominal terms.",
+      "California home prices were strictly driven by agricultural commodity cycles.",
+      "California tracked the same trend as West Virginia with zero volatility."
+    ],
+    "answer": 1,
+    "explanation": "In raw dollar terms, California home prices between 1990 and 1998 appeared to dip only modestly. However, relative to California's expected 4.7% annual compounding trend, home values crashed by a devastating 25% below expectation, unmasking a massive bust cycle (Wilke Fig 14-11)."
+  },
+  {
+    "id": 31,
+    "category": "decomposition",
+    "categoryLabel": "Decomposition & Trends",
+    "question": "What are the three core structural components extracted in STL time-series decomposition?",
+    "options": [
+      "Mean, Standard Deviation, and Kurtosis.",
+      "Long-Term Trend, Seasonal/Cyclical Variations, and Remainder/Residual Noise.",
+      "First Principal Component, Second Principal Component, and Eigenvalue.",
+      "Low-frequency, Mid-frequency, and High-frequency Fourier Harmonics."
+    ],
+    "answer": 1,
+    "explanation": "STL decomposes any time series $Y_t$ into: 1) Long-Term Trend ($T_t$, secular multi-decade drift), 2) Seasonal Component ($S_t$, periodic calendar oscillations), and 3) Remainder ($R_t$, random white noise and catastrophic external shock events)."
+  },
+  {
+    "id": 32,
+    "category": "decomposition",
+    "categoryLabel": "Decomposition & Trends",
+    "question": "In the decomposition of the Mauna Loa Keeling curve, what physical biological process causes the regular annual ~8 ppm fluctuation in atmospheric CO\u2082?",
+    "options": [
+      "Oceanic thermal expansion during equatorial solar equinoxes.",
+      "Seasonal photosynthesis by massive terrestrial plant biomass in the Northern Hemisphere during spring and summer.",
+      "Annual industrial factory maintenance shutdowns in North America and Europe.",
+      "Milankovitch orbital cycles altering solar radiation intensity."
+    ],
+    "answer": 1,
+    "explanation": "Earth's landmasses and terrestrial forests are predominantly concentrated in the Northern Hemisphere. During spring and summer, massive plant photosynthesis draws down billions of tons of atmospheric $\text{CO}_2$ (causing the trough). In autumn and winter, plant foliage dies and decomposes, releasing $\text{CO}_2$ back into the air (causing the annual peak)."
+  }
+];
+
+      let userAnswers = {};
+      let currentCategory = "all";
+
+      function renderQuiz(category = "all") {
+        const container = document.getElementById("quiz-container");
+        if (!container) return;
+        container.innerHTML = "";
+
+        const filtered = category === "all"
+          ? quizData
+          : quizData.filter((q) => q.category === category);
+
+        filtered.forEach((q) => {
+          const isAnswered = userAnswers[q.id] !== undefined;
+          const userChoice = userAnswers[q.id];
+          const isCorrect = userChoice === q.answer;
+
+          const card = document.createElement("div");
+          card.className = "mcq-card";
+          card.id = `mcq-card-${q.id}`;
+
+          const header = document.createElement("div");
+          header.className = "mcq-header";
+
+          const qNum = document.createElement("span");
+          qNum.className = "mcq-qnum";
+          qNum.textContent = `Q${q.id}`;
+
+          const qText = document.createElement("div");
+          qText.className = "mcq-question";
+          qText.textContent = q.question;
+
+          const catTag = document.createElement("span");
+          catTag.className = "mcq-category-tag";
+          catTag.textContent = q.categoryLabel;
+          qText.appendChild(catTag);
+
+          header.appendChild(qNum);
+          header.appendChild(qText);
+          card.appendChild(header);
+
+          const optsContainer = document.createElement("div");
+          optsContainer.className = "mcq-options";
+
+          const letters = ["A", "B", "C", "D"];
+          q.options.forEach((optText, optIdx) => {
+            const btn = document.createElement("button");
+            btn.className = "mcq-opt";
+            btn.id = `opt-${q.id}-${optIdx}`;
+            btn.onclick = () => selectOption(q.id, optIdx);
+
+            const letterSpan = document.createElement("span");
+            letterSpan.className = "opt-letter";
+            letterSpan.textContent = letters[optIdx];
+
+            const textSpan = document.createElement("span");
+            textSpan.textContent = optText;
+
+            btn.appendChild(letterSpan);
+            btn.appendChild(textSpan);
+
+            if (isAnswered) {
+              btn.disabled = true;
+              if (optIdx === q.answer) {
+                btn.classList.add(isCorrect ? "selected-correct" : "show-correct");
+              } else if (optIdx === userChoice && !isCorrect) {
+                btn.classList.add("selected-incorrect");
+              }
+            }
+
+            optsContainer.appendChild(btn);
+          });
+
+          card.appendChild(optsContainer);
+
+          const feedback = document.createElement("div");
+          feedback.className = `mcq-feedback ${isAnswered ? "visible " + (isCorrect ? "correct" : "incorrect") : ""}`;
+          feedback.id = `feedback-${q.id}`;
+          if (isAnswered) {
+            if (isCorrect) {
+              feedback.innerHTML = `<strong>✓ Correct!</strong> ${q.explanation}`;
+            } else {
+              feedback.innerHTML = `<strong>✗ Incorrect.</strong> Correct answer is <strong>Option ${letters[q.answer]}: ${q.options[q.answer]}</strong>.<br />${q.explanation}`;
+            }
+          }
+
+          card.appendChild(feedback);
+          container.appendChild(card);
+        });
+      }
+
+      function selectOption(qId, selectedIdx) {
+        if (userAnswers[qId] !== undefined) return;
+
+        userAnswers[qId] = selectedIdx;
+        const q = quizData.find((item) => item.id === qId);
+        const isCorrect = selectedIdx === q.answer;
+
+        q.options.forEach((_, idx) => {
+          const btn = document.getElementById(`opt-${qId}-${idx}`);
+          if (btn) {
+            btn.disabled = true;
+            if (idx === q.answer) {
+              btn.classList.add(isCorrect ? "selected-correct" : "show-correct");
+            } else if (idx === selectedIdx && !isCorrect) {
+              btn.classList.add("selected-incorrect");
+            }
+          }
+        });
+
+        const fb = document.getElementById(`feedback-${qId}`);
+        if (fb) {
+          fb.classList.add("visible");
+          if (isCorrect) {
+            fb.classList.add("correct");
+            fb.innerHTML = `<strong>✓ Correct!</strong> ${q.explanation}`;
+          } else {
+            fb.classList.add("incorrect");
+            fb.innerHTML = `<strong>✗ Incorrect.</strong> Correct answer is <strong>Option ${["A","B","C","D"][q.answer]}: ${q.options[q.answer]}</strong>.<br />${q.explanation}`;
+          }
+        }
+
+        updateScore();
+      }
+
+      function updateScore() {
+        let correctCount = 0;
+        let answeredCount = Object.keys(userAnswers).length;
+
+        quizData.forEach((q) => {
+          if (userAnswers[q.id] === q.answer) {
+            correctCount++;
+          }
+        });
+
+        const pct = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+        const scoreEl = document.getElementById("score-display");
+        if (scoreEl) {
+          scoreEl.textContent = `Score: ${correctCount} / ${quizData.length} (${pct}%) • Answered: ${answeredCount}/${quizData.length}`;
+          if (pct >= 85 && answeredCount >= 10) {
+            scoreEl.style.borderColor = "var(--def-bd)";
+            scoreEl.style.color = "var(--def-bd)";
+          } else if (pct < 60 && answeredCount >= 5) {
+            scoreEl.style.borderColor = "#ef4444";
+            scoreEl.style.color = "#ef4444";
+          }
+        }
+      }
+
+      function resetQuiz() {
+        userAnswers = {};
+        renderQuiz(currentCategory);
+        const scoreEl = document.getElementById("score-display");
+        if (scoreEl) {
+          scoreEl.textContent = `Score: 0 / ${quizData.length} (0%)`;
+          scoreEl.style.borderColor = "var(--bd)";
+          scoreEl.style.color = "var(--ac)";
+        }
+      }
+
+      function filterQuizCategory(cat, btn) {
+        currentCategory = cat;
+        document.querySelectorAll(".quiz-filter-btn").forEach(b => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+        renderQuiz(cat);
+      }
+
+      // ── Pagination and Topic Switching ─────────────────────
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector(".nav-num");
+          if (numEl) return link.textContent.replace(numEl.textContent, "").trim();
+          return link.textContent.replace(/^\d+\s*/, "").trim();
+        }
+        return "Topic";
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById("sidebar");
+        const bd = document.getElementById("sidebar-backdrop");
+        if (sb) sb.classList.toggle("open");
+        if (bd) bd.classList.toggle("active");
+      }
+
+      function toggleSection(headerEl) {
+        const sublist = headerEl.nextElementSibling;
+        const chevron = headerEl.querySelector(".chevron");
+        if (!sublist) return;
+        if (sublist.style.display === "none") {
+          sublist.style.display = "block";
+          if (chevron) chevron.style.transform = "rotate(0deg)";
+        } else {
+          sublist.style.display = "none";
+          if (chevron) chevron.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest(".nav-sublist");
+          if (sublist && sublist.style.display === "none") {
+            sublist.style.display = "block";
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector(".chevron") : null;
+            if (chevron) chevron.style.transform = "rotate(0deg)";
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (pb && pt) {
+          if (currentTopicIndex > 0) {
+            pb.disabled = false;
+            pb.style.opacity = "1";
+            pb.style.pointerEvents = "auto";
+            pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+          } else {
+            pb.disabled = true;
+            pb.style.opacity = "0.3";
+            pb.style.pointerEvents = "none";
+            pt.textContent = "Start";
+          }
+        }
+
+        if (nb && nt) {
+          if (currentTopicIndex < topics.length - 1) {
+            nb.disabled = false;
+            nb.style.opacity = "1";
+            nb.style.pointerEvents = "auto";
+            nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+          } else {
+            nb.disabled = true;
+            nb.style.opacity = "0.3";
+            nb.style.pointerEvents = "none";
+            nt.textContent = "End";
+          }
+        }
+
+        const mc = document.getElementById("main-content");
+        if (mc) mc.scrollTo({ top: 0, behavior: "smooth" });
+
+        const sb = document.getElementById("sidebar");
+        const bd = document.getElementById("sidebar-backdrop");
+        if (window.innerWidth <= 900 && sb && sb.classList.contains("open")) {
+          sb.classList.remove("open");
+          if (bd) bd.classList.remove("active");
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      // Keyboard arrow navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+        if (e.key === "ArrowLeft") goPrev();
+        else if (e.key === "ArrowRight") goNext();
+      });
+
+      // Filter content in sidebar
+      function filterContent() {
+        const query = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((li) => {
+          const text = li.textContent.toLowerCase();
+          li.style.display = text.includes(query) ? "block" : "none";
+        });
+      }
+
+      // ── Initialize ────────────────────────────────────────
+      renderQuiz();
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      if (mc && bb) {
+        mc.addEventListener("scroll", () => {
+          bb.style.display = mc.scrollTop > 300 ? "flex" : "none";
+        });
+      }
+    </script>
+  </body>
+</html>
