@@ -1,0 +1,3192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DAA — Midterm Revision: Linear Sorting, Greedy & DP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../notes.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+      /* Scoped Enhancements for Visual Aesthetic & Tables */
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-right: 6px;
+      }
+      .badge-teal { background: rgba(79, 191, 139, 0.18); color: var(--def-bd); border: 1px solid rgba(79, 191, 139, 0.35); }
+      .badge-orange { background: rgba(217, 119, 87, 0.18); color: var(--ac); border: 1px solid rgba(217, 119, 87, 0.35); }
+      .badge-blue { background: rgba(79, 163, 227, 0.18); color: var(--exp-bd); border: 1px solid rgba(79, 163, 227, 0.35); }
+      .badge-purple { background: rgba(179, 133, 240, 0.18); color: var(--qst-bd); border: 1px solid rgba(179, 133, 240, 0.35); }
+      .badge-red { background: rgba(240, 82, 79, 0.18); color: var(--crit-bd); border: 1px solid rgba(240, 82, 79, 0.35); }
+      .badge-amber { background: rgba(240, 169, 78, 0.18); color: var(--wrn-bd); border: 1px solid rgba(240, 169, 78, 0.35); }
+
+      /* Visual Array / Step Box */
+      .visual-array-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 16px 0;
+        flex-wrap: wrap;
+      }
+      .array-cell {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 6px 12px;
+        min-width: 44px;
+        text-align: center;
+      }
+      .array-cell.highlight {
+        background: rgba(217, 119, 87, 0.18);
+        border-color: var(--ac);
+        box-shadow: 0 0 10px rgba(217, 119, 87, 0.25);
+      }
+      .array-cell.green-hl {
+        background: rgba(79, 191, 139, 0.18);
+        border-color: var(--def-bd);
+      }
+      .array-cell.blue-hl {
+        background: rgba(79, 163, 227, 0.18);
+        border-color: var(--exp-bd);
+      }
+      .cell-val {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--tx);
+      }
+      .cell-idx {
+        font-size: 0.65rem;
+        color: var(--mt);
+        font-family: monospace;
+      }
+
+      /* DP Matrix Grid Styles */
+      .matrix-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-family: monospace;
+        font-size: 0.86rem;
+        background: rgba(24, 24, 27, 0.6);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--bd);
+      }
+      .matrix-table th, .matrix-table td {
+        padding: 10px 12px;
+        text-align: center;
+        border: 1px solid rgba(39, 39, 42, 0.8);
+      }
+      .matrix-table th {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--ac);
+        font-weight: 600;
+      }
+      .matrix-table .corner-th {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--mt);
+      }
+      .matrix-table .row-header {
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--tx);
+        font-weight: 600;
+        text-align: left;
+      }
+      .matrix-table td.cell-active {
+        background: rgba(217, 119, 87, 0.25);
+        color: #fff;
+        font-weight: 700;
+        border: 1px solid var(--ac);
+      }
+      .matrix-table td.cell-chosen {
+        background: rgba(79, 191, 139, 0.25);
+        color: #fff;
+        font-weight: 700;
+        border: 1px solid var(--def-bd);
+      }
+      .matrix-table td.cell-arrow {
+        color: var(--exp-bd);
+        font-size: 0.78rem;
+      }
+
+      /* Interactive Code Switcher Tabs */
+      .code-tab-container {
+        margin: 24px 0;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        background: #111114;
+        overflow: hidden;
+      }
+      .code-tab-bar {
+        display: flex;
+        background: #18181b;
+        border-bottom: 1px solid var(--bd);
+        padding: 4px 6px 0;
+        gap: 6px;
+        overflow-x: auto;
+      }
+      .code-tab-btn {
+        background: transparent;
+        color: var(--mt);
+        border: 1px solid transparent;
+        border-bottom: none;
+        padding: 8px 16px;
+        border-radius: 8px 8px 0 0;
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-tab-btn:hover {
+        color: var(--tx);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .code-tab-btn.active {
+        color: #ffffff;
+        background: #111114;
+        border-color: var(--bd);
+        border-bottom: 1px solid #111114;
+        position: relative;
+        margin-bottom: -1px;
+      }
+      .code-tab-pane {
+        display: none;
+        padding: 0;
+      }
+      .code-tab-pane.active {
+        display: block;
+      }
+      .code-tab-pane pre {
+        margin: 0;
+        padding: 18px 20px;
+        border-radius: 0;
+        background: #111114;
+        border: none;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.84rem;
+        line-height: 1.65;
+        overflow-x: auto;
+      }
+
+      /* Timeline / Interval Gantt View */
+      .gantt-wrap {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 20px;
+        margin: 18px 0;
+      }
+      .gantt-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .gantt-label {
+        width: 80px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--mt);
+        font-family: monospace;
+      }
+      .gantt-track {
+        flex: 1;
+        height: 24px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 6px;
+        position: relative;
+        border: 1px dashed rgba(255, 255, 255, 0.08);
+      }
+      .gantt-bar {
+        position: absolute;
+        height: 100%;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      }
+      .gantt-bar.accepted {
+        background: linear-gradient(90deg, #10b981, #059669);
+        border: 1px solid #34d399;
+      }
+      .gantt-bar.rejected {
+        background: rgba(240, 82, 79, 0.25);
+        border: 1px solid rgba(240, 82, 79, 0.45);
+        color: #f87171;
+        text-decoration: line-through;
+      }
+
+      /* Huffman Tree ASCII Graph styling */
+      .tree-box {
+        background: #0d0d10;
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 20px;
+        margin: 16px 0;
+        font-family: monospace;
+        font-size: 0.88rem;
+        line-height: 1.5;
+        color: var(--tx);
+        overflow-x: auto;
+      }
+
+      /* Comparison Cards */
+      .compare-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        margin: 20px 0;
+      }
+      .compare-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 20px;
+        transition: transform 0.2s, border-color 0.2s;
+      }
+      .compare-card:hover {
+        border-color: rgba(217, 119, 87, 0.4);
+        transform: translateY(-2px);
+      }
+      .compare-card h4 {
+        margin: 0 0 10px;
+        font-size: 0.95rem;
+      }
+      .compare-card p {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+        line-height: 1.6;
+      }
+
+      /* Copy Button */
+      .copy-btn {
+        float: right;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--bd);
+        color: var(--mt);
+        font-size: 0.72rem;
+        padding: 4px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .copy-btn:hover {
+        color: var(--tx);
+        background: var(--hv);
+        border-color: var(--ac);
+      }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SIDEBAR
+         ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">DAA (Algorithms)</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search midterm topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li><a class="nav-module-link" href="./1- The Role of Algorithms in Computing.html"><span class="nav-mod-num">01</span>Role of Algorithms</a></li>
+        <li><a class="nav-module-link" href="./2- Getting Started.html"><span class="nav-mod-num">02</span>Getting Started</a></li>
+        <li><a class="nav-module-link" href="./3- Characterizing Running Times.html"><span class="nav-mod-num">03</span>Running Times</a></li>
+        <li><a class="nav-module-link" href="./4- Divide-and-Conquer.html"><span class="nav-mod-num">04</span>Divide-and-Conquer</a></li>
+        <li><a class="nav-module-link" href="./5- Probabilistic Analysis and Randomized Algorithms.html"><span class="nav-mod-num">05</span>Probabilistic Analysis</a></li>
+
+        <!-- Active Module 6: Midterm Master Prep -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 6 — Midterm Master Prep</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Counting Sort & Stability</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Radix Sort & Multi-Digit</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Bucket Sort & Distribution</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Linear Sorting Variations</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Interval Scheduling (Greedy)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Huffman Encoding</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>Fractional Knapsack</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-8')"><span class="nav-num">08</span>DP: Fibonacci (3 Codes)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-9')"><span class="nav-num">09</span>DP: Frog Jump (Greedy vs DP)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-10')"><span class="nav-num">10</span>DP: 0/1 Knapsack & Table Method</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-11')"><span class="nav-num">11</span>DP: Rod Cutting & Table Method</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-12')"><span class="nav-num">12</span>DP: Longest Subsequence (LCS/LIS)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-13')"><span class="nav-num">13</span>DP: Maximum Subarray (Kadane)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-14')"><span class="nav-num">14</span>Master Code Cheatsheet</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-15')"><span class="nav-num">15</span>Midterm Exam Vault (Quiz 2 PDF)</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         MAIN CONTENT WRAPPER
+         ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container" id="module-6">
+        <div class="module-header">
+          <div class="module-eyebrow">DAA Midterm Exam Preparation</div>
+          <h1 class="module-title">Midterm Master Review: Linear Sorting, Greedy & Dynamic Programming</h1>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 1: COUNTING SORT & STABILITY
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Counting Sort & Algorithm Stability</h2>
+          <p class="topic-subtitle">Non-comparison linear integer sorting in $\\Theta(n + k)$ time</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> The problem states keys are <em>integers in a small bounded range</em> $[0..k]$ where $k = O(n)$ (e.g., student grades $0..100$, ages $0..120$, or $10^5$ numbers in range $0..999$). The question asks how to beat $O(n \\log n)$, or asks about <strong>stability</strong> with key-value pairs.</p>
+            <p><strong>Core Intuition:</strong> Think of physical postal cubbyholes. Instead of comparing two letters, you look at the house number, toss the letter into its numbered cubby, and count them. To keep ties in order, pull letters from the cubby in reverse arrival order!</p>
+            <p><strong>When to USE:</strong> When $k \\le O(n)$ and keys are discrete integers.</p>
+            <p><strong>When to AVOID:</strong> When $k \\gg n$ (e.g. $n = 1000$ and $k = 10^6$). Comparison sort takes $10,000$ ops while counting sort takes $1,001,000$ ops!</p>
+          </div>
+
+          <p>
+            Standard comparison sorts like Merge Sort and Quick Sort can never run faster than $\\Omega(n \\log n)$ in the worst case because they make decisions by comparing pairs of keys (represented as paths down a comparison decision tree). 
+            <strong>Counting Sort</strong> shatters this lower bound by abandoning pairwise comparisons altogether. Instead, it exploits integer key values directly as <em>array indices</em> to count frequencies and determine each element's exact final position in the output array.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Counting Sort:</strong> A non-comparison-based integer sorting algorithm that assumes each of the $n$ input elements is an integer in the range $0$ to $k$. It counts key occurrences in an auxiliary array $C[0..k]$, builds a cumulative prefix sum, and constructs the sorted output array $B[1..n]$ in $\\Theta(n + k)$ time.
+            <br /><em>[Intuition: Instead of asking "Is $A[i] > A[j]$?", it directly asks "How many elements in the entire array are strictly less than or equal to $A[i]$?"]</em>
+          </div>
+
+          <h3>The Three Core Phases</h3>
+          <ol>
+            <li><strong>Frequency Count:</strong> Allocate count array $C[0..k]$ with zeros. For each item $x \\in A$, increment $C[x]$.</li>
+            <li><strong>Prefix Sums (Cumulative Positions):</strong> Transform $C$ so that $C[i] = C[i] + C[i-1]$. Now, $C[i]$ holds the exact number of elements in the input that are $\\le i$. This indicates the <em>last valid 1-based index</em> where value $i$ belongs in output $B$.</li>
+            <li><strong>Right-to-Left Placement:</strong> Iterate through input $A$ backwards from index $n$ down to $1$. Place $A[j]$ at $B[C[A[j]]]$, then decrement $C[A[j]]$.</li>
+          </ol>
+
+          <h3>Visual Walkthrough: Stability on Key-Value Pairs</h3>
+          <p>Consider the FAST-NUCES Quiz 2 problem: $A = [(2,p), (0,q), (2,r), (1,s), (0,t), (2,u), (1,v)]$ with $k = 2$.</p>
+
+          <div class="example">
+            <div class="callout-label">Visual Execution Trace</div>
+            <h4>Phase 1: Frequency Counting</h4>
+            <div class="visual-array-wrap">
+              <span style="font-weight:600; color:var(--mt); margin-right:8px;">Keys:</span>
+              <div class="array-cell green-hl"><span class="cell-val">2</span><span class="cell-idx">Key 0 (q, t)</span></div>
+              <div class="array-cell blue-hl"><span class="cell-val">2</span><span class="cell-idx">Key 1 (s, v)</span></div>
+              <div class="array-cell highlight"><span class="cell-val">3</span><span class="cell-idx">Key 2 (p, r, u)</span></div>
+            </div>
+            <p>Initial count array: <code>C = [2, 2, 3]</code></p>
+
+            <h4>Phase 2: Prefix Sums ($C[i] = C[i] + C[i-1]$)</h4>
+            <p>
+              $C[0] = 2$<br />
+              $C[1] = 2 + 2 = 4$<br />
+              $C[2] = 4 + 3 = 7$<br />
+              Prefix Sum array: <code>C = [2, 4, 7]</code> (This means key 0 fills up to index 2, key 1 fills up to index 4, key 2 fills up to index 7).
+            </p>
+
+            <h4>Phase 3: Right-to-Left Scan (Preserving Stability)</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Step</th>
+                  <th>Scanned Element (from right)</th>
+                  <th>Key</th>
+                  <th>Target Slot $C[key]$</th>
+                  <th>Action in Output Array $B$</th>
+                  <th>Updated $C$</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td><code>(1, v)</code></td><td>1</td><td>4</td><td>Place at $B[4]$</td><td><code>[2, 3, 7]</code></td></tr>
+                <tr><td>2</td><td><code>(2, u)</code></td><td>2</td><td>7</td><td>Place at $B[7]$</td><td><code>[2, 3, 6]</code></td></tr>
+                <tr><td>3</td><td><code>(0, t)</code></td><td>0</td><td>2</td><td>Place at $B[2]$</td><td><code>[1, 3, 6]</code></td></tr>
+                <tr><td>4</td><td><code>(1, s)</code></td><td>1</td><td>3</td><td>Place at $B[3]$</td><td><code>[1, 2, 6]</code></td></tr>
+                <tr><td>5</td><td><code>(2, r)</code></td><td>2</td><td>6</td><td>Place at $B[6]$</td><td><code>[1, 2, 5]</code></td></tr>
+                <tr><td>6</td><td><code>(0, q)</code></td><td>0</td><td>1</td><td>Place at $B[1]$</td><td><code>[0, 2, 5]</code></td></tr>
+                <tr><td>7</td><td><code>(2, p)</code></td><td>2</td><td>5</td><td>Place at $B[5]$</td><td><code>[0, 2, 4]</code></td></tr>
+              </tbody>
+            </table>
+            <p><strong>Final Sorted Output $B$:</strong> <code>[(0,q), (0,t), (1,s), (1,v), (2,p), (2,r), (2,u)]</code></p>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Core Concept</div>
+            <strong>Algorithm Stability:</strong> A sorting algorithm is <strong>stable</strong> if elements with equal keys appear in the output array in the exact same relative order as they were given in the input array.
+            <br />In our example:
+            <ul>
+              <li>Key 0: <code>q</code> appeared before <code>t</code> in input $\\rightarrow$ <code>q</code> appears before <code>t</code> in output.</li>
+              <li>Key 1: <code>s</code> appeared before <code>v</code> in input $\\rightarrow$ <code>s</code> appears before <code>v</code> in output.</li>
+              <li>Key 2: <code>p, r, u</code> order is strictly preserved.</li>
+            </ul>
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Exam Trap: What if we scan Left-to-Right?</div>
+            <strong>Scanning left-to-right destroys stability!</strong> If you iterate from $j = 1$ to $n$, the first duplicate encountered takes the highest available slot ($C[key]$). Then $C[key]$ decrements, so subsequent duplicates are placed in <em>lower</em> slots. This completely inverts the relative order of identical elements!
+            <br /><strong>Why this is catastrophic:</strong> Radix Sort relies entirely on Counting Sort being stable. Inverting duplicates would scramble the lower-order digit ordering from previous passes.
+          </div>
+
+          <h3>Standard Stable Counting Sort Implementation</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active">Python (Standard Stable)</button>
+            </div>
+            <div class="code-tab-pane active">
+              <pre><code class="language-python">def counting_sort(arr):
+    if not arr: return []
+    max_val = max(arr)
+    k = max_val
+    n = len(arr)
+    count = [0] * (k + 1)
+    output = [0] * n
+    
+    # Phase 1: Frequency counts
+    for num in arr: count[num] += 1
+    # Phase 2: Cumulative prefix sums
+    for i in range(1, k + 1): count[i] += count[i - 1]
+    # Phase 3: Right-to-left scan for STABILITY
+    for j in range(n - 1, -1, -1):
+        elem = arr[j]
+        count[elem] -= 1
+        output[count[elem]] = elem
+    return output
+
+arr = [2, 0, 2, 1, 0, 2, 1]
+print("Sorted:", counting_sort(arr)) # [0, 0, 1, 1, 2, 2, 2]</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: Why does Counting Sort not contradict the $\\Omega(n \\log n)$ sorting lower bound?</summary>
+              <p><strong>Answer:</strong> The $\\Omega(n \\log n)$ lower bound applies strictly to <em>comparison-based</em> sorting algorithms, which determine order solely through pairwise comparisons ($A[i] \\le A[j]$) modeled by a decision tree of height at least $\\log_2(n!) \\approx n \\log_2 n - n \\log_2 e$. Counting Sort is a non-comparison sort; it uses the actual values of keys directly as array indices to count frequencies, thus bypassing the comparison tree entirely.</p>
+            </details>
+            <details>
+              <summary>Medium: What happens if you run Counting Sort on an array of $n = 100$ integers where keys range from $0$ to $10^7$?</summary>
+              <p><strong>Answer:</strong> The algorithm will be disastrously slow and waste immense memory. Its time complexity is $\\Theta(n + k) = \\Theta(100 + 10^7) \\approx 10^7$ operations, and it must allocate an auxiliary count array of $10,000,001$ integers ($\approx 40$ MB). A standard comparison sort ($O(n \\log n)$) would complete in roughly $100 \\times \\log_2(100) \\approx 664$ operations, outperforming Counting Sort by more than $15,000\\times$.</p>
+            </details>
+            <details>
+              <summary>Hard: Prove mathematically that the right-to-left placement loop guarantees stability.</summary>
+              <p><strong>Answer:</strong> Suppose two identical keys $A[i]$ and $A[j]$ have equal value $x$, with input indices $i < j$. During the right-to-left placement loop, index $j$ is processed <em>before</em> index $i$. When $A[j]$ is processed, it is assigned position $C[x]$ in the output, and $C[x]$ is decremented to $C[x] - 1$. Later, when $A[i]$ is processed, it is assigned the new, lower position $C[x] - 1$. Since $C[x] - 1 < C[x]$, element $A[i]$ appears to the left of $A[j]$ in the output array, exactly preserving their original relative order ($i < j$).</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Counting Sort runs in $\\Theta(n + k)$ time and requires $\\Theta(n + k)$ auxiliary space.</li>
+              <li>Only efficient when the key range $k$ is $O(n)$.</li>
+              <li>The backwards (right-to-left) placement pass is essential to maintain stability.</li>
+              <li>Serves as the foundational subroutine in Radix Sort.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 2: RADIX SORT & MULTI-DIGIT KEYS
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Radix Sort & Multi-Digit Analysis</h2>
+          <p class="topic-subtitle">Sorting large-range keys column-by-column in $\\Theta(d(n + b))$ time</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> You have $n$ items with <em>multi-digit or fixed-length representations</em> where the total range is large, but each individual digit has a small base $b$ (e.g. $10^6$ student roll numbers with 8 decimal digits, 32-bit integers split into 8-bit bytes, telephone numbers, license plates, strings of equal length).</p>
+            <p><strong>Core Intuition:</strong> Old punch-card mechanical sorters! You sort cards by the units column, then stack them and sort by the tens column, then hundreds. As long as you never shuffle cards within the same bin, higher digits seamlessly dominate lower digits!</p>
+            <p><strong>When to USE:</strong> When maximum value $k \\le n^c$ (constant $c$), picking base $b = n$ achieves true linear $O(n)$ time.</p>
+            <p><strong>When to AVOID:</strong> When digits have wildly variable lengths or keys are arbitrary floats.</p>
+          </div>
+
+          <p>
+            While Counting Sort fails when the range $k$ is huge (e.g., 8-digit student IDs up to $99,999,999$), <strong>Radix Sort</strong> solves this problem elegantly: it decomposes large numbers into $d$ individual digits and sorts the array digit-by-digit using a stable sort subroutine.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Radix Sort (LSD):</strong> An integer sorting algorithm that sorts numbers from the <strong>Least Significant Digit (LSD)</strong> to the <strong>Most Significant Digit (MSD)</strong>. For $n$ numbers with $d$ digits in base $b$, it performs $d$ passes of a stable sorting algorithm, achieving $\\Theta(d(n + b))$ total running time.
+          </div>
+
+          <h3>Why Least Significant Digit (LSD) First?</h3>
+          <p>
+            <strong>LSD Radix Sort</strong> sorts the <em>entire array at once</em> on digit 1 (units), then on digit 2 (tens), up to digit $d$. Because the sorting subroutine is <strong>strictly stable</strong>, ties in higher digits naturally preserve the correct ordering established by the lower digits!
+          </p>
+
+          <div class="example">
+            <div class="callout-label">Visual Step-by-Step Execution</div>
+            <h4>Input Array: <code>[170, 045, 075, 090, 002, 024, 802, 066]</code></h4>
+            <div class="compare-grid">
+              <div class="compare-card">
+                <span class="badge badge-orange">Pass 1: Units Digit</span>
+                <p>Sort by $x \\pmod{10}$:</p>
+                <p>17<strong style="color:var(--ac)">0</strong>, 09<strong style="color:var(--ac)">0</strong>, 00<strong style="color:var(--ac)">2</strong>, 80<strong style="color:var(--ac)">2</strong>, 02<strong style="color:var(--ac)">4</strong>, 04<strong style="color:var(--ac)">5</strong>, 07<strong style="color:var(--ac)">5</strong>, 06<strong style="color:var(--ac)">6</strong></p>
+              </div>
+              <div class="compare-card">
+                <span class="badge badge-blue">Pass 2: Tens Digit</span>
+                <p>Sort by $(x // 10) \\pmod{10}$:</p>
+                <p>0<strong style="color:var(--exp-bd)">0</strong>2, 8<strong style="color:var(--exp-bd)">0</strong>2, 0<strong style="color:var(--exp-bd)">2</strong>4, 0<strong style="color:var(--exp-bd)">4</strong>5, 0<strong style="color:var(--exp-bd)">6</strong>6, 1<strong style="color:var(--exp-bd)">7</strong>0, 0<strong style="color:var(--exp-bd)">7</strong>5, 0<strong style="color:var(--exp-bd)">9</strong>0</p>
+              </div>
+              <div class="compare-card">
+                <span class="badge badge-teal">Pass 3: Hundreds Digit</span>
+                <p>Sort by $(x // 100) \\pmod{10}$:</p>
+                <p><strong style="color:var(--def-bd)">0</strong>02, <strong style="color:var(--def-bd)">0</strong>24, <strong style="color:var(--def-bd)">0</strong>45, <strong style="color:var(--def-bd)">0</strong>66, <strong style="color:var(--def-bd)">0</strong>75, <strong style="color:var(--def-bd)">0</strong>90, <strong style="color:var(--def-bd)">1</strong>70, <strong style="color:var(--def-bd)">8</strong>02</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Mathematical Choice of Base $b$ (CLRS Lemma)</div>
+            Given $n$ $b$-bit numbers and any positive integer $r \\le b$, Radix Sort takes $\\Theta\\left(\\frac{b}{r}(n + 2^r)\\right)$.
+            If keys are up to $k \\le n^c$ (where $c$ is constant), choosing base $b = n$ ensures Radix Sort runs in strictly linear $\\Theta(n)$ time!
+          </div>
+
+          <h3>Radix Sort Implementation</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active">Python (Radix Sort with Base 10)</button>
+            </div>
+            <div class="code-tab-pane active">
+              <pre><code class="language-python">def counting_sort_for_radix(arr, exp):
+    n = len(arr)
+    output = [0] * n
+    count = [0] * 10
+    for i in range(n):
+        digit = (arr[i] // exp) % 10
+        count[digit] += 1
+    for i in range(1, 10): count[i] += count[i - 1]
+    for i in range(n - 1, -1, -1):
+        digit = (arr[i] // exp) % 10
+        count[digit] -= 1
+        output[count[digit]] = arr[i]
+    for i in range(n): arr[i] = output[i]
+
+def radix_sort(arr):
+    if not arr: return arr
+    max_val = max(arr)
+    exp = 1
+    while max_val // exp > 0:
+        counting_sort_for_radix(arr, exp)
+        exp *= 10
+    return arr
+
+nums = [170, 45, 75, 90, 2, 24, 802, 66]
+print("Radix Sorted:", radix_sort(nums))</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: Why is stability strictly necessary for the subroutine in Radix Sort?</summary>
+              <p><strong>Answer:</strong> Suppose we sort $42$ and $47$. In pass 1 (units digit), $2 < 7$, so $42$ is placed before $47$. In pass 2 (tens digit), both have key $4$. If the subroutine is stable, $42$ remains before $47$, giving $[42, 47]$. If not stable, their order could be inverted to $[47, 42]$, destroying the correct order established by lower digits.</p>
+            </details>
+            <details>
+              <summary>Medium: You have $n = 10^6$ student IDs, each 8 decimal digits long. Which algorithm is best, and why?</summary>
+              <p><strong>Answer:</strong> <strong>Radix Sort</strong>. Counting Sort would require an array of size $10^8$ (100 million ints $\approx 400$ MB). Radix Sort, using base $b = 10$ with $d = 8$ passes, runs in $\\Theta(d(n + b)) = \\Theta(8(10^6 + 10)) \\approx 8 \\times 10^6$ operations ($\Theta(n)$ time) using only 10 buckets per pass.</p>
+            </details>
+            <details>
+              <summary>Hard: How can Radix Sort be used to sort variable-length alphabetical strings?</summary>
+              <p><strong>Answer:</strong> In LSD Radix Sort, pad strings on the right with a special null character (value $< 'a'$). Sort from maximum length position down to index 0. Alternatively, use <strong>MSD Radix Sort</strong>: partition into 27 buckets on character 1, then recursively sort non-empty buckets on character 2.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Radix Sort operates in $\\Theta(d(n + b))$ time.</li>
+              <li>LSD sorts full array repeatedly without recursive overhead.</li>
+              <li>Stability in digit subroutine is mandatory.</li>
+              <li>When numbers are $\\le n^c$, setting base $b = n$ yields linear $\\Theta(n)$ time.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 3: BUCKET SORT & DISTRIBUTION ANALYSIS
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Bucket Sort & Distribution Analysis</h2>
+          <p class="topic-subtitle">Linear expected time $\\Theta(n)$ sorting for uniformly distributed data</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> The question mentions <em>floating-point numbers, decimals in $[0, 1)$</em>, or explicitly states numbers are <strong>"uniformly distributed at random"</strong> (e.g. $10^5$ sensor readings between $0.0$ and $100.0$, probabilities, normalized coordinates).</p>
+            <p><strong>Core Intuition:</strong> Scatter-Gather! Slice the range $[0, 1)$ into $n$ equal bins. Since data is uniformly spread out, almost every bin receives only 1 or 2 items on average. Sorting a 2-item list takes $O(1)$ time, so sorting all bins takes $O(n)$ total time!</p>
+            <p><strong>When to USE:</strong> Continuous data uniformly distributed over a known range.</p>
+            <p><strong>When to AVOID:</strong> Skewed or clustered data (e.g. all values near $0.2001$). All items fall into one bucket, collapsing into $\\Theta(n^2)$ Insertion Sort!</p>
+          </div>
+
+          <p>
+            While Counting Sort and Radix Sort require discrete integer keys, <strong>Bucket Sort</strong> is designed for continuous floating-point numbers. It assumes the input data was generated by a random process that distributes elements uniformly and independently over the interval $[0, 1)$.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Bucket Sort:</strong> A scatter-gather algorithm that partitions $[0, 1)$ into $n$ equal-sized buckets. It distributes $n$ values into buckets using $\\lfloor n \\cdot A[i] \\rfloor$, sorts each bucket with Insertion Sort, and concatenates all buckets in order.
+            <br /><em>[Average-case Time: $\\Theta(n)$, Worst-case Time: $\\Theta(n^2)$]</em>
+          </div>
+
+          <h3>Visual Scatter-Gather Diagram</h3>
+          <div class="example">
+            <div class="callout-label">Trace: 10 Elements in $[0, 1)$ with $n = 10$ Buckets</div>
+            <p>Input: <code>[0.78, 0.17, 0.39, 0.26, 0.72, 0.94, 0.21, 0.12, 0.23, 0.68]</code></p>
+            <table>
+              <thead>
+                <tr><th>Bucket</th><th>Range</th><th>Elements Scattered</th><th>After Insertion Sort</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>B[1]</code></td><td>$[0.1, 0.2)$</td><td>0.17, 0.12</td><td><code>[0.12, 0.17]</code></td></tr>
+                <tr><td><code>B[2]</code></td><td>$[0.2, 0.3)$</td><td>0.26, 0.21, 0.23</td><td><code>[0.21, 0.23, 0.26]</code></td></tr>
+                <tr><td><code>B[3]</code></td><td>$[0.3, 0.4)$</td><td>0.39</td><td><code>[0.39]</code></td></tr>
+                <tr><td><code>B[6]</code></td><td>$[0.6, 0.7)$</td><td>0.68</td><td><code>[0.68]</code></td></tr>
+                <tr><td><code>B[7]</code></td><td>$[0.7, 0.8)$</td><td>0.78, 0.72</td><td><code>[0.72, 0.78]</code></td></tr>
+                <tr><td><code>B[9]</code></td><td>$[0.9, 1.0)$</td><td>0.94</td><td><code>[0.94]</code></td></tr>
+              </tbody>
+            </table>
+            <p><strong>Concatenated:</strong> <code>[0.12, 0.17, 0.21, 0.23, 0.26, 0.39, 0.68, 0.72, 0.78, 0.94]</code></p>
+          </div>
+
+          <h3>Bucket Sort Implementation</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active">Python (Bucket Sort)</button>
+            </div>
+            <div class="code-tab-pane active">
+              <pre><code class="language-python">def insertion_sort(b):
+    for i in range(1, len(b)):
+        key = b[i]; j = i - 1
+        while j >= 0 and b[j] > key:
+            b[j + 1] = b[j]; j -= 1
+        b[j + 1] = key
+
+def bucket_sort(arr):
+    n = len(arr)
+    if n <= 1: return arr
+    buckets = [[] for _ in range(n)]
+    for x in arr:
+        idx = min(int(n * x), n - 1)
+        buckets[idx].append(x)
+    sorted_arr = []
+    for b in buckets:
+        insertion_sort(b)
+        sorted_arr.extend(b)
+    return sorted_arr
+
+floats = [0.78, 0.17, 0.39, 0.26, 0.72, 0.94, 0.21, 0.12, 0.23, 0.68]
+print("Bucket Sorted:", bucket_sort(floats))</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: What is the primary prerequisite for Bucket Sort to run in expected $O(n)$ time?</summary>
+              <p><strong>Answer:</strong> Input data must be drawn uniformly and independently at random from a known interval (typically $[0, 1)$), guaranteeing expected bucket size $E[n_i] = 1$.</p>
+            </details>
+            <details>
+              <summary>Medium: You have $n = 10^5$ sensor readings uniformly distributed in $[0, 100)$. How do you apply Bucket Sort?</summary>
+              <p><strong>Answer:</strong> Normalize into $[0, 1)$ via $x' = x / 100.0$. Bucket index is $\\lfloor n \\cdot (x / 100.0) \\rfloor$. Expected time remains linear $\\Theta(n)$.</p>
+            </details>
+            <details>
+              <summary>Hard: Why is Insertion Sort used inside buckets instead of Quick Sort?</summary>
+              <p><strong>Answer:</strong> For tiny lists ($n_i \\approx 1$ to $3$), Insertion Sort has negligible overhead, zero recursion stack, and runs in $O(1)$ operations, whereas Quick Sort incurs high function call and partitioning overhead.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Bucket Sort achieves expected linear time $\\Theta(n)$ for continuous data uniformly distributed over $[0, 1)$.</li>
+              <li>Worst-case time is $\\Theta(n^2)$ when elements cluster into a single bucket.</li>
+              <li>Arbitrary range $[A, B)$ can be normalized to $[0, 1)$ via $\\frac{x - A}{B - A}$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 4: LINEAR SORTING VARIATIONS
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Linear Sorting Variations: Negatives, Decimals & Large Keys</h2>
+          <p class="topic-subtitle">How Counting, Radix, and Bucket sort handle real-world data types</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> Questions specifically testing: <em>"Can Counting sort handle negative numbers like $[-50..50]$?"</em>, <em>"How do you sort decimal currencies like $12.34$?"</em>, or <em>"Given $n = 1000$ and keys $0..10^6$, which sort is faster?"</em></p>
+            <p><strong>Core Intuition:</strong> Linear sorts are index-driven. If keys are negative, shift them: $\\text{index} = x - min\\_val$. If keys are fixed decimals, scale them: $x \\times 10^k$. If $k \\gg n$, abandon linear sort and switch to comparison sort ($O(n \\log n)$)!</p>
+          </div>
+
+          <h3>1. Handling Negative Numbers</h3>
+          <p>
+            Counting sort uses array indices, and array indices cannot be negative. The standard solution is the <strong>Offset (Shift) Method</strong>:
+            Find $min\\_val$. Map range $[min\\_val, max\\_val]$ to $[0, max\\_val - min\\_val]$ using:
+            $$\\text{index} = x - min\\_val$$
+            Allocate count array of size $(max\\_val - min\\_val + 1)$. When outputting, restore values by adding $min\\_val$.
+          </p>
+
+          <div class="example">
+            <div class="callout-label">Quiz 2 Variant 4 Worked Problem</div>
+            <h4>Question: How do you sort integers in the range $[-50, 50]$ using Counting Sort?</h4>
+            <p>
+              $min\\_val = -50$. Range span $= 50 - (-50) + 1 = 101$.<br />
+              Shift: $\\text{index} = x - (-50) = x + 50$. Range $[-50, 50]$ maps to $[0, 100]$.<br />
+              Allocate <code>count = [0] * 101</code>. Run counting sort, then subtract $50$ when restoring.
+            </p>
+          </div>
+
+          <h3>2. Algorithm Selection Decision Framework</h3>
+          <table>
+            <thead>
+              <tr><th>Scenario</th><th>Best Algorithm</th><th>Time</th><th>Reason</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>$n = 10^5$ ints in $0..999$</td>
+                <td><span class="badge badge-teal">Counting Sort</span></td>
+                <td>$\\Theta(n)$</td>
+                <td>$k = 1000 \\ll n$. Array of size 1000 is trivial.</td>
+              </tr>
+              <tr>
+                <td>$n = 10^6$ student IDs, 8 digits</td>
+                <td><span class="badge badge-orange">Radix Sort</span></td>
+                <td>$\\Theta(n)$</td>
+                <td>Counting sort needs array of $10^8$. Radix sort uses 8 passes of base 10.</td>
+              </tr>
+              <tr>
+                <td>$n = 10^5$ sensor floats in $[0, 100)$</td>
+                <td><span class="badge badge-blue">Bucket Sort</span></td>
+                <td>Expected $\\Theta(n)$</td>
+                <td>Uniform continuous data. Normalize to $[0, 1)$.</td>
+              </tr>
+              <tr>
+                <td>$n = 1000$ ints in $0..10^6$</td>
+                <td><span class="badge badge-purple">Comparison Sort</span></td>
+                <td>$O(n \\log n) \\approx 10,000$ ops</td>
+                <td>Counting sort takes $10^6 + 1000 \\approx 1,001,000$ ops ($100\\times$ slower!).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Counting Sort with Negatives Implementation</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active">Python (Counting Sort with Negatives)</button>
+            </div>
+            <div class="code-tab-pane active">
+              <pre><code class="language-python">def counting_sort_with_negatives(arr):
+    if not arr: return []
+    min_v, max_v = min(arr), max(arr)
+    span = max_v - min_v + 1
+    count = [0] * span
+    output = [0] * len(arr)
+    for x in arr: count[x - min_v] += 1
+    for i in range(1, span): count[i] += count[i - 1]
+    for j in range(len(arr) - 1, -1, -1):
+        idx = arr[j] - min_v
+        count[idx] -= 1
+        output[count[idx]] = arr[j]
+    return output
+
+nums = [-5, 10, -3, 0, 2, -5, 8, -1]
+print("Sorted with Negatives:", counting_sort_with_negatives(nums))</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: Why can standard Counting Sort not accept negative numbers directly?</summary>
+              <p><strong>Answer:</strong> Counting Sort uses key values as array indices to look up frequencies. Array indices cannot be negative in hardware and memory addressing.</p>
+            </details>
+            <details>
+              <summary>Medium: You have $n = 50,000$ prices with 2 decimal places between $\$0.00$ and $\$100.00$. How do you sort them in linear time?</summary>
+              <p><strong>Answer:</strong> Multiply each amount by $100$ to convert to cents ($[0, 10000]$). Run Counting Sort with array size $10,001$. Divide back by $100.0$ at output.</p>
+            </details>
+            <details>
+              <summary>Hard: How does Radix Sort handle negative numbers?</summary>
+              <p><strong>Answer:</strong> Partition array into negatives and positives. For negatives, sort absolute values with Radix Sort, reverse the resulting list (since $|-10| > |-2| \\implies -10 < -2$), re-apply minus signs, and concatenate: <code>negatives + positives</code>.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Negative numbers: offset shift $\\text{index} = x - min\\_val$.</li>
+              <li>Fixed decimals: scale by $10^k$ to integers.</li>
+              <li>Continuous floats: normalize to $[0, 1)$ for Bucket Sort.</li>
+              <li>When $k \\gg n$: Comparison Sort ($O(n \\log n)$) beats Counting Sort ($O(n + k)$).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 5: INTERVAL SCHEDULING (ACTIVITY SELECTION)
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Interval Scheduling (Activity Selection)</h2>
+          <p class="topic-subtitle">Optimal mutual exclusion via Earliest Finish Time (EFT) greedy strategy</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> You have a single shared room / machine / professor, and $n$ requested time intervals $[s_i, f_i)$. The question asks to <strong>maximize the count of non-overlapping activities</strong>.</p>
+            <p><strong>Core Intuition:</strong> Be selfish with finish time! The sooner an activity finishes, the more remaining day you leave wide open for future activities. So sort by finish time and always grab the compatible one that wraps up earliest.</p>
+            <p><strong>When to USE:</strong> When intervals have fixed start and finish times and only 1 resource is available.</p>
+            <p><strong>When greedy FAILS:</strong> If activities have <em>weights/values</em> (Weighted Interval Scheduling), greedy by finish time fails $\\rightarrow$ requires Dynamic Programming ($O(n \\log n)$ with binary search)!</p>
+          </div>
+
+          <p>
+            You are given a shared resource and a set of $n$ proposed activities $S = \\{A_1, A_2, \\dots, A_n\\}$. Each activity $A_i$ has start time $s_i$ and finish time $f_i$ ($s_i < f_i$). Two activities are <strong>compatible</strong> if their intervals do not overlap ($s_i \\ge f_j$ or $s_j \\ge f_i$).
+            Our goal is to select a <strong>maximum-size set of mutually compatible activities</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>The Earliest Finish Time (EFT) Greedy Choice:</strong> At each decision step, pick the compatible activity that finishes earliest:
+            $$A^* = \\arg\\min_{A_i \\in S_{compat}} f_i$$
+            <br /><em>[Intuition: Finishing as early as possible frees up the resource immediately, leaving the maximum possible remaining time to accommodate subsequent activities.]</em>
+          </div>
+
+          <h3>Why Other Intuitive Greedy Strategies Fail</h3>
+          <table>
+            <thead>
+              <tr><th>Greedy Heuristic</th><th>Rule</th><th>Why It Fails (Counterexample)</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Earliest Start Time</strong></td>
+                <td>Pick $\\min s_i$</td>
+                <td>An activity starting at $t = 0$ that runs until $t = 100$ blocks 10 short activities starting at $t = 1, 2, \\dots$.</td>
+              </tr>
+              <tr>
+                <td><strong>Shortest Duration</strong></td>
+                <td>Pick $\\min (f_i - s_i)$</td>
+                <td>A short activity from $9$ to $11$ overlaps with two activities $(0, 10)$ and $(10, 20)$. Picking the shortest gives 1 activity instead of 2.</td>
+              </tr>
+              <tr>
+                <td><strong>Earliest Finish Time</strong></td>
+                <td>Pick $\\min f_i$</td>
+                <td><span class="badge badge-teal">PROVEN OPTIMAL</span> Leaves maximum remaining time for all remaining choices.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Gantt Chart & Quiz 2 Trace Walkthrough</h3>
+          <p>Given the 8 activities from FAST-NUCES Quiz 2:</p>
+
+          <div class="example">
+            <div class="callout-label">Trace Table: Quiz 2 Variant 1</div>
+            <table>
+              <thead>
+                <tr><th>Activity</th><th>Interval $[s_i, f_i)$</th><th>Decision</th><th>Reasoning</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>$A_1$</td><td>$[1, 3)$</td><td><span class="badge badge-teal">Accept</span></td><td>First activity; last finish becomes $3$.</td></tr>
+                <tr><td>$A_2$</td><td>$[2, 4)$</td><td><span class="badge badge-red">Reject</span></td><td>Conflict: $s_2 = 2 < 3$.</td></tr>
+                <tr><td>$A_3$</td><td>$[3, 6)$</td><td><span class="badge badge-teal">Accept</span></td><td>Compatible: $s_3 = 3 \\ge 3$; last finish becomes $6$.</td></tr>
+                <tr><td>$A_4$</td><td>$[5, 7)$</td><td><span class="badge badge-red">Reject</span></td><td>Conflict: $s_4 = 5 < 6$.</td></tr>
+                <tr><td>$A_5$</td><td>$[6, 8)$</td><td><span class="badge badge-teal">Accept</span></td><td>Compatible: $s_5 = 6 \\ge 6$; last finish becomes $8$.</td></tr>
+                <tr><td>$A_6$</td><td>$[7, 10)$</td><td><span class="badge badge-red">Reject</span></td><td>Conflict: $s_6 = 7 < 8$.</td></tr>
+                <tr><td>$A_7$</td><td>$[9, 11)$</td><td><span class="badge badge-teal">Accept</span></td><td>Compatible: $s_7 = 9 \\ge 8$; last finish becomes $11$.</td></tr>
+                <tr><td>$A_8$</td><td>$[10, 12)$</td><td><span class="badge badge-red">Reject</span></td><td>Conflict: $s_8 = 10 < 11$.</td></tr>
+              </tbody>
+            </table>
+            <p><strong>Selected Set:</strong> $\\{A_1, A_3, A_5, A_7\\}$ (Maximum size: <strong>4 activities</strong>).</p>
+
+            <h4>Adding Activity $N = (4, 5)$ (Exam Question)</h4>
+            <p>New chronological finish-time sequence: $A_1(1,3), A_2(2,4), N(4,5), A_3(3,6), A_4(5,7), A_5(6,8), A_6(7,10), A_7(9,11), A_8(10,12)$.</p>
+            <ul>
+              <li>$A_1(1,3)$ accepted $\\rightarrow$ last finish $= 3$.</li>
+              <li>$A_2(2,4)$ rejected ($2 < 3$).</li>
+              <li>$N(4,5)$ accepted ($4 \\ge 3$) $\\rightarrow$ last finish $= 5$.</li>
+              <li>$A_3(3,6)$ rejected ($3 < 5$).</li>
+              <li>$A_4(5,7)$ accepted ($5 \\ge 5$) $\\rightarrow$ last finish $= 7$.</li>
+              <li>$A_5(6,8)$ rejected ($6 < 7$).</li>
+              <li>$A_6(7,10)$ accepted ($7 \\ge 7$) $\\rightarrow$ last finish $= 10$.</li>
+              <li>$A_7(9,11)$ rejected ($9 < 10$).</li>
+              <li>$A_8(10,12)$ accepted ($10 \\ge 10$) $\\rightarrow$ last finish $= 12$.</li>
+            </ul>
+            <p><strong>New Selected Set:</strong> $\\{A_1, N, A_4, A_6, A_8\\}$ (Size: <strong>5 activities</strong>!).</p>
+          </div>
+
+          <h3>Interval Scheduling Implementation</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active">Python (Interval Scheduling)</button>
+            </div>
+            <div class="code-tab-pane active">
+              <pre><code class="language-python">def interval_scheduling(activities):
+    sorted_act = sorted(activities, key=lambda x: x[2])
+    selected = []
+    last_finish = -1
+    for name, start, finish in sorted_act:
+        if start >= last_finish:
+            selected.append((name, start, finish))
+            last_finish = finish
+    return selected
+
+acts = [
+    ("A1", 1, 3), ("A2", 2, 4), ("A3", 3, 6), ("A4", 5, 7),
+    ("A5", 6, 8), ("A6", 7, 10), ("A7", 9, 11), ("A8", 10, 12)
+]
+result = interval_scheduling(acts)
+print("Selected:", [x[0] for x in result]) # ['A1', 'A3', 'A5', 'A7']</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: What is the running time of the Interval Scheduling algorithm for $n$ activities?</summary>
+              <p><strong>Answer:</strong> $O(n \\log n)$, dominated by sorting by finish times. The linear scan takes $O(n)$. If pre-sorted, it takes $\\Theta(n)$.</p>
+            </details>
+            <details>
+              <summary>Medium: What is the formal Greedy Stays Ahead claim?</summary>
+              <p><strong>Answer:</strong> For all $r \\le k$, $f(g_r) \\le f(o_r)$, proving greedy finishes at least as early as any optimal schedule at every step.</p>
+            </details>
+            <details>
+              <summary>Hard: How does Interval Partitioning differ from Interval Scheduling?</summary>
+              <p><strong>Answer:</strong> Interval Scheduling selects maximum activities for 1 room. Interval Partitioning schedules ALL activities minimizing rooms needed, sorting by <strong>start time</strong> in $O(n \\log n)$.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Greedy strategy: Sort activities by finish time $f_i$ ascending.</li>
+              <li>Always select the compatible activity that finishes earliest.</li>
+              <li>Running time is $O(n \\log n)$ (or $O(n)$ if pre-sorted).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 6: HUFFMAN ENCODING & PREFIX TREES
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>Huffman Encoding & Optimal Prefix Codes</h2>
+          <p class="topic-subtitle">Lossless data compression using greedy min-heap tree construction</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> Given a table of <em>characters with frequencies</em> (e.g. $v=40, w=25, x=20, y=10, z=5$). The question asks to build an <strong>optimal variable-length binary code</strong>, compare total bits with fixed-length coding, or encode a given word.</p>
+            <p><strong>Core Intuition:</strong> Build a tree from the ground up! Rare characters should sit deep down the tree (longer bit paths), while common characters should sit right next to the root (1 or 2 bits). At each step, greedily fuse the two lightest nodes together!</p>
+            <p><strong>When to USE:</strong> Lossless text compression with known character frequency distribution.</p>
+            <p><strong>Golden Exam Rule:</strong> Smaller weight child goes on the LEFT (edge <code>0</code>), larger weight on the RIGHT (edge <code>1</code>). Characters are strictly at LEAVES (prefix-free).</p>
+          </div>
+
+          <p>
+            In standard ASCII, every character takes 8 fixed bits. <strong>Huffman Coding</strong> generates optimal variable-length prefix-free binary codes: frequent characters get short codes (e.g. 1 bit), while rare characters get longer codes (e.g. 4 bits).
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Prefix-Free Code:</strong> A binary code in which no codeword is a prefix of any other codeword.
+            <br /><em>[Enables instantaneous unambiguous decoding without separator bits.]</em>
+          </div>
+
+          <h3>Full Step-by-Step Walkthrough: Quiz 2 Variant 1</h3>
+          <div class="example">
+            <div class="callout-label">Exam Problem Trace: Frequencies v=40, w=25, x=20, y=10, z=5</div>
+            <ol>
+              <li>$z(5) + y(10) \\rightarrow 15$</li>
+              <li>$15 + x(20) \\rightarrow 35$</li>
+              <li>$w(25) + 35 \\rightarrow 60$</li>
+              <li>$v(40) + 60 \\rightarrow 100$ (root)</li>
+            </ol>
+            <div class="tree-box">
+                       [100] (Root)
+                      /     \
+                (0)  /       \  (1)
+                  v(40)      [60]
+                            /    \
+                      (0)  /      \  (1)
+                         w(25)    [35]
+                                 /    \
+                           (0)  /      \  (1)
+                              [15]     x(20)
+                             /    \
+                       (0)  /      \  (1)
+                          z(5)     y(10)
+            </div>
+            <table>
+              <thead><tr><th>Symbol</th><th>Frequency</th><th>Codeword</th><th>Length</th><th>Total Bits</th></tr></thead>
+              <tbody>
+                <tr><td><code>v</code></td><td>40</td><td><code>0</code></td><td>1</td><td>40</td></tr>
+                <tr><td><code>w</code></td><td>25</td><td><code>10</code></td><td>2</td><td>50</td></tr>
+                <tr><td><code>x</code></td><td>20</td><td><code>111</code></td><td>3</td><td>60</td></tr>
+                <tr><td><code>z</code></td><td>5</td><td><code>1100</code></td><td>4</td><td>20</td></tr>
+                <tr><td><code>y</code></td><td>10</td><td><code>1101</code></td><td>4</td><td>40</td></tr>
+                <tr><th colspan="4" style="text-align:right;">Total Huffman Bits:</th><th style="color:var(--def-bd);">210 Bits</th></tr>
+              </tbody>
+            </table>
+            <p><strong>Fixed-length:</strong> $100 \\times 3 = 300\\text{ bits}$. <strong>Savings:</strong> $300 - 210 = \\mathbf{90\\text{ bits}}$.<br />
+            <strong>Encode <code>"zvxw"</code>:</strong> $1100 + 0 + 111 + 10 = \\mathbf{1100011110}$.</p>
+          </div>
+
+          <h3>Huffman Coding Implementation</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active">Python (Huffman with heapq)</button>
+            </div>
+            <div class="code-tab-pane active">
+              <pre><code class="language-python">import heapq
+
+class HNode:
+    def __init__(self, c, f): self.c, self.f, self.left, self.right = c, f, None, None
+    def __lt__(self, o): return self.f < o.f
+
+def huffman(freqs):
+    h = [HNode(c, f) for c, f in freqs.items()]
+    heapq.heapify(h)
+    while len(h) > 1:
+        n1 = heapq.heappop(h); n2 = heapq.heappop(h)
+        m = HNode(None, n1.f + n2.f); m.left, m.right = n1, n2
+        heapq.heappush(h, m)
+    codes = {}
+    def dfs(node, cur):
+        if not node: return
+        if node.c: codes[node.c] = cur
+        dfs(node.left, cur + "0"); dfs(node.right, cur + "1")
+    dfs(h[0], "")
+    return codes
+
+print("Codes:", huffman({'v':40, 'w':25, 'x':20, 'y':10, 'z':5}))</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: What is the time complexity of building a Huffman tree for $n$ symbols?</summary>
+              <p><strong>Answer:</strong> $O(n \\log n)$, using a min-heap to perform $n - 1$ extractions and insertions.</p>
+            </details>
+            <details>
+              <summary>Medium: Can a character have a 1-bit codeword in Huffman coding?</summary>
+              <p><strong>Answer:</strong> Yes. If a character's frequency is high enough to be merged in the very last step directly with the root, its depth is 1 edge, producing a 1-bit code (e.g. symbol <code>v</code> with frequency 40%).</p>
+            </details>
+            <details>
+              <summary>Hard: Why can codewords in Huffman trees never conflict during decoding?</summary>
+              <p><strong>Answer:</strong> Because every character is strictly a <strong>leaf node</strong>. No leaf node can be an ancestor of any other leaf node, guaranteeing the prefix-free property.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Huffman coding constructs optimal prefix-free codes in $O(n \\log n)$ time.</li>
+              <li>Repeatedly fuse the two lowest frequency nodes in a min-heap.</li>
+              <li>Total bits $= \\sum f_i \\cdot \\text{depth}_i$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 7: FRACTIONAL KNAPSACK (GREEDY VS 0/1)
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">7</span>Fractional Knapsack (Greedy vs 0/1 Knapsack)</h2>
+          <p class="topic-subtitle">Value-to-weight ratio greedy choice and why 0/1 requires Dynamic Programming</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> The problem states that <em>fractions or portions of items can be taken</em> (e.g. gold dust, oil, flour, or time-allocated exam marks per minute). If items <strong>cannot</strong> be broken (take entire item or nothing), it is <strong>0/1 Knapsack</strong> and greedy fails!</p>
+            <p><strong>Core Intuition:</strong> Think of buying groceries by price per pound. You always fill your bag with the most expensive spice per gram first. Since you can buy half a gram, you never leave empty space.</p>
+            <p><strong>Why greedy fails on 0/1:</strong> Items cannot be split. Taking a high-ratio item might leave an empty gap that cannot fit any other item, wasting weight capacity!</p>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>Value-to-Weight Ratio Greedy Choice:</strong> For each item $i$, calculate unit density:
+            $$r_i = \\frac{v_i}{w_i}$$
+            Sort items descending: $r_1 \\ge r_2 \\ge \\dots \\ge r_n$. Greedily consume highest ratio items until capacity is full. Take fraction $\\frac{W_{rem}}{w_k}$ of the first item that doesn't fit.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Counterexample: Greedy Fails for 0/1 Knapsack</div>
+            Capacity: $W = 50\\text{ kg}$.<br />
+            Item 1: $v = \\$60, w = 10\\text{ kg}$ (Ratio $= 6.0$)<br />
+            Item 2: $v = \\$100, w = 20\\text{ kg}$ (Ratio $= 5.0$)<br />
+            Item 3: $v = \\$120, w = 30\\text{ kg}$ (Ratio $= 4.0$)<br />
+            • <strong>Fractional:</strong> Take Item 1 ($10kg, \\$60$), Item 2 ($20kg, \\$100$), and $20/30$ of Item 3 ($20kg, \\$80$). Total $= \\mathbf{\\$240}$ <span class="badge badge-teal">Optimal</span>.<br />
+            • <strong>0/1 Greedy (by ratio):</strong> Takes Item 1 + Item 2 ($30kg, \\$160$). Remaining $20kg$ cannot fit Item 3 ($30kg$). Total $= \\mathbf{\\$160}$.<br />
+            • <strong>0/1 DP Optimal:</strong> Takes Item 2 + Item 3 ($50kg, \\mathbf{\\$220}$). Greedy misses optimal by $\\$60$!
+          </div>
+
+          <div class="example">
+            <div class="callout-label">Quiz 2 Variant 3: Exam Score Allocation Counterexample</div>
+            <h4>Question: Does prioritizing questions with maximum marks guarantee highest exam score?</h4>
+            <p><strong>No!</strong> Total time $T = 30$ mins. Q1: $100$ marks in $30$ mins ($3.33$ marks/min). Q2: $90$ marks in $10$ mins ($9$ marks/min).<br />
+            • Greedy by max marks: picks Q1 $\\rightarrow$ <strong>100 marks</strong>.<br />
+            • Optimal by ratio (marks/min): does Q2 (10 mins $\\rightarrow 90$ marks), spends 20 mins on Q1 ($(20/30) \\times 100 = 66.67$ marks) $\\rightarrow$ <strong>156.67 marks</strong>!</p>
+          </div>
+
+          <h3>Fractional Knapsack Implementation</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active">Python (Fractional Knapsack)</button>
+            </div>
+            <div class="code-tab-pane active">
+              <pre><code class="language-python">def fractional_knapsack(capacity, items):
+    # items: (value, weight, name)
+    items = sorted(items, key=lambda x: x[0] / x[1], reverse=True)
+    total_val, cur_w = 0.0, 0.0
+    for v, w, name in items:
+        if cur_w + w <= capacity:
+            cur_w += w; total_val += v
+        else:
+            rem = capacity - cur_w
+            if rem > 0: total_val += v * (rem / w)
+            break
+    return total_val
+
+items = [(60, 10, "Item1"), (100, 20, "Item2"), (120, 30, "Item3")]
+print("Max Value:", fractional_knapsack(50, items)) # 240.0</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: What is the time complexity of Fractional Knapsack?</summary>
+              <p><strong>Answer:</strong> $O(n \\log n)$, dominated by sorting by value-to-weight ratio. The greedy taking loop runs in $O(n)$.</p>
+            </details>
+            <details>
+              <summary>Medium: What are the two essential properties for greedy algorithms?</summary>
+              <p><strong>Answer:</strong> 1. Greedy-Choice Property (locally optimal choices lead to global optimum). 2. Optimal Substructure (optimal solution contains optimal subproblem solutions).</p>
+            </details>
+            <details>
+              <summary>Hard: Why does greedy coin change fail for denominations $[1, 3, 4]$ and amount $N = 6$?</summary>
+              <p><strong>Answer:</strong> Greedy picks largest coin $4$, leaving $2$, solved by $1, 1$ ($[4, 1, 1]$ = 3 coins). Optimal chooses $[3, 3]$ = 2 coins. General coin change requires Dynamic Programming.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Fractional knapsack sorts by ratio $v_i / w_i$ descending $\\rightarrow O(n \\log n)$.</li>
+              <li>Greedy is provably optimal for Fractional Knapsack.</li>
+              <li>Greedy FAILS for 0/1 Binary Knapsack (requires DP).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 8: FIBONACCI NUMBERS (3 CODES)
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-8">
+          <h2><span class="topic-num">8</span>Dynamic Programming: Fibonacci Numbers</h2>
+          <p class="topic-subtitle">Overcoming exponential tree recursion through memoization and tabulation</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> Problems with recurrence $F(n) = F(n-1) + F(n-2)$ (e.g. climbing stairs taking 1 or 2 steps, tiling a $2 \\times n$ board with $2 \\times 1$ dominoes, cow population growth). The question asks to compare Naive $O(2^n)$ vs Memoized $O(n)$ vs Tabulated $O(n)$ vs Space-Optimized $O(1)$.</p>
+            <p><strong>Core Intuition:</strong> Don't be a goldfish! When calculating $F(5)$, naive recursion calculates $F(3)$ twice from scratch. Dynamic programming simply writes down $F(3)$ in a notebook the first time, turning an exponential tree of redundant work into a single straight line!</p>
+          </div>
+
+          <p>
+            The Fibonacci sequence is defined by the recurrence $F(n) = F(n-1) + F(n-2)$ with $F(0) = 0$ and $F(1) = 1$.
+            It serves as the quintessential pedagogical entry point into Dynamic Programming, demonstrating how <strong>overlapping subproblems</strong> explode naive recursion into exponential time $O(2^n)$, and how storing results reduces computation to linear $O(n)$ time.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Definition</div>
+            <strong>The Two Hallmarks of Dynamic Programming:</strong>
+            <ol>
+              <li><strong>Optimal Substructure:</strong> An optimal solution to the problem contains optimal solutions to subproblems ($F(n)$ directly uses exact values of $F(n-1)$ and $F(n-2)$).</li>
+              <li><strong>Overlapping Subproblems:</strong> A recursive algorithm revisits the <em>same subproblems repeatedly</em> rather than generating new subproblems at each step.</li>
+            </ol>
+          </div>
+
+          <h3>Complexity Comparison Matrix</h3>
+          <table>
+            <thead>
+              <tr><th>Approach</th><th>Time</th><th>Space</th><th>Mechanism</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>1. Naive Recursion</strong></td><td>$\\Theta(2^n)$</td><td>$O(n)$ stack</td><td>Recomputes identical subtrees from scratch</td></tr>
+              <tr><td><strong>2. Memoization (Top-Down)</strong></td><td>$\\Theta(n)$</td><td>$O(n)$ memo + $O(n)$ stack</td><td>On-demand recursion with dictionary cache</td></tr>
+              <tr><td><strong>3. Tabulation (Bottom-Up)</strong></td><td>$\\Theta(n)$</td><td>$\\Theta(n)$ array or $\\mathbf{O(1)}$ variables</td><td>Iterative loop filling base cases upwards</td></tr>
+            </tbody>
+          </table>
+
+          <h3>3 Required Implementations</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active" onclick="switchCodeTab(this, 'fib-naive')">1. Naive Recursive</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'fib-memo')">2. Memoization (Top-Down)</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'fib-tab')">3. Tabulation (Bottom-Up & O(1) Space)</button>
+            </div>
+
+            <div class="code-tab-pane active" id="fib-naive">
+              <pre><code class="language-python"># 1. NAIVE RECURSION: O(2^n) Time | O(n) Call Stack
+def fib_naive(n):
+    if n <= 0: return 0
+    if n == 1: return 1
+    return fib_naive(n - 1) + fib_naive(n - 2)
+
+print("F(10) Naive:", fib_naive(10)) # 55</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="fib-memo">
+              <pre><code class="language-python"># 2. MEMOIZATION (TOP-DOWN): O(n) Time | O(n) Space
+def fib_memo(n, memo=None):
+    if memo is None: memo = {}
+    if n in memo: return memo[n]
+    if n <= 0: return 0
+    if n == 1: return 1
+    memo[n] = fib_memo(n - 1, memo) + fib_memo(n - 2, memo)
+    return memo[n]
+
+print("F(50) Memo:", fib_memo(50)) # 12586269025</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="fib-tab">
+              <pre><code class="language-python"># 3. TABULATION (BOTTOM-UP): O(n) Time | O(n) Array -> O(1) Space
+def fib_tabulation(n):
+    if n <= 0: return 0
+    if n == 1: return 1
+    dp = [0] * (n + 1)
+    dp[1] = 1
+    for i in range(2, n + 1): dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]
+
+def fib_space_optimized(n):
+    if n <= 0: return 0
+    if n == 1: return 1
+    prev2, prev1 = 0, 1
+    for _ in range(2, n + 1):
+        prev2, prev1 = prev1, prev1 + prev2
+    return prev1
+
+print("F(10) Tabulation:", fib_tabulation(10)) # 55
+print("F(10) Space Opt:", fib_space_optimized(10)) # 55</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: Why is the space complexity of naive recursive Fibonacci $O(n)$ and not $O(2^n)$?</summary>
+              <p><strong>Answer:</strong> Space depends on maximum call stack depth at any moment. Depth-first search reaches a maximum depth of $n$ before returning. Thus memory is $O(n)$.</p>
+            </details>
+            <details>
+              <summary>Medium: What is the exact difference between Top-Down Memoization and Bottom-Up Tabulation?</summary>
+              <p><strong>Answer:</strong> Top-Down breaks down $F(n)$ on-demand using recursion with a cache (risk of recursion stack overflow). Bottom-Up fills base cases $F(0), F(1)$ upwards iteratively in a loop with zero recursion overhead and allows $O(1)$ space optimization.</p>
+            </details>
+            <details>
+              <summary>Hard: How does matrix exponentiation compute $F(n)$ in $O(\\log n)$ time?</summary>
+              <p><strong>Answer:</strong> $\\begin{pmatrix} F(n+1) & F(n) \\\\ F(n) & F(n-1) \\end{pmatrix} = \\begin{pmatrix} 1 & 1 \\\\ 1 & 0 \\end{pmatrix}^n$. Repeated squaring computes matrix power $n$ in $O(\\log n)$ multiplications.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Naive Fibonacci takes exponential $\\Theta(2^n)$ time.</li>
+              <li>Memoization (Top-Down) caches subproblems in $O(n)$ time.</li>
+              <li>Tabulation (Bottom-Up) iteratively builds table in $O(n)$ time.</li>
+              <li>Space can be optimized to $O(1)$ using two variables.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 9: FROG JUMP (GREEDY VS DP)
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-9">
+          <h2><span class="topic-num">9</span>Frog Jump Problem (Greedy vs DP Analysis)</h2>
+          <p class="topic-subtitle">Analyzing both classic variants: Minimum Energy Jump vs Reachability Jump Game</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> A frog can jump 1 step or 2 steps ahead.
+            <br />• <strong>If the question asks for MINIMUM ENERGY/COST</strong> with height differences $|h[i] - h[j]|$, <strong>Greedy FAILS</strong>! You MUST use Dynamic Programming ($dp[i] = \\min(dp[i-1] + \\Delta h_1, dp[i-2] + \\Delta h_2)$).
+            <br />• <strong>If the question asks for REACHABILITY</strong> (Can the frog cross the river given maximum jump distances $nums[i]$?), <strong>Greedy is OPTIMAL</strong> in $O(n)$ time by tracking <code>max_reach</code>!</p>
+          </div>
+
+          <p>
+            The "Frog Jump" problem appears in two prominent formats in algorithms exams. It is one of the most instructive problems to understand <strong>why greedy fails on path minimization</strong>, but <strong>succeeds on reachability</strong>.
+          </p>
+
+          <h3>Why Greedy Fails on Minimum Energy (Variant A)</h3>
+          <div class="warning-box">
+            <div class="callout-label">Counterexample: Greedy Trap</div>
+            Heights: <code>[30, 10, 60, 10, 60, 50]</code>.<br />
+            From stone 0 (height 30):
+            <ul>
+              <li>Jump to 1 (height 10): cost $|30 - 10| = \\mathbf{20}$.</li>
+              <li>Jump to 2 (height 60): cost $|30 - 60| = \\mathbf{30}$.</li>
+            </ul>
+            <strong>Greedy Choice:</strong> Pick stone 1 (cheaper immediate cost 20). Downstream jumps force a total energy of <strong>60</strong>.
+            <br /><strong>Optimal DP Path:</strong> Jump $0 \\rightarrow 2$ (cost 30), then $2 \\rightarrow 4$ (cost 0), then $4 \\rightarrow 5$ (cost 10). Total Energy: <strong>40</strong>!
+            <br /><em>The locally expensive initial jump ($30$ vs $20$) unlocked a zero-cost jump downstream. Greedy was trapped!</em>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Variant A Recurrence Relation</div>
+            Let $dp[i]$ be the minimum energy to reach stone $i$ from stone $0$:
+            $$dp[i] = \\min\\Big(dp[i-1] + |h[i] - h[i-1]|, \\; dp[i-2] + |h[i] - h[i-2]|\\Big)$$
+            Base cases: $dp[0] = 0, \\quad dp[1] = |h[1] - h[0]|$.
+          </div>
+
+          <h3>Variant A: 3 Required Codes</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active" onclick="switchCodeTab(this, 'frog-naive')">1. Naive Recursive</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'frog-memo')">2. Memoization (Top-Down)</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'frog-tab')">3. Tabulation (Bottom-Up & O(1) Space)</button>
+            </div>
+
+            <div class="code-tab-pane active" id="frog-naive">
+              <pre><code class="language-python"># 1. NAIVE RECURSION: O(2^n) Time | O(n) Space
+def frog_jump_naive(i, heights):
+    if i == 0: return 0
+    if i == 1: return abs(heights[1] - heights[0])
+    j1 = frog_jump_naive(i - 1, heights) + abs(heights[i] - heights[i - 1])
+    j2 = frog_jump_naive(i - 2, heights) + abs(heights[i] - heights[i - 2])
+    return min(j1, j2)
+
+heights = [30, 10, 60, 10, 60, 50]
+print("Naive Min Energy:", frog_jump_naive(len(heights) - 1, heights)) # 40</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="frog-memo">
+              <pre><code class="language-python"># 2. MEMOIZATION (TOP-DOWN): O(n) Time | O(n) Space
+def frog_jump_memo(i, heights, memo=None):
+    if memo is None: memo = {}
+    if i in memo: return memo[i]
+    if i == 0: return 0
+    if i == 1: return abs(heights[1] - heights[0])
+    j1 = frog_jump_memo(i - 1, heights, memo) + abs(heights[i] - heights[i - 1])
+    j2 = frog_jump_memo(i - 2, heights, memo) + abs(heights[i] - heights[i - 2])
+    memo[i] = min(j1, j2)
+    return memo[i]
+
+heights = [30, 10, 60, 10, 60, 50]
+print("Memo Min Energy:", frog_jump_memo(len(heights) - 1, heights)) # 40</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="frog-tab">
+              <pre><code class="language-python"># 3. TABULATION (BOTTOM-UP): O(n) Time | O(1) Space
+def frog_jump_tabulation(heights):
+    n = len(heights)
+    if n <= 1: return 0
+    dp = [0] * n
+    dp[1] = abs(heights[1] - heights[0])
+    for i in range(2, n):
+        dp[i] = min(dp[i - 1] + abs(heights[i] - heights[i - 1]),
+                    dp[i - 2] + abs(heights[i] - heights[i - 2]))
+    return dp[n - 1]
+
+def frog_jump_space_opt(heights):
+    n = len(heights)
+    if n <= 1: return 0
+    prev2, prev1 = 0, abs(heights[1] - heights[0])
+    for i in range(2, n):
+        curr = min(prev1 + abs(heights[i] - heights[i - 1]),
+                   prev2 + abs(heights[i] - heights[i - 2]))
+        prev2, prev1 = prev1, curr
+    return prev1
+
+heights = [30, 10, 60, 10, 60, 50]
+print("Tabulation Min Energy:", frog_jump_tabulation(heights)) # 40
+print("Space-Optimized Min Energy:", frog_jump_space_opt(heights)) # 40</code></pre>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Minimum Energy Jump: Greedy fails $\\rightarrow$ requires DP: $dp[i] = \\min(dp[i-1] + \\Delta h_1, dp[i-2] + \\Delta h_2)$.</li>
+              <li>Space can be optimized to $O(1)$ by keeping <code>prev1</code> and <code>prev2</code>.</li>
+              <li>River Reachability Jump Game: Greedy is optimal in $O(n)$ time by tracking <code>max_reach</code>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 10: BINARY KNAPSACK & THE TABLE METHOD
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-10">
+          <h2><span class="topic-num">10</span>Binary 0/1 Knapsack & The DP Table Method</h2>
+          <p class="topic-subtitle">Exact optimization via 2D subproblem grid and item backtrack reconstruction</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> You have a collection of $n$ distinct items, each with weight $w_i$ and value $v_i$. Capacity limit is $W$. Items <em>cannot be split</em> (binary choice: 0 or 1). Maximize total value.</p>
+            <p><strong>Core Intuition:</strong> For each item $i$, you face a fork in the road:
+            <br />• <strong>Option A (Exclude):</strong> Leave item $i$. Max value is $dp[i-1][w]$ (carry value from row directly above).
+            <br />• <strong>Option B (Include):</strong> Take item $i$. Gain its value $v_i$, and add the best solution for remaining capacity $w - w_i$ from previous items ($v_i + dp[i-1][w - w_i]$). Take $\\max(\\text{Exclude}, \\text{Include})$!</p>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">0/1 Knapsack Recurrence Relation</div>
+            Let $dp[i][w]$ denote maximum value using first $i$ items with capacity $w$:
+            $$dp[i][w] = \\begin{cases}
+              0 & \\text{if } i = 0 \\text{ or } w = 0 \\\\
+              dp[i-1][w] & \\text{if } w_i > w \\\\
+              \\max\\Big(dp[i-1][w], \\; v_i + dp[i-1][w - w_i]\\Big) & \\text{if } w_i \\le w
+            \\end{cases}$$
+          </div>
+
+          <h3>The 2D Table Method (Exam Requirement)</h3>
+          <p>Capacity $W = 7$, items: <code>Item 1: (w=1, v=1)</code>, <code>Item 2: (w=3, v=4)</code>, <code>Item 3: (w=4, v=5)</code>, <code>Item 4: (w=5, v=7)</code>.</p>
+
+          <div class="example">
+            <div class="callout-label">2D DP Matrix Table Walkthrough</div>
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th class="corner-th">Items \\ Cap</th>
+                  <th>w = 0</th><th>w = 1</th><th>w = 2</th><th>w = 3</th><th>w = 4</th><th>w = 5</th><th>w = 6</th><th>w = 7</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="row-header"><strong>i = 0</strong></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                <tr><td class="row-header"><strong>i = 1</strong> (w=1, v=1)</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+                <tr><td class="row-header"><strong>i = 2</strong> (w=3, v=4)</td><td>0</td><td>1</td><td>1</td><td>4</td><td>5</td><td>5</td><td>5</td><td>5</td></tr>
+                <tr><td class="row-header"><strong>i = 3</strong> (w=4, v=5)</td><td>0</td><td>1</td><td>1</td><td>4</td><td>5</td><td>6</td><td>6</td><td class="cell-chosen">9</td></tr>
+                <tr><td class="row-header"><strong>i = 4</strong> (w=5, v=7)</td><td>0</td><td>1</td><td>1</td><td>4</td><td>5</td><td>7</td><td>8</td><td class="cell-active">9</td></tr>
+              </tbody>
+            </table>
+            <h4>Backtracking Reconstruction:</h4>
+            <ol>
+              <li>$dp[4][7] == dp[3][7] == 9 \\rightarrow$ <strong>Item 4 EXCLUDED</strong>. Move to $i=3, w=7$.</li>
+              <li>$dp[3][7] \\ne dp[2][7]$ ($9 \\ne 5$) $\\rightarrow$ <strong>Item 3 INCLUDED</strong>. Subtract wt 4 $\\rightarrow w = 3$. Move to $i=2, w=3$.</li>
+              <li>$dp[2][3] \\ne dp[1][3]$ ($4 \\ne 1$) $\\rightarrow$ <strong>Item 2 INCLUDED</strong>. Subtract wt 3 $\\rightarrow w = 0$. Finished!</li>
+            </ol>
+            <p><strong>Chosen Items:</strong> Item 2 ($w=3, v=4$) and Item 3 ($w=4, v=5$). Total Weight $= 7$, Max Value $= \\mathbf{9}$.</p>
+          </div>
+
+          <h3>3 Required Implementations</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active" onclick="switchCodeTab(this, 'knap-naive')">1. Naive Recursive</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'knap-memo')">2. Memoization (Top-Down)</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'knap-tab')">3. Tabulation (2D Table & 1D Space Opt)</button>
+            </div>
+
+            <div class="code-tab-pane active" id="knap-naive">
+              <pre><code class="language-python"># 1. NAIVE RECURSION: O(2^n) Time | O(n) Space
+def knapsack_naive(W, wt, val, n):
+    if n == 0 or W == 0: return 0
+    if wt[n - 1] > W: return knapsack_naive(W, wt, val, n - 1)
+    return max(knapsack_naive(W, wt, val, n - 1),
+               val[n - 1] + knapsack_naive(W - wt[n - 1], wt, val, n - 1))
+
+wt, val, W = [1, 3, 4, 5], [1, 4, 5, 7], 7
+print("Naive Max Value:", knapsack_naive(W, wt, val, len(wt))) # 9</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="knap-memo">
+              <pre><code class="language-python"># 2. MEMOIZATION (TOP-DOWN): O(n * W) Time | O(n * W) Space
+def knapsack_memo(W, wt, val, n, memo=None):
+    if memo is None: memo = {}
+    if (n, W) in memo: return memo[(n, W)]
+    if n == 0 or W == 0: return 0
+    if wt[n - 1] > W:
+        res = knapsack_memo(W, wt, val, n - 1, memo)
+    else:
+        res = max(knapsack_memo(W, wt, val, n - 1, memo),
+                  val[n - 1] + knapsack_memo(W - wt[n - 1], wt, val, n - 1, memo))
+    memo[(n, W)] = res
+    return res
+
+wt, val, W = [1, 3, 4, 5], [1, 4, 5, 7], 7
+print("Memo Max Value:", knapsack_memo(W, wt, val, len(wt))) # 9</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="knap-tab">
+              <pre><code class="language-python"># 3. TABULATION (2D Grid + Backtrack + 1D Space Opt)
+def knapsack_tabulation(W, wt, val):
+    n = len(wt)
+    dp = [[0]*(W+1) for _ in range(n+1)]
+    for i in range(1, n+1):
+        for w in range(1, W+1):
+            if wt[i-1] <= w:
+                dp[i][w] = max(dp[i-1][w], val[i-1] + dp[i-1][w - wt[i-1]])
+            else: dp[i][w] = dp[i-1][w]
+    # Backtrack chosen items
+    chosen, cur_w = [], W
+    for i in range(n, 0, -1):
+        if dp[i][cur_w] != dp[i-1][cur_w]:
+            chosen.append(i-1); cur_w -= wt[i-1]
+    return dp[n][W], chosen
+
+def knapsack_1d(W, wt, val):
+    dp = [0] * (W + 1)
+    for i in range(len(wt)):
+        for w in range(W, wt[i] - 1, -1): # Backwards loop is mandatory!
+            dp[w] = max(dp[w], val[i] + dp[w - wt[i]])
+    return dp[W]
+
+wt, val, W = [1, 3, 4, 5], [1, 4, 5, 7], 7
+max_v, items = knapsack_tabulation(W, wt, val)
+print(f"2D Tabulation Max: {max_v}, Items Picked: {items}") # 9, [2, 1]
+print("1D Optimized Max:", knapsack_1d(W, wt, val))         # 9</code></pre>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>0/1 Knapsack recurrence: $dp[i][w] = \\max(dp[i-1][w], \\; v_i + dp[i-1][w - w_i])$.</li>
+              <li>Table Method uses $(n+1) \\times (W+1)$ grid and backtracks to recover chosen items.</li>
+              <li>Time complexity: $O(n \\cdot W)$ (pseudo-polynomial).</li>
+              <li>1D array optimization requires looping backwards from $W$ down to $w_i$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 11: ROD CUTTING & THE TABLE METHOD
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-11">
+          <h2><span class="topic-num">11</span>Rod Cutting & The DP Table Method</h2>
+          <p class="topic-subtitle">Unbounded knapsack decomposition: maximizing revenue from cutting steel rods</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> You have a resource of total capacity/length $n$ that can be carved into pieces of size $1, 2, \\dots, k$. Each piece has an arbitrary price $p_i$. Pieces can be reused multiple times. Maximize revenue.</p>
+            <p><strong>Core Intuition:</strong> Every rod of length $j$ must start with some first cut of length $i$ ($1 \\le i \\le j$). The remaining piece has length $j - i$, which is simply an identical smaller subproblem! So $r(j) = \\max_{1 \\le i \\le j}(p_i + r(j - i))$.</p>
+            <p><strong>When to use:</strong> When items can be sliced and chosen repeatedly without supply limits (unbounded choice).</p>
+            <p><strong>When greedy fails:</strong> Sorting cuts by price-per-inch ($p_i / i$) fails because it may leave an awkward remainder length that can only be sold at a terrible price or not at all!</p>
+          </div>
+
+          <p>
+            The steel company Serling Enterprises buys long steel rods and cuts them into shorter pieces to sell. Given a rod of length $n$ inches and a table of prices $p_i$ for lengths $i = 1, 2, \\dots, n$, determine the maximum revenue $r_n$ obtainable by cutting up the rod and selling the pieces.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Rod Cutting Recurrence Relation</div>
+            Let $r[j]$ be the maximum revenue for a rod of length $j$:
+            $$r[j] = \\max_{1 \\le i \\le j} \\Big(p[i] + r[j - i]\\Big) \\quad \\text{for } j \\ge 1, \\quad r[0] = 0$$
+            where $p[i]$ is the price of a single piece of length $i$, and $r[j - i]$ is the optimal revenue from the remainder.
+          </div>
+
+          <h3>The 1D DP Table Method & Cut Reconstruction</h3>
+          <p>Consider Serling Enterprises price table for lengths up to $n = 8$:</p>
+
+          <div class="example">
+            <div class="callout-label">Table Method Walkthrough: Length $n = 8$</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Length $i$</th>
+                  <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Price $p_i$</td>
+                  <td>1</td><td>5</td><td>8</td><td>9</td><td>10</td><td>17</td><td>17</td><td>20</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Bottom-Up Evaluation of $r[j]$ and Optimal First Cut $s[j]$:</h4>
+            <ul>
+              <li>$j = 0$: $r[0] = 0$</li>
+              <li>$j = 1$: $\\max(p_1 + r[0]) = 1 + 0 = \\mathbf{1}$ $\\rightarrow s[1] = 1$</li>
+              <li>$j = 2$: $\\max(p_1 + r[1], \\; p_2 + r[0]) = \\max(1+1, \\; 5+0) = \\mathbf{5}$ $\\rightarrow s[2] = 2$</li>
+              <li>$j = 3$: $\\max(p_1 + r[2], \\; p_2 + r[1], \\; p_3 + r[0]) = \\max(1+5, \\; 5+1, \\; 8+0) = \\mathbf{8}$ $\\rightarrow s[3] = 3$</li>
+              <li>$j = 4$: $\\max(1+8, \\; 5+5, \\; 8+1, \\; 9+0) = \\max(9, \\; 10, \\; 9, \\; 9) = \\mathbf{10}$ $\\rightarrow s[4] = 2$ (two cuts of length 2)</li>
+              <li>$j = 5$: $\\max(1+10, \\; 5+8, \\; 8+5, \\; 9+1, \\; 10+0) = \\max(11, \\; 13, \\; 13, \\; 10, \\; 10) = \\mathbf{13}$ $\\rightarrow s[5] = 2$</li>
+              <li>$j = 6$: $\\max(1+13, \\; 5+10, \\; 8+8, \\; 9+5, \\; 10+1, \\; 17+0) = \\max(14, \\; 15, \\; 16, \\; 14, \\; 11, \\; 17) = \\mathbf{17}$ $\\rightarrow s[6] = 6$</li>
+              <li>$j = 7$: $\\max(1+17, \\; 5+13, \\; 8+10, \\; 9+8, \\; 10+5, \\; 17+1, \\; 17+0) = \\max(18, \\; 18, \\; 18, \\; 17, \\; 15, \\; 18, \\; 17) = \\mathbf{18}$ $\\rightarrow s[7] = 1$</li>
+              <li>$j = 8$: $\\max(1+18, \\; 5+17, \\; 8+13, \\; 9+10, \\; 10+8, \\; 17+5, \\; 17+1, \\; 20+0) = \\max(19, \\; 22, \\; 21, \\; 19, \\; 18, \\; 22, \\; 18, \\; 20) = \\mathbf{22}$ $\\rightarrow s[8] = 2$</li>
+            </ul>
+
+            <h4>DP Tables Generated:</h4>
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>Length $j$</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="row-header">Max Revenue $r[j]$</td>
+                  <td>0</td><td>1</td><td>5</td><td>8</td><td>10</td><td>13</td><td>17</td><td>18</td><td class="cell-active">22</td>
+                </tr>
+                <tr>
+                  <td class="row-header">First Cut Size $s[j]$</td>
+                  <td>0</td><td>1</td><td>2</td><td>3</td><td>2</td><td>2</td><td>6</td><td>1</td><td class="cell-chosen">2</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Reconstructing the Optimal Cuts for Length $n = 8$:</h4>
+            <ol>
+              <li>Start at $n = 8$: $s[8] = 2$. First piece has length <strong>2</strong>. Remainder $= 8 - 2 = 6$.</li>
+              <li>Look up $s[6] = 6$. Second piece has length <strong>6</strong>. Remainder $= 6 - 6 = 0$. Finished!</li>
+            </ol>
+            <p><strong>Optimal Solution:</strong> Cut rod of length 8 into two pieces: length 2 (price 5) and length 6 (price 17).<br />
+            <strong>Total Revenue:</strong> $5 + 17 = \\mathbf{22}$.</p>
+          </div>
+
+          <h3>3 Required Implementations</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active" onclick="switchCodeTab(this, 'rod-naive')">1. Naive Recursive</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'rod-memo')">2. Memoization (Top-Down)</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'rod-tab')">3. Extended Tabulation (Reconstruct Cuts)</button>
+            </div>
+
+            <div class="code-tab-pane active" id="rod-naive">
+              <pre><code class="language-python"># 1. NAIVE RECURSION (Rod Cutting)
+# Time: O(2^n) - Exponential | Space: O(n) call stack
+def cut_rod_naive(price, n):
+    if n <= 0:
+        return 0
+    max_rev = -1
+    # Try every possible first cut of length i (1 to n)
+    for i in range(1, n + 1):
+        max_rev = max(max_rev, price[i] + cut_rod_naive(price, n - i))
+    return max_rev
+
+# Test (1-indexed price array, dummy at index 0)
+prices = [0, 1, 5, 8, 9, 10, 17, 17, 20]
+print("Naive Max Revenue (n=4):", cut_rod_naive(prices, 4)) # 10</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="rod-memo">
+              <pre><code class="language-python"># 2. MEMOIZATION (TOP-DOWN DP)
+# Time: O(n^2) | Space: O(n) memo table + O(n) stack
+def cut_rod_memo(price, n, memo=None):
+    if memo is None:
+        memo = [-1] * (n + 1)
+    if n <= 0:
+        return 0
+    if memo[n] >= 0:
+        return memo[n]
+        
+    max_rev = -1
+    for i in range(1, n + 1):
+        max_rev = max(max_rev, price[i] + cut_rod_memo(price, n - i, memo))
+        
+    memo[n] = max_rev
+    return memo[n]
+
+prices = [0, 1, 5, 8, 9, 10, 17, 17, 20]
+print("Memo Max Revenue (n=8):", cut_rod_memo(prices, 8)) # 22</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="rod-tab">
+              <pre><code class="language-python"># 3. EXTENDED BOTTOM-UP TABULATION (Computes Revenue & Prints Cuts)
+# Time: O(n^2) | Space: O(n)
+def extended_bottom_up_cut_rod(price, n):
+    r = [0] * (n + 1) # stores optimal revenues
+    s = [0] * (n + 1) # stores optimal first cut sizes
+    
+    for j in range(1, n + 1):
+        max_val = -1
+        for i in range(1, j + 1):
+            if max_val < price[i] + r[j - i]:
+                max_val = price[i] + r[j - i]
+                s[j] = i # record optimal cut length
+        r[j] = max_val
+        
+    # Reconstruct cuts
+    cuts = []
+    rem = n
+    while rem > 0:
+        cuts.append(s[rem])
+        rem -= s[rem]
+        
+    return r[n], cuts, r, s
+
+prices = [0, 1, 5, 8, 9, 10, 17, 17, 20]
+max_rev, cuts, r_table, s_table = extended_bottom_up_cut_rod(prices, 8)
+print(f"Tabulation Max Revenue: ${max_rev}") # 22
+print(f"Optimal Piece Lengths: {cuts}")      # [2, 6]</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: Why is the naive recursive rod cutting algorithm $O(2^n)$ in time complexity?</summary>
+              <p><strong>Answer:</strong> For a rod of length $n$, there are $n - 1$ possible cut positions along its length. At each position, we can independently choose either to make a cut or not make a cut ($2$ choices per position). The number of possible cut configurations is therefore $2^{n-1} = \\Theta(2^n)$. Naive recursion redundantly evaluates all of these configurations.</p>
+            </details>
+            <details>
+              <summary>Medium: What is the exact number of operations executed by Bottom-Up Rod Cutting for length $n$?</summary>
+              <p><strong>Answer:</strong> The outer loop for length $j$ runs from $1$ to $n$. For each $j$, the inner loop executes $j$ times. The total number of inner loop iterations is:
+              $$\\sum_{j=1}^{n} j = \\frac{n(n + 1)}{2} = \\frac{1}{2}n^2 + \\frac{1}{2}n = \\Theta(n^2)$$
+              Hence, it executes $\\Theta(n^2)$ operations and uses $\\Theta(n)$ auxiliary space.</p>
+            </details>
+            <details>
+              <summary>Hard: Suppose each cut costs $c$ dollars (a fixed cutting fee). How does the recurrence change?</summary>
+              <p><strong>Answer:</strong> If a piece of length $n$ is not cut at all ($i = n$), no fee is incurred: revenue is $p[n]$. If a cut is made at length $i < n$, fee $c$ must be subtracted: $p[i] + r[n - i] - c$. The recurrence becomes:
+              $$r[n] = \\max\\left(p[n], \\; \\max_{1 \\le i < n}(p[i] + r[n - i] - c)\\right)$$</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Rod cutting recurrence: $r[j] = \\max_{1 \\le i \\le j}(p[i] + r[j - i])$.</li>
+              <li>Runs in $\\Theta(n^2)$ time and $O(n)$ space.</li>
+              <li>Array $s[0..n]$ records the first cut length, enabling $O(n)$ backtrack reconstruction of all pieces.</li>
+              <li>Represents the canonical Unbounded Knapsack problem structure.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 12: LONGEST SUBSEQUENCE (LCS & LIS)
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-12">
+          <h2><span class="topic-num">12</span>Longest Subsequence Problems (LCS & LIS)</h2>
+          <p class="topic-subtitle">Character matching grids, 2D arrow backtracking, and patience sorting</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Longest Common Subsequence (LCS):</strong> Given <em>two distinct strings or sequences</em> $X$ and $Y$. Find the length of the longest subsequence present in both (characters do not need to be contiguous, but relative order must be preserved, e.g. DNA alignment, file diffs, spell checking).</p>
+            <p><strong>Longest Increasing Subsequence (LIS):</strong> Given a <em>single numeric array</em>. Find the longest subsequence whose elements are strictly increasing.</p>
+            <p><strong>Core LCS Intuition:</strong> Compare the last characters $X[m-1]$ and $Y[n-1]$. If they match, they MUST contribute $+1$ to the match from prefixes $X[0..m-2]$ and $Y[0..n-2]$. If they don't match, one of them is useless for the final character, so take $\\max(LCS(X_{m-1}, Y), LCS(X, Y_{n-1}))$.</p>
+          </div>
+
+          <h3>Part A: Longest Common Subsequence (LCS)</h3>
+          <div class="definition">
+            <div class="callout-label">LCS Recurrence Relation</div>
+            Let $dp[i][j]$ be the length of the LCS of prefixes $X[0..i-1]$ and $Y[0..j-1]$:
+            $$dp[i][j] = \\begin{cases}
+              0 & \\text{if } i = 0 \\text{ or } j = 0 \\\\
+              1 + dp[i-1][j-1] & \\text{if } X[i-1] == Y[j-1] \\quad (\\nwarrow \\text{ match, take diagonal}) \\\\
+              \\max\\Big(dp[i-1][j], \\; dp[i][j-1]\\Big) & \\text{if } X[i-1] \\ne Y[j-1] \\quad (\\uparrow \\text{ up vs } \\leftarrow \\text{ left})
+            \\end{cases}$$
+          </div>
+
+          <h3>The 2D Grid Table Method with Direction Arrows</h3>
+          <p>Let $X = \\text{"ABCBDAB"}$ ($m = 7$) and $Y = \\text{"BDCABA"}$ ($n = 6$).</p>
+
+          <div class="example">
+            <div class="callout-label">LCS 2D Table Method Trace</div>
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th class="corner-th">X \\ Y</th>
+                  <th>$\emptyset$</th>
+                  <th>B</th>
+                  <th>D</th>
+                  <th>C</th>
+                  <th>A</th>
+                  <th>B</th>
+                  <th>A</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="row-header">$\emptyset$</td>
+                  <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                </tr>
+                <tr>
+                  <td class="row-header"><strong>A</strong></td>
+                  <td>0</td><td>0</td><td>0</td><td>0</td><td class="cell-chosen">1 ($\nwarrow$)</td><td>1 ($\leftarrow$)</td><td class="cell-chosen">1 ($\nwarrow$)</td>
+                </tr>
+                <tr>
+                  <td class="row-header"><strong>B</strong></td>
+                  <td>0</td><td class="cell-chosen">1 ($\nwarrow$)</td><td>1 ($\leftarrow$)</td><td>1 ($\leftarrow$)</td><td>1 ($\uparrow$)</td><td class="cell-chosen">2 ($\nwarrow$)</td><td>2 ($\leftarrow$)</td>
+                </tr>
+                <tr>
+                  <td class="row-header"><strong>C</strong></td>
+                  <td>0</td><td>1 ($\uparrow$)</td><td>1 ($\uparrow$)</td><td class="cell-chosen">2 ($\nwarrow$)</td><td>2 ($\leftarrow$)</td><td>2 ($\uparrow$)</td><td>2 ($\uparrow$)</td>
+                </tr>
+                <tr>
+                  <td class="row-header"><strong>B</strong></td>
+                  <td>0</td><td class="cell-chosen">1 ($\nwarrow$)</td><td>1 ($\uparrow$)</td><td>2 ($\uparrow$)</td><td>2 ($\uparrow$)</td><td class="cell-chosen">3 ($\nwarrow$)</td><td>3 ($\leftarrow$)</td>
+                </tr>
+                <tr>
+                  <td class="row-header"><strong>D</strong></td>
+                  <td>0</td><td>1 ($\uparrow$)</td><td class="cell-chosen">2 ($\nwarrow$)</td><td>2 ($\uparrow$)</td><td>2 ($\uparrow$)</td><td>3 ($\uparrow$)</td><td>3 ($\uparrow$)</td>
+                </tr>
+                <tr>
+                  <td class="row-header"><strong>A</strong></td>
+                  <td>0</td><td>1 ($\uparrow$)</td><td>2 ($\uparrow$)</td><td>2 ($\uparrow$)</td><td class="cell-chosen">3 ($\nwarrow$)</td><td>3 ($\uparrow$)</td><td class="cell-chosen">4 ($\nwarrow$)</td>
+                </tr>
+                <tr>
+                  <td class="row-header"><strong>B</strong></td>
+                  <td>0</td><td class="cell-chosen">1 ($\nwarrow$)</td><td>2 ($\uparrow$)</td><td>2 ($\uparrow$)</td><td>3 ($\uparrow$)</td><td class="cell-chosen">4 ($\nwarrow$)</td><td class="cell-active">4 ($\uparrow$)</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Backtracking Reconstruction from $dp[7][6] = 4$:</h4>
+            <ul>
+              <li>From $dp[7][6]$ ($4$), value came from above $dp[6][6]$ ($4$). Move up to $i=6, j=6$.</li>
+              <li>At $dp[6][6]$ ($4$), $X[5] == Y[5] == \\mathbf{'A'}$. Add 'A', move diagonally $\nwarrow$ to $dp[5][5]$ ($3$).</li>
+              <li>At $dp[5][5]$ ($3$), came from above $dp[4][5]$ ($3$). Move up to $i=4, j=5$.</li>
+              <li>At $dp[4][5]$ ($3$), $X[3] == Y[4] == \\mathbf{'B'}$. Add 'B', move diagonally $\nwarrow$ to $dp[3][4]$ ($2$).</li>
+              <li>At $dp[3][4]$ ($2$), came from left $dp[3][3]$ ($2$). Move left to $i=3, j=3$.</li>
+              <li>At $dp[3][3]$ ($2$), $X[2] == Y[2] == \\mathbf{'C'}$. Add 'C', move diagonally $\nwarrow$ to $dp[2][2]$ ($1$).</li>
+              <li>At $dp[2][2]$ ($1$), came from left $dp[2][1]$ ($1$). Move left to $i=2, j=1$.</li>
+              <li>At $dp[2][1]$ ($1$), $X[1] == Y[0] == \\mathbf{'B'}$. Add 'B', move diagonally $\nwarrow$ to $dp[1][0]$ ($0$). Reached boundary!</li>
+            </ul>
+            <p><strong>Recovered LCS:</strong> Reverse of <code>['A', 'B', 'C', 'B']</code> = <strong><code>"BCBA"</code></strong> (Length = <strong>4</strong>).</p>
+          </div>
+
+          <h3>3 Required Implementations for LCS</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active" onclick="switchCodeTab(this, 'lcs-naive')">1. Naive Recursive</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'lcs-memo')">2. Memoization (Top-Down)</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'lcs-tab')">3. Tabulation (2D Table & String Reconstruct)</button>
+            </div>
+
+            <div class="code-tab-pane active" id="lcs-naive">
+              <pre><code class="language-python"># 1. NAIVE RECURSION (LCS)
+# Time: O(2^(m+n)) - Exponential | Space: O(m + n) call stack
+def lcs_naive(X, Y, m, n):
+    if m == 0 or n == 0:
+        return 0
+    if X[m - 1] == Y[n - 1]:
+        return 1 + lcs_naive(X, Y, m - 1, n - 1)
+    else:
+        return max(lcs_naive(X, Y, m - 1, n), lcs_naive(X, Y, m, n - 1))
+
+X = "ABCBDAB"
+Y = "BDCABA"
+print("Naive LCS Length:", lcs_naive(X, Y, len(X), len(Y))) # 4</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="lcs-memo">
+              <pre><code class="language-python"># 2. MEMOIZATION (TOP-DOWN DP)
+# Time: O(m * n) | Space: O(m * n) memo matrix + O(m + n) call stack
+def lcs_memo(X, Y, m, n, memo=None):
+    if memo is None:
+        memo = [[-1 for _ in range(n + 1)] for _ in range(m + 1)]
+    if m == 0 or n == 0:
+        return 0
+    if memo[m][n] != -1:
+        return memo[m][n]
+        
+    if X[m - 1] == Y[n - 1]:
+        memo[m][n] = 1 + lcs_memo(X, Y, m - 1, n - 1, memo)
+    else:
+        memo[m][n] = max(lcs_memo(X, Y, m - 1, n, memo), 
+                         lcs_memo(X, Y, m, n - 1, memo))
+    return memo[m][n]
+
+X = "ABCBDAB"
+Y = "BDCABA"
+print("Memo LCS Length:", lcs_memo(X, Y, len(X), len(Y))) # 4</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="lcs-tab">
+              <pre><code class="language-python"># 3. TABULATION (2D Grid & String Reconstruction)
+# Time: O(m * n) | Space: O(m * n)
+def lcs_tabulation(X, Y):
+    m = len(X)
+    n = len(Y)
+    dp = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
+    
+    # Fill DP Table
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if X[i - 1] == Y[j - 1]:
+                dp[i][j] = 1 + dp[i - 1][j - 1]
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+                
+    # Backtrack to reconstruct the LCS string
+    lcs_chars = []
+    i, j = m, n
+    while i > 0 and j > 0:
+        if X[i - 1] == Y[j - 1]:
+            lcs_chars.append(X[i - 1])
+            i -= 1
+            j -= 1
+        elif dp[i - 1][j] >= dp[i][j - 1]:
+            i -= 1
+        else:
+            j -= 1
+            
+    lcs_chars.reverse()
+    return dp[m][n], "".join(lcs_chars)
+
+X = "ABCBDAB"
+Y = "BDCABA"
+length, lcs_str = lcs_tabulation(X, Y)
+print(f"Tabulation LCS Length: {length}, String: '{lcs_str}'") # 4, 'BCBA'</code></pre>
+            </div>
+          </div>
+
+          <h3>Part B: Longest Increasing Subsequence (LIS)</h3>
+          <p>
+            Given an array $arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]$. What is the longest strictly increasing subsequence?
+          </p>
+          <div class="definition">
+            <div class="callout-label">LIS Recurrence Relation</div>
+            Let $dp[i]$ be the length of the LIS ending at index $i$:
+            $$dp[i] = 1 + \\max\\Big(\{0\} \\cup \\{dp[j] \\mid 0 \\le j < i \\text{ and } arr[j] < arr[i]\\}\\Big)$$
+            <strong>Global Answer:</strong> $\\max_{0 \\le i < n} dp[i]$.
+          </div>
+
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active">Python (LIS Dynamic Programming - O(n^2))</button>
+            </div>
+            <div class="code-tab-pane active">
+              <pre><code class="language-python">def lis_dp(arr):
+    if not arr: return 0
+    n = len(arr)
+    dp = [1] * n # Every element is an LIS of length 1 by itself
+    parent = [-1] * n
+    
+    for i in range(1, n):
+        for j in range(0, i):
+            if arr[j] < arr[i] and dp[j] + 1 > dp[i]:
+                dp[i] = dp[j] + 1
+                parent[i] = j
+                
+    max_len = max(dp)
+    best_idx = dp.index(max_len)
+    
+    # Reconstruct LIS sequence
+    seq = []
+    curr = best_idx
+    while curr != -1:
+        seq.append(arr[curr])
+        curr = parent[curr]
+    seq.reverse()
+    
+    return max_len, seq
+
+nums = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+length, sequence = lis_dp(nums)
+print(f"LIS Length: {length}, Sequence: {sequence}") # 6, [10, 22, 33, 50, 60, 80]</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: Can an LCS string be non-unique?</summary>
+              <p><strong>Answer:</strong> Yes. For strings $X = \\text{"ABCBDAB"}$ and $Y = \\text{"BDCABA"}$, the maximum length is 4, but there are multiple valid common subsequences of length 4: <code>"BCBA"</code>, <code>"BDAB"</code>, and <code>"BCAB"</code>. All are equally optimal.</p>
+            </details>
+            <details>
+              <summary>Medium: How does LIS relate directly to LCS?</summary>
+              <p><strong>Answer:</strong> LIS can be transformed into LCS in $O(n \\log n)$ time! If you take input array $A$, make a copy, sort it, and remove duplicates to get $A_{sorted}$, the Longest Common Subsequence of $A$ and $A_{sorted}$ ($LCS(A, A_{sorted})$) is precisely the Longest Increasing Subsequence of $A$!</p>
+            </details>
+            <details>
+              <summary>Hard: How does the Patience Sorting / Binary Search algorithm solve LIS in $O(n \\log n)$ time?</summary>
+              <p><strong>Answer:</strong> Maintain an array <code>tails</code>, where <code>tails[k]</code> stores the smallest tail of all increasing subsequences of length $k+1$ found so far. For each element $x \\in arr$, use binary search (`bisect_left`) to find its position in <code>tails</code>. If $x$ is larger than all elements in <code>tails</code>, append it. Otherwise, overwrite the first element $\\ge x$. The length of <code>tails</code> at the end is the exact length of the LIS, running in $O(n \\log n)$ time.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>LCS recurrence: if match, $1 + dp[i-1][j-1]$ (diagonal); else $\\max(dp[i-1][j], dp[i][j-1])$.</li>
+              <li>2D Table dimensions: $(m + 1) \\times (n + 1)$, running time $\\Theta(m \\cdot n)$.</li>
+              <li>Backtracking along match diagonals reconstructs the actual string.</li>
+              <li>LIS standard DP runs in $O(n^2)$; patience sorting optimizes it to $O(n \\log n)$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 13: MAXIMUM SUBARRAY SUM (KADANE'S ALGORITHM)
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-13">
+          <h2><span class="topic-num">13</span>Maximum Subarray Sum & Kadane's Algorithm</h2>
+          <p class="topic-subtitle">Evolution from cubic $O(n^3)$ brute force to optimal linear $O(n)$ Dynamic Programming</p>
+
+          <div class="note-box" style="border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="callout-label" style="color: #f472b6;">🎯 Exam Identification Trigger & Mental Model</div>
+            <p><strong>Look for in Exam:</strong> Given an array containing positive and negative numbers. Find a <em>contiguous</em> slice (subarray) $A[i..j]$ that has the maximum possible sum.</p>
+            <p><strong>Core Intuition:</strong> As you walk through the array, at each element $A[i]$, you ask yourself one fundamental question:<br />
+            <em>"Is my accumulated previous subarray sum helping me, or is it dragging me down?"</em><br />
+            If $dp[i-1] > 0$, add $A[i]$ to it ($dp[i] = A[i] + dp[i-1]$). If $dp[i-1] \\le 0$, dump it and start a brand-new subarray at $A[i]$ ($dp[i] = A[i]$).</p>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Kadane's DP Recurrence Relation</div>
+            Let $dp[i]$ be the maximum subarray sum that <strong>must end exactly at index $i$</strong>:
+            $$dp[i] = \\max\\Big(A[i], \\; A[i] + dp[i-1]\\Big) \\quad \\text{with } dp[0] = A[0]$$
+            The global maximum subarray sum is simply the maximum across all ending positions:
+            $$\\text{GlobalMax} = \\max_{0 \\le i < n} dp[i]$$
+          </div>
+
+          <h3>Algorithmic Evolution Hierarchy</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Algorithm</th>
+                <th>Time Complexity</th>
+                <th>Space Complexity</th>
+                <th>Mechanism</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Naive Brute Force</strong></td>
+                <td>$\\Theta(n^3)$</td>
+                <td>$O(1)$</td>
+                <td>Three nested loops: iterates all pairs $(i, j)$ and sums $A[i..j]$ from scratch.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Running Prefix Sum</strong></td>
+                <td>$\\Theta(n^2)$</td>
+                <td>$O(1)$</td>
+                <td>Two nested loops: fixes start $i$, accumulates sum as $j$ increases from $i$ to $n-1$.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Divide & Conquer</strong></td>
+                <td>$\\Theta(n \\log n)$</td>
+                <td>$O(\\log n)$</td>
+                <td>CLRS Chapter 4 method: $T(n) = 2T(n/2) + \\Theta(n)$ via max crossing subarray.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Kadane's Algorithm</strong></td>
+                <td>$\\mathbf{\\Theta(n)}$</td>
+                <td>$\\mathbf{O(1)}$</td>
+                <td>Linear DP keeping rolling <code>current_sum</code> and <code>max_so_far</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Step-by-Step Execution Trace Table</h3>
+          <p>Input Array: <code>A = [-2, 1, -3, 4, -1, 2, 1, -5, 4]</code></p>
+
+          <div class="example">
+            <div class="callout-label">Kadane's Execution Trace with Subarray Indices</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Index $i$</th>
+                  <th>Element $A[i]$</th>
+                  <th>Calculation: $\\max(A[i], A[i] + dp[i-1])$</th>
+                  <th>Current Ending Sum ($dp[i]$)</th>
+                  <th>Global Max Sum</th>
+                  <th>Current Active Subarray</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>0</td><td>$-2$</td><td>Base case: $-2$</td><td>$-2$</td><td>$-2$</td><td><code>[-2]</code></td></tr>
+                <tr><td>1</td><td>$1$</td><td>$\\max(1, 1 + (-2)) = \\max(1, -1) = 1$</td><td>$1$</td><td>$1$</td><td><code>[1]</code></td></tr>
+                <tr><td>2</td><td>$-3$</td><td>$\\max(-3, -3 + 1) = \\max(-3, -2) = -2$</td><td>$-2$</td><td>$1$</td><td><code>[1, -3]</code></td></tr>
+                <tr><td>3</td><td>$4$</td><td>$\\max(4, 4 + (-2)) = \\max(4, 2) = 4$</td><td>$4$</td><td>$4$</td><td><code>[4]</code> (Reset start!)</td></tr>
+                <tr><td>4</td><td>$-1$</td><td>$\\max(-1, -1 + 4) = \\max(-1, 3) = 3$</td><td>$3$</td><td>$4$</td><td><code>[4, -1]</code></td></tr>
+                <tr><td>5</td><td>$2$</td><td>$\\max(2, 2 + 3) = \\max(2, 5) = 5$</td><td>$5$</td><td>$5$</td><td><code>[4, -1, 2]</code></td></tr>
+                <tr><td>6</td><td>$1$</td><td>$\\max(1, 1 + 5) = \\max(1, 6) = \\mathbf{6}$</td><td><strong style="color:var(--def-bd)">6</strong></td><td><strong style="color:var(--def-bd)">6</strong></td><td><code>[4, -1, 2, 1]</code> <span class="badge badge-teal">Max</span></td></tr>
+                <tr><td>7</td><td>$-5$</td><td>$\\max(-5, -5 + 6) = \\max(-5, 1) = 1$</td><td>$1$</td><td>$6$</td><td><code>[4, -1, 2, 1, -5]</code></td></tr>
+                <tr><td>8</td><td>$4$</td><td>$\\max(4, 4 + 1) = \\max(4, 5) = 5$</td><td>$5$</td><td>$6$</td><td><code>[4, -1, 2, 1, -5, 4]</code></td></tr>
+              </tbody>
+            </table>
+            <p><strong>Maximum Subarray Sum:</strong> $\\mathbf{6}$<br />
+            <strong>Optimal Subarray:</strong> <code>[4, -1, 2, 1]</code> (from index 3 to index 6).</p>
+          </div>
+
+          <h3>3 Required Implementations</h3>
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active" onclick="switchCodeTab(this, 'kad-naive')">1. Naive Brute Force (O(n^2))</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'kad-dp')">2. Memoized / Table DP (O(n))</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'kad-opt')">3. Kadane's Space-Optimized (O(1) Space + Indices)</button>
+            </div>
+
+            <div class="code-tab-pane active" id="kad-naive">
+              <pre><code class="language-python"># 1. NAIVE BRUTE FORCE
+# Time: O(n^2) | Space: O(1)
+def max_subarray_naive(arr):
+    n = len(arr)
+    max_sum = float('-inf')
+    best_start, best_end = 0, 0
+    
+    for i in range(n):
+        current_sum = 0
+        for j in range(i, n):
+            current_sum += arr[j]
+            if current_sum > max_sum:
+                max_sum = current_sum
+                best_start = i
+                best_end = j
+                
+    return max_sum, arr[best_start:best_end + 1]
+
+arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+msum, sub = max_subarray_naive(arr)
+print(f"Naive Max Sum: {msum}, Subarray: {sub}") # 6, [4, -1, 2, 1]</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="kad-dp">
+              <pre><code class="language-python"># 2. TABULATION DP ARRAY
+# Time: O(n) | Space: O(n)
+def max_subarray_dp_table(arr):
+    n = len(arr)
+    if n == 0: return 0
+    
+    dp = [0] * n
+    dp[0] = arr[0]
+    
+    for i in range(1, n):
+        dp[i] = max(arr[i], arr[i] + dp[i - 1])
+        
+    return max(dp)
+
+arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+print("DP Table Max Sum:", max_subarray_dp_table(arr)) # 6</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="kad-opt">
+              <pre><code class="language-python"># 3. KADANE'S ALGORITHM (SPACE OPTIMIZED O(1) + TRACKING INDICES)
+# Time: O(n) - Single Pass | Space: O(1) auxiliary memory
+def kadane_optimal(arr):
+    if not arr:
+        return 0, []
+        
+    max_so_far = arr[0]
+    current_max = arr[0]
+    
+    start = 0
+    end = 0
+    temp_start = 0
+    
+    for i in range(1, len(arr)):
+        if arr[i] > current_max + arr[i]:
+            # Previous accumulated sum is negative/harmful: start fresh
+            current_max = arr[i]
+            temp_start = i
+        else:
+            # Continue accumulating
+            current_max += arr[i]
+            
+        if current_max > max_so_far:
+            max_so_far = current_max
+            start = temp_start
+            end = i
+            
+    return max_so_far, arr[start:end + 1]
+
+arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+max_val, best_sub = kadane_optimal(arr)
+print(f"Kadane Optimal Max Sum: {max_val}") # 6
+print(f"Contiguous Subarray: {best_sub}")    # [4, -1, 2, 1]</code></pre>
+            </div>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Exam Practice Questions</div>
+            <details>
+              <summary>Easy: What happens in Kadane's algorithm if all numbers in the array are negative?</summary>
+              <p><strong>Answer:</strong> The algorithm correctly returns the <strong>single least negative number</strong> (the maximum single element in the array). For example, if $arr = [-8, -3, -6, -2, -5]$, Kadane's algorithm initialized with $arr[0]$ will track $\\max(-3, -2) = -2$, selecting the single-element subarray <code>[-2]</code>.</p>
+            </details>
+            <details>
+              <summary>Medium: What is the maximum subarray sum of a circular array?</summary>
+              <p><strong>Answer:</strong> In a circular array, the maximum subarray can either be normal (contiguous in the middle, solved by standard Kadane) OR wrap around the ends. The wrap-around maximum is:
+              $$\\text{WrapMax} = \\text{TotalSum} - \\text{MinimumSubarraySum}$$
+              We run standard Kadane to find the max subarray, and an inverted Kadane to find the min subarray. The answer is $\\max(\\text{StandardMax}, \\; \\text{TotalSum} - \\text{MinSum})$ (unless all numbers are negative, where standard max is returned).</p>
+            </details>
+            <details>
+              <summary>Hard: How does Kadane's algorithm extend to 2D matrices (Maximum Sum Submatrix)?</summary>
+              <p><strong>Answer:</strong> Given an $R \\times C$ matrix, fix two row boundaries $top$ and $bottom$ ($O(R^2)$ pairs). Collapse the 2D values between these rows into a 1D column-sum array of size $C$. Run 1D Kadane's algorithm on this 1D array in $O(C)$ time. The total running time is $O(R^2 \\cdot C)$, reducing the brute force 2D search from $O(R^3 C^3)$ down to $O(R^2 C)$.</p>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+              <li>Kadane's recurrence: $dp[i] = \\max(arr[i], \\; arr[i] + dp[i-1])$.</li>
+              <li>Runs in strictly linear $\\Theta(n)$ time and $O(1)$ auxiliary space.</li>
+              <li>Reset condition: whenever $dp[i-1] < 0$, start a new subarray.</li>
+              <li>Tracks starting and ending indices using <code>temp_start</code>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 14: MASTER CODE CHEATSHEET & EXAM TRIAGE
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-14">
+          <h2><span class="topic-num">14</span>Master Code Cheatsheet & Exam Diagnostic Triage</h2>
+          <p class="topic-subtitle">Instant algorithm recognition matrix and all exam implementations consolidated</p>
+
+          <h3>Instant Exam Algorithm Recognition Triage</h3>
+          <p>
+            When you read a question in tomorrow's DAA Midterm, use this diagnostic matrix to identify the exact algorithm within 5 seconds:
+          </p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Exam Question Pattern / Keywords</th>
+                <th>Instant Choice</th>
+                <th>Time Complexity</th>
+                <th>Core Mental Model</th>
+                <th>Common Student Pitfall</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><em>"Small integer range $0..k$", "Count frequencies", "Preserve order of duplicate keys"</em></td>
+                <td><span class="badge badge-teal">Counting Sort</span></td>
+                <td>$\\Theta(n + k)$</td>
+                <td>Count keys in $C$, compute prefix sums, scan backwards for stability.</td>
+                <td>Do NOT use if $k \\gg n$. Left-to-right scan reverses duplicates!</td>
+              </tr>
+              <tr>
+                <td><em>"Large numbers with $d$ digits", "Phone numbers", "Student roll numbers", "Fixed-length strings"</em></td>
+                <td><span class="badge badge-orange">Radix Sort</span></td>
+                <td>$\\Theta(d(n + b))$</td>
+                <td>Sort column-by-column from Least Significant Digit (LSD) with stable counting sort.</td>
+                <td>Requires strictly stable subroutine; otherwise ties in higher digits get scrambled.</td>
+              </tr>
+              <tr>
+                <td><em>"Floating-point numbers", "Decimals in $[0, 1)$", "Sensor readings uniformly distributed"</em></td>
+                <td><span class="badge badge-blue">Bucket Sort</span></td>
+                <td>Expected $\\Theta(n)$, Worst $\\Theta(n^2)$</td>
+                <td>Scatter into $n$ buckets using $\\lfloor n \\cdot x \\rfloor$, sort buckets with Insertion Sort, gather.</td>
+                <td>Fails to run in linear time if data is clustered rather than uniformly distributed.</td>
+              </tr>
+              <tr>
+                <td><em>"Non-overlapping intervals", "Classroom / meeting room", "Compatible activities", "Maximize events"</em></td>
+                <td><span class="badge badge-teal">Interval Scheduling (Greedy)</span></td>
+                <td>$O(n \\log n)$</td>
+                <td>Sort by <strong>Earliest Finish Time (EFT)</strong>. Picking earliest finish leaves maximum remaining time.</td>
+                <td>Sorting by start time or shortest duration FAILS.</td>
+              </tr>
+              <tr>
+                <td><em>"Lossless compression", "Character frequencies", "Prefix-free binary codes", "Encode string"</em></td>
+                <td><span class="badge badge-purple">Huffman Coding (Greedy)</span></td>
+                <td>$O(n \\log n)$</td>
+                <td>Min-heap: repeatedly merge the two trees with the lowest frequencies. Left=0, Right=1.</td>
+                <td>Codewords must be prefix-free; characters live ONLY at tree leaves.</td>
+              </tr>
+              <tr>
+                <td><em>"Thief can take fractions / parts of items", "Liquid / grain items", "Partial test marks per minute"</em></td>
+                <td><span class="badge badge-amber">Fractional Knapsack (Greedy)</span></td>
+                <td>$O(n \\log n)$</td>
+                <td>Sort items by density ratio $v_i / w_i$ descending. Take full items, then take fraction of last.</td>
+                <td>Greedy FAILS for 0/1 binary knapsack!</td>
+              </tr>
+              <tr>
+                <td><em>"Indivisible items (take all or none)", "Weight limit $W$", "Maximize value without exceeding weight"</em></td>
+                <td><span class="badge badge-red">0/1 Knapsack (DP)</span></td>
+                <td>$O(n \\cdot W)$</td>
+                <td>2D Grid: $dp[i][w] = \\max(dp[i-1][w], \\; v_i + dp[i-1][w - w_i])$.</td>
+                <td>Greedy by ratio fails; must check if capacity fits before reading diagonal.</td>
+              </tr>
+              <tr>
+                <td><em>"Carve steel rod of length $n$", "Reusable cuts", "Piece prices $p_1..p_n$", "Maximize cutting revenue"</em></td>
+                <td><span class="badge badge-teal">Rod Cutting (DP)</span></td>
+                <td>$\\Theta(n^2)$</td>
+                <td>1D Table: $r[j] = \\max_{1 \\le i \\le j}(p_i + r[j - i])$. Track first cuts in $s[j]$.</td>
+                <td>Greedy price-per-inch ($p_i / i$) fails due to leftover remainder pieces.</td>
+              </tr>
+              <tr>
+                <td><em>"Two strings / sequences", "Find longest common characters in order", "DNA alignment", "Diff tool"</em></td>
+                <td><span class="badge badge-blue">LCS (DP)</span></td>
+                <td>$\\Theta(m \\cdot n)$</td>
+                <td>2D Grid: if match $\\rightarrow 1 + dp[i-1][j-1]$ (diagonal); else $\\max(up, left)$.</td>
+                <td>Subsequence does NOT mean contiguous substring; order matters, gaps allowed.</td>
+              </tr>
+              <tr>
+                <td><em>"Contiguous slice of array with largest sum", "Positive and negative numbers", "Maximum profit window"</em></td>
+                <td><span class="badge badge-teal">Kadane's Algorithm (DP)</span></td>
+                <td>$\\Theta(n)$ time, $O(1)$ space</td>
+                <td>$dp[i] = \\max(A[i], \\; A[i] + dp[i-1])$. If accumulated sum $< 0$, dump it and reset start!</td>
+                <td>All negative numbers: Kadane returns least negative number (not 0).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Consolidated Code Vault (All Midterm Implementations)</h3>
+
+          <div class="code-tab-container">
+            <div class="code-tab-bar">
+              <button class="code-tab-btn active" onclick="switchCodeTab(this, 'all-sort')">Linear Sorting</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'all-greedy')">Greedy Algorithms</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'all-dp1')">DP (Fib, Frog, Knapsack)</button>
+              <button class="code-tab-btn" onclick="switchCodeTab(this, 'all-dp2')">DP (Rod, LCS, Kadane)</button>
+            </div>
+
+            <div class="code-tab-pane active" id="all-sort">
+              <pre><code class="language-python"># ══════════════════════════════════════════════════════════
+# LINEAR SORTING ALGORITHMS
+# ══════════════════════════════════════════════════════════
+
+# 1. COUNTING SORT (STABLE WITH NEGATIVES SUPPORT)
+def counting_sort(arr):
+    if not arr: return []
+    min_v, max_v = min(arr), max(arr)
+    span = max_v - min_v + 1
+    count = [0] * span
+    output = [0] * len(arr)
+    
+    for x in arr: count[x - min_v] += 1
+    for i in range(1, span): count[i] += count[i - 1]
+    for j in range(len(arr) - 1, -1, -1): # Backwards scan for stability!
+        idx = arr[j] - min_v
+        count[idx] -= 1
+        output[count[idx]] = arr[j]
+    return output
+
+# 2. RADIX SORT (LSD - BASE 10)
+def radix_sort(arr):
+    if not arr: return []
+    def _count_sort_exp(a, exp):
+        out = [0] * len(a)
+        cnt = [0] * 10
+        for x in a: cnt[(x // exp) % 10] += 1
+        for i in range(1, 10): cnt[i] += cnt[i - 1]
+        for j in range(len(a) - 1, -1, -1):
+            d = (a[j] // exp) % 10
+            cnt[d] -= 1
+            out[cnt[d]] = a[j]
+        for i in range(len(a)): a[i] = out[i]
+
+    max_val = max(arr)
+    exp = 1
+    while max_val // exp > 0:
+        _count_sort_exp(arr, exp)
+        exp *= 10
+    return arr
+
+# 3. BUCKET SORT (UNIFORM FLOATS IN [0, 1))
+def bucket_sort(arr):
+    n = len(arr)
+    if n <= 1: return arr
+    buckets = [[] for _ in range(n)]
+    for x in arr:
+        idx = min(int(n * x), n - 1)
+        buckets[idx].append(x)
+    res = []
+    for b in buckets:
+        # Insertion sort on bucket
+        for i in range(1, len(b)):
+            key = b[i]; j = i - 1
+            while j >= 0 and b[j] > key:
+                b[j + 1] = b[j]; j -= 1
+            b[j + 1] = key
+        res.extend(b)
+    return res</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="all-greedy">
+              <pre><code class="language-python"># ══════════════════════════════════════════════════════════
+# GREEDY ALGORITHMS
+# ══════════════════════════════════════════════════════════
+
+# 1. INTERVAL SCHEDULING (EARLIEST FINISH TIME)
+def interval_scheduling(activities):
+    # activities: list of (id, start, finish)
+    activities.sort(key=lambda x: x[2]) # Sort by finish time
+    selected = []
+    last_finish = -1
+    for act in activities:
+        if act[1] >= last_finish:
+            selected.append(act)
+            last_finish = act[2]
+    return selected
+
+# 2. HUFFMAN ENCODING
+import heapq
+
+class HNode:
+    def __init__(self, char, freq):
+        self.char, self.freq = char, freq
+        self.left, self.right = None, None
+    def __lt__(self, o): return self.freq < o.freq
+
+def huffman_codes(freq_map):
+    heap = [HNode(c, f) for c, f in freq_map.items()]
+    heapq.heapify(heap)
+    while len(heap) > 1:
+        n1 = heapq.heappop(heap); n2 = heapq.heappop(heap)
+        parent = HNode(None, n1.freq + n2.freq)
+        parent.left, parent.right = n1, n2
+        heapq.heappush(heap, parent)
+    codes = {}
+    def _dfs(root, curr):
+        if not root: return
+        if root.char: codes[root.char] = curr
+        _dfs(root.left, curr + "0")
+        _dfs(root.right, curr + "1")
+    _dfs(heap[0], "")
+    return codes
+
+# 3. FRACTIONAL KNAPSACK
+def fractional_knapsack(capacity, items):
+    # items: list of (value, weight)
+    items.sort(key=lambda x: x[0] / x[1], reverse=True)
+    total_val, cur_w = 0.0, 0.0
+    for v, w in items:
+        if cur_w + w <= capacity:
+            cur_w += w; total_val += v
+        else:
+            total_val += v * ((capacity - cur_w) / w)
+            break
+    return total_val</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="all-dp1">
+              <pre><code class="language-python"># ══════════════════════════════════════════════════════════
+# DYNAMIC PROGRAMMING - PART 1
+# ══════════════════════════════════════════════════════════
+
+# 1. FIBONACCI
+def fib_naive(n):
+    if n <= 1: return max(0, n)
+    return fib_naive(n - 1) + fib_naive(n - 2)
+
+def fib_memo(n, memo={}):
+    if n in memo: return memo[n]
+    if n <= 1: return max(0, n)
+    memo[n] = fib_memo(n - 1, memo) + fib_memo(n - 2, memo)
+    return memo[n]
+
+def fib_tab_space_opt(n):
+    if n <= 1: return max(0, n)
+    p2, p1 = 0, 1
+    for _ in range(2, n + 1):
+        p2, p1 = p1, p1 + p2
+    return p1
+
+# 2. FROG JUMP (MIN ENERGY)
+def frog_naive(i, h):
+    if i <= 0: return 0
+    if i == 1: return abs(h[1] - h[0])
+    return min(frog_naive(i-1, h) + abs(h[i] - h[i-1]),
+               frog_naive(i-2, h) + abs(h[i] - h[i-2]))
+
+def frog_memo(i, h, memo={}):
+    if i in memo: return memo[i]
+    if i <= 0: return 0
+    if i == 1: return abs(h[1] - h[0])
+    memo[i] = min(frog_memo(i-1, h, memo) + abs(h[i] - h[i-1]),
+                  frog_memo(i-2, h, memo) + abs(h[i] - h[i-2]))
+    return memo[i]
+
+def frog_tab_space_opt(h):
+    if len(h) <= 1: return 0
+    p2, p1 = 0, abs(h[1] - h[0])
+    for i in range(2, len(h)):
+        curr = min(p1 + abs(h[i] - h[i-1]), p2 + abs(h[i] - h[i-2]))
+        p2, p1 = p1, curr
+    return p1
+
+# 3. BINARY 0/1 KNAPSACK
+def knap_naive(W, wt, val, n):
+    if n == 0 or W == 0: return 0
+    if wt[n-1] > W: return knap_naive(W, wt, val, n-1)
+    return max(knap_naive(W, wt, val, n-1), val[n-1] + knap_naive(W - wt[n-1], wt, val, n-1))
+
+def knap_memo(W, wt, val, n, memo=None):
+    if memo is None: memo = {}
+    if (n, W) in memo: return memo[(n, W)]
+    if n == 0 or W == 0: return 0
+    if wt[n-1] > W: res = knap_memo(W, wt, val, n-1, memo)
+    else: res = max(knap_memo(W, wt, val, n-1, memo), 
+                    val[n-1] + knap_memo(W - wt[n-1], wt, val, n-1, memo))
+    memo[(n, W)] = res
+    return res
+
+def knap_tab_2d_and_backtrack(W, wt, val):
+    n = len(wt)
+    dp = [[0]*(W+1) for _ in range(n+1)]
+    for i in range(1, n+1):
+        for w in range(1, W+1):
+            if wt[i-1] <= w:
+                dp[i][w] = max(dp[i-1][w], val[i-1] + dp[i-1][w - wt[i-1]])
+            else: dp[i][w] = dp[i-1][w]
+    # Backtrack chosen items
+    chosen, cur_w = [], W
+    for i in range(n, 0, -1):
+        if dp[i][cur_w] != dp[i-1][cur_w]:
+            chosen.append(i-1); cur_w -= wt[i-1]
+    return dp[n][W], chosen
+
+def knap_tab_1d(W, wt, val):
+    dp = [0] * (W + 1)
+    for i in range(len(wt)):
+        for w in range(W, wt[i] - 1, -1): # Backwards loop is mandatory!
+            dp[w] = max(dp[w], val[i] + dp[w - wt[i]])
+    return dp[W]</code></pre>
+            </div>
+
+            <div class="code-tab-pane" id="all-dp2">
+              <pre><code class="language-python"># ══════════════════════════════════════════════════════════
+# DYNAMIC PROGRAMMING - PART 2
+# ══════════════════════════════════════════════════════════
+
+# 1. ROD CUTTING
+def rod_cut_naive(p, n):
+    if n <= 0: return 0
+    return max(p[i] + rod_cut_naive(p, n - i) for i in range(1, n + 1))
+
+def rod_cut_memo(p, n, memo=None):
+    if memo is None: memo = [-1] * (n + 1)
+    if n <= 0: return 0
+    if memo[n] >= 0: return memo[n]
+    memo[n] = max(p[i] + rod_cut_memo(p, n - i, memo) for i in range(1, n + 1))
+    return memo[n]
+
+def rod_cut_extended_bottom_up(p, n):
+    r, s = [0] * (n + 1), [0] * (n + 1)
+    for j in range(1, n + 1):
+        max_v = -1
+        for i in range(1, j + 1):
+            if max_v < p[i] + r[j - i]:
+                max_v = p[i] + r[j - i]
+                s[j] = i
+        r[j] = max_v
+    # Reconstruct piece lengths
+    cuts, rem = [], n
+    while rem > 0:
+        cuts.append(s[rem]); rem -= s[rem]
+    return r[n], cuts
+
+# 2. LONGEST COMMON SUBSEQUENCE (LCS)
+def lcs_naive(X, Y, m, n):
+    if m == 0 or n == 0: return 0
+    if X[m-1] == Y[n-1]: return 1 + lcs_naive(X, Y, m-1, n-1)
+    return max(lcs_naive(X, Y, m-1, n), lcs_naive(X, Y, m, n-1))
+
+def lcs_memo(X, Y, m, n, memo=None):
+    if memo is None: memo = {}
+    if (m, n) in memo: return memo[(m, n)]
+    if m == 0 or n == 0: return 0
+    if X[m-1] == Y[n-1]: res = 1 + lcs_memo(X, Y, m-1, n-1, memo)
+    else: res = max(lcs_memo(X, Y, m-1, n, memo), lcs_memo(X, Y, m, n-1, memo))
+    memo[(m, n)] = res
+    return res
+
+def lcs_tab_and_reconstruct(X, Y):
+    m, n = len(X), len(Y)
+    dp = [[0]*(n+1) for _ in range(m+1)]
+    for i in range(1, m+1):
+        for j in range(1, n+1):
+            if X[i-1] == Y[j-1]: dp[i][j] = 1 + dp[i-1][j-1]
+            else: dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    chars, i, j = [], m, n
+    while i > 0 and j > 0:
+        if X[i-1] == Y[j-1]:
+            chars.append(X[i-1]); i -= 1; j -= 1
+        elif dp[i-1][j] >= dp[i][j-1]: i -= 1
+        else: j -= 1
+    chars.reverse()
+    return dp[m][n], "".join(chars)
+
+# 3. MAXIMUM SUBARRAY SUM (KADANE'S ALGORITHM)
+def kadane_optimal(arr):
+    if not arr: return 0, []
+    max_so_far = current_max = arr[0]
+    start = end = temp_start = 0
+    for i in range(1, len(arr)):
+        if arr[i] > current_max + arr[i]:
+            current_max = arr[i]
+            temp_start = i
+        else:
+            current_max += arr[i]
+        if current_max > max_so_far:
+            max_so_far = current_max
+            start = temp_start
+            end = i
+    return max_so_far, arr[start:end+1]</code></pre>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <h4>Pre-Exam Emergency Cram Checklist</h4>
+            <ul>
+              <li><strong>Counting Sort:</strong> $O(n+k)$ $\\rightarrow$ Prefix sums array $C$, scan backwards for stability.</li>
+              <li><strong>Radix Sort:</strong> $O(d(n+b))$ $\\rightarrow$ LSD to MSD, subroutine MUST be stable.</li>
+              <li><strong>Bucket Sort:</strong> Expected $O(n)$ $\\rightarrow$ Continuous floats in $[0, 1)$, uniform distribution.</li>
+              <li><strong>Interval Scheduling:</strong> $O(n \\log n)$ $\\rightarrow$ Sort by Earliest Finish Time (EFT).</li>
+              <li><strong>Huffman Coding:</strong> $O(n \\log n)$ $\\rightarrow$ Min-heap merge lowest two frequencies. Prefix-free leaves.</li>
+              <li><strong>Fractional Knapsack:</strong> $O(n \\log n)$ $\\rightarrow$ Sort by $v_i/w_i$ ratio. Greedy fails for 0/1.</li>
+              <li><strong>0/1 Knapsack:</strong> $O(n \\cdot W)$ $\\rightarrow$ $dp[i][w] = \\max(dp[i-1][w], v_i + dp[i-1][w-w_i])$.</li>
+              <li><strong>Rod Cutting:</strong> $O(n^2)$ $\\rightarrow$ $r[j] = \\max(p_i + r[j-i])$.</li>
+              <li><strong>LCS:</strong> $O(m \\cdot n)$ $\\rightarrow$ Match $= 1 + dp[i-1][j-1]$, Mismatch $= \\max(up, left)$.</li>
+              <li><strong>Kadane's Algorithm:</strong> $O(n)$ time, $O(1)$ space $\\rightarrow$ $dp[i] = \\max(A[i], A[i] + dp[i-1])$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             TOPIC 15: MIDTERM EXAM & QUIZ 2 VAULT (PDF QUESTIONS)
+             ═══════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-15">
+          <h2><span class="topic-num">15</span>Midterm Exam Vault: Past Papers & Quiz 2 All Variants</h2>
+          <p class="topic-subtitle">Direct exam questions and complete step-by-step solutions derived from uploaded course quiz files</p>
+
+          <p>
+            This section transforms the official FAST-NUCES <strong>Quiz 2 Solution Document (All 4 Variants)</strong> into an interactive test bank. 
+            Test your understanding by attempting each question mentally or on scratch paper before clicking to reveal the official rubric and marking breakdown.
+          </p>
+
+          <div class="compare-grid">
+            <div class="compare-card">
+              <h4>Variant 1 Coverage</h4>
+              <p>• Huffman Coding (5 symbols, tree, 210 bits, 'zvxw' encoding)<br />• Activity Selection (8 intervals trace + adding activity N=(4,5))</p>
+            </div>
+            <div class="compare-card">
+              <h4>Variant 2 Coverage</h4>
+              <p>• Counting Sort Stability with paired keys<br />• Comparison lower bound proof & algorithm selection ($10^5$ range, 8-digit IDs, sensor floats)</p>
+            </div>
+            <div class="compare-card">
+              <h4>Variant 3 Coverage</h4>
+              <p>• Greedy Exam Score counterexample (Marks vs Ratio)<br />• Coin Change Greedy vs DP (Failure counterexample [1, 3, 4] for N=6)</p>
+            </div>
+            <div class="compare-card">
+              <h4>Variant 4 Coverage</h4>
+              <p>• Huffman Coding (6 symbols, 234 bits)<br />• Counting sort left-to-right scan pitfall, $n=1000$ with $k=10^6$ operations, negative shift [-50, 50]</p>
+            </div>
+          </div>
+
+          <!-- VARIANT 1 -->
+          <h3>Quiz 2 — Variant 1</h3>
+          <div class="practice-section" style="margin-top: 10px;">
+            <details>
+              <summary><span class="badge badge-purple">Variant 1 - Q1 (5 Marks)</span> Huffman Encoding: Frequencies v=40, w=25, x=20, y=10, z=5</summary>
+              <p><strong>Question Details:</strong> Total 100 characters. Given frequencies: $v = 40, w = 25, x = 20, y = 10, z = 5$.<br />
+              (a) Show all merge steps [2 marks]<br />
+              (b) Construct the Huffman tree and list codes (Smaller child left edge 0, larger right edge 1) [1 mark]<br />
+              (c) Calculate total bits and compare with fixed-length coding [1 mark]<br />
+              (d) Encode the string <code>"zvxw"</code> [1 mark]</p>
+              
+              <div class="example" style="margin: 12px 18px;">
+                <div class="callout-label">Official Solution & Marking Scheme</div>
+                <h4>(a) Merge Steps [2 Marks]:</h4>
+                <ol>
+                  <li>$z(5) + y(10) \\rightarrow 15$</li>
+                  <li>$15 + x(20) \\rightarrow 35$</li>
+                  <li>$w(25) + 35 \\rightarrow 60$</li>
+                  <li>$v(40) + 60 \\rightarrow 100$ (root)</li>
+                </ol>
+
+                <h4>(b) Huffman Codes [1 Mark]:</h4>
+                <table>
+                  <thead>
+                    <tr><th>Symbol</th><th>Frequency</th><th>Codeword</th><th>Length</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>v</code></td><td>40</td><td><code>0</code></td><td>1</td></tr>
+                    <tr><td><code>w</code></td><td>25</td><td><code>10</code></td><td>2</td></tr>
+                    <tr><td><code>x</code></td><td>20</td><td><code>111</code></td><td>3</td></tr>
+                    <tr><td><code>z</code></td><td>5</td><td><code>1100</code></td><td>4</td></tr>
+                    <tr><td><code>y</code></td><td>10</td><td><code>1101</code></td><td>4</td></tr>
+                  </tbody>
+                </table>
+
+                <h4>(c) Total Bits Comparison [1 Mark]:</h4>
+                <p>
+                  • <strong>Huffman Bits:</strong> $40(1) + 25(2) + 20(3) + 10(4) + 5(4) = 40 + 50 + 60 + 40 + 20 = \\mathbf{210\\text{ bits}}$.<br />
+                  • <strong>Fixed-length Code:</strong> 5 characters require $\\lceil \\log_2 5 \\rceil = 3$ bits each. Total $= 100 \\times 3 = \\mathbf{300\\text{ bits}}$.<br />
+                  • <strong>Bandwidth Savings:</strong> $300 - 210 = \\mathbf{90\\text{ bits}}$ ($30\\%$ saved).
+                </p>
+
+                <h4>(d) Encode string <code>zvxw</code> [1 Mark]:</h4>
+                <p>
+                  $z = 1100, \\; v = 0, \\; x = 111, \\; w = 10$<br />
+                  Encoded output: <code>1100 0 111 10</code> = <strong><code>1100011110</code></strong>.
+                </p>
+              </div>
+            </details>
+
+            <details>
+              <summary><span class="badge badge-teal">Variant 1 - Q2 (5 Marks)</span> Activity Selection: EFT Greedy & Adding Activity N=(4, 5)</summary>
+              <p><strong>Question Details:</strong><br />
+              Activities: $A_1(1,3), A_2(2,4), A_3(3,6), A_4(5,7), A_5(6,8), A_6(7,10), A_7(9,11), A_8(10,12)$.<br />
+              (a) Trace Earliest-Finish-Time algorithm [3 marks]<br />
+              (b) What happens if a new activity $N = (4, 5)$ is added? Show new schedule [1 mark]<br />
+              (c) Explain why Earliest Finish Time guarantees optimality [1 mark]</p>
+
+              <div class="example" style="margin: 12px 18px;">
+                <div class="callout-label">Official Solution & Marking Scheme</div>
+                <h4>(a) Earliest-Finish-Time Trace [3 Marks]:</h4>
+                <table>
+                  <thead>
+                    <tr><th>Activity</th><th>Decision</th><th>Reason</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>$A_1(1,3)$</td><td><span class="badge badge-teal">Accept</span></td><td>First activity; last finish = 3</td></tr>
+                    <tr><td>$A_2(2,4)$</td><td><span class="badge badge-red">Reject</span></td><td>Conflict: $2 < 3$</td></tr>
+                    <tr><td>$A_3(3,6)$</td><td><span class="badge badge-teal">Accept</span></td><td>Compatible: $3 \\ge 3$; last finish = 6</td></tr>
+                    <tr><td>$A_4(5,7)$</td><td><span class="badge badge-red">Reject</span></td><td>Conflict: $5 < 6$</td></tr>
+                    <tr><td>$A_5(6,8)$</td><td><span class="badge badge-teal">Accept</span></td><td>Compatible: $6 \\ge 6$; last finish = 8</td></tr>
+                    <tr><td>$A_6(7,10)$</td><td><span class="badge badge-red">Reject</span></td><td>Conflict: $7 < 8$</td></tr>
+                    <tr><td>$A_7(9,11)$</td><td><span class="badge badge-teal">Accept</span></td><td>Compatible: $9 \\ge 8$; last finish = 11</td></tr>
+                    <tr><td>$A_8(10,12)$</td><td><span class="badge badge-red">Reject</span></td><td>Conflict: $10 < 11$</td></tr>
+                  </tbody>
+                </table>
+                <p><strong>Selected Set:</strong> $\\{A_1, A_3, A_5, A_7\\}$ (Size: <strong>4 activities</strong>).</p>
+
+                <h4>(b) Add Activity $N = (4, 5)$ [1 Mark]:</h4>
+                <p>New finish order: $A_1(1,3), A_2(2,4), N(4,5), A_3(3,6), A_4(5,7), A_5(6,8), A_6(7,10), A_7(9,11), A_8(10,12)$.</p>
+                <p>Decisions: $A_1$ (Accept, f=3) $\\rightarrow A_2$ (Reject) $\\rightarrow N$ (Accept, f=5) $\\rightarrow A_3$ (Reject) $\\rightarrow A_4$ (Accept, f=7) $\\rightarrow A_5$ (Reject) $\\rightarrow A_6$ (Accept, f=10) $\\rightarrow A_7$ (Reject) $\\rightarrow A_8$ (Accept, f=12).<br />
+                <strong>New Selected Set:</strong> $\\{A_1, N, A_4, A_6, A_8\\}$ (Size: <strong>5 activities</strong>!).</p>
+
+                <h4>(c) Explanation [1 Mark]:</h4>
+                <p>Choosing the activity that finishes earliest leaves the maximum remaining time available on the resource, allowing the largest number of subsequent compatible activities to be scheduled.</p>
+              </div>
+            </details>
+          </div>
+
+          <!-- VARIANT 2 -->
+          <h3>Quiz 2 — Variant 2</h3>
+          <div class="practice-section" style="margin-top: 10px;">
+            <details>
+              <summary><span class="badge badge-orange">Variant 2 - Q1 (5 Marks)</span> Counting Sort on Pairs: Count Array, Output Array & Stability Proof</summary>
+              <p><strong>Question Details:</strong><br />
+              Given input $A = [(2,p), (0,q), (2,r), (1,s), (0,t), (2,u), (1,v)]$ with keys in range $0..2$ ($k = 2$).<br />
+              (a) Show Count array $C$ after frequency count and after prefix sums [2 marks]<br />
+              (b) Trace the step-by-step right-to-left placement into output array $B$ [2 marks]<br />
+              (c) Prove that the sorting result is stable [1 mark]</p>
+
+              <div class="example" style="margin: 12px 18px;">
+                <div class="callout-label">Official Solution & Marking Scheme</div>
+                <h4>(a) Count Array $C$ [2 Marks]:</h4>
+                <p>
+                  • After frequency counting: Key 0 appears 2 times, Key 1 appears 2 times, Key 2 appears 3 times $\\rightarrow$ <code>C = [2, 2, 3]</code>.<br />
+                  • After prefix sums: $C[0] = 2, \\; C[1] = 2+2=4, \\; C[2] = 4+3=7 \\rightarrow$ <code>C = [2, 4, 7]</code>.
+                </p>
+
+                <h4>(b) Output Array $B$ Placement (Right-to-Left Scan) [2 Marks]:</h4>
+                <table>
+                  <thead>
+                    <tr><th>Element Scanned</th><th>Key</th><th>Position in $B$ ($C[key]$)</th><th>Updated $C$</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>(1, v)</code></td><td>1</td><td>4</td><td><code>[2, 3, 7]</code></td></tr>
+                    <tr><td><code>(2, u)</code></td><td>2</td><td>7</td><td><code>[2, 3, 6]</code></td></tr>
+                    <tr><td><code>(0, t)</code></td><td>0</td><td>2</td><td><code>[1, 3, 6]</code></td></tr>
+                    <tr><td><code>(1, s)</code></td><td>1</td><td>3</td><td><code>[1, 2, 6]</code></td></tr>
+                    <tr><td><code>(2, r)</code></td><td>2</td><td>6</td><td><code>[1, 2, 5]</code></td></tr>
+                    <tr><td><code>(0, q)</code></td><td>0</td><td>1</td><td><code>[0, 2, 5]</code></td></tr>
+                    <tr><td><code>(2, p)</code></td><td>2</td><td>5</td><td><code>[0, 2, 4]</code></td></tr>
+                  </tbody>
+                </table>
+                <p><strong>Resulting Output Array $B$:</strong> <code>[(0,q), (0,t), (1,s), (1,v), (2,p), (2,r), (2,u)]</code>.</p>
+
+                <h4>(c) Stability Proof [1 Mark]:</h4>
+                <p>Elements with identical keys strictly preserve their original relative order from the input:
+                <br />• Key 0: <code>q</code> appears before <code>t</code> in both input and output.
+                <br />• Key 1: <code>s</code> appears before <code>v</code> in both input and output.
+                <br />• Key 2: <code>p, r, u</code> appears in identical order in both input and output.
+                <br />Hence, the sort is strictly <strong>stable</strong>.</p>
+              </div>
+            </details>
+
+            <details>
+              <summary><span class="badge badge-blue">Variant 2 - Q2 (5 Marks)</span> Comparison Lower Bound & Algorithm Selection Scenarios</summary>
+              <p><strong>Question Details:</strong><br />
+              (a) Explain the $\\Omega(n \\log n)$ comparison-sort lower bound and why counting sort is not bounded by it [2 marks]<br />
+              (b) Choose the most suitable algorithm and state time complexity for: [3 marks]<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;i. $n = 10^5$ integers in the range $0..999$<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;ii. $n = 10^6$ student IDs, each with 8 decimal digits<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;iii. $n = 10^5$ sensor readings, uniformly distributed in $[0, 100)$</p>
+
+              <div class="example" style="margin: 12px 18px;">
+                <div class="callout-label">Official Solution & Marking Scheme</div>
+                <h4>(a) Comparison-Sort Lower Bound [2 Marks]:</h4>
+                <p>
+                  The $\\Omega(n \\log n)$ lower bound applies solely to comparison-based sorts, which decide order by comparing pairs of elements (modeled as binary decision trees of height $\\ge \\log_2(n!)$). Counting sort does not compare elements with one another; it uses key values directly as array indices to count frequencies. Thus, it bypasses the comparison decision tree model and achieves $\\Theta(n + k)$ without contradiction.
+                </p>
+
+                <h4>(b) Algorithm Selection [3 Marks]:</h4>
+                <p>
+                  <strong>i. $n = 10^5$ integers in range $0..999$:</strong><br />
+                  • Algorithm: <strong>Counting Sort</strong>.<br />
+                  • Time: $\\Theta(n + k) = \\Theta(10^5 + 1000) = \\Theta(n)$.<br />
+                  • Reason: Range $k = 1000$ is much smaller than $n = 10^5$.
+                </p>
+                <p>
+                  <strong>ii. $n = 10^6$ student IDs, 8 decimal digits:</strong><br />
+                  • Algorithm: <strong>Radix Sort</strong>.<br />
+                  • Time: $\\Theta(d(n + b)) = \\Theta(8(10^6 + 10)) = \\Theta(n)$.<br />
+                  • Reason: Counting sort would require an impractical array of size $10^8$. Radix sort sorts digit-by-digit in 8 passes using base 10.
+                </p>
+                <p>
+                  <strong>iii. $n = 10^5$ sensor readings uniformly distributed in $[0, 100)$:</strong><br />
+                  • Algorithm: <strong>Bucket Sort</strong>.<br />
+                  • Expected Time: $\\Theta(n)$.<br />
+                  • Reason: Readings are continuous floating-point numbers. Uniform distribution guarantees $O(1)$ elements per bucket on average.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <!-- VARIANT 3 -->
+          <h3>Quiz 2 — Variant 3</h3>
+          <div class="practice-section" style="margin-top: 10px;">
+            <details>
+              <summary><span class="badge badge-amber">Variant 3 - Q1 (4 Marks)</span> Greedy Exam Score Allocation: Maximum Marks vs Ratio Counterexample</summary>
+              <p><strong>Question Details:</strong> Will prioritizing problems with maximum marks always give an optimal solution? Provide a counterexample and state the optimal strategy. [4 marks]</p>
+
+              <div class="example" style="margin: 12px 18px;">
+                <div class="callout-label">Official Solution & Marking Scheme</div>
+                <h4>Answer & Counterexample:</h4>
+                <p><strong>No.</strong> Prioritizing problems with maximum total marks fails because a high-mark question may require an enormous amount of time. Since partial attempts earn proportional partial marks (analogous to the Fractional Knapsack problem), the correct greedy choice is <strong>marks per minute</strong> (density ratio), not total marks.</p>
+
+                <h4>Formal Counterexample:</h4>
+                <ul>
+                  <li>Total Time: $T = 30$ minutes</li>
+                  <li>Questions: $N = 2$</li>
+                  <li>Marks: $M = [100, 90]$</li>
+                  <li>Expected Time: $E\\_Time = [30, 10]$</li>
+                </ul>
+
+                <h4>Approach 1: Greedy by Maximum Marks</h4>
+                <p>Select Q1 ($100$ marks, $30$ minutes). All 30 minutes are consumed. Q2 cannot be attempted.<br />
+                <strong>Total Score:</strong> $\\mathbf{100\\text{ marks}}$.</p>
+
+                <h4>Approach 2: Optimal Ratio Approach (Marks per Minute)</h4>
+                <ul>
+                  <li>Q1 Ratio: $100 / 30 = 3.33\\text{ marks/min}$.</li>
+                  <li>Q2 Ratio: $90 / 10 = \\mathbf{9.0\\text{ marks/min}}$.</li>
+                  <li>Attempt Q2 first: 10 minutes spent $\\rightarrow 90$ marks.</li>
+                  <li>Spend remaining 20 minutes on Q1: $(20/30) \\times 100 = 66.67$ marks.</li>
+                  <li><strong>Total Optimal Score:</strong> $90 + 66.67 = \\mathbf{156.67\\text{ marks}}$.</li>
+                </ul>
+                <p><strong>Conclusion:</strong> Greedy by max marks yields $100$, whereas optimal ratio yields $156.67$. Sorting by marks/time ratio is optimal.</p>
+              </div>
+            </details>
+
+            <details>
+              <summary><span class="badge badge-red">Variant 3 - Q2 (6 Marks)</span> Coin Denomination: Greedy Implementation, Counterexample & DP Solution</summary>
+              <p><strong>Question Details:</strong><br />
+              Task 1: Implement greedy coin change code for amount $N$ [3 marks]<br />
+              Task 2: Provide a test case where greedy coin change fails [2 marks]<br />
+              Task 3: State the approach that always finds the optimal solution [1 mark]</p>
+
+              <div class="example" style="margin: 12px 18px;">
+                <div class="callout-label">Official Solution & Marking Scheme</div>
+                <h4>Task 1: Greedy Coin Change Implementation [3 Marks]:</h4>
+                <pre><code class="language-python">def greedy_coin_change(N, denominations):
+    denominations = sorted(denominations, reverse=True)
+    coins_used = []
+    for coin in denominations:
+        while N >= coin:
+            N -= coin
+            coins_used.append(coin)
+    if N != 0:
+        return None # Amount cannot be formed
+    return coins_used
+
+coins = greedy_coin_change(27, [1, 2, 5, 10])
+print("Minimum coins required =", len(coins)) # 4
+print("Coins used =", coins)                   # [10, 10, 5, 2]</code></pre>
+
+                <h4>Task 2: Test Case Where Greedy Fails [2 Marks]:</h4>
+                <p>
+                  • <strong>Input:</strong> Target Amount $N = 6$, Denominations $= [1, 3, 4]$.<br />
+                  • <strong>Greedy Execution:</strong> Picks largest coin $\\le 6$, which is $4$ (remaining $= 2$). Then picks $1$, then $1$.<br />
+                  &nbsp;&nbsp;Greedy Coins: <code>[4, 1, 1]</code> $\\rightarrow$ <strong>3 coins</strong>.<br />
+                  • <strong>Optimal Solution:</strong> Pick two 3-unit coins: <code>[3, 3]</code> $\\rightarrow$ <strong>2 coins</strong>.<br />
+                  Greedy uses 3 coins instead of the optimal 2, so greedy fails.
+                </p>
+
+                <h4>Task 3: Dynamic Programming Approach [1 Mark]:</h4>
+                <p>
+                  Use Dynamic Programming, which evaluates all coin combinations:<br />
+                  • Base case: $dp[0] = 0$, and $dp[i] = \\infty$ for $i \\ge 1$.<br />
+                  • Recurrence: $dp[i] = 1 + \\min_{c \\le i}(dp[i - c])$ over all coin denominations $c$.<br />
+                  • Running Time: $O(N \\times \\text{number of coins})$. Guaranteed to find the true minimum.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <!-- VARIANT 4 -->
+          <h3>Quiz 2 — Variant 4</h3>
+          <div class="practice-section" style="margin-top: 10px;">
+            <details>
+              <summary><span class="badge badge-purple">Variant 4 - Q1 (5 Marks)</span> Huffman Encoding: Symbols a, b, c, d, e, f (6 Symbols Trace)</summary>
+              <p><strong>Question Details:</strong> Symbols: $a=8, b=3, c=27, d=12, e=15, f=35$.<br />
+              (a) Show all merge steps [2 marks]<br />
+              (b) List codes and tree [2 marks]<br />
+              (c) Bit comparison with fixed-length coding [1 mark]</p>
+
+              <div class="example" style="margin: 12px 18px;">
+                <div class="callout-label">Official Solution & Marking Scheme</div>
+                <h4>(a) Merge Steps [2 Marks]:</h4>
+                <p>Initial nodes sorted: $b(3), a(8), d(12), e(15), c(27), f(35)$.</p>
+                <ol>
+                  <li>$b(3) + a(8) \\rightarrow 11$</li>
+                  <li>$11 + d(12) \\rightarrow 23$</li>
+                  <li>$e(15) + 23 \\rightarrow 38$</li>
+                  <li>$c(27) + f(35) \\rightarrow 62$</li>
+                  <li>$38 + 62 \\rightarrow 100$ (root)</li>
+                </ol>
+
+                <h4>(b) Huffman Codes [2 Marks]:</h4>
+                <table>
+                  <thead>
+                    <tr><th>Symbol</th><th>Frequency</th><th>Codeword</th><th>Length</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>a</code></td><td>8</td><td><code>0101</code></td><td>4</td></tr>
+                    <tr><td><code>b</code></td><td>3</td><td><code>0100</code></td><td>4</td></tr>
+                    <tr><td><code>c</code></td><td>27</td><td><code>10</code></td><td>2</td></tr>
+                    <tr><td><code>d</code></td><td>12</td><td><code>011</code></td><td>3</td></tr>
+                    <tr><td><code>e</code></td><td>15</td><td><code>00</code></td><td>2</td></tr>
+                    <tr><td><code>f</code></td><td>35</td><td><code>11</code></td><td>2</td></tr>
+                  </tbody>
+                </table>
+
+                <h4>(c) Bit Comparison [1 Mark]:</h4>
+                <p>
+                  • <strong>Huffman Bits:</strong> $8(4) + 3(4) + 27(2) + 12(3) + 15(2) + 35(2) = 32 + 12 + 54 + 36 + 30 + 70 = \\mathbf{234\\text{ bits}}$.<br />
+                  • <strong>Fixed-length Code (3 bits):</strong> $100 \\times 3 = \\mathbf{300\\text{ bits}}$.<br />
+                  • <strong>Savings:</strong> $300 - 234 = \\mathbf{66\\text{ bits}}$ saved.
+                </p>
+              </div>
+            </details>
+
+            <details>
+              <summary><span class="badge badge-orange">Variant 4 - Q2 (5 Marks)</span> Counting Sort Nuances: Left-to-Right Scan, $k=10^6$ Ops & Negative Shift</summary>
+              <p><strong>Question Details:</strong><br />
+              (a) What happens if the placement phase scans left to right instead of right to left? Why does it matter? [2 marks]<br />
+              (b) Estimate operations for $n = 1000$, keys in $0..10^6$ for Counting Sort vs Comparison Sort [2 marks]<br />
+              (c) How do you sort integers in the range $[-50, 50]$ using Counting Sort? [1 mark]</p>
+
+              <div class="example" style="margin: 12px 18px;">
+                <div class="callout-label">Official Solution & Marking Scheme</div>
+                <h4>(a) Left-to-Right Scan Pitfall [2 Marks]:</h4>
+                <p>
+                  • <strong>What happens:</strong> Scanning left-to-right places equal-key elements in reverse relative order, destroying algorithm stability.<br />
+                  • <strong>Why:</strong> The first duplicate encountered receives the highest available index ($C[key]$). As $C[key]$ decrements, subsequent duplicates are placed in lower indices.<br />
+                  • <strong>Why it matters:</strong> Counting Sort is the core subroutine in Radix Sort. If Counting Sort is not stable, the correct relative ordering established by previous digit passes is scrambled and corrupted.
+                </p>
+
+                <h4>(b) Operation Estimate ($n = 1000, k = 10^6$) [2 Marks]:</h4>
+                <p>
+                  • <strong>Counting Sort:</strong> $O(n + k) = 1000 + 10^6 \\approx \\mathbf{1,001,000\\text{ operations}}$.<br />
+                  • <strong>Comparison Sort:</strong> $n \\log_2 n = 1000 \\times \\log_2(1000) \\approx 1000 \\times 10 = \\mathbf{10,000\\text{ operations}}$.<br />
+                  • <strong>Conclusion:</strong> Comparison sort is roughly <strong>$100\\times$ faster</strong> because the key range $k$ is huge compared to the number of elements $n$.
+                </p>
+
+                <h4>(c) Sorting Integers in $[-50, 50]$ [1 Mark]:</h4>
+                <p>
+                  Use an offset shift of $+50$ to map $[-50, 50]$ to the non-negative index range $[0, 100]$:
+                  $$\\text{index} = x + 50$$
+                  Allocate a count array of size $101$. Apply standard Counting Sort. When outputting elements to $B$, subtract $50$ from each value to restore the original negative and positive integers.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="summary-box">
+            <h4>Quiz 2 Key Exam Formula Summary</h4>
+            <ul>
+              <li><strong>Huffman Total Bits:</strong> $\\sum f_i \\cdot \\text{depth}_i$ vs Fixed Bits $N \\cdot \\lceil \\log_2 |\\Sigma| \\rceil$.</li>
+              <li><strong>Interval Scheduling:</strong> Sort by finish time $f_i$ ascending; accept if $s_i \\ge last\\_finish$.</li>
+              <li><strong>Counting Sort Stability:</strong> Mandatory right-to-left scan; offset index $= x - min\\_val$.</li>
+              <li><strong>Greedy Exam Score:</strong> Maximize $marks / time$ ratio (Fractional Knapsack); max marks alone fails.</li>
+              <li><strong>Coin Change:</strong> Greedy fails for general denominations like $[1, 3, 4]$; DP gives true minimum in $O(N \\times \\text{coins})$.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+      <!-- end module-container -->
+
+      <!-- ═══════════════════════════════════════════════════════
+           BOTTOM NAVIGATION
+           ═══════════════════════════════════════════════════════ -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })"
+      aria-label="Back to top"
+    >
+      ↑
+    </button>
+
+    <script>
+      // ── List of All 15 Midterm Topics ────────────────────────
+      const topics = [
+        "topic-1", "topic-2", "topic-3", "topic-4", "topic-5",
+        "topic-6", "topic-7", "topic-8", "topic-9", "topic-10",
+        "topic-11", "topic-12", "topic-13", "topic-14", "topic-15"
+      ];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\\d+\\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) return h2.textContent.replace(numEl.textContent, '').trim();
+            return h2.textContent.replace(/^\\d+\\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        const mc = document.getElementById("main-content");
+        if (mc) mc.scrollTo({ top: 0, behavior: "smooth" });
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise();
+        }
+
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling, c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          if (c) c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          if (c) c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      // Interactive Code Tab Switcher
+      function switchCodeTab(btn, paneId) {
+        const container = btn.closest('.code-tab-container');
+        if (!container) return;
+        container.querySelectorAll('.code-tab-btn').forEach(b => b.classList.remove('active'));
+        container.querySelectorAll('.code-tab-pane').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const pane = container.querySelector('#' + paneId);
+        if (pane) pane.classList.add('active');
+      }
+
+      // Initialise
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      if (mc && bb) {
+        mc.addEventListener("scroll", () => {
+          bb.style.display = mc.scrollTop > 300 ? "flex" : "none";
+        });
+      }
+    </script>
+  </body>
+</html>
