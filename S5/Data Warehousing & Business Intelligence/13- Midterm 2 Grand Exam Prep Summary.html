@@ -1,0 +1,1492 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DW &amp; BI — Midterm 2 Grand Exam Prep Summary</title>
+    <meta
+      name="description"
+      content="Comprehensive high-yield revision notes for Midterm 2: ETL Architecture, Join Techniques & Cost Evaluation, Indexing Mathematics (Single, Combined, Bitmap, Composite, Clustered), and Grand Summary Cheat Sheet."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+      .source-citation {
+        background: rgba(217, 119, 87, 0.08);
+        border-left: 3px solid var(--ac);
+        padding: 8px 14px;
+        border-radius: 0 6px 6px 0;
+        font-size: 0.82rem;
+        color: var(--mt);
+        margin-bottom: 20px;
+        line-height: 1.5;
+      }
+      .source-citation strong { color: var(--ac); }
+
+      .math-box {
+        background: #111114;
+        border: 1px solid #27272a;
+        border-left: 4px solid var(--ac);
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 16px 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.88rem;
+        color: #e4e4e7;
+        overflow-x: auto;
+        line-height: 1.6;
+      }
+      .math-box .math-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--ac);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .math-box .formula { color: #38bdf8; font-weight: 600; }
+      .math-box .highlight { color: #f87171; font-weight: 700; }
+      .math-box .good { color: #4ade80; font-weight: 700; }
+      .math-box .comment { color: #a1a1aa; font-style: italic; }
+
+      .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 0.85rem;
+      }
+      .styled-table th {
+        background: #1a1a20;
+        color: var(--ac);
+        text-align: left;
+        padding: 10px 14px;
+        border-bottom: 2px solid #2d2d35;
+        font-weight: 600;
+      }
+      .styled-table td {
+        padding: 10px 14px;
+        border-bottom: 1px solid #222228;
+        color: var(--tx);
+        vertical-align: top;
+      }
+      .styled-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+      .card-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .card-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 14px;
+        margin: 16px 0;
+      }
+      .sub-card {
+        background: #131317;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 14px 16px;
+      }
+      .sub-card h4 {
+        margin: 0 0 8px 0;
+        color: var(--ac);
+        font-size: 0.92rem;
+      }
+
+      .badge-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-right: 6px;
+      }
+      .badge-etl { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+      .badge-join { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+      .badge-index { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+     ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing &amp; BI</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./1- Introduction to DW.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">01</span>Introduction to DW</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-1"><span class="nav-num">01</span>What is a Data Warehouse?</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-2"><span class="nav-num">02</span>Source Data Types</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-3"><span class="nav-num">03</span>Target System Qualities</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-4"><span class="nav-num">04</span>Data Staging &amp; ETL</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-5"><span class="nav-num">05</span>DW Building Blocks &amp; Components</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-6"><span class="nav-num">06</span>Data Warehouse vs Data Marts</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-7"><span class="nav-num">07</span>Business Intelligence (BI)</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-8"><span class="nav-num">08</span>Why is DW Hard? &amp; Scalability</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./2- Quiz Prep - Intro to DW.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">02</span>Quiz Prep: Intro to DW</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-1"><span class="nav-num">01</span>Chapter 1: The Compelling Need for Data Warehousing</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-2"><span class="nav-num">02</span>Chapter 2: Data Warehouse Building Blocks</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-3"><span class="nav-num">03</span>Chapter 1 &amp; 2 Review Questions</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-4"><span class="nav-num">04</span>Practice MCQs &amp; Matching Exercises</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./3- High Performance DSS Database Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">03</span>Logical &amp; Physical Modeling</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-1"><span class="nav-num">01</span>Review of Normalization (Database 101)</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-2"><span class="nav-num">02</span>Pre-join Denormalization</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-3"><span class="nav-num">03</span>Column Replication or Movement</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-4"><span class="nav-num">04</span>Pre-aggregation</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./4- Quiz Prep - DSS Database Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">04</span>Quiz Prep: DSS Design</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./4- Quiz Prep - DSS Database Design.html#topic-1"><span class="nav-num">01</span>Database Design & Normalization</a></li>
+            <li><a class="nav-cross-link" href="./4- Quiz Prep - DSS Database Design.html#topic-2"><span class="nav-num">02</span>Denormalization Techniques</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./5- OLAP Implementation Techniques.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">05</span>OLAP Techniques</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-1"><span class="nav-num">01</span>OLAP Framework &amp; Decision Support</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-2"><span class="nav-num">02</span>Multidimensional Analysis &amp; Cubes</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-3"><span class="nav-num">03</span>OLAP Operations</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-4"><span class="nav-num">04</span>MOLAP vs ROLAP vs HOLAP vs DOLAP</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-5"><span class="nav-num">05</span>Star Schema Design &amp; Aggregate Fact Tables</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-6"><span class="nav-num">06</span>Topic Summary &amp; Additional Practice</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./6- Dimensional Modeling.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">06</span>Dimensional Modeling</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-1"><span class="nav-num">01</span>Principles of Dimensional Modeling</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-2"><span class="nav-num">02</span>Fact Tables &#8212; Deep Dive</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-3"><span class="nav-num">03</span>Dimension Tables &#8212; Deep Dive</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-4"><span class="nav-num">04</span>Natural vs. Surrogate Keys</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-5"><span class="nav-num">05</span>Slowly Changing Dimensions (SCD)</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-6"><span class="nav-num">06</span>Snowflake Schema vs. Star Schema</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-7"><span class="nav-num">07</span>Physical Design for ROLAP Deployment</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-8"><span class="nav-num">08</span>Topic Summary &amp; Practice Questions</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./7- Solved Sample Midterm.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">07</span>Solved Sample Midterm</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-1"><span class="nav-num">01</span>Sample Paper &amp; Instructions</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-2"><span class="nav-num">02</span>Q1 &#8212; Short Answer (15 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-3"><span class="nav-num">03</span>Q2 &#8212; Star Schema Design (10 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-4"><span class="nav-num">04</span>Q3 &#8212; Cardinality &amp; Aggregation (8 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-5"><span class="nav-num">05</span>Q4 &#8212; Pre-Join Denormalization (7 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-6"><span class="nav-num">06</span>Past Paper Analysis &amp; Watchlist</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./8- Dimensional Modeling Concepts.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">08</span>Dimensional Modeling Concepts</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-1"><span class="nav-num">01</span>Dimensional Modeling Basics</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-2"><span class="nav-num">02</span>Star Schema vs. Snowflake Schema vs. Hybrid</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-3"><span class="nav-num">03</span>Factless Fact Table</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-4"><span class="nav-num">04</span>Multi-Fact Star Schema (Families of Stars)</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-5"><span class="nav-num">05</span>Shared &amp; Conforming Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-6"><span class="nav-num">06</span>Multi Star Schema &amp; Degenerate Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-7"><span class="nav-num">07</span>Junk Dimension</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-8"><span class="nav-num">08</span>Multi-Flavor Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-9"><span class="nav-num">09</span>Natural vs. Surrogate Key Designs</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-10"><span class="nav-num">10</span>Slowly Changing Dimensions (SCD 1, 2, 3)</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-11"><span class="nav-num">11</span>Rapidly Changing (Large) Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-12"><span class="nav-num">12</span>Additivity of Measures: Fully, Semi, Non-Additive</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-13"><span class="nav-num">13</span>Aggregate Fact Tables &amp; N-Way Aggregates</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-14"><span class="nav-num">14</span>Snapshot &amp; Transaction Fact Tables</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-15"><span class="nav-num">15</span>Core and Custom Fact Tables</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./9- Lab Midterm Prep.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">09</span>Lab Archive (Labs 1–6 Survey)</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-1"><span class="nav-num">01</span>OLTP vs DSS vs DW</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-2"><span class="nav-num">02</span>PostgreSQL Basics</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-3"><span class="nav-num">03</span>Analytical SQL</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-4"><span class="nav-num">04</span>Power BI</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-5"><span class="nav-num">05</span>Normalization &amp; Denormalization</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-6"><span class="nav-num">06</span>Dimensional Modeling</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-7"><span class="nav-num">07</span>OLAP: ROLLUP, CUBE &amp; Implementation Types</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-8"><span class="nav-num">08</span>DW Implementation &amp; ETL</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-9"><span class="nav-num">09</span>All Labs Concise Master Summary &amp; Cheatsheet</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-10"><span class="nav-num">10</span>Difficult &amp; Tricky Exam Questions (Worked Solutions)</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./10- Query Processing, Join Techniques & ETL.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">10</span>Query Processing &amp; Joins</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-1"><span class="nav-num">01</span>Query Execution Engine Architecture</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-2"><span class="nav-num">02</span>Join Techniques: DSS vs. OLTP &amp; Scalability</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-3"><span class="nav-num">03</span>Sort-Merge vs. Hash Joins &amp; Graefe Duality</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-4"><span class="nav-num">04</span>Query Optimization &amp; Cost Estimation</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-5"><span class="nav-num">05</span>Data Extraction, Transformation &amp; Loading (ETL)</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-6"><span class="nav-num">06</span>Master Comparison Matrix &amp; Practice Quiz</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">11</span>🎯 Lab Midterm — Sequential Guide</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-1"><span class="nav-num">01</span>Master Exam Execution Roadmap</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-2"><span class="nav-num">02</span>Lab 6: Schemas, Staging &amp; Data Audit</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-3"><span class="nav-num">03</span>Lab 6: Dimensions &amp; DimDate Generation</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-4"><span class="nav-num">04</span>Lab 6: Fact Load &amp; Full Reconciliation</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-5"><span class="nav-num">05</span>Lab 4: Star Schema &amp; ROLAP Queries</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-6"><span class="nav-num">06</span>Lab 4: ROLLUP, CUBE &amp; Subtotal Labeling</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-7"><span class="nav-num">07</span>Lab 4: MOLAP Simulation &amp; Architectures</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-8"><span class="nav-num">08</span>Exam Question Types &amp; Viva Traps</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-9"><span class="nav-num">09</span>Master Syntax &amp; Functions Cheatsheet</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./12- Indexing Techniques & Physical Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">12</span>Indexing Techniques &amp; Physical Design</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-1"><span class="nav-num">01</span>Indexing Fundamentals: B-Tree vs. Hash Indexing</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-2"><span class="nav-num">02</span>Primary &amp; Secondary Indexing: Teradata MPP</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-3"><span class="nav-num">03</span>Selectivity Math &amp; Break-Even Analysis</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-4"><span class="nav-num">04</span>Advanced Indexing: Bitmaps, Composite &amp; Covered</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-5"><span class="nav-num">05</span>Physical Storage &amp; Ponniah Chapter 18</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-6"><span class="nav-num">06</span>Quiz Review &amp; Solved MCQs</a></li>
+          </ul>
+        </li>
+        <!-- CURRENT ACTIVE MODULE: MODULE 13 -->
+        <li class="nav-section active-module">
+          <div class="nav-section-title active-title" onclick="toggleSection(this)">
+            <span style="color: var(--ac); font-weight: 700;"><span class="nav-mod-num" style="background: var(--ac); color: #fff; margin-right: 6px;">13</span>⭐ Midterm 2 Grand Exam Prep Summary</span>
+            <span class="chevron" style="transform: rotate(0deg);">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: block;">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Exam Blueprint &amp; Mathematical Nomenclature</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>ETL Architecture &amp; Engineering</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Join Techniques &amp; Cost Modeling</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Indexing Techniques &amp; Access Paths Masterclass</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Grand Summary &amp; Exam Game Plan</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">14</span>📝 Midterm 2 Solved Past Papers</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-1"><span class="nav-num">01</span>Fall 2024 Sessional-II Exam (Nov 4, 2024)</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-2"><span class="nav-num">02</span>Fall 2023 Midterm-2 (+ Official FAST Solution)</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-3"><span class="nav-num">03</span>Fall 2018 Midterm-2 Exam</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-4"><span class="nav-num">04</span>Fall 2017 Midterm-2 Exam</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-5"><span class="nav-num">05</span>Fall 2016 Midterm-2 Exam</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-6"><span class="nav-num">06</span>Practice Problems 1, 2 &amp; 3 Master Solutions</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">FAST-NUCES • Course CS4058/CS409/DS3003</div>
+          <h1 class="module-title">Midterm 2 Grand Exam Prep Summary</h1>
+        </div>
+
+        <div class="source-citation">
+          <strong>Primary Exam Coverage:</strong> Extraction, Transformation &amp; Loading (Ponniah Ch. 11, 12, 15), Query Execution &amp; Join Algorithms (DSS vs. OLTP, BNLJ, SMJ, Hash Join, Graefe Duality), Indexing Techniques (Single, Combined, Dynamic/Static Bitmap, Composite, Clustered) &amp; Physical Storage Evaluation.
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 1: EXAM BLUEPRINT & NOMENCLATURE
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Exam Blueprint &amp; Mathematical Nomenclature</h2>
+          <p class="topic-subtitle">The standard variable vocabulary, rounding rules, selectivity arithmetic, and the golden law of unclustered disk access.</p>
+
+          <p>
+            FAST Midterm 2 exam questions are rigorous, multi-part, and reward structured, step-by-step mathematical working. Every point deduction in past papers comes from either neglecting ceil/floor rules, miscalculating combined selectivity, or misunderstanding the difference between clustered sequential reads and unclustered random block visits. Master the nomenclature first.
+          </p>
+
+          <div class="definition">
+            <div class="callout-label">Official FAST Nomenclature &amp; Variables</div>
+            <table class="styled-table" style="margin-top: 8px;">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Meaning</th>
+                  <th>Typical Units / Examples</th>
+                  <th>Calculation / Formula</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>B</code></td>
+                  <td>Data Block Size (Page Size)</td>
+                  <td>Bytes (e.g., 8 KB = 8,192 B; 16 KB = 16,384 B; 50 KB = 51,200 B)</td>
+                  <td>Given directly in problem statement</td>
+                </tr>
+                <tr>
+                  <td><code>R</code></td>
+                  <td>Record Size (Base Table Row Width)</td>
+                  <td>Bytes (e.g., 128 B, 150 B, 200 B, 256 B, 500 B)</td>
+                  <td>Given directly</td>
+                </tr>
+                <tr>
+                  <td><code>Ri</code></td>
+                  <td>Index Record Size (RID / Key + Pointer)</td>
+                  <td>Bytes (typically 8 B, 15 B, or 16 B)</td>
+                  <td>Given directly</td>
+                </tr>
+                <tr>
+                  <td><code>r</code> (or <code>rS, rB, rL</code>)</td>
+                  <td>Total Number of Records in Base Table</td>
+                  <td>Rows (e.g., 100,000; 128,000; 1,000,000; 20,000,000)</td>
+                  <td>Given directly</td>
+                </tr>
+                <tr>
+                  <td><code>K</code></td>
+                  <td>Available Memory Buffer Size</td>
+                  <td>Blocks (e.g., 50 blocks, 100 blocks)</td>
+                  <td>Given directly</td>
+                </tr>
+                <tr>
+                  <td><code>bfr</code></td>
+                  <td>Blocking Factor of Base Table</td>
+                  <td>Rows per block</td>
+                  <td><code>bfr = ⌊ B / R ⌋</code> (Always FLOOR / Integer truncation)</td>
+                </tr>
+                <tr>
+                  <td><code>bfri</code></td>
+                  <td>Blocking Factor of Index Table</td>
+                  <td>Index entries (RIDs) per block</td>
+                  <td><code>bfri = ⌊ B / Ri ⌋</code> (Always FLOOR / Integer truncation)</td>
+                </tr>
+                <tr>
+                  <td><code>b</code> (or <code>bS, bB</code>)</td>
+                  <td>Total Blocks of Base Table</td>
+                  <td>Blocks</td>
+                  <td><code>b = ⌈ r / bfr ⌉</code> (Always CEILING / Round up)</td>
+                </tr>
+                <tr>
+                  <td><code>bi</code> (or <code>bSi, bBi</code>)</td>
+                  <td>Total Blocks of Full Index</td>
+                  <td>Blocks</td>
+                  <td><code>bi = ⌈ r / bfri ⌉</code> (Always CEILING / Round up)</td>
+                </tr>
+                <tr>
+                  <td><code>S</code></td>
+                  <td>Selectivity of a Predicate</td>
+                  <td>Percentage / Fraction (e.g., 3% = 0.03)</td>
+                  <td>Fraction of rows satisfying condition</td>
+                </tr>
+                <tr>
+                  <td><code>Q</code></td>
+                  <td>Qualifying Records for a Predicate</td>
+                  <td>Rows</td>
+                  <td><code>Q = S × r</code></td>
+                </tr>
+                <tr>
+                  <td><code>Scomb</code></td>
+                  <td>Combined Selectivity (Independent AND)</td>
+                  <td>Fraction</td>
+                  <td><code>Scomb = S1 × S2 × S3 × ...</code></td>
+                </tr>
+                <tr>
+                  <td><code>Qcomb</code></td>
+                  <td>Combined Qualifying Rows</td>
+                  <td>Rows</td>
+                  <td><code>Qcomb = Scomb × r</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>The Two Golden Rules of Discrete I/O</h3>
+
+          <div class="math-box">
+            <div class="math-title">Rule 1: Floor for Capacity, Ceiling for Physical Allocation</div>
+            • Records per block: <span class="formula">bfr = ⌊ B / R ⌋</span> (A block cannot hold a fractional row).<br/>
+            • Index entries per block: <span class="formula">bfri = ⌊ B / Ri ⌋</span>.<br/>
+            • Blocks occupied by records: <span class="formula">b = ⌈ r / bfr ⌉</span> (Any remaining rows demand a full disk block).<br/>
+            • Blocks occupied by index: <span class="formula">bi = ⌈ r / bfri ⌉</span>.<br/>
+            • Filtered rows in contiguous blocks: <span class="formula">b_filt = ⌈ Q / bfr ⌉</span>.
+          </div>
+
+          <div class="warning-box">
+            <div class="callout-label">Rule 2: The Golden Cap for Unclustered Base Table Reads</div>
+            <p>
+              When using a <strong>Secondary / Unclustered Index</strong>, qualifying RIDs point randomly all across disk blocks.
+              Each qualifying record may require 1 random block fetch. However:
+            </p>
+            <ul>
+              <li><strong>If Qualifying Rows &lt; Base Table Blocks (<code>Q &lt; b</code>):</strong> Base Table Access Cost = <span class="good">Q blocks</span>.</li>
+              <li><strong>If Qualifying Rows &ge; Base Table Blocks (<code>Q &ge; b</code>):</strong> Base Table Access Cost = <span class="highlight">b blocks</span> (Cap at total base table blocks!). You cannot read more distinct physical blocks than the file actually contains!</li>
+            </ul>
+            <p style="margin-top: 8px;">
+              <strong>The Danger:</strong> If <code>Q &ge; b</code>, using a single unclustered index costs <code>Index Access + b &gt; b</code>, making it <em>strictly worse than a Full Table Scan!</em>
+            </p>
+          </div>
+
+          <div class="note-box">
+            <div class="callout-label">Clustered vs. Unclustered: The 100x Efficiency Gap</div>
+            If an index is <strong>CLUSTERED</strong>, records with identical or consecutive keys are stored physically adjacent on disk. Therefore:
+            <br/>
+            <span class="formula">Base Table Cost (Clustered) = ⌈ Q / bfr ⌉</span> (Divided by blocking factor!)
+            <br/>
+            In contrast, for unclustered: <code>Base Table Cost = Q</code> (1 I/O per row). If <code>bfr = 64</code>, clustered access is <strong>64 times faster</strong>!
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 1</h4>
+            <ul>
+              <li>Always start by computing <code>bfr = ⌊B/R⌋</code>, <code>bfri = ⌊B/Ri⌋</code>, <code>b = ⌈r/bfr⌉</code>, and <code>bi = ⌈r/bfri⌉</code>.</li>
+              <li>For independent <code>AND</code> conditions, multiply percentages: <code>Scomb = S1 × S2 × ...</code>. For <code>IN / OR</code> conditions on the same column, add percentages: <code>S = S_a + S_b</code>.</li>
+              <li>Unclustered base table fetch is capped at <code>b</code>. Clustered base table fetch is <code>⌈Q / bfr⌉</code>.</li>
+              <li>If the query is <code>SELECT COUNT(*)</code> and multiple secondary indexes are combined, <strong>base table access is 0</strong> because all required keys are resolved entirely within the index RID lists!</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: A table has 200,000 rows. Block size B = 8 KB (8192 bytes), record size R = 256 bytes, index entry Ri = 16 bytes. What are bfr, bfri, b, and bi?</summary>
+              <p><strong>Answer:</strong><br/>
+              <code>bfr = ⌊8192 / 256⌋ = 32</code> rows/block.<br/>
+              <code>bfri = ⌊8192 / 16⌋ = 512</code> entries/block.<br/>
+              <code>b = ⌈200,000 / 32⌉ = 6,250</code> base table blocks.<br/>
+              <code>bi = ⌈200,000 / 512⌉ = 391</code> index blocks.</p>
+            </details>
+            <details>
+              <summary>Medium: For the table above, a query on an unclustered secondary index matches 8,000 rows. What is the base table access cost? What if it matches 4,000 rows?</summary>
+              <p><strong>Answer:</strong><br/>
+              • Case 1 (8,000 rows): Since <code>Q = 8,000 &gt; b = 6,250</code>, the worst-case random I/O cannot exceed reading every block in the table. Base table access = <strong>6,250 blocks</strong>.<br/>
+              • Case 2 (4,000 rows): Since <code>Q = 4,000 &lt; b = 6,250</code>, base table access = <strong>4,000 blocks</strong>.</p>
+            </details>
+            <details>
+              <summary>Hard: If the index in Case 1 (8,000 rows) were CLUSTERED instead of unclustered, what would the base table access cost be?</summary>
+              <p><strong>Answer:</strong><br/>
+              Because records are physically clustered together on disk, base table blocks read = <code>⌈Q / bfr⌉ = ⌈8,000 / 32⌉ = 250 blocks</code>!<br/>
+              Comparing 250 blocks (clustered) to 6,250 blocks (unclustered) demonstrates a <strong>25x performance improvement</strong>.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 2: ETL ARCHITECTURE & ENGINEERING
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-2" style="display: none">
+          <h2><span class="topic-num">2</span>ETL Architecture &amp; Engineering</h2>
+          <p class="topic-subtitle">Extraction categories, CDC mechanisms, transformation types, surrogate key mapping, bulk load acceleration, and merge strategies.</p>
+
+          <p>
+            Extraction, Transformation, and Loading (ETL) consumes up to 70% of data warehouse engineering effort. In FAST exams, theoretical questions test your understanding of source data characteristics, immediate vs. periodic extraction, key restructuring, and bulk load optimization protocols.
+          </p>
+
+          <h3>1. Source Operational Data Categories</h3>
+          <div class="card-grid-2">
+            <div class="sub-card">
+              <h4>1. Transient Data (Volatile / State-Oriented)</h4>
+              <p>Data that is updated or overwritten in-place in the operational database as business transactions occur. Only the <em>current state</em> is preserved; previous historical states are destroyed.</p>
+              <p><strong>Examples:</strong> Current customer credit limit, current account balance, product stock on hand, customer active phone number.</p>
+            </div>
+            <div class="sub-card">
+              <h4>2. Periodic / Event Data (Historical / Append-Only)</h4>
+              <p>Data generated by operational business events that are appended sequentially and never overwritten. Each record carries a natural business timestamp and is immutable.</p>
+              <p><strong>Examples:</strong> ATM cash withdrawal transactions, POS retail checkout logs, web server clickstreams, airline boarding records.</p>
+            </div>
+          </div>
+
+          <h3>2. Data Extraction Strategies</h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Technique</th>
+                <th>Mechanism</th>
+                <th>OLTP Impact</th>
+                <th>Classification &amp; Best Used When</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Log-Based CDC (Sniffing Redo Logs)</strong></td>
+                <td>Reads database transaction logs (WAL/redo logs) asynchronously outside the DBMS engine.</td>
+                <td><span class="good">Zero / Negligible</span></td>
+                <td><strong>Most efficient immediate technique.</strong> High-volume, 24/7 OLTP systems where operational degradation cannot be tolerated.</td>
+              </tr>
+              <tr>
+                <td><strong>Database Triggers</strong></td>
+                <td><code>AFTER INSERT/UPDATE/DELETE</code> triggers capture delta keys into shadow staging tables.</td>
+                <td><span class="highlight">Moderate (Commits slowed)</span></td>
+                <td><strong>Immediate technique.</strong> Useful when DBMS transaction logs are proprietary or inaccessible, but requires schema changes.</td>
+              </tr>
+              <tr>
+                <td><strong>Full Table Dump (SELECT *)</strong></td>
+                <td>Full query / utility dump of source tables into flat files or staging area.</td>
+                <td><span class="highlight">High during extraction</span></td>
+                <td><strong>Most inexpensive to implement.</strong> Small tables, initial data warehouse load, or legacy files with no timestamp support.</td>
+              </tr>
+              <tr>
+                <td><strong>Timestamp / Audit Columns</strong></td>
+                <td>Query filters on <code>WHERE Last_Updated &gt; :last_etl_time</code>.</td>
+                <td><span class="good">Low to Moderate</span></td>
+                <td><strong>Inexpensive incremental technique.</strong> Standard operational schemas that already maintain reliable update timestamps.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="callout-label">Exam Question Trap: "Two Most Efficient Immediate" vs. "Two Most Inexpensive"</div>
+            Past papers repeatedly test this exact distinction:
+            <ul>
+              <li><strong>Two Most Efficient Immediate Techniques:</strong> (1) <em>Log-Based CDC</em> (asynchronous, zero OLTP impact), and (2) <em>Trigger-Based CDC</em> (event-driven, instant capture).</li>
+              <li><strong>Two Most Inexpensive Techniques to Implement:</strong> (1) <em>Full Table Dump / File Export</em> (no code changes, zero CDC tool cost, simple scripts), and (2) <em>Timestamp/Status Column Incremental Query</em> (uses native application columns with no specialized infrastructure).</li>
+            </ul>
+          </div>
+
+          <h3>3. Major Transformation Tasks (4 Core Types)</h3>
+          <div class="card-grid-2">
+            <div class="sub-card">
+              <h4>1. Format &amp; Data Type Conversion</h4>
+              <p>Converts heterogeneous operational data formats into a uniform warehouse standard.</p>
+              <p><em>Example:</em> Converting strings <code>"12/05/2023"</code> and <code>"2023.05.12"</code> to standard ISO date <code>DATE '2023-05-12'</code>, or converting currency strings <code>"$1,200.50"</code> to <code>DECIMAL(10,2)</code>.</p>
+            </div>
+            <div class="sub-card">
+              <h4>2. Data Standardization &amp; Cleansing</h4>
+              <p>Reconciling disparate codes, resolving abbreviations, and trimming noise across source branches.</p>
+              <p><em>Example:</em> Harmonizing gender codes <code>'1'</code>, <code>'M'</code>, <code>'Male'</code> into a single canonical code <code>'M'</code>.</p>
+            </div>
+            <div class="sub-card">
+              <h4>3. Key Restructuring &amp; Surrogate Keys</h4>
+              <p>Replacing disparate operational natural keys with warehouse-managed integer surrogate keys.</p>
+              <p><em>Example:</em> Branch A uses numeric <code>AccNo = 10452</code> while Branch B uses alphanumeric <code>CustCode = 'CUST-A99'</code>. The warehouse assigns unified surrogate keys <code>Customer_SK = 5001</code> and <code>5002</code> via a Cross-Reference Mapping Table.</p>
+            </div>
+            <div class="sub-card">
+              <h4>4. Aggregation &amp; Summarization</h4>
+              <p>Pre-computing granular transaction records into summary metrics for DSS performance.</p>
+              <p><em>Example:</em> Summing millions of individual POS item checkout records into daily branch sales summary rows <code>(BranchID, Date, TotalRevenue)</code>.</p>
+            </div>
+          </div>
+
+          <div class="definition">
+            <div class="callout-label">Entity Identification Problem in Data Integration</div>
+            <strong>Definition:</strong> Occurs when the same real-world entity (e.g., a customer or product) is represented across disparate source databases by different natural keys, varying schemas, or slight spelling variations (e.g., "John Smith" at Branch A vs. "J. Smith" at Branch B), OR when different entities share the same identifier in separate systems.
+            <br/>
+            <strong>Resolution Protocol:</strong>
+            <ol>
+              <li>Establish a <strong>Master Data Management (MDM)</strong> framework with fuzzy matching / record linkage (Levenshtein distance, Soundex, address matching).</li>
+              <li>Create an <strong>Enterprise Cross-Reference Mapping Table</strong>: <code>(Source_System_ID, Source_Natural_Key, Enterprise_Surrogate_Key)</code>.</li>
+              <li>Always join dimensional references in the DW using the <strong>Surrogate Key</strong> rather than natural keys.</li>
+            </ol>
+          </div>
+
+          <h3>4. Data Loading Strategies &amp; Acceleration Protocol</h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Full Data Refresh</th>
+                <th>Incremental Data Loading</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Operation</strong></td>
+                <td>Truncates base table entirely and reloads all rows from scratch.</td>
+                <td>Identifies deltas and applies INSERTS, UPDATES, or SCD Type 2 versions.</td>
+              </tr>
+              <tr>
+                <td><strong>When Appropriate</strong></td>
+                <td>
+                  1. Small dimension tables (e.g., Status, Department, Date).<br/>
+                  2. High volatility where &gt;30–40% of rows change per refresh.<br/>
+                  3. Source systems lacking delta tracking mechanisms.<br/>
+                  4. Initial DW load or full disaster resynchronization.
+                </td>
+                <td>
+                  1. Massive fact tables (millions/billions of rows).<br/>
+                  2. Large dimensions with low daily change rates (e.g., 40k changes out of 20M rows = 0.2%).
+                </td>
+              </tr>
+              <tr>
+                <td><strong>I/O &amp; Time Cost</strong></td>
+                <td>Proportional to full table volume <code>O(Total Rows)</code>.</td>
+                <td>Proportional to delta volume <code>O(Changed Rows)</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <div class="callout-label">High-Yield Exam Protocol: Steps to Expedite Bulk Loading</div>
+            <h4>5 Practical Steps to Accelerate Data Loading</h4>
+            <ol>
+              <li><strong>Drop or Disable Secondary Indexes &amp; Foreign Key Constraints:</strong> Maintaining B-tree indexes row-by-row during bulk load causes massive random I/O and tree rebalancing. Drop them, load data contiguously, and rebuild indexes in bulk.</li>
+              <li><strong>Direct-Path Bulk Loading:</strong> Use direct-path load utilities (e.g., Oracle Direct Path, PostgreSQL COPY, MySQL LOAD DATA INFILE, Teradata FastLoad) that write directly to formatted data blocks on disk above the high-water mark, bypassing the database buffer cache.</li>
+              <li><strong>NOLOGGING / Minimal Logging:</strong> Set table/session to <code>NOLOGGING</code> to disable transaction undo/redo logging for the bulk append, eliminating transaction log disk bottlenecks.</li>
+              <li><strong>Parallel &amp; Partition-Level Loading:</strong> Partition tables (by date/region) and split input data into independent files loaded simultaneously by concurrent threads directly into discrete table partitions.</li>
+              <li><strong>Staging Tables with Set-Based Operations:</strong> Stage incoming records in an unindexed staging table, then execute a single set-based <code>MERGE</code> or partition-swap rather than cursor-based row-by-row iterations.</li>
+            </ol>
+          </div>
+
+          <h3>5. Destructive Merge vs. Constructive Merge</h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Destructive Merge (In-Place Overwrite / SCD Type 1)</th>
+                <th>Constructive Merge (Versioning / SCD Type 2)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Mechanism</strong></td>
+                <td>Overwrites existing attribute values with incoming new values in-place.</td>
+                <td>Closes current record (<code>End_Date = Current_Date</code>, <code>Is_Current = 'N'</code>) and inserts a new row with a new surrogate key.</td>
+              </tr>
+              <tr>
+                <td><strong>Historical Tracking</strong></td>
+                <td><span class="highlight">No history preserved</span> (Old values permanently lost).</td>
+                <td><span class="good">Complete history preserved</span> (Full temporal audit trail).</td>
+              </tr>
+              <tr>
+                <td><strong>Storage Impact</strong></td>
+                <td>Zero storage growth (Row count remains constant).</td>
+                <td>Table grows monotonically with every change.</td>
+              </tr>
+              <tr>
+                <td><strong>When to Use</strong></td>
+                <td>Correcting erroneous data, spelling errors, or when history has zero business significance.</td>
+                <td>Core business attributes where point-in-time analytical correctness matters (e.g., customer address change affecting regional sales reporting).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 2</h4>
+            <ul>
+              <li>Transient data represents current state and is overwritten; periodic data represents historical events and is append-only.</li>
+              <li>Log-based CDC is the most efficient immediate extraction method because it is non-intrusive and creates zero OLTP overhead.</li>
+              <li>Surrogate keys decouple the warehouse from operational schema chaos and resolve the entity identification problem via cross-reference mapping tables.</li>
+              <li>For small tables or high change rates (&gt;30%), use Full Refresh; for large tables with low change rates (&lt;5%), use Incremental Load.</li>
+              <li>Accelerate loading by dropping indexes, using direct-path loaders, enabling NOLOGGING, and loading partitions in parallel.</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: When should the daily ETL batch process be executed for a retail banking system?</summary>
+              <p><strong>Answer:</strong> During the off-peak <strong>nightly batch window</strong> (typically 1:00 AM – 4:00 AM) when physical bank branches are closed, online transaction volumes are minimal, and operational source database CPU/I/O utilization is lowest.</p>
+            </details>
+            <details>
+              <summary>Medium: Assume 40,000 rows out of 20 million rows in a Customer dimension table change each day. Which loading strategy should be used and why?</summary>
+              <p><strong>Answer:</strong> Use an <strong>Incremental Loading strategy (Delta Upsert / SCD Type 1/2)</strong>. The changed rows represent only <code>40,000 / 20,000,000 = 0.2%</code> of the table. A full refresh would needlessly read and write 19.96 million unchanged rows, wasting enormous I/O and processing time.</p>
+            </details>
+            <details>
+              <summary>Hard: Why does dropping secondary indexes before a bulk load and rebuilding them afterward result in fewer total I/Os than inserting with indexes active?</summary>
+              <p><strong>Answer:</strong> Inserting records with active indexes causes random I/O and frequent B-tree page splits for every single inserted row. If <code>N</code> rows are inserted into <code>I</code> indexes, the database performs <code>O(N × I)</code> random leaf lookups and block writes. By dropping indexes, records are written contiguously in sequential blocks. Rebuilding indexes in bulk afterward uses high-speed external sorting and sequential bulk-tree construction, achieving optimal 100% leaf packing with purely sequential I/O.</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 3: JOIN TECHNIQUES & COST MODELING
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-3" style="display: none">
+          <h2><span class="topic-num">3</span>Join Techniques &amp; Cost Modeling</h2>
+          <p class="topic-subtitle">Nested Loop variants, Sort-Merge Join, Hash Join, the in-memory threshold condition, and Graefe's Duality.</p>
+
+          <p>
+            Join performance in DSS environments is fundamentally different from OLTP. OLTP queries retrieve isolated single records using index lookups, while DSS analytical queries join tables with millions of records. Understanding exactly how buffer memory <em>K</em> affects I/O cost is essential for the exam.
+          </p>
+
+          <h3>1. The Nested Loop Join (NLJ) Family</h3>
+          <p>Let Outer Relation = <em>R</em><sub>1</sub> (<em>r</em><sub>1</sub> records, <em>b</em><sub>1</sub> blocks), Inner Relation = <em>R</em><sub>2</sub> (<em>r</em><sub>2</sub> records, <em>b</em><sub>2</sub> blocks), and Available Buffer Memory = <em>K</em> blocks.</p>
+
+          <div class="card-grid-3">
+            <div class="sub-card">
+              <h4>1. Naive / Tuple NLJ</h4>
+              <p>For each record in <em>R</em><sub>1</sub>, scan the entire table <em>R</em><sub>2</sub>.</p>
+              <p class="math-box" style="padding: 6px 10px; font-size: 0.8rem;">
+                Cost = <span class="highlight">b1 + (r1 × b2)</span>
+              </p>
+              <p style="font-size: 0.8rem; color: var(--mt);">Worst possible algorithm for DSS. Causes massive repeated disk thrashing.</p>
+            </div>
+            <div class="sub-card">
+              <h4>2. Block Nested Loop (BNLJ)</h4>
+              <p>Allocate <em>K</em> - 2 buffer blocks to hold a chunk of <em>R</em><sub>1</sub>. Scan <em>R</em><sub>2</sub> once per chunk.</p>
+              <p class="math-box" style="padding: 6px 10px; font-size: 0.8rem;">
+                Cost = <span class="formula">b1 + ⌈b1 / (K-2)⌉ × b2</span>
+              </p>
+              <p style="font-size: 0.8rem; color: var(--good);">If <em>b</em><sub>1</sub> ≤ <em>K</em> - 2, cost = <strong>b1 + b2</strong> (Inner scanned only ONCE!).</p>
+            </div>
+            <div class="sub-card">
+              <h4>3. Index / Clustered NLJ</h4>
+              <p>For each qualifying record of <em>R</em><sub>1</sub>, lookup matching keys in <em>R</em><sub>2</sub> via index.</p>
+              <p class="math-box" style="padding: 6px 10px; font-size: 0.8rem;">
+                Cost = <span class="formula">b1 + Q1 × (Cost_idx + Cost_data)</span>
+              </p>
+              <p style="font-size: 0.8rem; color: var(--mt);">Extremely fast when <em>Q</em><sub>1</sub> is small and <em>R</em><sub>2</sub> has a clustered index on join key.</p>
+            </div>
+          </div>
+
+          <h3>2. Sort-Merge Join (SMJ)</h3>
+          <p>
+            Sort-Merge Join sorts both relations on the join attribute, then merges the sorted streams sequentially in a single pass.
+          </p>
+          <div class="definition">
+            <div class="callout-label">Sort-Merge Join Cost Formula</div>
+            <strong>Total Cost = Cost(Filter Outer) + Cost(Sort R1) + Cost(Sort R2) + Cost(Merge Streams)</strong>
+            <br/>
+            Where:
+            <ul>
+              <li><strong>Sorting Cost:</strong> If relation <em>R</em> fits in memory (<em>b</em> ≤ <em>K</em>), Sorting Cost = <span class="good">0 disk I/O</span> (sorted in RAM).</li>
+              <li>If relation <em>R</em> exceeds memory (<em>b</em> &gt; <em>K</em>), external merge sort is required:
+                <ul>
+                  <li>Pass 0 (Run Generation): Reads <em>b</em> blocks and writes <em>b</em> blocks into ⌈<em>b</em> / <em>K</em>⌉ sorted runs = 2 × <em>b</em> I/Os.</li>
+                  <li>Merge Passes: ⌈log<sub><em>K</em>-1</sub>(<em>N</em>)⌉ passes, each pass reading and writing <em>b</em> blocks = 2 × <em>b</em> I/Os per pass.</li>
+                </ul>
+              </li>
+              <li><strong>Clustered / Pre-sorted Optimization:</strong> If a relation has a <strong>clustered index</strong> on the join attribute, it is <em>already sorted on disk!</em> Sorting cost = <span class="good">0 I/O</span>.</li>
+              <li><strong>Merge Phase Cost:</strong> Reading both sorted relations once = <span class="formula">b1 + b2</span> blocks.</li>
+            </ul>
+          </div>
+
+          <h3>3. Hash Join (HJ) &amp; The In-Memory Condition</h3>
+          <p>
+            Hash Join designates the smaller relation as the <strong>Build Input</strong> (<em>R</em>) and the larger relation as the <strong>Probe Input</strong> (<em>S</em>).
+          </p>
+
+          <div class="math-box">
+            <div class="math-title">The In-Memory Hash Join Condition (FAST Exam Favorite)</div>
+            Check if the filtered build relation blocks fit in available memory:
+            <br/>
+            <span class="formula">Condition: b_build ≤ K</span>
+            <br/><br/>
+            • <strong>If Condition Holds (b_build ≤ K):</strong><br/>
+            &nbsp;&nbsp;1. Read build relation into memory and construct in-memory hash table: <span class="good">b_build I/Os</span>.<br/>
+            &nbsp;&nbsp;2. Stream probe relation once through memory, hashing join keys and matching buckets: <span class="good">b_probe I/Os</span>.<br/>
+            &nbsp;&nbsp;3. <span class="good">Total Hash Join Cost = b_build + b_probe</span> (Partitioning is NOT required!).
+            <br/><br/>
+            • <strong>If Condition Fails (b_build &gt; K): Grace / Partitioned Hash Join</strong><br/>
+            &nbsp;&nbsp;Both relations must be partitioned into <em>B</em> - 1 matching hash buckets on disk, then joined partition by partition.<br/>
+            &nbsp;&nbsp;Total Cost = Partition Phase (2 × <em>b</em><sub>1</sub> + 2 × <em>b</em><sub>2</sub>) + Join Phase (<em>b</em><sub>1</sub> + <em>b</em><sub>2</sub>) = <span class="highlight">3 × (b1 + b2)</span>.
+          </div>
+
+          <h3>4. Graefe's Divide-and-Conquer Duality</h3>
+          <p>
+            Goetz Graefe established that Sort-Merge Join and Hash Join are duals of the same divide-and-conquer strategy:
+          </p>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Sort-Merge Join (SMJ)</th>
+                <th>Hash Join (HJ)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Division Mechanism</strong></td>
+                <td>Divides by <strong>value range</strong> (creates ordered runs).</td>
+                <td>Divides by <strong>hash value</strong> (creates unordered hash buckets).</td>
+              </tr>
+              <tr>
+                <td><strong>Memory Sensitivity</strong></td>
+                <td>Robust to memory fluctuations; graceful degradation across merge passes.</td>
+                <td>Sensitive to memory sizing; severe penalty if bucket exceeds memory (bucket spill).</td>
+              </tr>
+              <tr>
+                <td><strong>Data Skew</strong></td>
+                <td>Handles non-uniform key distributions gracefully.</td>
+                <td>Vulnerable to hash bucket skew (hash collisions on frequent values).</td>
+              </tr>
+              <tr>
+                <td><strong>Output Characteristics</strong></td>
+                <td><span class="good">Output is sorted</span> on join key (ideal for downstream <code>ORDER BY</code> or <code>GROUP BY</code>).</td>
+                <td>Output is completely unordered.</td>
+              </tr>
+              <tr>
+                <td><strong>Non-Equi Joins</strong></td>
+                <td>Supports inequality joins (<code>&lt;, &gt;, &le;, &ge;</code>).</td>
+                <td><span class="highlight">Only supports equi-joins ( = )</span>.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 3</h4>
+            <ul>
+              <li>Always identify the <strong>Build table</strong> (the smaller relation after filtering) and <strong>Probe table</strong> (the larger relation).</li>
+              <li>Check memory: if <code>b_build ≤ K</code>, Hash Join executes in a single pass with cost = <code>b_build + b_probe</code>.</li>
+              <li>If the inner table has a clustered index on the join key, <strong>Index/Clustered NLJ</strong> is often vastly superior to both SMJ and Hash Join because it reads only the specific matching blocks of the inner table rather than scanning the entire multi-gigabyte table.</li>
+              <li>In Sort-Merge Join, a clustered index on the join attribute eliminates the sorting phase entirely (0 sort I/O).</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: When is Sort-Merge Join preferred over Hash Join in data warehouse queries?</summary>
+              <p><strong>Answer:</strong> (1) When either or both inputs are already sorted or clustered on the join key, (2) when the query contains an explicit downstream <code>ORDER BY</code> or <code>GROUP BY</code> on the join key, or (3) for non-equi joins (e.g. range joins).</p>
+            </details>
+            <details>
+              <summary>Medium: Table A has 45 blocks after filtering. Table B has 180,000 blocks. Memory K = 100 blocks. Compute the I/O cost of Hash Join.</summary>
+              <p><strong>Answer:</strong><br/>
+              1. Build table = Table A (45 blocks); Probe table = Table B (180,000 blocks).<br/>
+              2. Memory check: <code>b_build = 45 ≤ K = 100</code>. Build table fits entirely in memory!<br/>
+              3. Build cost = 45 blocks read.<br/>
+              4. Probe cost = 180,000 blocks read.<br/>
+              5. Total Hash Join Cost = <code>45 + 180,000 = 180,045 blocks</code>.</p>
+            </details>
+            <details>
+              <summary>Hard: In the scenario above, what if Table B has a clustered index on the join key, Table A has 4800 qualifying rows, and each key in Table A matches 1 block in Table B? What is the cost of Clustered NLJ?</summary>
+              <p><strong>Answer:</strong><br/>
+              Clustered NLJ cost = <code>Cost(Read A) + Q_A × (Cost_idx + Cost_data)</code>.<br/>
+              With 1 index block read + 1 data block read per qualifying row:<br/>
+              Cost = <code>45 + 4800 × (1 + 1) = 45 + 9600 = 9,645 blocks</code>!<br/>
+              Clustered NLJ is <strong>over 18 times faster</strong> than Hash Join (9,645 vs. 180,045 blocks) because it avoids scanning the 180,000 blocks of Table B!</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 4: INDEXING TECHNIQUES & ACCESS PATHS
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-4" style="display: none">
+          <h2><span class="topic-num">4</span>Indexing Techniques &amp; Access Paths Masterclass</h2>
+          <p class="topic-subtitle">Mechanics and exact step-by-step I/O formulas for FTS, Single, Combined, Dynamic Bitmap, Static Bitmap, Composite, and Clustered Indexes.</p>
+
+          <p>
+            FAST exam problems present a base table with several attributes, selectivities, and a complex multi-predicate query. You are asked to compute the exact I/O cost under 6 to 7 different indexing strategies. Below is the foolproof mathematical guide for every single technique.
+          </p>
+
+          <h3>1. Full Table Scan (FTS)</h3>
+          <p>Scans every physical block in the base table sequentially. Always the baseline benchmark.</p>
+          <div class="math-box">
+            <span class="formula">I/O Cost = b</span> &nbsp;&nbsp;<span class="comment">(Where b = ⌈r / bfr⌉)</span>
+          </div>
+
+          <h3>2. Single Indexing</h3>
+          <p>
+            Select the <strong>highest selectivity attribute</strong> (the one with the lowest percentage / smallest number of qualifying rows <em>Q</em>).
+          </p>
+          <div class="math-box">
+            <div class="math-title">Single Index Access Cost Formula</div>
+            1. Select attribute with minimum qualifying rows: <span class="formula">Q = min(Q1, Q2, ...)</span>.<br/>
+            2. Index access cost: <span class="formula">Cost_idx = ⌈ Q / bfri ⌉</span>.<br/>
+            3. Base table access cost:<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;• If <span class="highlight">Q ≥ b</span>: Base Table Cost = <span class="highlight">b</span> (Capped at full table blocks!).<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;• If <span class="good">Q &lt; b</span>: Base Table Cost = <span class="good">Q</span>.<br/>
+            4. <span class="formula">Total Cost = Cost_idx + Base Table Cost</span>.
+          </div>
+
+          <h3>3. Combining Multiple Indexes (RID List ANDing)</h3>
+          <p>
+            The DBMS accesses multiple independent single-column indexes, retrieves their matching RID lists, and intersects them in memory via boolean bitwise AND / set intersection before touching the base table.
+          </p>
+          <div class="math-box">
+            <div class="math-title">Combining Multiple Indexes Cost Formula</div>
+            1. For each indexed attribute <em>i</em> in WHERE clause:<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="formula">Cost_idx_i = ⌈ Q_i / bfri ⌉</span>.<br/>
+            2. Total Index Access Cost = <span class="formula">∑ (Cost_idx_i)</span>.<br/>
+            3. Combined qualifying rows: <span class="formula">Q_comb = S_comb × r</span>.<br/>
+            4. Base table access cost = <span class="formula">min(Q_comb, b)</span>.<br/>
+            5. <span class="formula">Total Cost = ∑ (Cost_idx_i) + min(Q_comb, b)</span>.<br/>
+            <span class="comment">Special Rule: For SELECT COUNT(*), Base table cost = 0!</span>
+          </div>
+
+          <h3>4. Dynamic Bitmap Indexes</h3>
+          <p>
+            Traditional B-tree index RIDs are converted on the fly in memory into transient bitmap vectors. Fast bitwise operations (AND/OR) are performed in CPU cache.
+          </p>
+          <div class="note-box">
+            <div class="callout-label">Dynamic Bitmap Cost Equivalence</div>
+            Because the index entries are retrieved from disk as standard B-tree RIDs, the disk I/O cost of Dynamic Bitmap Indexing is <strong>identical to Combining Multiple Indexes</strong>:
+            <br/>
+            <span class="formula">Total Cost = ∑ (Cost_idx_i) + min(Q_comb, b)</span>.
+          </div>
+
+          <h3>5. Static Bitmap Indexes</h3>
+          <p>
+            Pre-computed bit vectors stored permanently on disk for low-cardinality attributes. Each bit corresponds to one record position in the base table (1 = match, 0 = no match).
+          </p>
+          <div class="math-box">
+            <div class="math-title">Static Bitmap Index Cost Formula</div>
+            1. Bits per block = <span class="formula">B × 8 bits</span>.<br/>
+            2. Blocks per single bitmap vector = <span class="formula">⌈ r / (B × 8) ⌉</span>.<br/>
+            3. Count distinct indexed values queried: e.g., <code>Dept IN ('CS', 'EE')</code> = 2 values.<br/>
+            4. Total Index Access Cost = <span class="formula">(Total Distinct Values Queried) × ⌈ r / (B × 8) ⌉</span>.<br/>
+            5. In memory: Perform bitwise OR between values of same column, then bitwise AND across different columns.<br/>
+            6. Base table access cost = <span class="formula">min(Q_comb, b)</span>.<br/>
+            7. <span class="formula">Total Cost = Total Index Access Cost + min(Q_comb, b)</span>.
+          </div>
+
+          <h3>6. Composite Index</h3>
+          <p>
+            A multi-column B-tree index on <code>(Col1, Col2, Col3)</code>. Index entries contain the concatenated keys plus the RID. Size of entry is given as <em>R</em><sub>i</sub>.
+          </p>
+          <div class="math-box">
+            <div class="math-title">Composite Index Cost Formula</div>
+            1. Enumerate all active Cartesian combinations of interest specified in the query.<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;<em>Example:</em> <code>publisher IN ('P', 'W') AND year IN (2018, 2020)</code> yields 4 combinations: (P, 2018), (P, 2020), (W, 2018), (W, 2020).<br/>
+            2. For each combination <em>j</em>:<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;• Qualifying rows: <span class="formula">Q_combo_j = S_col1 × S_col2 × r</span>.<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;• Index blocks read: <span class="formula">⌈ Q_combo_j / bfri ⌉</span>.<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;• Base table blocks read: <span class="formula">Q_combo_j</span> (or combined fetch).<br/>
+            3. <span class="formula">Total Cost = ∑ ⌈ Q_combo_j / bfri ⌉ + Q_comb</span>.
+          </div>
+
+          <h3>7. Clustered Index</h3>
+          <p>
+            The base table records are physically ordered and stored on disk in the sequence of the indexed column.
+          </p>
+          <div class="math-box">
+            <div class="math-title">Clustered Index Cost Formula</div>
+            Assume clustered index is on the best selectivity column (or specified column) with qualifying rows <em>Q</em>.<br/>
+            1. Index access cost: <span class="formula">Cost_idx = ⌈ Q / bfri ⌉</span>.<br/>
+            2. Base table access cost: Because matching records are contiguous on disk:<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="good">Base Table Cost = ⌈ Q / bfr ⌉</span> &nbsp;&nbsp;<span class="comment">(Divided by base blocking factor!)</span><br/>
+            3. Remaining WHERE predicates are evaluated in memory on the fetched records.<br/>
+            4. <span class="formula">Total Cost = ⌈ Q / bfri ⌉ + ⌈ Q / bfr ⌉</span>.
+          </div>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 4</h4>
+            <ul>
+              <li><strong>Single Index:</strong> Only practical when selectivity is tiny (&lt;2%). If <em>Q</em> ≥ <em>b</em>, access cost exceeds FTS!</li>
+              <li><strong>Combining Multiple Indexes:</strong> Reads index blocks for all predicates, intersects in RAM, then visits only <em>Q</em><sub>comb</sub> base blocks.</li>
+              <li><strong>Static Bitmap:</strong> Unmatched for low-cardinality attributes. Cost per value is just ⌈<em>r</em> / (<em>B</em> × 8)⌉ blocks.</li>
+              <li><strong>Composite Index:</strong> Optimal for fixed conjunctions, but requires reading index entries for each Cartesian combination.</li>
+              <li><strong>Clustered Index:</strong> Drastically slashes base table reads from <em>Q</em> down to ⌈<em>Q</em> / <em>bfr</em>⌉.</li>
+            </ul>
+          </div>
+
+          <div class="practice-section">
+            <div class="practice-section-label">Practice Questions</div>
+            <details>
+              <summary>Easy: Table has 1,280,000 rows. Block size B = 50 KB = 51,200 bytes. How many blocks does ONE static bitmap vector require?</summary>
+              <p><strong>Answer:</strong><br/>
+              Bits per block = <code>51,200 × 8 = 409,600 bits</code>.<br/>
+              Blocks per vector = <code>⌈1,280,000 / 409,600⌉ = ⌈3.125⌉ = 4 blocks</code>.</p>
+            </details>
+            <details>
+              <summary>Medium: For a query with 3 conditions, Single Index costs 6,416 blocks, while Combining Multiple Indexes costs 3,664 blocks. Why does combining multiple indexes perform better even though it accesses 3 index trees?</summary>
+              <p><strong>Answer:</strong> Because the single index has individual selectivity <em>Q</em> = 51,200 &gt; <em>b</em> = 6,400, forcing the engine to read all 6,400 base blocks. In contrast, combining multiple indexes intersects the RID lists in memory, shrinking the qualifying records down to <em>Q</em><sub>comb</sub> = 3,380 rows. The base table reads drop from 6,400 to 3,380 blocks, which easily overcomes the minor overhead of reading 284 index blocks.</p>
+            </details>
+            <details>
+              <summary>Hard: A query evaluates SELECT COUNT(*) with 3 conditions where combining multiple indexes accesses 4, 8, and 19 index blocks. Combined qualifying rows = 35. What is the total I/O cost?</summary>
+              <p><strong>Answer:</strong><br/>
+              Total Index access = <code>4 + 8 + 19 = 31 blocks</code>.<br/>
+              Because the query is <code>SELECT COUNT(*)</code>, no base table attributes are needed. The count of surviving RIDs after in-memory intersection directly yields the answer. Base table access = <strong>0 blocks</strong>.<br/>
+              Total I/O = <code>31 + 0 = 31 blocks</code>!</p>
+            </details>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 5: GRAND SUMMARY & EXAM GAME PLAN
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-5" style="display: none">
+          <h2><span class="topic-num">5</span>Grand Summary &amp; Exam Game Plan</h2>
+          <p class="topic-subtitle">Master formula cheat sheet, comprehensive comparison matrices, the top 10 exam traps, and time allocation strategy.</p>
+
+          <p>
+            This grand summary synthesizes the entire Midterm 2 curriculum into high-yield reference cards. Review this page during the final 30 minutes before entering the exam room.
+          </p>
+
+          <h3>1. Master Formula Reference Cheat Sheet</h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Metric / Operation</th>
+                <th>Exact Formula</th>
+                <th>Key Rule / Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="4"><strong>Block Arithmetic</strong></td>
+                <td>Base Blocking Factor</td>
+                <td><code>bfr = ⌊ B / R ⌋</code></td>
+                <td>Always integer floor</td>
+              </tr>
+              <tr>
+                <td>Index Blocking Factor</td>
+                <td><code>bfri = ⌊ B / Ri ⌋</code></td>
+                <td>Always integer floor</td>
+              </tr>
+              <tr>
+                <td>Base Table Blocks</td>
+                <td><code>b = ⌈ r / bfr ⌉</code></td>
+                <td>Always integer ceil</td>
+              </tr>
+              <tr>
+                <td>Index Table Blocks</td>
+                <td><code>bi = ⌈ r / bfri ⌉</code></td>
+                <td>Always integer ceil</td>
+              </tr>
+              <tr>
+                <td rowspan="7"><strong>Indexing I/O Costs</strong></td>
+                <td>Full Table Scan (FTS)</td>
+                <td><code>Cost = b</code></td>
+                <td>Sequential base scan</td>
+              </tr>
+              <tr>
+                <td>Single Index</td>
+                <td><code>Cost = ⌈Q_best / bfri⌉ + min(Q_best, b)</code></td>
+                <td>Pick lowest <em>Q</em>; cap base reads at <em>b</em></td>
+              </tr>
+              <tr>
+                <td>Combining Multiple</td>
+                <td><code>Cost = ∑⌈Q_i / bfri⌉ + min(Q_comb, b)</code></td>
+                <td>Base reads = 0 for <code>COUNT(*)</code></td>
+              </tr>
+              <tr>
+                <td>Dynamic Bitmap</td>
+                <td><code>Cost = ∑⌈Q_i / bfri⌉ + min(Q_comb, b)</code></td>
+                <td>Identical I/O to Combining Multiple</td>
+              </tr>
+              <tr>
+                <td>Static Bitmap</td>
+                <td><code>Cost = (Vals Queried) × ⌈r / (B×8)⌉ + min(Q_comb, b)</code></td>
+                <td>Remember <em>B</em> × 8 bits per block</td>
+              </tr>
+              <tr>
+                <td>Composite Index</td>
+                <td><code>Cost = ∑⌈Q_combo / bfri⌉ + Q_comb</code></td>
+                <td>Evaluate each Cartesian combination</td>
+              </tr>
+              <tr>
+                <td>Clustered Index</td>
+                <td><code>Cost = ⌈Q / bfri⌉ + ⌈Q / bfr⌉</code></td>
+                <td>Base reads divided by <code>bfr</code>!</td>
+              </tr>
+              <tr>
+                <td rowspan="3"><strong>Join I/O Costs</strong></td>
+                <td>Hash Join (<em>b</em><sub>build</sub> ≤ <em>K</em>)</td>
+                <td><code>Cost = Filter(Outer) + b_build + b_probe</code></td>
+                <td>Single pass, no recursive partition</td>
+              </tr>
+              <tr>
+                <td>Sort-Merge Join</td>
+                <td><code>Cost = Filter(Outer) + Sort(R1) + Sort(R2) + (b1 + b2)</code></td>
+                <td>Sort = 0 if already clustered or fits in <em>K</em></td>
+              </tr>
+              <tr>
+                <td>Block NLJ (<em>b</em><sub>1</sub> ≤ <em>K</em> - 2)</td>
+                <td><code>Cost = Filter(Outer) + b1 + b2</code></td>
+                <td>Inner scanned only ONCE</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>2. Master Indexing Comparison Matrix</h3>
+          <p>Assume a benchmark table with <em>r</em> = <strong>128,000</strong>, <em>B</em> = <strong>16 KB</strong>, <em>R</em> = <strong>256 B</strong> (<em>bfr</em> = 64, <em>b</em> = 2,000), <em>R</em><sub>i</sub> = <strong>16 B</strong> (<em>bfri</em> = 1,024), and 3 predicates with <em>Q</em><sub>comb</sub> = <strong>35 rows</strong>:</p>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Technique</th>
+                <th>Index Access (Blocks)</th>
+                <th>Base Table Access (Blocks)</th>
+                <th>Total I/O</th>
+                <th>Rank &amp; Assessment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Static Bitmap Index</strong></td>
+                <td>5 (1+2+2 blocks)</td>
+                <td>35</td>
+                <td><strong class="good">40 I/Os</strong></td>
+                <td><span class="badge-tag badge-index">Rank 1</span> Best for low-cardinality flags</td>
+              </tr>
+              <tr>
+                <td><strong>Composite Index</strong></td>
+                <td>4 (1+1+1+1 blocks)</td>
+                <td>36</td>
+                <td><strong class="good">40 I/Os</strong></td>
+                <td><span class="badge-tag badge-index">Rank 1</span> Fast when index matches query exact order</td>
+              </tr>
+              <tr>
+                <td><strong>Clustered Index (on best attr)</strong></td>
+                <td>4</td>
+                <td>60 (<code>⌈3840 / 64⌉</code>)</td>
+                <td><strong>64 I/Os</strong></td>
+                <td><span class="badge-tag badge-index">Rank 3</span> Physically sorted contiguous reads</td>
+              </tr>
+              <tr>
+                <td><strong>Combining Multiple Indexes</strong></td>
+                <td>31 (4+8+19 blocks)</td>
+                <td>35</td>
+                <td><strong>66 I/Os</strong></td>
+                <td><span class="badge-tag badge-index">Rank 4</span> Robust, flexible multi-predicate filter</td>
+              </tr>
+              <tr>
+                <td><strong>Dynamic Bitmap Index</strong></td>
+                <td>31 (4+8+19 blocks)</td>
+                <td>35</td>
+                <td><strong>66 I/Os</strong></td>
+                <td><span class="badge-tag badge-index">Rank 4</span> Identical disk I/O to Combined Indexes</td>
+              </tr>
+              <tr>
+                <td><strong>Full Table Scan (FTS)</strong></td>
+                <td>0</td>
+                <td>2000</td>
+                <td><strong>2,000 I/Os</strong></td>
+                <td><span class="badge-tag badge-etl">Baseline</span> Constant baseline scan</td>
+              </tr>
+              <tr>
+                <td><strong>Single Index Access</strong></td>
+                <td>4</td>
+                <td>2000 (Capped: <code>3840 &gt; 2000</code>)</td>
+                <td><strong class="highlight">2,004 I/Os</strong></td>
+                <td><span class="badge-tag badge-join">Worst</span> Strictly worse than FTS!</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>3. Top 10 Exam Traps &amp; How to Avoid Them</h3>
+          <div class="card-grid-2">
+            <div class="sub-card">
+              <h4>Trap 1: Forgetting the <em>Q</em> ≥ <em>b</em> Cap</h4>
+              <p>When computing unclustered single index access, students often write <code>Total = 4 + 3840 = 3844</code>. Wrong! The base table only has 2,000 blocks, so you can never read 3,840 distinct blocks. It caps at <code>b = 2000</code>, giving <code>2004</code>.</p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 2: Bits per Block in Static Bitmaps</h4>
+              <p>Remember that block size <em>B</em> is in <strong>bytes</strong>, but each bitmap entry is <strong>1 bit</strong>! You must multiply by 8: <code>Bits per block = B × 8</code>. Omitting the × 8 makes your bitmap 8 times too large!</p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 3: Base Reads for COUNT(*)</h4>
+              <p>If a query asks for <code>SELECT COUNT(*)</code> and multiple secondary indexes exist, <strong>base table access is 0</strong>! RIDs can be counted directly after in-memory intersection without fetching base records.</p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 4: Forgetting the Outer Filter Cost in Joins</h4>
+              <p>When joining Table A and Table B where Table A has a WHERE filter, the total join cost MUST include the cost to filter Table A first: <code>Total = Filter(A) + Join_Cost</code>!</p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 5: Clustered Index on Join Key</h4>
+              <p>If the inner table has a clustered index on the join key (e.g. <code>BookLoans.BookID</code>), Sort-Merge Join requires <strong>0 sort I/O</strong> for that table because it is already sorted on disk!</p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 6: In-Memory Hash Join Check</h4>
+              <p>Always state the memory condition: <code>b_build ≤ K</code>. If the filtered outer table occupies 45 blocks and <em>K</em> = 100, explicitly write: <em>"Since 45 ≤ 100, the hash table fits entirely in memory; recursive partitioning is not required."</em></p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 7: Combining OR vs. AND Selectivity</h4>
+              <p>For independent <code>AND</code> conditions: <code>S = S1 × S2</code>. For <code>OR / IN</code> conditions on the same attribute: <code>S = S1 + S2</code>. Never multiply OR percentages!</p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 8: Floor vs. Ceil Misapplication</h4>
+              <p>Remember: <code>bfr = ⌊B/R⌋</code> (Floor). <code>bfri = ⌊B/Ri⌋</code> (Floor). But block allocation is ALWAYS <code>⌈r / bfr⌉</code> (Ceiling)!</p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 9: Two Inexpensive vs. Two Efficient Extraction</h4>
+              <p>If asked for the two most <em>inexpensive</em> extraction methods: Full Table Dumps and Timestamp-based queries. If asked for the two most <em>efficient immediate</em>: Log-based CDC and Triggers.</p>
+            </div>
+            <div class="sub-card">
+              <h4>Trap 10: Clustered Base Access Formula</h4>
+              <p>In a clustered index, base table access is <code>⌈Q / bfr⌉</code>, NOT <code>Q</code>! If <em>Q</em> = 6,000 and <em>bfr</em> = 40, base access is 150 blocks, not 6,000.</p>
+            </div>
+          </div>
+
+          <h3>4. 60-Minute Exam Time Management Strategy</h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Time Window</th>
+                <th>Target Question</th>
+                <th>Recommended Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Minutes 00 – 10</strong></td>
+                <td>Question 1 (ETL Theory)</td>
+                <td>Answer concisely in bullet points. Highlight technical keywords (Log-based CDC, surrogate key mapping table, NOLOGGING, direct-path load). Aim for full marks in 10 minutes.</td>
+              </tr>
+              <tr>
+                <td><strong>Minutes 10 – 15</strong></td>
+                <td>Scratch Setup for Numericals</td>
+                <td>Calculate and write down <em>B</em>, <em>R</em>, <em>R</em><sub>i</sub>, <em>r</em><sub>1</sub>, <em>r</em><sub>2</sub>, <em>bfr</em>, <em>bfri</em>, <em>b</em><sub>1</sub>, <em>b</em><sub>2</sub>, <em>K</em> and individual/combined selectivities on your scratch sheet. Verify with calculator.</td>
+              </tr>
+              <tr>
+                <td><strong>Minutes 15 – 35</strong></td>
+                <td>Question 2 (Indexing Numerical)</td>
+                <td>Solve each indexing technique step by step. Explicitly write: (1) Index Access Cost, (2) Base Table Access Cost, and (3) Total I/O Cost. State any capping rule used.</td>
+              </tr>
+              <tr>
+                <td><strong>Minutes 35 – 55</strong></td>
+                <td>Question 3 (Joining Numerical)</td>
+                <td>Solve SMJ, Hash Join, and NLJ. Explicitly include filter cost. Check memory condition <em>b</em><sub>build</sub> ≤ <em>K</em>. Clearly name the best NLJ variant (BNLJ or Clustered NLJ).</td>
+              </tr>
+              <tr>
+                <td><strong>Minutes 55 – 60</strong></td>
+                <td>Final Review &amp; Check</td>
+                <td>Ensure roll number is on every sheet. Check that all additions and ceil roundings are mathematically sound.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="summary-box">
+            <h4>Key Takeaways: Topic 5</h4>
+            <ul>
+              <li>Always show full formulas and intermediate values (<em>bfr</em>, <em>bfri</em>, <em>b</em>, <em>b</em><sub>i</sub>, <em>Q</em>) before writing the final number.</li>
+              <li>Calculators are allowed — use them to verify ceil roundings.</li>
+              <li>Next Step: Proceed to <a href="./14- Midterm 2 Solved Past Papers & Practice Problems.html" style="color: var(--ac); font-weight: 600;">Module 14: Midterm 2 Solved Past Papers</a> to practice every problem from Fall 2024, 2023, 2018, 2017, and 2016!</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- end module-container -->
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise();
+        }
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      
+      function initActiveTopic() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && topics.includes(hash)) {
+          showTopic(hash);
+        } else if (topics.length > 0) {
+          showTopic(topics[0]);
+        }
+      }
+      window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && topics.includes(hash)) showTopic(hash);
+      });
+      initActiveTopic();
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>

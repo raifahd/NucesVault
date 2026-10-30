@@ -22,33 +22,214 @@
         <input type="text" id="search-input" placeholder="Search topics&#8230;" onkeyup="filterContent()" />
       </div>
       <ul class="nav-list" id="nav-list">
-        <li><a class="nav-module-link" href="./1- Introduction to DW.html"><span class="nav-mod-num">01</span>Introduction to DW</a></li>
-        <li><a class="nav-module-link" href="./2- Quiz Prep - Intro to DW.html"><span class="nav-mod-num">02</span>Quiz Prep: Intro to DW</a></li>
-        <li><a class="nav-module-link" href="./3- High Performance DSS Database Design.html"><span class="nav-mod-num">03</span>Logical &amp; Physical Data Modeling</a></li>
-        <li><a class="nav-module-link" href="./4- Quiz Prep - DSS Database Design.html"><span class="nav-mod-num">04</span>Quiz Prep: DSS Database Design</a></li>
-        <li><a class="nav-module-link" href="./5- OLAP Implementation Techniques.html"><span class="nav-mod-num">05</span>OLAP Implementation Techniques</a></li>
         <li class="nav-section">
           <div class="nav-section-title" onclick="toggleSection(this)">
-            <span>Dimensional Modeling</span><span class="chevron">&#9660;</span>
+            <a class="nav-module-link" href="./1- Introduction to DW.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">01</span>Introduction to DW</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
           </div>
-          <ul class="nav-sublist">
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-1"><span class="nav-num">01</span>What is a Data Warehouse?</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-2"><span class="nav-num">02</span>Source Data Types</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-3"><span class="nav-num">03</span>Target System Qualities</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-4"><span class="nav-num">04</span>Data Staging &amp; ETL</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-5"><span class="nav-num">05</span>DW Building Blocks &amp; Components</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-6"><span class="nav-num">06</span>Data Warehouse vs Data Marts</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-7"><span class="nav-num">07</span>Business Intelligence (BI)</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-8"><span class="nav-num">08</span>Why is DW Hard? &amp; Scalability</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./2- Quiz Prep - Intro to DW.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">02</span>Quiz Prep: Intro to DW</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-1"><span class="nav-num">01</span>Chapter 1: The Compelling Need for Data Warehousing</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-2"><span class="nav-num">02</span>Chapter 2: Data Warehouse Building Blocks</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-3"><span class="nav-num">03</span>Chapter 1 &amp; 2 Review Questions</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-4"><span class="nav-num">04</span>Practice MCQs &amp; Matching Exercises</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./3- High Performance DSS Database Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">03</span>Logical &amp; Physical Modeling</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-1"><span class="nav-num">01</span>Review of Normalization (Database 101)</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-2"><span class="nav-num">02</span>Pre-join Denormalization</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-3"><span class="nav-num">03</span>Column Replication or Movement</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-4"><span class="nav-num">04</span>Pre-aggregation</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./4- Quiz Prep - DSS Database Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">04</span>Quiz Prep: DSS Design</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./4- Quiz Prep - DSS Database Design.html#topic-1"><span class="nav-num">01</span>Database Design & Normalization</a></li>
+            <li><a class="nav-cross-link" href="./4- Quiz Prep - DSS Database Design.html#topic-2"><span class="nav-num">02</span>Denormalization Techniques</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./5- OLAP Implementation Techniques.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">05</span>OLAP Techniques</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-1"><span class="nav-num">01</span>OLAP Framework &amp; Decision Support</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-2"><span class="nav-num">02</span>Multidimensional Analysis &amp; Cubes</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-3"><span class="nav-num">03</span>OLAP Operations</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-4"><span class="nav-num">04</span>MOLAP vs ROLAP vs HOLAP vs DOLAP</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-5"><span class="nav-num">05</span>Star Schema Design &amp; Aggregate Fact Tables</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-6"><span class="nav-num">06</span>Topic Summary &amp; Additional Practice</a></li>
+          </ul>
+        </li>
+        <!-- CURRENT ACTIVE MODULE: MODULE 06 -->
+        <li class="nav-section active-module">
+          <div class="nav-section-title active-title" onclick="toggleSection(this)">
+            <span style="color: var(--ac); font-weight: 700;"><span class="nav-mod-num" style="background: var(--ac); color: #fff; margin-right: 6px;">06</span>Dimensional Modeling</span>
+            <span class="chevron" style="transform: rotate(0deg);">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: block;">
             <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Principles of Dimensional Modeling</a></li>
-            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Fact Tables — Deep Dive</a></li>
-            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Dimension Tables — Deep Dive</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Fact Tables &#8212; Deep Dive</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Dimension Tables &#8212; Deep Dive</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Natural vs. Surrogate Keys</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Slowly Changing Dimensions (SCD)</a></li>
             <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Snowflake Schema vs. Star Schema</a></li>
-            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>Physical Design for ROLAP</a></li>
-            <li><a href="javascript:void(0)" onclick="showTopic('topic-8')"><span class="nav-num">08</span>Topic Summary & Practice Questions</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-7')"><span class="nav-num">07</span>Physical Design for ROLAP Deployment</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-8')"><span class="nav-num">08</span>Topic Summary &amp; Practice Questions</a></li>
           </ul>
         </li>
-        <li><a class="nav-module-link" href="./7- Solved Sample Midterm.html"><span class="nav-mod-num">07</span>Solved Sample Midterm</a></li>
-        <li><a class="nav-module-link" href="./8- Dimensional Modeling Concepts.html"><span class="nav-mod-num">08</span>Dimensional Modeling Concepts</a></li>
-        <li><a class="nav-module-link" href="./9- Lab Midterm Prep.html"><span class="nav-mod-num">09</span>Lab Archive (Labs 1–6 Survey)</a></li>
-        <li><a class="nav-module-link" href="./10- Query Processing, Join Techniques & ETL.html"><span class="nav-mod-num">10</span>Query Processing, Joins &amp; ETL</a></li>
-        <li><a class="nav-module-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html" style="color:var(--ac); font-weight:600;"><span class="nav-mod-num" style="background:var(--ac); color:#fff;">11</span>🎯 Lab Midterm — Sequential Guide</a></li>
-        <li><a class="nav-module-link" href="./12- Indexing Techniques & Physical Design.html" style="color:var(--ac); font-weight:600;"><span class="nav-mod-num" style="background:var(--ac); color:#fff;">12</span>🎯 Indexing Techniques &amp; Physical Design</a></li>
-
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./7- Solved Sample Midterm.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">07</span>Solved Sample Midterm</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-1"><span class="nav-num">01</span>Sample Paper &amp; Instructions</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-2"><span class="nav-num">02</span>Q1 &#8212; Short Answer (15 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-3"><span class="nav-num">03</span>Q2 &#8212; Star Schema Design (10 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-4"><span class="nav-num">04</span>Q3 &#8212; Cardinality &amp; Aggregation (8 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-5"><span class="nav-num">05</span>Q4 &#8212; Pre-Join Denormalization (7 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-6"><span class="nav-num">06</span>Past Paper Analysis &amp; Watchlist</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./8- Dimensional Modeling Concepts.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">08</span>Dimensional Modeling Concepts</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-1"><span class="nav-num">01</span>Dimensional Modeling Basics</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-2"><span class="nav-num">02</span>Star Schema vs. Snowflake Schema vs. Hybrid</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-3"><span class="nav-num">03</span>Factless Fact Table</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-4"><span class="nav-num">04</span>Multi-Fact Star Schema (Families of Stars)</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-5"><span class="nav-num">05</span>Shared &amp; Conforming Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-6"><span class="nav-num">06</span>Multi Star Schema &amp; Degenerate Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-7"><span class="nav-num">07</span>Junk Dimension</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-8"><span class="nav-num">08</span>Multi-Flavor Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-9"><span class="nav-num">09</span>Natural vs. Surrogate Key Designs</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-10"><span class="nav-num">10</span>Slowly Changing Dimensions (SCD 1, 2, 3)</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-11"><span class="nav-num">11</span>Rapidly Changing (Large) Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-12"><span class="nav-num">12</span>Additivity of Measures: Fully, Semi, Non-Additive</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-13"><span class="nav-num">13</span>Aggregate Fact Tables &amp; N-Way Aggregates</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-14"><span class="nav-num">14</span>Snapshot &amp; Transaction Fact Tables</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-15"><span class="nav-num">15</span>Core and Custom Fact Tables</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./9- Lab Midterm Prep.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">09</span>Lab Archive (Labs 1–6 Survey)</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-1"><span class="nav-num">01</span>OLTP vs DSS vs DW</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-2"><span class="nav-num">02</span>PostgreSQL Basics</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-3"><span class="nav-num">03</span>Analytical SQL</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-4"><span class="nav-num">04</span>Power BI</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-5"><span class="nav-num">05</span>Normalization &amp; Denormalization</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-6"><span class="nav-num">06</span>Dimensional Modeling</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-7"><span class="nav-num">07</span>OLAP: ROLLUP, CUBE &amp; Implementation Types</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-8"><span class="nav-num">08</span>DW Implementation &amp; ETL</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-9"><span class="nav-num">09</span>All Labs Concise Master Summary &amp; Cheatsheet</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-10"><span class="nav-num">10</span>Difficult &amp; Tricky Exam Questions (Worked Solutions)</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./10- Query Processing, Join Techniques & ETL.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">10</span>Query Processing &amp; Joins</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-1"><span class="nav-num">01</span>Query Execution Engine Architecture</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-2"><span class="nav-num">02</span>Join Techniques: DSS vs. OLTP &amp; Scalability</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-3"><span class="nav-num">03</span>Sort-Merge vs. Hash Joins &amp; Graefe Duality</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-4"><span class="nav-num">04</span>Query Optimization &amp; Cost Estimation</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-5"><span class="nav-num">05</span>Data Extraction, Transformation &amp; Loading (ETL)</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-6"><span class="nav-num">06</span>Master Comparison Matrix &amp; Practice Quiz</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">11</span>🎯 Lab Midterm — Sequential Guide</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-1"><span class="nav-num">01</span>Master Exam Execution Roadmap</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-2"><span class="nav-num">02</span>Lab 6: Schemas, Staging &amp; Data Audit</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-3"><span class="nav-num">03</span>Lab 6: Dimensions &amp; DimDate Generation</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-4"><span class="nav-num">04</span>Lab 6: Fact Load &amp; Full Reconciliation</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-5"><span class="nav-num">05</span>Lab 4: Star Schema &amp; ROLAP Queries</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-6"><span class="nav-num">06</span>Lab 4: ROLLUP, CUBE &amp; Subtotal Labeling</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-7"><span class="nav-num">07</span>Lab 4: MOLAP Simulation &amp; Architectures</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-8"><span class="nav-num">08</span>Exam Question Types &amp; Viva Traps</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-9"><span class="nav-num">09</span>Master Syntax &amp; Functions Cheatsheet</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./12- Indexing Techniques & Physical Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">12</span>Indexing Techniques &amp; Physical Design</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-1"><span class="nav-num">01</span>Indexing Fundamentals: B-Tree vs. Hash Indexing</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-2"><span class="nav-num">02</span>Primary &amp; Secondary Indexing: Teradata MPP</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-3"><span class="nav-num">03</span>Selectivity Math &amp; Break-Even Analysis</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-4"><span class="nav-num">04</span>Advanced Indexing: Bitmaps, Composite &amp; Covered</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-5"><span class="nav-num">05</span>Physical Storage &amp; Ponniah Chapter 18</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-6"><span class="nav-num">06</span>Quiz Review &amp; Solved MCQs</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./13- Midterm 2 Grand Exam Prep Summary.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">13</span>⭐ Midterm 2 Grand Exam Prep Summary</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-1"><span class="nav-num">01</span>Exam Blueprint &amp; Mathematical Nomenclature</a></li>
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-2"><span class="nav-num">02</span>ETL Architecture &amp; Engineering</a></li>
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-3"><span class="nav-num">03</span>Join Techniques &amp; Cost Modeling</a></li>
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-4"><span class="nav-num">04</span>Indexing Techniques &amp; Access Paths Masterclass</a></li>
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-5"><span class="nav-num">05</span>Grand Summary &amp; Exam Game Plan</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">14</span>📝 Midterm 2 Solved Past Papers</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-1"><span class="nav-num">01</span>Fall 2024 Sessional-II Exam (Nov 4, 2024)</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-2"><span class="nav-num">02</span>Fall 2023 Midterm-2 (+ Official FAST Solution)</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-3"><span class="nav-num">03</span>Fall 2018 Midterm-2 Exam</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-4"><span class="nav-num">04</span>Fall 2017 Midterm-2 Exam</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-5"><span class="nav-num">05</span>Fall 2016 Midterm-2 Exam</a></li>
+            <li><a class="nav-cross-link" href="./14- Midterm 2 Solved Past Papers & Practice Problems.html#topic-6"><span class="nav-num">06</span>Practice Problems 1, 2 &amp; 3 Master Solutions</a></li>
+          </ul>
+        </li>
       </ul>
     </div>
 
@@ -702,7 +883,7 @@ Size: 50 x 500 x 60 = 1,500,000 rows</pre>
     <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' })">&#8593;</button>
 
     <script>
-      const topics = ["topic-1","topic-2","topic-3","topic-4","topic-5","topic-6","topic-7","topic-8"];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7", "topic-8"];
       let currentTopicIndex = 0;
       function getTopicTitle(id) {
         const link = document.querySelector(".nav-sublist a[onclick*=\"'" + id + "'\"]") || document.querySelector(".nav-sublist a[onclick*='\"" + id + "\"']");
@@ -729,7 +910,21 @@ Size: 50 x 500 x 60 = 1,500,000 rows</pre>
       function goNext() { if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]); }
       function toggleSection(el) { const s = el.nextElementSibling, c = el.querySelector(".chevron"); if (s.style.display === "none") { s.style.display = "block"; c.style.transform = "rotate(0deg)"; } else { s.style.display = "none"; c.style.transform = "rotate(-90deg)"; } }
       function filterContent() { const q = document.getElementById("search-input").value.toLowerCase(); document.querySelectorAll(".nav-sublist li").forEach(i => i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none"); }
-      if (topics.length > 0) showTopic(topics[0]);
+      
+      function initActiveTopic() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && topics.includes(hash)) {
+          showTopic(hash);
+        } else if (topics.length > 0) {
+          showTopic(topics[0]);
+        }
+      }
+      window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && topics.includes(hash)) showTopic(hash);
+      });
+      initActiveTopic();
+
       const mc = document.getElementById("main-content"), bb = document.getElementById("back-to-top");
       mc.addEventListener("scroll", () => bb.style.display = mc.scrollTop > 300 ? "flex" : "none");
     </script>

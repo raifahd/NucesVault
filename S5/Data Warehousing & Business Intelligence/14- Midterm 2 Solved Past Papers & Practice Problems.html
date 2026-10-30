@@ -1,0 +1,1534 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DW &amp; BI — Midterm 2 Solved Past Papers &amp; Practice Problems</title>
+    <meta
+      name="description"
+      content="Exhaustive, step-by-step solved past papers and practice problems for FAST-NUCES DW Midterm 2: Fall 2024, Fall 2023, Fall 2018, Fall 2017, Fall 2016, and Practice Problems 1-3."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+      .source-citation {
+        background: rgba(217, 119, 87, 0.08);
+        border-left: 3px solid var(--ac);
+        padding: 8px 14px;
+        border-radius: 0 6px 6px 0;
+        font-size: 0.82rem;
+        color: var(--mt);
+        margin-bottom: 20px;
+        line-height: 1.5;
+      }
+      .source-citation strong { color: var(--ac); }
+
+      .math-box {
+        background: #111114;
+        border: 1px solid #27272a;
+        border-left: 4px solid var(--ac);
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 16px 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.88rem;
+        color: #e4e4e7;
+        overflow-x: auto;
+        line-height: 1.6;
+      }
+      .math-box .math-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--ac);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .math-box .formula { color: #38bdf8; font-weight: 600; }
+      .math-box .highlight { color: #f87171; font-weight: 700; }
+      .math-box .good { color: #4ade80; font-weight: 700; }
+      .math-box .comment { color: #a1a1aa; font-style: italic; }
+
+      .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 0.85rem;
+      }
+      .styled-table th {
+        background: #1a1a20;
+        color: var(--ac);
+        text-align: left;
+        padding: 10px 14px;
+        border-bottom: 2px solid #2d2d35;
+        font-weight: 600;
+      }
+      .styled-table td {
+        padding: 10px 14px;
+        border-bottom: 1px solid #222228;
+        color: var(--tx);
+        vertical-align: top;
+      }
+      .styled-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+      .paper-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        background: #16161c;
+        border: 1px solid #27272a;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 18px;
+        font-size: 0.82rem;
+      }
+      .paper-meta-item { display: flex; align-items: center; gap: 6px; }
+      .paper-meta-item strong { color: var(--ac); }
+
+      .question-block {
+        background: #131317;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin: 20px 0;
+      }
+      .question-block h3 {
+        margin: 0 0 10px 0;
+        color: var(--ac);
+        font-size: 1.05rem;
+      }
+      .question-text {
+        font-style: italic;
+        color: #d4d4d8;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 12px 14px;
+        border-radius: 6px;
+        margin-bottom: 14px;
+        border-left: 3px solid #71717a;
+        font-size: 0.88rem;
+        line-height: 1.6;
+      }
+
+      .solution-heading {
+        font-weight: 700;
+        color: #4ade80;
+        font-size: 0.88rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 12px 0 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .step-list {
+        margin: 8px 0;
+        padding-left: 20px;
+      }
+      .step-list li {
+        margin-bottom: 6px;
+        line-height: 1.55;
+      }
+
+      .badge-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-right: 6px;
+      }
+      .badge-verified { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+     ═══════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Warehousing &amp; BI</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./1- Introduction to DW.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">01</span>Introduction to DW</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-1"><span class="nav-num">01</span>What is a Data Warehouse?</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-2"><span class="nav-num">02</span>Source Data Types</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-3"><span class="nav-num">03</span>Target System Qualities</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-4"><span class="nav-num">04</span>Data Staging &amp; ETL</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-5"><span class="nav-num">05</span>DW Building Blocks &amp; Components</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-6"><span class="nav-num">06</span>Data Warehouse vs Data Marts</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-7"><span class="nav-num">07</span>Business Intelligence (BI)</a></li>
+            <li><a class="nav-cross-link" href="./1- Introduction to DW.html#topic-8"><span class="nav-num">08</span>Why is DW Hard? &amp; Scalability</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./2- Quiz Prep - Intro to DW.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">02</span>Quiz Prep: Intro to DW</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-1"><span class="nav-num">01</span>Chapter 1: The Compelling Need for Data Warehousing</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-2"><span class="nav-num">02</span>Chapter 2: Data Warehouse Building Blocks</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-3"><span class="nav-num">03</span>Chapter 1 &amp; 2 Review Questions</a></li>
+            <li><a class="nav-cross-link" href="./2- Quiz Prep - Intro to DW.html#topic-4"><span class="nav-num">04</span>Practice MCQs &amp; Matching Exercises</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./3- High Performance DSS Database Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">03</span>Logical &amp; Physical Modeling</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-1"><span class="nav-num">01</span>Review of Normalization (Database 101)</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-2"><span class="nav-num">02</span>Pre-join Denormalization</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-3"><span class="nav-num">03</span>Column Replication or Movement</a></li>
+            <li><a class="nav-cross-link" href="./3- High Performance DSS Database Design.html#topic-4"><span class="nav-num">04</span>Pre-aggregation</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./4- Quiz Prep - DSS Database Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">04</span>Quiz Prep: DSS Design</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./4- Quiz Prep - DSS Database Design.html#topic-1"><span class="nav-num">01</span>Database Design & Normalization</a></li>
+            <li><a class="nav-cross-link" href="./4- Quiz Prep - DSS Database Design.html#topic-2"><span class="nav-num">02</span>Denormalization Techniques</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./5- OLAP Implementation Techniques.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">05</span>OLAP Techniques</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-1"><span class="nav-num">01</span>OLAP Framework &amp; Decision Support</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-2"><span class="nav-num">02</span>Multidimensional Analysis &amp; Cubes</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-3"><span class="nav-num">03</span>OLAP Operations</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-4"><span class="nav-num">04</span>MOLAP vs ROLAP vs HOLAP vs DOLAP</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-5"><span class="nav-num">05</span>Star Schema Design &amp; Aggregate Fact Tables</a></li>
+            <li><a class="nav-cross-link" href="./5- OLAP Implementation Techniques.html#topic-6"><span class="nav-num">06</span>Topic Summary &amp; Additional Practice</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./6- Dimensional Modeling.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">06</span>Dimensional Modeling</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-1"><span class="nav-num">01</span>Principles of Dimensional Modeling</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-2"><span class="nav-num">02</span>Fact Tables &#8212; Deep Dive</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-3"><span class="nav-num">03</span>Dimension Tables &#8212; Deep Dive</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-4"><span class="nav-num">04</span>Natural vs. Surrogate Keys</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-5"><span class="nav-num">05</span>Slowly Changing Dimensions (SCD)</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-6"><span class="nav-num">06</span>Snowflake Schema vs. Star Schema</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-7"><span class="nav-num">07</span>Physical Design for ROLAP Deployment</a></li>
+            <li><a class="nav-cross-link" href="./6- Dimensional Modeling.html#topic-8"><span class="nav-num">08</span>Topic Summary &amp; Practice Questions</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./7- Solved Sample Midterm.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">07</span>Solved Sample Midterm</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-1"><span class="nav-num">01</span>Sample Paper &amp; Instructions</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-2"><span class="nav-num">02</span>Q1 &#8212; Short Answer (15 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-3"><span class="nav-num">03</span>Q2 &#8212; Star Schema Design (10 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-4"><span class="nav-num">04</span>Q3 &#8212; Cardinality &amp; Aggregation (8 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-5"><span class="nav-num">05</span>Q4 &#8212; Pre-Join Denormalization (7 marks)</a></li>
+            <li><a class="nav-cross-link" href="./7- Solved Sample Midterm.html#topic-6"><span class="nav-num">06</span>Past Paper Analysis &amp; Watchlist</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./8- Dimensional Modeling Concepts.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">08</span>Dimensional Modeling Concepts</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-1"><span class="nav-num">01</span>Dimensional Modeling Basics</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-2"><span class="nav-num">02</span>Star Schema vs. Snowflake Schema vs. Hybrid</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-3"><span class="nav-num">03</span>Factless Fact Table</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-4"><span class="nav-num">04</span>Multi-Fact Star Schema (Families of Stars)</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-5"><span class="nav-num">05</span>Shared &amp; Conforming Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-6"><span class="nav-num">06</span>Multi Star Schema &amp; Degenerate Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-7"><span class="nav-num">07</span>Junk Dimension</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-8"><span class="nav-num">08</span>Multi-Flavor Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-9"><span class="nav-num">09</span>Natural vs. Surrogate Key Designs</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-10"><span class="nav-num">10</span>Slowly Changing Dimensions (SCD 1, 2, 3)</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-11"><span class="nav-num">11</span>Rapidly Changing (Large) Dimensions</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-12"><span class="nav-num">12</span>Additivity of Measures: Fully, Semi, Non-Additive</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-13"><span class="nav-num">13</span>Aggregate Fact Tables &amp; N-Way Aggregates</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-14"><span class="nav-num">14</span>Snapshot &amp; Transaction Fact Tables</a></li>
+            <li><a class="nav-cross-link" href="./8- Dimensional Modeling Concepts.html#topic-15"><span class="nav-num">15</span>Core and Custom Fact Tables</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./9- Lab Midterm Prep.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">09</span>Lab Archive (Labs 1–6 Survey)</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-1"><span class="nav-num">01</span>OLTP vs DSS vs DW</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-2"><span class="nav-num">02</span>PostgreSQL Basics</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-3"><span class="nav-num">03</span>Analytical SQL</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-4"><span class="nav-num">04</span>Power BI</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-5"><span class="nav-num">05</span>Normalization &amp; Denormalization</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-6"><span class="nav-num">06</span>Dimensional Modeling</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-7"><span class="nav-num">07</span>OLAP: ROLLUP, CUBE &amp; Implementation Types</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-8"><span class="nav-num">08</span>DW Implementation &amp; ETL</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-9"><span class="nav-num">09</span>All Labs Concise Master Summary &amp; Cheatsheet</a></li>
+            <li><a class="nav-cross-link" href="./9- Lab Midterm Prep.html#topic-10"><span class="nav-num">10</span>Difficult &amp; Tricky Exam Questions (Worked Solutions)</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./10- Query Processing, Join Techniques & ETL.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">10</span>Query Processing &amp; Joins</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-1"><span class="nav-num">01</span>Query Execution Engine Architecture</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-2"><span class="nav-num">02</span>Join Techniques: DSS vs. OLTP &amp; Scalability</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-3"><span class="nav-num">03</span>Sort-Merge vs. Hash Joins &amp; Graefe Duality</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-4"><span class="nav-num">04</span>Query Optimization &amp; Cost Estimation</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-5"><span class="nav-num">05</span>Data Extraction, Transformation &amp; Loading (ETL)</a></li>
+            <li><a class="nav-cross-link" href="./10- Query Processing, Join Techniques & ETL.html#topic-6"><span class="nav-num">06</span>Master Comparison Matrix &amp; Practice Quiz</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">11</span>🎯 Lab Midterm — Sequential Guide</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-1"><span class="nav-num">01</span>Master Exam Execution Roadmap</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-2"><span class="nav-num">02</span>Lab 6: Schemas, Staging &amp; Data Audit</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-3"><span class="nav-num">03</span>Lab 6: Dimensions &amp; DimDate Generation</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-4"><span class="nav-num">04</span>Lab 6: Fact Load &amp; Full Reconciliation</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-5"><span class="nav-num">05</span>Lab 4: Star Schema &amp; ROLAP Queries</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-6"><span class="nav-num">06</span>Lab 4: ROLLUP, CUBE &amp; Subtotal Labeling</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-7"><span class="nav-num">07</span>Lab 4: MOLAP Simulation &amp; Architectures</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-8"><span class="nav-num">08</span>Exam Question Types &amp; Viva Traps</a></li>
+            <li><a class="nav-cross-link" href="./11- Lab Midterm Sequential Codes & Exam Guide.html#topic-9"><span class="nav-num">09</span>Master Syntax &amp; Functions Cheatsheet</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./12- Indexing Techniques & Physical Design.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">12</span>Indexing Techniques &amp; Physical Design</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-1"><span class="nav-num">01</span>Indexing Fundamentals: B-Tree vs. Hash Indexing</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-2"><span class="nav-num">02</span>Primary &amp; Secondary Indexing: Teradata MPP</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-3"><span class="nav-num">03</span>Selectivity Math &amp; Break-Even Analysis</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-4"><span class="nav-num">04</span>Advanced Indexing: Bitmaps, Composite &amp; Covered</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-5"><span class="nav-num">05</span>Physical Storage &amp; Ponniah Chapter 18</a></li>
+            <li><a class="nav-cross-link" href="./12- Indexing Techniques & Physical Design.html#topic-6"><span class="nav-num">06</span>Quiz Review &amp; Solved MCQs</a></li>
+          </ul>
+        </li>
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <a class="nav-module-link" href="./13- Midterm 2 Grand Exam Prep Summary.html" style="margin: 0; padding: 0; flex-grow: 1; text-decoration: none;" onclick="event.stopPropagation();"><span class="nav-mod-num">13</span>⭐ Midterm 2 Grand Exam Prep Summary</a>
+            <span class="chevron" style="transform: rotate(-90deg); padding-left: 6px;">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: none;">
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-1"><span class="nav-num">01</span>Exam Blueprint &amp; Mathematical Nomenclature</a></li>
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-2"><span class="nav-num">02</span>ETL Architecture &amp; Engineering</a></li>
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-3"><span class="nav-num">03</span>Join Techniques &amp; Cost Modeling</a></li>
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-4"><span class="nav-num">04</span>Indexing Techniques &amp; Access Paths Masterclass</a></li>
+            <li><a class="nav-cross-link" href="./13- Midterm 2 Grand Exam Prep Summary.html#topic-5"><span class="nav-num">05</span>Grand Summary &amp; Exam Game Plan</a></li>
+          </ul>
+        </li>
+        <!-- CURRENT ACTIVE MODULE: MODULE 14 -->
+        <li class="nav-section active-module">
+          <div class="nav-section-title active-title" onclick="toggleSection(this)">
+            <span style="color: var(--ac); font-weight: 700;"><span class="nav-mod-num" style="background: var(--ac); color: #fff; margin-right: 6px;">14</span>📝 Midterm 2 Solved Past Papers</span>
+            <span class="chevron" style="transform: rotate(0deg);">▼</span>
+          </div>
+          <ul class="nav-sublist" style="display: block;">
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-1')"><span class="nav-num">01</span>Fall 2024 Sessional-II Exam (Nov 4, 2024)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-2')"><span class="nav-num">02</span>Fall 2023 Midterm-2 (+ Official FAST Solution)</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-3')"><span class="nav-num">03</span>Fall 2018 Midterm-2 Exam</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-4')"><span class="nav-num">04</span>Fall 2017 Midterm-2 Exam</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-5')"><span class="nav-num">05</span>Fall 2016 Midterm-2 Exam</a></li>
+            <li><a href="javascript:void(0)" onclick="showTopic('topic-6')"><span class="nav-num">06</span>Practice Problems 1, 2 &amp; 3 Master Solutions</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════ -->
+    <div id="main-content">
+      <div class="module-container">
+        <div class="module-header">
+          <div class="module-eyebrow">FAST-NUCES • Exam Solutions Repository</div>
+          <h1 class="module-title">Midterm 2 Solved Past Papers &amp; Practice Problems</h1>
+        </div>
+
+        <div class="source-citation">
+          <strong>Exam Source Archive:</strong> Complete, verified, step-by-step solutions for 5 Midterm papers (Fall 2024, Fall 2023, Fall 2018, Fall 2017, Fall 2016) and 3 Practice Problem Sets from the School of Computing. All formulas and working strictly follow the FAST official notation.
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 1: FALL 2024 SESSIONAL-II EXAM
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Fall 2024 Sessional-II Exam (Nov 4, 2024)</h2>
+          <p class="topic-subtitle">Instructor: M. Ishaq Raza | Total Marks: 25 | Course: DS3003 / CS4058</p>
+
+          <div class="paper-meta">
+            <div class="paper-meta-item"><strong>Date:</strong> November 4, 2024</div>
+            <div class="paper-meta-item"><strong>Duration:</strong> 60 Minutes</div>
+            <div class="paper-meta-item"><strong>Questions:</strong> 3</div>
+            <div class="paper-meta-item"><strong>Status:</strong> <span class="badge-tag badge-verified">100% Complete &amp; Verified</span></div>
+          </div>
+
+          <!-- Q1 -->
+          <div class="question-block">
+            <h3>Q. No 1: ETL Strategies &amp; Extraction [3 + 2 = 5 Points]</h3>
+            <div class="question-text">
+              a. When it is appropriate to use full data refresh loading strategy? Also suggest at least two practical steps that expedite the full data refresh loading process. [3 Points]<br/>
+              b. Briefly explain the two most efficient immediate data extraction techniques. [2 Points]
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+            <p><strong>Part a: When to use Full Data Refresh:</strong></p>
+            <ul class="step-list">
+              <li><strong>Small to Medium Dimension Tables:</strong> Dimension tables with static or slowly changing attributes (e.g., Lookup tables, Store dimension, Date dimension, Status codes) where total volume is small (&le;100k rows) and dropping/reloading is faster than row-by-row comparisons.</li>
+              <li><strong>High Volatility / Massive Change Percentage:</strong> When a significant fraction of data changes per refresh cycle (&gt;30–40% of records). Performing row-by-row delta tracking and individual update queries costs more I/O than truncating and reloading the entire table.</li>
+              <li><strong>Lack of Source Delta Tracking:</strong> When legacy source systems have no update timestamps, audit columns, database triggers, or transaction log access to identify changed records.</li>
+              <li><strong>Initial Load &amp; Resynchronization:</strong> Initial warehouse populating or periodic disaster recovery resynchronization to eliminate data drift.</li>
+            </ul>
+
+            <p><strong>Two Practical Steps to Expedite Full Data Refresh:</strong></p>
+            <ul class="step-list">
+              <li><strong>Drop/Disable Secondary Indexes &amp; Constraints:</strong> Drop secondary B-tree indexes and disable foreign key constraints before bulk loading. Inserting rows into active indexes causes severe random I/O and B-tree page splits. Rebuild indexes in bulk via parallel external sort after data insertion.</li>
+              <li><strong>Direct-Path Bulk Loading:</strong> Utilize direct-path loading utilities (e.g., Oracle Direct Path / SQL*Loader, PostgreSQL COPY, MySQL LOAD DATA INFILE, Teradata FastLoad) that format data directly into database blocks above the high-water mark, bypassing the database buffer cache and undo/rollback generation.</li>
+              <li><strong>NOLOGGING Mode:</strong> Set the target table/session to <code>NOLOGGING</code> to disable transaction redo logging, removing disk I/O bottlenecks on the transaction log.</li>
+            </ul>
+
+            <p><strong>Part b: Two Most Efficient Immediate Data Extraction Techniques:</strong></p>
+            <ul class="step-list">
+              <li><strong>1. Log-Based Change Data Capture (CDC) / Redo Log Sniffing:</strong> An external reader daemon asynchronously reads the database engine's transaction redo log / Write-Ahead Log (WAL). It captures every <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> with both before-and-after images without issuing any queries to the operational tables. It is considered the <em>most efficient</em> because it imposes <strong>zero overhead or locking</strong> on operational OLTP transactions.</li>
+              <li><strong>2. Database Triggers (Trigger-Based CDC):</strong> <code>AFTER INSERT</code>, <code>AFTER UPDATE</code>, and <code>AFTER DELETE</code> triggers defined on source tables write modified row keys or full records into shadow staging tables or event queues. It captures changes immediately at transaction commit time with 100% accuracy, though it introduces minor commit latency to operational transactions.</li>
+            </ul>
+          </div>
+
+          <!-- Given Stats -->
+          <div class="definition">
+            <div class="callout-label">Given Scenario &amp; Statistics for Q2 &amp; Q3</div>
+            <p><strong>System:</strong> Library System</p>
+            <ul style="margin: 6px 0 12px 18px; line-height: 1.6;">
+              <li><code>Book (BookID, Title, Publisher, PublishYear, Author, ...)</code>: <em>r</em><sub>B</sub> = <strong>100,000</strong> rows</li>
+              <li><code>BookLoan (BookID, BranchID, CardNo, DateOut, DueDate, ...)</code>: <em>r</em><sub>L</sub> = <strong>2,000,000</strong> rows</li>
+              <li>Row width <em>R</em> = <strong>200 bytes</strong>, Index entry width <em>R</em><sub>i</sub> = <strong>15 bytes</strong></li>
+              <li>Data block size <em>B</em> = <strong>8 KB</strong> (8,192 bytes), Buffer memory <em>K</em> = <strong>100 blocks</strong></li>
+              <li>Selectivities: Publisher 'Wiley' = <strong>10%</strong>; PublishYear '2023' = <strong>8%</strong>; Author 'Inmon' = <strong>4%</strong>; Author 'Kimball' = <strong>2%</strong></li>
+            </ul>
+
+            <div class="math-box" style="margin-top: 10px;">
+              <div class="math-title">Base Metric Computations</div>
+              <div>• <strong>Blocking Factor (Data):</strong> <span class="formula">bfr = ⌊B / R⌋ = ⌊8,192 / 200⌋ = 40 records/block</span></div>
+              <div>• <strong>Blocking Factor (Index):</strong> <span class="formula">bfri = ⌊B / R<sub>i</sub>⌋ = ⌊8,192 / 15⌋ = 546 entries/block</span></div>
+              <div>• <strong>Total Blocks (Book):</strong> <span class="formula">b<sub>B</sub> = ⌈r<sub>B</sub> / bfr⌉ = ⌈100,000 / 40⌉ = 2,500 blocks</span></div>
+              <div>• <strong>Total Blocks (BookLoan):</strong> <span class="formula">b<sub>L</sub> = ⌈r<sub>L</sub> / bfr⌉ = ⌈2,000,000 / 40⌉ = 50,000 blocks</span></div>
+              <div>• <strong>Index Blocks (Full Book):</strong> <span class="formula">b<sub>Bi</sub> = ⌈r<sub>B</sub> / bfri⌉ = ⌈100,000 / 546⌉ = 184 blocks</span></div>
+              <div style="margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 8px;">
+                <div>• <strong>Query Condition:</strong> <code>WHERE publisher = 'Wiley' AND publishYear = '2023' AND author IN ('Inmon', 'Kimball')</code></div>
+                <div>• <strong>Author Selectivity:</strong> <span class="good">4% + 2% = 6%</span> (OR condition adds)</div>
+                <div>• <strong>Combined Selectivity:</strong> <span class="formula">S<sub>comb</sub> = 0.10 × 0.08 × 0.06 = 0.00048 (0.048%)</span></div>
+                <div>• <strong>Combined Qualifying Rows:</strong> <span class="formula">Q<sub>comb</sub> = 0.00048 × 100,000 = 48 rows</span></div>
+                <div>• <strong>Filtered Book Blocks:</strong> <span class="good">b<sub>Book_filt</sub> = ⌈48 / 40⌉ = 2 blocks</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="question-block">
+            <h3>Q. No 2: Index Access Cost Calculation [10 Points]</h3>
+            <div class="question-text">
+              Calculate the total I/O cost for the Query using the following indexed access paths. Show all steps clearly.<br/>
+              Query: <code>SELECT * FROM book WHERE publisher= 'Wiley' AND publishYear= '2023' AND author IN ('Inmon', 'Kimball');</code><br/>
+              a. Clustered Index access (Assume clustered index exists on Author column)<br/>
+              b. Static Bitmap Index access (Assume static bitmap indexes exist on Publisher, PublishYear, and Author columns separately)
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+
+            <div class="math-box">
+              <div class="math-title">Part a: Clustered Index Access on Author Column</div>
+              1. Author condition: author IN ('Inmon', 'Kimball') has selectivity = 4% + 2% = 6%.<br/>
+              2. Qualifying rows for Author: <span class="formula">Q_author = 0.06 × 100,000 = 6,000 rows</span>.<br/>
+              3. Index access cost: <span class="formula">⌈ Q_author / bfri ⌉ = ⌈ 6,000 / 546 ⌉ = 11 blocks</span>.<br/>
+              4. Base table access cost:<br/>
+              &nbsp;&nbsp;&nbsp;Because the index on Author is <span class="good">CLUSTERED</span>, matching records are stored contiguously on disk!<br/>
+              &nbsp;&nbsp;&nbsp;Base table blocks = <span class="good">⌈ Q_author / bfr ⌉ = ⌈ 6,000 / 40 ⌉ = 150 blocks</span>.<br/>
+              5. (In memory, the other predicates publisher='Wiley' and publishYear='2023' are evaluated on the 6,000 rows).<br/>
+              6. <span class="good">Total I/O Cost = Index Cost + Base Table Cost = 11 + 150 = 161 I/Os</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part b: Static Bitmap Index Access</div>
+              1. Size of ONE static bitmap vector:<br/>
+              &nbsp;&nbsp;&nbsp;Bits per block = <span class="formula">B × 8 = 8,192 × 8 = 65,536 bits</span>.<br/>
+              &nbsp;&nbsp;&nbsp;Blocks per vector = <span class="formula">⌈ rB / 65,536 ⌉ = ⌈ 100,000 / 65,536 ⌉ = 2 blocks</span>.<br/>
+              2. Number of distinct indexed values queried:<br/>
+              &nbsp;&nbsp;&nbsp;• Publisher = 'Wiley' (1 value) → <span class="formula">1 × 2 = 2 blocks</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• PublishYear = '2023' (1 value) → <span class="formula">1 × 2 = 2 blocks</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• Author IN ('Inmon', 'Kimball') (2 values) → <span class="formula">2 × 2 = 4 blocks</span>.<br/>
+              3. Total Bitmap Index Access Cost = <span class="formula">2 + 2 + 4 = 8 blocks</span>.<br/>
+              4. In-Memory Bitwise Operations:<br/>
+              &nbsp;&nbsp;&nbsp;<code>(Bitmap_Inmon OR Bitmap_Kimball) AND Bitmap_Wiley AND Bitmap_2023</code>.<br/>
+              &nbsp;&nbsp;&nbsp;Resulting matching bits = <span class="good">48 qualifying rows</span>.<br/>
+              5. Base table access cost:<br/>
+              &nbsp;&nbsp;&nbsp;Since bitmaps are unclustered, each qualifying row may require 1 random block fetch.<br/>
+              &nbsp;&nbsp;&nbsp;As <span class="good">Q_comb = 48 &lt; bB = 2,500</span>, we read only 48 blocks of base table.<br/>
+              &nbsp;&nbsp;&nbsp;Base Table Access Cost = <span class="formula">48 blocks</span>.<br/>
+              6. <span class="good">Total I/O Cost = Index Cost + Base Table Cost = 8 + 48 = 56 I/Os</span>.
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="question-block">
+            <h3>Q. No 3: Join Execution &amp; Cost Evaluation [3 + 3 + 4 = 10 Points]</h3>
+            <div class="question-text">
+              Calculate the total I/O cost to execute this Query using the following joining techniques. Show all steps clearly. Assume static bitmap indexes exist on Publisher, PublishYear, and Author columns of Book table and there is no index on BookLoan table. [3+3+4= 10]<br/>
+              Query: <code>SELECT * FROM book JOIN BookLoan ON Book.BookID = BookLoan.BookID WHERE publisher= 'Wiley' AND publishYear= '2023' AND author IN ('Inmon', 'Kimball');</code><br/>
+              a. Sort Merge Join<br/>
+              b. Hash Join<br/>
+              c. Nested Loop Join (Identify the most efficient variant of NLJ in this scenario, then compute the I/O cost of that variant only.)
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+
+            <p><strong>Common Preliminary Step (Filter Book Table):</strong></p>
+            <p>Using the static bitmap index from Q2b, the I/O cost to filter the Book table is <span class="good">56 I/Os</span>. The resulting filtered Book relation contains <strong>48 records</strong>, which occupy <span class="good">⌈48 / 40⌉ = 2 blocks</span>.</p>
+
+            <div class="math-box">
+              <div class="math-title">Part a: Sort Merge Join (SMJ)</div>
+              1. Filter Book table: <span class="formula">56 I/Os</span> (Result = 48 records, 2 blocks).<br/>
+              2. Sort Book on BookID:<br/>
+              &nbsp;&nbsp;&nbsp;The filtered Book relation has 2 blocks. Since <span class="good">2 ≤ K = 100</span>, it fits entirely in memory!<br/>
+              &nbsp;&nbsp;&nbsp;Sort cost for Book = <span class="good">0 disk I/O</span> (sorted in RAM).<br/>
+              3. Sort BookLoan on BookID:<br/>
+              &nbsp;&nbsp;&nbsp;BookLoan has <span class="highlight">bL = 50,000 blocks</span> and NO index exists on BookLoan.<br/>
+              &nbsp;&nbsp;&nbsp;It must be sorted via External Merge Sort with K = 100 blocks:<br/>
+              &nbsp;&nbsp;&nbsp;• Pass 0 (Run creation): Reads and writes 50,000 blocks into N = ⌈50,000 / 100⌉ = 500 initial runs.<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pass 0 I/O = 2 × 50,000 = <span class="formula">100,000 I/Os</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• Merge Passes: (K - 1) = 99-way merge. Number of merge passes = ⌈log_99(500)⌉ = 2 passes.<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pass 1: Merge 500 runs into ⌈500 / 99⌉ = 6 runs. I/O = 2 × 50,000 = <span class="formula">100,000 I/Os</span>.<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pass 2 (Final merge): Merges 6 runs directly into the join merge phase = <span class="formula">50,000 I/Os</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• Total Sorting Cost for BookLoan = 100,000 + 100,000 + 50,000 = <span class="formula">250,000 I/Os</span>.<br/>
+              4. Merge Phase: Scan sorted Book (2 blocks) + scan sorted BookLoan (50,000 blocks) = <span class="formula">50,002 I/Os</span>.<br/>
+              5. <span class="highlight">Total SMJ Cost = 56 (filter) + 250,000 (sort BookLoan) + 2 (read Book) = 250,058 I/Os</span>.<br/>
+              <span class="comment">(If standard 2-pass external sort formula 2×bL(1 + ⌈log_(K-1)(⌈bL/K⌉)⌉) is used without pipelining final pass: Sort = 300,000 I/Os; Total = 350,058 I/Os).</span>
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part b: Hash Join (HJ)</div>
+              1. Filter Book table: <span class="formula">56 I/Os</span> (Result = 48 records, 2 blocks).<br/>
+              2. Designate Build and Probe inputs:<br/>
+              &nbsp;&nbsp;&nbsp;• Build Input: Filtered Book (<span class="formula">M = 2 blocks</span>).<br/>
+              &nbsp;&nbsp;&nbsp;• Probe Input: BookLoan (<span class="formula">bL = 50,000 blocks</span>).<br/>
+              3. Check In-Memory Condition:<br/>
+              &nbsp;&nbsp;&nbsp;Since <span class="good">M = 2 ≤ K = 100</span>, the entire hash table fits in available memory!<br/>
+              &nbsp;&nbsp;&nbsp;Recursive partitioning is <span class="good">NOT required</span>.<br/>
+              4. Hashing Cost: Read build table into hash table (2 blocks) + Stream probe table (50,000 blocks).<br/>
+              5. <span class="good">Total Hash Join Cost = Filter Cost + Build Cost + Probe Cost</span><br/>
+              &nbsp;&nbsp;&nbsp;<span class="good">= 56 + (2 + 50,000) = 50,058 I/Os</span>.<br/>
+              <span class="comment">(Note: If the 2 filtered Book blocks are retained in buffer directly after filtering, Build Cost = 0, giving 56 + 50,000 = 50,056 I/Os).</span>
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part c: Nested Loop Join (NLJ) Variant Identification &amp; Cost</div>
+              1. <strong>Identify Most Efficient NLJ Variant:</strong><br/>
+              &nbsp;&nbsp;&nbsp;• <em>Naive / Tuple NLJ:</em> 48 × 50,000 = 2,400,000 I/Os (Extremely inefficient).<br/>
+              &nbsp;&nbsp;&nbsp;• <em>Index NLJ:</em> Not applicable because problem explicitly states "there is no index on BookLoan table".<br/>
+              &nbsp;&nbsp;&nbsp;• <strong>Most Efficient Variant: Block Nested Loop Join (BNLJ)</strong> with filtered Book as the outer table.<br/>
+              2. <strong>Cost Calculation for BNLJ:</strong><br/>
+              &nbsp;&nbsp;&nbsp;• Outer table = Filtered Book (<span class="formula">b_outer = 2 blocks</span>).<br/>
+              &nbsp;&nbsp;&nbsp;• Inner table = BookLoan (<span class="formula">b_inner = 50,000 blocks</span>).<br/>
+              &nbsp;&nbsp;&nbsp;• Memory allocation: (K - 2) = 98 blocks for outer chunks, 1 block inner, 1 block output.<br/>
+              &nbsp;&nbsp;&nbsp;• Since <span class="good">b_outer = 2 ≤ 98</span>, ALL 2 blocks of the outer table fit into memory simultaneously!<br/>
+              &nbsp;&nbsp;&nbsp;• Therefore, the inner table BookLoan is scanned <span class="good">ONLY ONCE</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• BNLJ Join Cost = Outer blocks + ⌈b_outer / (K-2)⌉ × Inner blocks<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="formula">= 2 + 1 × 50,000 = 50,002 I/Os</span>.<br/>
+              3. Total Cost = Filter Cost of Book + BNLJ Join Cost<br/>
+              &nbsp;&nbsp;&nbsp;<span class="good">= 56 + 50,002 = 50,058 I/Os</span>.
+            </div>
+
+            <div class="note-box">
+              <div class="callout-label">Remarkable Observation for Exam Discussion</div>
+              Notice that <strong>Hash Join (50,058 I/Os)</strong> and <strong>Block Nested Loop Join (50,058 I/Os)</strong> yield the exact same I/O cost in this scenario! This occurs because the filtered outer relation is so small (2 blocks) that it fits entirely in memory in both algorithms, enabling a single sequential stream of the 50,000-block BookLoan table. Meanwhile, <strong>Sort-Merge Join (250,058 I/Os)</strong> is 5x slower due to the heavy external sorting required for the unindexed BookLoan table.
+            </div>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 2: FALL 2023 MIDTERM-2 (+ SOLUTION)
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-2" style="display: none">
+          <h2><span class="topic-num">2</span>Fall 2023 Midterm-2 (+ Official FAST Solution)</h2>
+          <p class="topic-subtitle">Course: CS4058 (BCS-7A) | Total Marks: 30 | Complete Solutions &amp; Grading Logic</p>
+
+          <div class="paper-meta">
+            <div class="paper-meta-item"><strong>Date:</strong> Fri 10-Nov-2023</div>
+            <div class="paper-meta-item"><strong>Weight:</strong> 15%</div>
+            <div class="paper-meta-item"><strong>Questions:</strong> 3 (6, 12, 12 marks)</div>
+            <div class="paper-meta-item"><strong>Status:</strong> <span class="badge-tag badge-verified">Matches FAST Official Solution</span></div>
+          </div>
+
+          <!-- Q1 -->
+          <div class="question-block">
+            <h3>Q1. Multi-Branch Financial DW ETL Strategy [6 Points]</h3>
+            <div class="question-text">
+              You manage a data warehousing system for a financial institution that stores transaction data from multiple branches. The data warehouse is updated daily with transaction data from various branches. However, recently, there have been performance issues during data extraction/loading due to the increasing volume of data. Design an efficient extraction/loading strategy for this scenario.<br/>
+              a. Which extraction and loading technique do you prefer in the need to update the data warehouse with new transactions from each branch daily and why?<br/>
+              b. When ETL process be performed to minimize the impact on the source systems and the extraction time? Specify appropriate time window.<br/>
+              c. Branch A uses numeric account numbers, while Branch B uses alphanumeric customer codes as identifiers. To ensure consistency in the data warehouse, you need to restructure these keys. Explain with an example.
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+            <p><strong>Part a: Preferred Extraction and Loading Technique &amp; Justification:</strong></p>
+            <ul class="step-list">
+              <li><strong>Extraction Technique: Incremental Extraction using Log-Based Change Data Capture (CDC):</strong>
+                <br/><em>Why:</em> The DW only requires daily new transaction data. Full extraction of millions of historical branch transactions causes massive network and CPU degradation. Log-based CDC asynchronously reads DBMS redo logs, capturing only new transactions with zero locking or performance degradation on operational banking transactions.</li>
+              <li><strong>Loading Technique: Append / Incremental Load into Partitioned Fact Table:</strong>
+                <br/><em>Why:</em> Financial transactions are immutable event records (periodic data). They are strictly appended and never updated in place. Using direct-path bulk append into date-based partitions (e.g. daily partition) eliminates expensive row-by-row lookups and undo overhead.</li>
+            </ul>
+
+            <p><strong>Part b: Optimal Execution Timing &amp; Window:</strong></p>
+            <ul class="step-list">
+              <li><strong>Execution Window:</strong> Nightly batch window between <strong>1:00 AM and 4:00 AM</strong>.</li>
+              <li><strong>Justification:</strong> During these off-peak hours, physical banking branches are closed, online ATM/banking transactions are at their minimum volume, and OLTP server CPU/disk utilization is lowest. This ensures the ETL process does not compete for resources with operational customer workloads.</li>
+            </ul>
+
+            <p><strong>Part c: Key Restructuring &amp; Surrogate Key Resolution:</strong></p>
+            <ul class="step-list">
+              <li><strong>The Problem:</strong> Source branches have heterogeneous natural key formats (Numeric <code>AccNo</code> at Branch A vs. Alphanumeric <code>CustCode</code> at Branch B). Using operational keys directly causes type conflicts and fails to provide a single view of the customer.</li>
+              <li><strong>The Solution: Surrogate Key Generation via Cross-Reference Mapping Table:</strong>
+                <br/>Generate an integer sequence surrogate key <code>Customer_SK</code> inside the Data Warehouse. Maintain an enterprise mapping table:
+                <pre><code>MAPPING_TABLE (Source_Branch, Operational_Key, Customer_SK)
+('Branch_A',    '10452',         5001)
+('Branch_B',    'CUST-A99',      5002)</code></pre>
+                All data warehouse fact and dimension tables store <code>Customer_SK = 5001</code> as a uniform 4-byte integer foreign key, decoupling the warehouse from source operational changes.</li>
+            </ul>
+          </div>
+
+          <!-- Given Stats -->
+          <div class="definition">
+            <div class="callout-label">Given Statistics for Q2 &amp; Q3 (Fall 2023)</div>
+            <p><strong>System:</strong> Library System (2023 Edition)</p>
+            <ul style="margin: 6px 0 12px 18px; line-height: 1.6;">
+              <li><code>Book (BookID, Title, Publisher, PublishYear, Author, ...)</code>: <em>r</em><sub>B</sub> = <strong>1,000,000</strong> rows (1M)</li>
+              <li><code>BookLoans (BookID, BranchID, CardNo, DateOut, DueDate, ...)</code>: <em>r</em><sub>L</sub> = <strong>20,000,000</strong> rows (20M)</li>
+              <li>Row width <em>R</em> = <strong>150 bytes</strong>, Index entry width <em>R</em><sub>i</sub> = <strong>15 bytes</strong></li>
+              <li>Block size <em>B</em> = <strong>16 KB</strong> (16,384 bytes), Buffer memory <em>K</em> = <strong>100 blocks</strong></li>
+              <li>Selectivities: Publisher 'Pearson' = 5%, 'Wiley' = 3% (Total = <strong>8%</strong>); PublishYear '2018' = 3%, '2020' = 2%, '2022' = 1% (Total = <strong>6%</strong>)</li>
+            </ul>
+
+            <div class="math-box" style="margin-top: 10px;">
+              <div class="math-title">Base Metric Computations</div>
+              <div>• <strong>Blocking Factor (Data):</strong> <span class="formula">bfr = ⌊B / R⌋ = ⌊16,384 / 150⌋ = 109 rows/block</span></div>
+              <div>• <strong>Blocking Factor (Index):</strong> <span class="formula">bfri = ⌊B / R<sub>i</sub>⌋ = ⌊16,384 / 15⌋ = 1,092 entries/block</span></div>
+              <div>• <strong>Total Blocks (Book):</strong> <span class="formula">b<sub>B</sub> = ⌈r<sub>B</sub> / bfr⌉ = ⌈1,000,000 / 109⌉ = 9,175 blocks</span></div>
+              <div>• <strong>Total Blocks (BookLoans):</strong> <span class="formula">b<sub>L</sub> = ⌈r<sub>L</sub> / bfr⌉ = ⌈20,000,000 / 109⌉ = 183,487 blocks</span></div>
+              <div style="margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 8px;">
+                <div>• <strong>Combined Qualifying Rows:</strong> <span class="formula">Q<sub>comb</sub> = 0.08 × 0.06 × 1,000,000 = 4,800 rows</span></div>
+                <div>• <strong>Filtered Book Blocks:</strong> <span class="good">b<sub>Book_filt</sub> = ⌈4,800 / 109⌉ = 45 blocks</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="question-block">
+            <h3>Q2. Index Access Cost Calculations [12 Points]</h3>
+            <div class="question-text">
+              Calculate the total I/O cost for the Query using the following indexing techniques. Show all steps clearly.<br/>
+              Query: <code>SELECT * FROM book WHERE publisher IN (‘Pearson’, ‘Wiley’) AND publishYear IN (‘2018’, ‘2020’, ‘2022’);</code><br/>
+              a. Single index access (Assume Single indexes exist on Publisher and PublishYear columns separately)<br/>
+              b. Combining multiple indexes (Assume Single indexes exist on Publisher and PublishYear columns separately)<br/>
+              c. Composite Index access (Assume a composite index exist on Publisher and PublishYear columns, with index entry size=15 bytes)
+            </div>
+
+            <div class="solution-heading">Detailed Solution (Exact FAST Official Marking):</div>
+
+            <div class="math-box">
+              <div class="math-title">Part a: Single Index Access</div>
+              1. Choose highest selectivity column (smallest row count):<br/>
+              &nbsp;&nbsp;&nbsp;• Publisher (8%): 0.08 × 1M = 80,000 rows.<br/>
+              &nbsp;&nbsp;&nbsp;• PublishYear (6%): 0.06 × 1M = 60,000 rows.<br/>
+              &nbsp;&nbsp;&nbsp;Select <span class="formula">PublishYear (6%)</span>.<br/>
+              2. Index access cost = <span class="formula">60,000 / 1092 = 54.94 → 55 blocks</span>.<br/>
+              3. Base table access cost:<br/>
+              &nbsp;&nbsp;&nbsp;As qualifying rows are greater than total blocks of book table (<span class="highlight">60,000 &gt; 9,175</span>),<br/>
+              &nbsp;&nbsp;&nbsp;we have to read all the blocks of base table = <span class="formula">9,175 blocks</span>.<br/>
+              4. <span class="good">Total Cost = Index Cost + Base Table Cost = 55 + 9,175 = 9,230 I/Os</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part b: Combining Multiple Indexes</div>
+              1. Publisher Index access cost (8% of 1M rows) = <span class="formula">80,000 / 1092 = 73.26 → 74 blocks</span>.<br/>
+              2. PublishYear Index access cost (6% of 1M rows) = <span class="formula">60,000 / 1092 = 54.94 → 55 blocks</span>.<br/>
+              3. Total Index access cost = <span class="formula">74 + 55 = 129 blocks</span>.<br/>
+              4. Combined qualifying rows = <span class="formula">0.08 × 0.06 × 1,000,000 = 4,800 rows</span>.<br/>
+              5. As 4,800 &lt; 9,175, read 4,800 base table blocks.<br/>
+              6. <span class="good">Total Cost = Indexes Access Cost + Base Table Cost = 129 + 4,800 = 4,929 I/Os</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part c: Composite Index Access</div>
+              Order of index = (Publisher, PublishYear). Enumerate all 6 combinations of interest:<br/>
+              • Comb#1 (Pearson, 2018): 5% × 3% × 1M = 1,500 RIDs → <span class="formula">⌈1500 / 1092⌉ = 2 I/Os</span>.<br/>
+              • Comb#2 (Pearson, 2020): 5% × 2% × 1M = 1,000 RIDs → <span class="formula">⌈1000 / 1092⌉ = 1 I/O</span>.<br/>
+              • Comb#3 (Pearson, 2022): 5% × 1% × 1M = 500 RIDs  → <span class="formula">⌈500 / 1092⌉ = 1 I/O</span>.<br/>
+              • Comb#4 (Wiley, 2018):   3% × 3% × 1M = 900 RIDs  → <span class="formula">⌈900 / 1092⌉ = 1 I/O</span>.<br/>
+              • Comb#5 (Wiley, 2020):   3% × 2% × 1M = 600 RIDs  → <span class="formula">⌈600 / 1092⌉ = 1 I/O</span>.<br/>
+              • Comb#6 (Wiley, 2022):   3% × 1% × 1M = 300 RIDs  → <span class="formula">⌈300 / 1092⌉ = 1 I/O</span>.<br/>
+              Total Index access cost = <span class="formula">2 + 1 + 1 + 1 + 1 + 1 = 7 blocks</span>.<br/>
+              Base table access cost = <span class="formula">4,800 blocks</span>.<br/>
+              <span class="good">Total I/Os = 7 + 4,800 = 4,807 I/Os</span>.
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="question-block">
+            <h3>Q3. Joining Techniques Cost Calculations [12 Points]</h3>
+            <div class="question-text">
+              Calculate the total I/O cost for the Query using the following joining techniques. Show all steps clearly. Assume there is a clustered index on BookID column of BookLoans table, but there is no index on BookID column of Book table.<br/>
+              Query: <code>SELECT * FROM Book JOIN BookLoans ON Book.BookID = BookLoans.BookID WHERE publisher IN (‘Pearson’, ‘Wiley’) AND publishYear IN (‘2018’, ‘2020’, ‘2022’);</code><br/>
+              a. Hash Join<br/>
+              b. Sort Merge Join<br/>
+              c. Nested Loop Join (Identify the most efficient variant of NLJ in this scenario, then compute the I/O cost of that variant only.)
+            </div>
+
+            <div class="solution-heading">Detailed Solution (Exact FAST Official Marking):</div>
+
+            <div class="math-box">
+              <div class="math-title">Part a: Hash Join</div>
+              1. Book's filter cost = <span class="formula">9,175 blocks</span> (via Full Table Scan of Book).<br/>
+              &nbsp;&nbsp;&nbsp;Qualifying Book records = 4,800 rows = <span class="formula">45 blocks</span>.<br/>
+              2. Hashing cost:<br/>
+              &nbsp;&nbsp;&nbsp;As the memory (K = 100 blocks) is sufficient to store build-input table (45 blocks ≤ 100),<br/>
+              &nbsp;&nbsp;&nbsp;recursive partitioning is not required.<br/>
+              &nbsp;&nbsp;&nbsp;Hashing cost = Read build table (45) + Read probe table BookLoans (183,487).<br/>
+              3. <span class="good">Total Cost = 9,175 + (45 + 183,487) = 192,707 I/Os</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part b: Sort Merge Join</div>
+              1. Book's filter cost = <span class="formula">9,175 blocks</span>.<br/>
+              2. Sort Book: The 45 qualifying blocks fit in memory (45 ≤ 100) → <span class="formula">45 blocks</span> read.<br/>
+              3. Sort BookLoans: <span class="good">No sorting required for BookLoans due to clustered index on joining column!</span><br/>
+              4. Merge cost = Read sorted Book (45) + Read sorted BookLoans (183,487).<br/>
+              5. <span class="good">Total Cost = 9,175 + (45) + (45 + 183,487) = 192,752 I/Os</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part c: Nested Loop Join</div>
+              1. <strong>Best NLJ Variant: Clustered NLJ</strong> (Index Nested Loop Join), as there is a clustered index existing on the joining column of BookLoans.<br/>
+              2. Cost Formula = Book filter cost + [Qualifying rows of outer table × (Clustered index access cost + Inner base table access cost)].<br/>
+              3. Here: Clustered index access cost = 1 block; Inner base table access cost = 1 block.<br/>
+              4. Join Cost = <span class="formula">4,800 × (1 + 1) = 9,600 I/Os</span>.<br/>
+              5. <span class="good">Total Cost = Book's filter + Join Cost = 9,175 + 9,600 = 18,775 I/Os</span>!
+            </div>
+
+            <div class="note-box">
+              <div class="callout-label">Why Clustered NLJ Wins Massive Marks</div>
+              Hash Join and Sort-Merge Join both cost ~192,700 I/Os because they are forced to scan all 183,487 blocks of the massive 20M-row BookLoans table. In stark contrast, <strong>Clustered NLJ costs only 18,775 I/Os (over 10x faster)</strong> because it uses the clustered index on BookID to jump directly to the exact blocks holding loans for the 4,800 books!
+            </div>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 3: FALL 2018 MIDTERM-2 EXAM
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-3" style="display: none">
+          <h2><span class="topic-num">3</span>Fall 2018 Midterm-2 Exam</h2>
+          <p class="topic-subtitle">Course: CS409 | Total Marks: 30 | Weight: 12.5% | Department of Computer Science</p>
+
+          <div class="paper-meta">
+            <div class="paper-meta-item"><strong>Date:</strong> Sat 17-Nov-2018</div>
+            <div class="paper-meta-item"><strong>Duration:</strong> 60 Minutes</div>
+            <div class="paper-meta-item"><strong>Questions:</strong> 3 (10 marks each)</div>
+            <div class="paper-meta-item"><strong>Status:</strong> <span class="badge-tag badge-verified">Fully Solved with Working</span></div>
+          </div>
+
+          <!-- Q1 -->
+          <div class="question-block">
+            <h3>Q1. Dimension Refresh, Extraction &amp; Merge Strategies [10 Points]</h3>
+            <div class="question-text">
+              a) Assume that 40,000 rows out of 20 million rows in Customer dimension table changes on each data refresh. Which loading strategy should you follow? Explain the reasons for your selection. Also suggest some practical steps that expedite the data loading process. [4 Points]<br/>
+              b) What are the two most inexpensive data extraction techniques to implement? Explain briefly why? [3 Points]<br/>
+              c) Explain the difference between destructive merge and constructive merge for applying data to the data warehouse repository. When do you use these modes? [3 Points]
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+            <p><strong>Part a: Loading Strategy &amp; Expediting Steps:</strong></p>
+            <ul class="step-list">
+              <li><strong>Recommended Strategy: Incremental Load (Delta Upsert / SCD Type 1 or Type 2).</strong>
+                <br/><em>Reason:</em> The changed volume is only <code>40,000 / 20,000,000 = 0.2%</code> of the table. A full refresh would require deleting and reinserting 20 million records, incurring gigantic unnecessary disk I/O, transaction logging, and prolonged downtime. An incremental load processes only the 0.2% delta.</li>
+              <li><strong>Steps to Expedite Loading:</strong>
+                <br/>1. Load the 40,000 changed rows into an unindexed staging table.
+                <br/>2. Join staging with Customer dimension on natural key to separate new inserts from updates.
+                <br/>3. Execute a set-based <code>MERGE</code> statement rather than row-by-row cursor updates.
+                <br/>4. Disable non-essential secondary indexes on the target table during large inserts and rebuild them in bulk afterward.</li>
+            </ul>
+
+            <p><strong>Part b: Two Most Inexpensive Data Extraction Techniques:</strong></p>
+            <ul class="step-list">
+              <li><strong>1. Full Table Dump (Data Dump / File Export):</strong>
+                <br/><em>Why Inexpensive:</em> Requires no specialized software, no third-party CDC licenses, no schema changes, and no application modifications. A standard SQL query (<code>SELECT *</code>) or native DBMS export utility dumps the table directly into flat files.</li>
+              <li><strong>2. Timestamp / Audit Column Incremental Query:</strong>
+                <br/><em>Why Inexpensive:</em> Leverages existing columns (e.g. <code>Last_Modified_Date</code>) already maintained by the operational application. A simple parameterized query (<code>WHERE Last_Modified_Date &gt; :last_refresh_time</code>) extracts the delta without needing complex log sniffers or triggers.</li>
+            </ul>
+
+            <p><strong>Part c: Destructive vs. Constructive Merge:</strong></p>
+            <ul class="step-list">
+              <li><strong>Destructive Merge (In-Place Overwrite / SCD Type 1):</strong> Overwrites existing column values with new incoming values. Historical values are permanently destroyed.
+                <br/><em>When to use:</em> Correcting data entry errors (e.g., misspelled customer name, wrong phone number) or when historical tracking is not required by business users.</li>
+              <li><strong>Constructive Merge (Historical Versioning / SCD Type 2):</strong> Keeps the old record intact, sets its expiration timestamp / flags it as inactive, and inserts a brand new record with updated values and a new surrogate key.
+                <br/><em>When to use:</em> Essential dimension attributes where preserving a point-in-time audit trail is mandatory (e.g., customer address change affecting historical regional sales reports).</li>
+            </ul>
+          </div>
+
+          <!-- Given Stats -->
+          <div class="definition">
+            <div class="callout-label">Given Description for Q2 &amp; Q3 (Fall 2018)</div>
+            <p><strong>System:</strong> University Academic System</p>
+            <ul style="margin: 6px 0 12px 18px; line-height: 1.6;">
+              <li><code>Student (RollNo, Name, gpa, DeptID, BatchID, DegreeID, ...)</code>: <em>r</em><sub>S</sub> = <strong>128,000</strong> rows</li>
+              <li><code>Attendance (RollNo, CourseCode, Semester, AttFlag, ...)</code>: <em>r</em><sub>A</sub> = <strong>1,280,000</strong> rows (Ratio 1:10)</li>
+              <li>Row size <em>R</em> = <strong>128 bytes</strong>, Index entry size <em>R</em><sub>i</sub> = <strong>8 bytes</strong></li>
+              <li>Data block size <em>B</em> = <strong>8 KB</strong> (8,192 bytes), Buffer memory <em>K</em> = <strong>50 blocks</strong></li>
+              <li>Selectivities: Degree 'MS' = <strong>3%</strong>; Batch ('2015' OR '2014') = 5% + 2% = <strong>7%</strong>; Dept ('CS' OR 'EE') = 40% + 20% = <strong>60%</strong></li>
+              <li>Cluster (hash based) index exists on <code>RollNo</code> of Student, and <code>RollNo</code> of Attendance.</li>
+              <li>Three secondary (hash based) indexes exist on <code>DeptID</code>, <code>BatchID</code>, and <code>DegreeID</code> of Student table separately.</li>
+            </ul>
+
+            <div class="math-box" style="margin-top: 10px;">
+              <div class="math-title">Base Metric Computations</div>
+              <div>• <strong>Blocking Factor (Data):</strong> <span class="formula">bfr = ⌊B / R⌋ = ⌊8,192 / 128⌋ = 64 records/block</span></div>
+              <div>• <strong>Blocking Factor (Index):</strong> <span class="formula">bfri = ⌊B / R<sub>i</sub>⌋ = ⌊8,192 / 8⌋ = 1,024 entries/block</span></div>
+              <div>• <strong>Total Blocks (Student):</strong> <span class="formula">b<sub>S</sub> = ⌈r<sub>S</sub> / bfr⌉ = ⌈128,000 / 64⌉ = 2,000 blocks</span></div>
+              <div>• <strong>Total Blocks (Attendance):</strong> <span class="formula">b<sub>A</sub> = ⌈r<sub>A</sub> / bfr⌉ = ⌈1,280,000 / 64⌉ = 20,000 blocks</span></div>
+              <div style="margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 8px;">
+                <div>• <strong>Combined Selectivity:</strong> <span class="formula">S<sub>comb</sub> = 0.03 × 0.07 × 0.60 = 0.00126 (0.126%)</span></div>
+                <div>• <strong>Combined Qualifying Rows:</strong> <span class="formula">Q<sub>comb</sub> = 0.00126 × 128,000 = 161.28 → 161 rows</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="question-block">
+            <h3>Q2. Access Path Evaluation for COUNT(*) Query [10 Points]</h3>
+            <div class="question-text">
+              How many data blocks need to be accessed to answer the following query?<br/>
+              <code>SELECT COUNT(*) FROM student WHERE DegreeID=’MS’ AND (BatchID=‘2015’ OR BatchID=’2014’) AND (DeptID=‘CS’ OR DeptID=’EE’);</code><br/>
+              Examine and use the best possible access path. Justify your selection and show all steps clearly.
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+
+            <div class="math-box">
+              <div class="math-title">Comparison of Candidate Access Paths</div>
+              <strong>Path 1: Full Table Scan (FTS):</strong><br/>
+              Scans all blocks of Student table = <span class="formula">bS = 2,000 blocks</span>.<br/><br/>
+
+              <strong>Path 2: Single Secondary Index on DegreeID (3% = 3,840 rows):</strong><br/>
+              • Index access cost = ⌈3,840 / 1024⌉ = 4 blocks.<br/>
+              • Base table access: Since query asks for COUNT(*), but BatchID and DeptID are NOT in the Degree index, base table records must be fetched to verify the other conditions.<br/>
+              • Qualifying rows (3,840) &gt; Base blocks (2,000) → Caps at 2,000 base table blocks.<br/>
+              • Total Cost = 4 + 2,000 = <span class="highlight">2,004 blocks</span>.<br/><br/>
+
+              <strong>Path 3: Combining Multiple Secondary Indexes (Index-Only Access):</strong><br/>
+              • Degree index access (3% of 128k = 3,840 entries): <span class="formula">⌈3,840 / 1024⌉ = 4 blocks</span>.<br/>
+              • Batch index access (7% of 128k = 8,960 entries): <span class="formula">⌈8,960 / 1024⌉ = 9 blocks</span>.<br/>
+              • Dept index access (60% of 128k = 76,800 entries): <span class="formula">⌈76,800 / 1024⌉ = 75 blocks</span>.<br/>
+              • Total index access = 4 + 9 + 75 = <span class="formula">88 blocks</span>.<br/>
+              • <span class="good">KEY EXAM INSIGHT: Because the query is SELECT COUNT(*), no attributes from the base table are required!</span><br/>
+              • Intersecting the three RID lists in memory produces exactly 161 matching RIDs.<br/>
+              • The count of these RIDs directly yields the query answer. <span class="good">Base Table Access = 0 blocks!</span><br/>
+              • <span class="good">Total Cost (Path 3 Index-Only) = 88 + 0 = 88 blocks</span>.<br/>
+              <span class="comment">(Even if the engine verifies the 161 rows against the base table: 88 + 161 = 249 blocks, which is still 8x faster than FTS).</span>
+            </div>
+
+            <p><strong>Justification:</strong> Path 3 (Combining Multiple Secondary Indexes with Index-Only Evaluation) is the best possible access path, requiring only <strong>88 blocks</strong> (or 249 blocks with base verification), outperforming FTS (2,000 blocks) and Single Index (2,004 blocks) by over 22x.</p>
+          </div>
+
+          <!-- Q3 -->
+          <div class="question-block">
+            <h3>Q3. Best Joining Technique for Student &amp; Attendance [10 Points]</h3>
+            <div class="question-text">
+              How many data blocks need to be accessed to answer the following query?<br/>
+              <code>SELECT RollNo, COUNT(*) AS TotalAttendance FROM student JOIN attendance ON student.rollno=attendance.rollno WHERE DegreeID=’MS’ AND (BatchID=‘2015’ OR BatchID=’2014’) AND (DeptID=‘CS’ OR DeptID=’EE’) GROUP BY RollNo;</code><br/>
+              You are supposed to filter the condition first and then join. Examine and use the best possible joining technique. Justify your selection and show all steps clearly.
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+
+            <div class="math-box">
+              <div class="math-title">Step 1: Filter Condition on Student Table</div>
+              Using combining multiple indexes from Q2, filter cost = <span class="formula">88 blocks</span> (or 249 blocks with base fetch).<br/>
+              Qualifying students = <span class="good">161 students</span>.<br/>
+              Base table blocks occupied by 161 students = ⌈161 / 64⌉ = <span class="formula">3 blocks</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Step 2: Examine Candidate Joining Techniques</div>
+              <strong>Candidate A: Hash Join:</strong><br/>
+              • Build table = Filtered Student (3 blocks ≤ K = 50, fits in memory).<br/>
+              • Probe table = Attendance table (<span class="highlight">bA = 20,000 blocks</span>).<br/>
+              • Cost = Filter Student (88) + Build (3) + Full Scan of Attendance (20,000) = <span class="highlight">20,091 blocks</span>.<br/><br/>
+
+              <strong>Candidate B: Clustered Hash Index Nested Loop Join (THE WINNER!):</strong><br/>
+              • Given: A cluster (hash based) index exists on <code>RollNo</code> of attendance table!<br/>
+              • For each of the 161 qualifying students, perform an index lookup on Attendance via RollNo.<br/>
+              • Attendance ratio is 1:10 (each student has 10 attendance records).<br/>
+              • 10 records × 128 bytes = 1,280 bytes, which fits inside <span class="good">1 single data block</span> (8,192 bytes)!<br/>
+              • With a hash-based clustered index, locating and reading the bucket and clustered data block requires at most 1 to 2 I/Os per student (typically 1 block access per key).<br/>
+              • Attendance blocks accessed = <span class="good">161 × 1 = 161 blocks</span>.<br/>
+              • Total Cost = Filter Student (88) + Attendance Access (161) = <span class="good">249 blocks</span>.<br/>
+              <span class="comment">(If student base fetch 161 is included in filter: 249 + 161 = 410 blocks).</span>
+            </div>
+
+            <p><strong>Justification:</strong> <strong>Clustered Hash Index Nested Loop Join</strong> is overwhelmingly superior (249 blocks vs. 20,091 blocks for Hash Join). Because only 161 students qualify out of 128,000, probing the clustered index directly avoids scanning the 20,000 blocks of the Attendance table, saving nearly 99% of I/O.</p>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 4: FALL 2017 MIDTERM-2 EXAM
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-4" style="display: none">
+          <h2><span class="topic-num">4</span>Fall 2017 Midterm-2 Exam</h2>
+          <p class="topic-subtitle">Course: CS409 | Total Marks: 25 | Department of Computer Science</p>
+
+          <div class="paper-meta">
+            <div class="paper-meta-item"><strong>Date:</strong> 2-Nov-17</div>
+            <div class="paper-meta-item"><strong>Duration:</strong> 60 Minutes</div>
+            <div class="paper-meta-item"><strong>Questions:</strong> 3 (5, 10, 10 marks)</div>
+            <div class="paper-meta-item"><strong>Status:</strong> <span class="badge-tag badge-verified">Fully Solved with Working</span></div>
+          </div>
+
+          <!-- Q1 -->
+          <div class="question-block">
+            <h3>Q1. Transformation Tasks &amp; Entity Identification [3 + 2 = 5 Points]</h3>
+            <div class="question-text">
+              a) Name four types of the major transformation tasks. Give an example for any of them. [3 Points]<br/>
+              b) Describe briefly the entity identification problem in data integration and consolidation. How do you resolve this problem? [2 Points]
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+            <p><strong>Part a: Four Major Transformation Tasks:</strong></p>
+            <ol class="step-list">
+              <li><strong>Data Type &amp; Format Conversion:</strong> Converting legacy representations into DW standard data types (e.g., converting dates from <code>"DD/MM/YYYY"</code> or epoch timestamps to standard ISO <code>DATE 'YYYY-MM-DD'</code>).</li>
+              <li><strong>Data Standardization &amp; Cleansing:</strong> Resolving domain code inconsistencies (e.g., mapping gender codes <code>'Male'</code>, <code>'M'</code>, <code>'1'</code> to canonical <code>'M'</code>).</li>
+              <li><strong>Key Restructuring &amp; Surrogate Key Assignment:</strong> Replacing heterogeneous source natural keys with integer surrogate keys using a cross-reference mapping table.</li>
+              <li><strong>Aggregation &amp; Summarization:</strong> Pre-calculating summary measures (e.g., summarizing daily POS transactions into monthly sales facts per store).</li>
+            </ol>
+
+            <p><strong>Part b: Entity Identification Problem &amp; Resolution:</strong></p>
+            <ul class="step-list">
+              <li><strong>Description:</strong> When integrating data from disparate source systems, the same real-world entity (e.g., customer or product) is represented with different identifiers, disparate schemas, or varying spelling (e.g., "John Smith" at Branch A vs. "J. Smith" at Branch B), OR two distinct entities share the same operational identifier in different branches.</li>
+              <li><strong>Resolution:</strong> Implement <strong>Master Data Management (MDM)</strong> with fuzzy matching and record linkage algorithms, and create an <strong>Enterprise Cross-Reference Mapping Table</strong> that maps all source natural keys to a single, immutable Enterprise Surrogate Key.</li>
+            </ul>
+          </div>
+
+          <!-- Given Stats Q2 -->
+          <div class="definition">
+            <div class="callout-label">Given Description for Q2 (Car Sales Join)</div>
+            <p><strong>System:</strong> Auto Dealership System</p>
+            <ul style="margin: 6px 0 12px 18px; line-height: 1.6;">
+              <li><code>Car (CarID, Model, Make, Color, ...)</code>: <em>r</em><sub>C</sub> = <strong>20,000</strong> rows</li>
+              <li><code>Sale (SaleID, SalesPersonID, CarID, CustomerID, SalesDate)</code>: <em>r</em><sub>S</sub> = <strong>1,000,000</strong> rows (Ratio 1:50)</li>
+              <li>Row width <em>R</em> = <strong>500 bytes</strong>, Index entry width <em>R</em><sub>i</sub> = <strong>8 bytes</strong></li>
+              <li>Block size <em>B</em> = <strong>16 KB</strong> (16,384 bytes), Buffer memory <em>K</em> = <strong>100 blocks</strong></li>
+              <li>Selectivities: Make 'Honda' = <strong>20%</strong>; Color ('White' OR 'Black') = 40% + 30% = <strong>70%</strong></li>
+              <li>Query: <code>SELECT * FROM car JOIN sale ON car.carID = sale.carID WHERE Make=’Honda’ AND (Color=‘White’ OR Color=’Black’);</code></li>
+            </ul>
+
+            <div class="math-box" style="margin-top: 10px;">
+              <div class="math-title">Base Metric Computations</div>
+              <div>• <strong>Blocking Factor (Data):</strong> <span class="formula">bfr = ⌊B / R⌋ = ⌊16,384 / 500⌋ = 32 records/block</span></div>
+              <div>• <strong>Total Blocks (Car):</strong> <span class="formula">b<sub>C</sub> = ⌈r<sub>C</sub> / bfr⌉ = ⌈20,000 / 32⌉ = 625 blocks</span></div>
+              <div>• <strong>Total Blocks (Sale):</strong> <span class="formula">b<sub>S</sub> = ⌈r<sub>S</sub> / bfr⌉ = ⌈1,000,000 / 32⌉ = 31,250 blocks</span></div>
+              <div style="margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 8px;">
+                <div>• <strong>Combined Selectivity on Car:</strong> <span class="formula">S<sub>comb</sub> = 0.20 × 0.70 = 0.14 (14%)</span></div>
+                <div>• <strong>Qualifying Car Records:</strong> <span class="formula">Q<sub>comb</sub> = 0.14 × 20,000 = 2,800 rows</span></div>
+                <div>• <strong>Qualifying Car Blocks:</strong> <span class="good">b<sub>Car_filt</sub> = ⌈2,800 / 32⌉ = 88 blocks</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="question-block">
+            <h3>Q2. Car &amp; Sale Join: Sort-Merge vs. Hash Join [10 Points]</h3>
+            <div class="solution-heading">Detailed Solution:</div>
+
+            <p><strong>Filter Condition on Car Table:</strong></p>
+            <p>Scanning Car table to filter Make and Color = <em>b</em><sub>C</sub> = <strong class="formula">625 blocks</strong>. Resulting filtered Car table has 2,800 records = <strong class="good">88 blocks</strong>.</p>
+
+            <div class="math-box">
+              <div class="math-title">Algorithm 1: Hash Join</div>
+              1. Filter Car table: <span class="formula">625 blocks</span>.<br/>
+              2. Designate Build and Probe tables:<br/>
+              &nbsp;&nbsp;&nbsp;• Build Input: Filtered Car (<span class="formula">88 blocks</span>).<br/>
+              &nbsp;&nbsp;&nbsp;• Probe Input: Sale table (<span class="formula">31,250 blocks</span>).<br/>
+              3. Check Memory Condition:<br/>
+              &nbsp;&nbsp;&nbsp;Since <span class="good">b_build = 88 ≤ K = 100</span>, the entire hash table fits in available memory!<br/>
+              &nbsp;&nbsp;&nbsp;Recursive partitioning is NOT required.<br/>
+              4. Hash Join Cost = Read build table (88) + Scan probe table Sale (31,250).<br/>
+              5. <span class="good">Total Hash Join Cost = 625 (filter) + 88 + 31,250 = 31,963 I/Os</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Algorithm 2: Sort-Merge Join</div>
+              1. Filter Car table: <span class="formula">625 blocks</span> (Result = 88 blocks).<br/>
+              2. Sort Car on CarID:<br/>
+              &nbsp;&nbsp;&nbsp;Since 88 ≤ K = 100, filtered Car is sorted in memory → <span class="good">0 extra disk I/O</span>.<br/>
+              3. Sort Sale table on CarID (bS = 31,250 blocks, K = 100):<br/>
+              &nbsp;&nbsp;&nbsp;• Pass 0: Read and write 31,250 blocks into ⌈31,250 / 100⌉ = 313 runs → 2 × 31,250 = <span class="formula">62,500 I/Os</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• Pass 1: 99-way merge of 313 runs into ⌈313 / 99⌉ = 4 runs → 2 × 31,250 = <span class="formula">62,500 I/Os</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• Final merge stream into join: <span class="formula">31,250 I/Os</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• Total Sale Sort Cost = 62,500 + 62,500 + 31,250 = <span class="formula">156,250 I/Os</span>.<br/>
+              4. Merge Phase: Read sorted Car (88) + Read sorted Sale stream = <span class="formula">31,338 I/Os</span>.<br/>
+              5. <span class="highlight">Total SMJ Cost = 625 (filter) + 156,250 (sort Sale) + 88 = 156,963 I/Os</span>.<br/>
+              <span class="comment">(Hash Join is ~5x faster because Sale does not have to be sorted).</span>
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="question-block">
+            <h3>Q3. Sale Table Indexing: Combined vs. Static Bitmap [10 Points]</h3>
+            <div class="question-text">
+              Sale (SaleID, SalesPersonID, CarID, CustomerID, SalesDate);<br/>
+              Block Size = 16 KB; Available Memory = 100 Blocks; Rows = 1,000,000; Row Width = 500 bytes; Index entry size = 8 bytes.<br/>
+              Selectivities: SalesPerson 'S10' = 2%, 'S12' = 6%, 'S15' = 1% (Total = 9%). CarID 'H20' = 4%, 'A30' = 2% (Total = 6%).<br/>
+              Query: <code>SELECT * FROM sale WHERE salesPersonID IN (‘S10’, ‘S12’, ‘S15’) AND carID IN (‘H20’, ‘A30’);</code><br/>
+              Calculate the I/O cost using:<br/>
+              a) Combining multiple indexes (Assume indexes exist on salesPersonID and carID columns separately)<br/>
+              b) Static bitmap index access (Assume static bitmap indexes exist on salesPersonID and carID columns)
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+
+            <div class="math-box">
+              <div class="math-title">Base Calculations</div>
+              • bfr = ⌊16,384 / 500⌋ = 32 rows/block.<br/>
+              • bfri = ⌊16,384 / 8⌋ = 2048 index entries/block.<br/>
+              • bS = ⌈1,000,000 / 32⌉ = 31,250 blocks.<br/>
+              • SalesPersonID selectivity = 2% + 6% + 1% = 9% (90,000 rows).<br/>
+              • CarID selectivity = 4% + 2% = 6% (60,000 rows).<br/>
+              • Combined selectivity = 0.09 × 0.06 × 1,000,000 = <span class="good">5,400 rows</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part a: Combining Multiple Indexes</div>
+              1. SalesPersonID index access cost (90,000 entries) = <span class="formula">⌈90,000 / 2048⌉ = 44 blocks</span>.<br/>
+              2. CarID index access cost (60,000 entries) = <span class="formula">⌈60,000 / 2048⌉ = 30 blocks</span>.<br/>
+              3. Total Index Access Cost = <span class="formula">44 + 30 = 74 blocks</span>.<br/>
+              4. In-Memory RID intersection yields 5,400 qualifying records.<br/>
+              5. As 5,400 &lt; 31,250, Base Table Access Cost = <span class="formula">5,400 blocks</span>.<br/>
+              6. <span class="good">Total Cost = 74 + 5,400 = 5,474 blocks</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part b: Static Bitmap Index Access</div>
+              1. Bits per block = <span class="formula">B × 8 = 16,384 × 8 = 131,072 bits</span>.<br/>
+              2. Blocks per single bitmap vector = <span class="formula">⌈1,000,000 / 131,072⌉ = 8 blocks</span>.<br/>
+              3. Distinct values queried:<br/>
+              &nbsp;&nbsp;&nbsp;• SalesPersonID: 'S10', 'S12', 'S15' (3 values) → <span class="formula">3 × 8 = 24 blocks</span>.<br/>
+              &nbsp;&nbsp;&nbsp;• CarID: 'H20', 'A30' (2 values) → <span class="formula">2 × 8 = 16 blocks</span>.<br/>
+              4. Total Index Access Cost = <span class="formula">24 + 16 = 40 blocks</span>.<br/>
+              5. In-Memory bitwise operations yield 5,400 qualifying records.<br/>
+              6. Base Table Access Cost = <span class="formula">5,400 blocks</span>.<br/>
+              7. <span class="good">Total Cost = 40 + 5,400 = 5,440 blocks</span>.
+            </div>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 5: FALL 2016 MIDTERM-2 EXAM
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-5" style="display: none">
+          <h2><span class="topic-num">5</span>Fall 2016 Midterm-2 Exam</h2>
+          <p class="topic-subtitle">Course: CS409 | Total Marks: 30 | Weight: 12.5% | Complete 4-Question Walkthrough</p>
+
+          <div class="paper-meta">
+            <div class="paper-meta-item"><strong>Date:</strong> 14-Nov-2016</div>
+            <div class="paper-meta-item"><strong>Duration:</strong> 60 Minutes</div>
+            <div class="paper-meta-item"><strong>Questions:</strong> 4 (5, 5, 10, 10 marks)</div>
+            <div class="paper-meta-item"><strong>Status:</strong> <span class="badge-tag badge-verified">Fully Solved with Working</span></div>
+          </div>
+
+          <!-- Q1 -->
+          <div class="question-block">
+            <h3>Question 1: Source Operational Data Categories [5 Points]</h3>
+            <div class="question-text">
+              What are the two general categories of data stored in source operational systems? Give an example for each.
+            </div>
+            <div class="solution-heading">Detailed Solution:</div>
+            <ul class="step-list">
+              <li><strong>1. Transient Data (Volatile / State Data):</strong> Operational data that is updated or overwritten in-place when business state changes. Only current snapshot is retained; history is overwritten.
+                <br/><em>Example:</em> Current customer account balance, current product inventory quantity on hand, customer active phone number.</li>
+              <li><strong>2. Periodic / Event Data (Historical / Append-Only Data):</strong> Transaction records generated by operational events that are appended sequentially and never overwritten.
+                <br/><em>Example:</em> Bank ATM cash withdrawal transaction logs, credit card payment swipe records, retail POS sales receipts.</li>
+            </ul>
+          </div>
+
+          <!-- Q2 -->
+          <div class="question-block">
+            <h3>Question 2: Dimension Refresh Loading Strategy [5 Points]</h3>
+            <div class="question-text">
+              Assume that 50,000 rows out of 10 million rows in Account dimension table changes on each data refresh. Which loading strategy should you follow? Explain the reasons for your selection. Also suggest some practical steps that expedite the data loading process.
+            </div>
+            <div class="solution-heading">Detailed Solution:</div>
+            <ul class="step-list">
+              <li><strong>Recommended Strategy: Incremental Load (Delta Upsert / SCD Type 1 or 2).</strong>
+                <br/><em>Reason:</em> Changed rows represent only <code>50,000 / 10,000,000 = 0.5%</code> of the table. A full refresh would reload 10 million rows, causing 99.5% redundant I/O, massive rollback segment usage, and extended batch downtime.</li>
+              <li><strong>Steps to Expedite Loading:</strong>
+                <br/>1. Load changed records into a staging table using direct-path bulk load.
+                <br/>2. Index natural key in staging table.
+                <br/>3. Execute a set-based <code>MERGE</code> operation to apply updates and inserts in a single database pass.
+                <br/>4. Use parallel DML to execute the merge across multiple threads.</li>
+            </ul>
+          </div>
+
+          <!-- Q3 -->
+          <div class="question-block">
+            <h3>Question 3: Student &amp; Attendance Join: Hash Join vs. BNLJ [10 Points]</h3>
+            <div class="question-text">
+              Student (RollNo, Name, gpa, DeptID, BatchID, DegreeID, ...); Attendance (RollNo, CourseCode, Semester, AttFlag, ...);<br/>
+              Rows: Student = 128,000; Attendance = 2,560,000 (Ratio 1:20).<br/>
+              Row width = 256 bytes; Index entry = 16 bytes. Block size = 16 KB. Available memory = 100 blocks.<br/>
+              Selectivities: Degree 'MS' = 3%; Batch ('2015' OR '2005') = 4% + 2% = 6%; Dept ('CS' OR 'EE') = 10% + 5% = 15%.<br/>
+              Query: <code>SELECT AVG(gpa) FROM student JOIN attendance ON student.rollno=attendance.rollno WHERE DegreeID=’MS’ AND (BatchID=‘2015’ OR BatchID=’2005’) AND (DeptID=‘CS’ OR DeptID=’EE’);</code><br/>
+              Calculate the total I/O cost (including the I/O cost to filter the condition on student table) using hash join and block nested loop join techniques. Filter condition first, then join. Show all steps clearly.
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+
+            <div class="math-box">
+              <div class="math-title">Base Metric Computations</div>
+              • bfr = ⌊16,384 / 256⌋ = 64 rows/block.<br/>
+              • bfri = ⌊16,384 / 16⌋ = 1024 entries/block.<br/>
+              • bS = ⌈128,000 / 64⌉ = 2,000 blocks.<br/>
+              • bA = ⌈2,560,000 / 64⌉ = 40,000 blocks.<br/>
+              • Combined selectivity = 0.03 × 0.06 × 0.15 = 0.00027 (0.027%).<br/>
+              • Qualifying Student rows = 0.00027 × 128,000 = 34.56 → <span class="good">35 rows</span>.<br/>
+              • Blocks for 35 Student rows = ⌈35 / 64⌉ = <span class="good">1 block</span>.<br/>
+              • Student Filter Cost (via FTS) = <span class="formula">2,000 blocks</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">1. Hash Join Cost</div>
+              1. Filter Student table: <span class="formula">2,000 blocks</span> (Result = 1 block).<br/>
+              2. Build table = Filtered Student (1 block).<br/>
+              &nbsp;&nbsp;&nbsp;Memory check: <span class="good">1 block ≤ K = 100</span>. Fits entirely in memory! Build cost = 1 block.<br/>
+              3. Probe table = Attendance table (<span class="formula">40,000 blocks</span>).<br/>
+              4. <span class="good">Total Hash Join Cost = 2,000 (filter) + 1 (build) + 40,000 (probe) = 42,001 I/Os</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">2. Block Nested Loop Join (BNLJ) Cost</div>
+              1. Filter Student table: <span class="formula">2,000 blocks</span> (Result = 1 block).<br/>
+              2. Outer table = Filtered Student (1 block). Inner table = Attendance (40,000 blocks).<br/>
+              3. Buffer memory: 98 blocks for outer table. Since <span class="good">1 block ≤ 98</span>, the entire filtered outer table fits in memory!<br/>
+              4. Inner table Attendance is scanned <span class="good">ONLY ONCE</span>.<br/>
+              5. BNLJ Join Cost = Read outer (1) + Scan inner (40,000) = <span class="formula">40,001 I/Os</span>.<br/>
+              6. <span class="good">Total BNLJ Cost = 2,000 (filter) + 40,001 = 42,001 I/Os</span>.
+            </div>
+          </div>
+
+          <!-- Q4 -->
+          <div class="question-block">
+            <h3>Question 4: Account Table Indexing [3 + 3 + 4 = 10 Points]</h3>
+            <div class="question-text">
+              ACCOUNT (accId, title, accType, rating, openingDate, ... );<br/>
+              Block Size = 4 KB = 4,096 bytes; Available Memory = 100 Blocks; Rows = 250,000; Row Width = 500 bytes; Index entry size = 8 bytes.<br/>
+              Selectivities: accType 'SAVING' = 4%, 'CHECKING' = 10% (Total = 14%). Rating '1' = 6%.<br/>
+              Query: <code>SELECT COUNT(*) FROM account WHERE (accType= ‘SAVING’ OR accType= ‘CHECKING’) AND Rating= 1;</code><br/>
+              Calculate the I/O cost using:<br/>
+              a) Composite index access (Assume composite index on accType and rating)<br/>
+              b) Dynamic Bitmap index access (Assume indexes on accType and rating separately)<br/>
+              c) Clustered index access (Assume only clustered index on accType column)
+            </div>
+
+            <div class="solution-heading">Detailed Solution:</div>
+
+            <div class="math-box">
+              <div class="math-title">Base Metric Computations</div>
+              • bfr = ⌊4,096 / 500⌋ = 8 rows/block.<br/>
+              • bfri = ⌊4,096 / 8⌋ = 512 entries/block.<br/>
+              • b = ⌈250,000 / 8⌉ = 31,250 blocks.<br/>
+              • accType selectivity = 4% + 10% = 14% (35,000 rows).<br/>
+              • Rating = 1 selectivity = 6% (15,000 rows).<br/>
+              • Combined selectivity = 0.14 × 0.06 × 250,000 = <span class="good">2,100 rows</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part a: Composite Index Access</div>
+              Cartesian combinations of interest:<br/>
+              1. (SAVING, 1): 0.04 × 0.06 × 250,000 = 600 RIDs → <span class="formula">⌈600 / 512⌉ = 2 blocks</span>.<br/>
+              2. (CHECKING, 1): 0.10 × 0.06 × 250,000 = 1,500 RIDs → <span class="formula">⌈1,500 / 512⌉ = 3 blocks</span>.<br/>
+              Total Index Access Cost = <span class="formula">2 + 3 = 5 blocks</span>.<br/>
+              Base table access: Since query is COUNT(*) and composite index covers both columns, base reads could be 0; however, assuming standard FAST unclustered retrieval: 2,100 blocks.<br/>
+              <span class="good">Total Cost = 5 + 2,100 = 2,105 blocks</span> (or 5 blocks if index-only).
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part b: Dynamic Bitmap Index Access</div>
+              1. accType index access (35,000 entries) = <span class="formula">⌈35,000 / 512⌉ = 69 blocks</span>.<br/>
+              2. Rating index access (15,000 entries) = <span class="formula">⌈15,000 / 512⌉ = 30 blocks</span>.<br/>
+              3. Total Index Access Cost = <span class="formula">69 + 30 = 99 blocks</span>.<br/>
+              4. In-Memory bitwise AND produces 2,100 matching RIDs.<br/>
+              5. Base Table Access Cost = <span class="formula">2,100 blocks</span> (or 0 if index-only COUNT(*)).<br/>
+              6. <span class="good">Total Cost = 99 + 2,100 = 2,199 blocks</span>.
+            </div>
+
+            <div class="math-box">
+              <div class="math-title">Part c: Clustered Index Access on accType</div>
+              1. accType selectivity = 14% (35,000 rows).<br/>
+              2. Index access cost = <span class="formula">⌈35,000 / 512⌉ = 69 blocks</span>.<br/>
+              3. Base table access: Because accType is <span class="good">CLUSTERED</span>, rows are contiguous on disk!<br/>
+              &nbsp;&nbsp;&nbsp;Base Table Cost = <span class="good">⌈35,000 / bfr⌉ = ⌈35,000 / 8⌉ = 4,375 blocks</span>.<br/>
+              4. In memory, filter on Rating = 1 and count matching rows.<br/>
+              5. <span class="good">Total Cost = 69 + 4,375 = 4,444 blocks</span>.
+            </div>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────
+             TOPIC 6: PRACTICE PROBLEMS 1, 2 & 3
+        ────────────────────────────────────────────────────────── -->
+        <div class="topic-card" id="topic-6" style="display: none">
+          <h2><span class="topic-num">6</span>Practice Problems 1, 2 &amp; 3 Master Solutions</h2>
+          <p class="topic-subtitle">The foundation problem sets distributed by FAST faculty with exhaustive, verified working.</p>
+
+          <!-- PP1 -->
+          <div class="question-block">
+            <h3>Practice Problem 1: Complete 7-Technique Master Walkthrough</h3>
+            <div class="question-text">
+              Table: <code>Student (RollNo, Name, gpa, DeptID, BatchID, DegreeID, ...)</code><br/>
+              Statistics: <em>r</em> = <strong>128,000</strong> rows. <em>R</em> = <strong>256 bytes</strong>, <em>R</em><sub>i</sub> = <strong>16 bytes</strong>. Block size <em>B</em> = <strong>16 KB</strong> (16,384 bytes). Available memory <em>K</em> = <strong>100 blocks</strong>.<br/>
+              Selectivities: Degree 'MS' = <strong>3%</strong>; Batch ('2019' OR '2018') = 4% + 2% = <strong>6%</strong>; Dept ('CS' OR 'EE') = 10% + 5% = <strong>15%</strong>.<br/>
+              Query: <code>SELECT * FROM student WHERE DegreeID=’MS’ AND (BatchID=‘2019’ OR BatchID=’2018’) AND (DeptID=‘CS’ OR DeptID=’EE’);</code>
+            </div>
+
+            <div class="solution-heading">Step-by-Step Numerical Calculations:</div>
+            <div class="math-box">
+              • bfr = ⌊16,384 / 256⌋ = 64. bfri = ⌊16,384 / 16⌋ = 1024.<br/>
+              • b = ⌈128,000 / 64⌉ = 2,000 blocks. bi = ⌈128,000 / 1024⌉ = 125 blocks.<br/>
+              • Degree rows: 0.03 × 128,000 = 3,840. Batch rows: 0.06 × 128,000 = 7,680. Dept rows: 0.15 × 128,000 = 19,200.<br/>
+              • Combined Selectivity = 0.03 × 0.06 × 0.15 × 128,000 = <span class="good">35 rows</span>.<br/><br/>
+
+              <strong>1. Full Table Scan (FTS):</strong> Cost = <span class="formula">b = 2,000 blocks</span>.<br/><br/>
+              <strong>2. Single Indexing:</strong> Choose Degree (3% = 3,840 rows).<br/>
+              &nbsp;&nbsp;&nbsp;Index cost = ⌈3,840 / 1024⌉ = 4 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;As 3,840 &gt; 2,000, read all 2,000 base blocks. Total = 4 + 2,000 = <span class="highlight">2,004 blocks</span>.<br/><br/>
+              <strong>3. Combining Multiple Indexes:</strong><br/>
+              &nbsp;&nbsp;&nbsp;Degree index (3%): ⌈3,840 / 1024⌉ = 4 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;Batch index (6%): ⌈7,680 / 1024⌉ = 8 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;Dept index (15%): ⌈19,200 / 1024⌉ = 19 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;Base table access for 35 rows = 35 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;Total = (4 + 8 + 19) + 35 = <span class="good">66 blocks</span>.<br/><br/>
+              <strong>4. Dynamic Bitmap Index:</strong> Same disk I/O as Combining Multiple = <span class="good">66 blocks</span>.<br/><br/>
+              <strong>5. Static Bitmap Index:</strong><br/>
+              &nbsp;&nbsp;&nbsp;1 bitmap vector size = ⌈128,000 / (16 × 1024 × 8)⌉ = ⌈128,000 / 131,072⌉ = 1 block.<br/>
+              &nbsp;&nbsp;&nbsp;Degree (1 value = 1 block) + Batch (2 values = 2 blocks) + Dept (2 values = 2 blocks) = 5 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;Base table access = 35 blocks. Total = 5 + 35 = <span class="good">40 blocks</span>.<br/><br/>
+              <strong>6. Composite Index (Degree, Batch, Dept):</strong><br/>
+              &nbsp;&nbsp;&nbsp;4 Cartesian combinations: (MS, 2019, CS), (MS, 2019, EE), (MS, 2018, CS), (MS, 2018, EE).<br/>
+              &nbsp;&nbsp;&nbsp;Index access = 1 + 1 + 1 + 1 = 4 blocks. Base table access = 16 + 8 + 8 + 4 = 36 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;Total = 4 + 36 = <span class="good">40 blocks</span>.<br/><br/>
+              <strong>7. Clustered Index (on Degree):</strong><br/>
+              &nbsp;&nbsp;&nbsp;Index access = ⌈3,840 / 1024⌉ = 4 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;Base table access = ⌈3,840 / 64⌉ = 60 blocks.<br/>
+              &nbsp;&nbsp;&nbsp;Total = 4 + 60 = <span class="good">64 blocks</span>.
+            </div>
+          </div>
+
+          <!-- PP2 -->
+          <div class="question-block">
+            <h3>Practice Problem 2: The Break-Even Tipping Point Walkthrough</h3>
+            <div class="question-text">
+              Employee table: <em>r</em> = <strong>1,280,000</strong> rows. <em>B</em> = <strong>50 KB</strong> (51,200 bytes), <em>R</em> = <strong>256 bytes</strong>, <em>R</em><sub>i</sub> = <strong>16 bytes</strong>, <em>K</em> = <strong>100 blocks</strong>.<br/>
+              • <em>bfr</em> = 51,200 / 256 = <span class="formula">200 rows/block</span>. <em>bfri</em> = 51,200 / 16 = <span class="formula">3,200 entries/block</span>.<br/>
+              • <em>b</em> = 1,280,000 / 200 = <span class="formula">6,400 blocks</span>. <em>b</em><sub>i</sub> = 1,280,000 / 3,200 = <span class="formula">400 blocks</span>.<br/>
+              Compare Query 1 (Selective) vs. Query 2 (Unselective).
+            </div>
+
+            <div class="solution-heading">Detailed Comparative Analysis:</div>
+            <table class="styled-table">
+              <thead>
+                <tr>
+                  <th>Access Method</th>
+                  <th>Query 1 (Salary &gt; 300k, S=4%)<br/>Combined Q = 3,380 rows</th>
+                  <th>Query 2 (Salary &gt; 50k, S=60%)<br/>Combined Q = 50,688 rows</th>
+                  <th>Analytical Takeaway</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Full Table Scan (FTS)</strong></td>
+                  <td>6,400 blocks</td>
+                  <td><strong class="good">6,400 blocks (BEST!)</strong></td>
+                  <td>Constant benchmark; beats indexes when selectivity is high.</td>
+                </tr>
+                <tr>
+                  <td><strong>Single Indexing</strong></td>
+                  <td>6,416 blocks (Salary: 16 + 6,400)</td>
+                  <td>6,448 blocks (Gender: 48 + 6,400)</td>
+                  <td>Both exceed FTS because qualifying rows &gt; 6,400.</td>
+                </tr>
+                <tr>
+                  <td><strong>Combining Multiple Indexes</strong></td>
+                  <td><strong class="good">3,664 blocks (BEST!)</strong><br/>(220 + 48 + 16) + 3,380</td>
+                  <td>6,908 blocks<br/>(220 + 48 + 240) + 6,400</td>
+                  <td>In Q1, <em>Q</em><sub>comb</sub> &lt; <em>b</em> saves massive I/O. In Q2, <em>Q</em><sub>comb</sub> &gt; <em>b</em>, making combined indexing worse than FTS!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- PP3 -->
+          <div class="question-block">
+            <h3>Practice Problem 3: Library System Book Table Master Solution</h3>
+            <div class="question-text">
+              Book (BookID, Title, Publisher, PublishYear, Author, ...); <em>r</em><sub>B</sub> = <strong>1,000,000</strong> rows.<br/>
+              <em>B</em> = <strong>16 KB</strong> (16,384 bytes), <em>R</em> = <strong>150 bytes</strong>, <em>R</em><sub>i</sub> = <strong>15 bytes</strong>, <em>K</em> = <strong>100 blocks</strong>.<br/>
+              Selectivities: Pearson = 5%, Wiley = 3% (Total <strong>8%</strong>); 2018 = 3%, 2020 = 2%, 2022 = 1% (Total <strong>6%</strong>).<br/>
+              Query: <code>SELECT * FROM book WHERE publisher IN (‘Pearson’, ‘Wiley’) AND publishYear IN (‘2018’, ‘2020’, ‘2022’);</code>
+            </div>
+            <div class="solution-heading">Detailed Summary of Results:</div>
+            <ul class="step-list">
+              <li><strong>Basic Metrics:</strong> <em>bfr</em> = ⌊16,384 / 150⌋ = 109 rows/block. <em>bfri</em> = ⌊16,384 / 15⌋ = 1,092 entries/block. <em>b</em> = 9,175 blocks. <em>Q</em><sub>comb</sub> = 0.08 × 0.06 × 1M = 4,800 rows.</li>
+              <li><strong>1. Single Index:</strong> PublishYear (6% = 60,000 rows). Cost = 55 + 9,175 = <strong class="highlight">9,230 I/Os</strong>.</li>
+              <li><strong>2. Combining Multiple:</strong> Publisher (74) + PublishYear (55) + 4,800 base = <strong class="good">4,929 I/Os</strong>.</li>
+              <li><strong>3. Composite Index:</strong> 6 combinations = 7 index blocks + 4,800 base = <strong class="good">4,807 I/Os</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <h4>Master Problem-Solving Checklist for Exam Day</h4>
+            <ul>
+              <li><strong>Step 1:</strong> Extract <em>B</em>, <em>R</em>, <em>R</em><sub>i</sub>, <em>r</em>, <em>K</em> and compute <em>bfr</em> = ⌊<em>B</em> / <em>R</em>⌋, <em>bfri</em> = ⌊<em>B</em> / <em>R</em><sub>i</sub>⌋, <em>b</em> = ⌈<em>r</em> / <em>bfr</em>⌉, <em>b</em><sub>i</sub> = ⌈<em>r</em> / <em>bfri</em>⌉.</li>
+              <li><strong>Step 2:</strong> Calculate individual qualifying rows <em>Q</em><sub>i</sub> = <em>S</em><sub>i</sub> × <em>r</em> and combined qualifying rows <em>Q</em><sub>comb</sub> = (∏ <em>S</em><sub>i</sub>) × <em>r</em>.</li>
+              <li><strong>Step 3:</strong> For unclustered indexes, always check if <em>Q</em> ≥ <em>b</em>. If yes, cap base table reads at <em>b</em>.</li>
+              <li><strong>Step 4:</strong> For joins, calculate the filter cost first, check the memory condition <em>b</em><sub>build</sub> ≤ <em>K</em>, and check for clustered indexes on join keys.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- end module-container -->
+
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="
+        document
+          .getElementById('main-content')
+          .scrollTo({ top: 0, behavior: 'smooth' })
+      "
+    >
+      ↑
+    </button>
+
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6"];
+      let currentTopicIndex = 0;
+
+      function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) {
+            return link.textContent.replace(numEl.textContent, '').trim();
+          }
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector('h2');
+          if (h2) {
+            const numEl = h2.querySelector('.topic-num');
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, '').trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, '').trim();
+          }
+        }
+        return 'Topic';
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebar-backdrop');
+        if (sb) sb.classList.toggle('open');
+        if (bd) bd.classList.toggle('active');
+      }
+
+      function showTopic(id) {
+        document
+          .querySelectorAll(".topic-card")
+          .forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document
+          .querySelectorAll(".nav-sublist a")
+          .forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest('.nav-sublist');
+          if (sublist && sublist.style.display === 'none') {
+            sublist.style.display = 'block';
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector('.chevron') : null;
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (currentTopicIndex > 0) {
+          pb.style.display = "flex";
+          if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+        } else {
+          pb.style.display = "none";
+        }
+
+        if (currentTopicIndex < topics.length - 1) {
+          nb.style.display = "flex";
+          if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+        } else {
+          nb.style.display = "none";
+        }
+
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise();
+        }
+        if (window.innerWidth <= 768) {
+          const sb = document.getElementById('sidebar');
+          const bd = document.getElementById('sidebar-backdrop');
+          if (sb) sb.classList.remove('open');
+          if (bd) bd.classList.remove('active');
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1)
+          showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document
+          .querySelectorAll(".nav-sublist li")
+          .forEach(
+            (i) =>
+              (i.style.display = i.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none"),
+          );
+      }
+
+      
+      function initActiveTopic() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && topics.includes(hash)) {
+          showTopic(hash);
+        } else if (topics.length > 0) {
+          showTopic(topics[0]);
+        }
+      }
+      window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && topics.includes(hash)) showTopic(hash);
+      });
+      initActiveTopic();
+
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener(
+        "scroll",
+        () => (bb.style.display = mc.scrollTop > 300 ? "flex" : "none"),
+      );
+    </script>
+  </body>
+</html>
