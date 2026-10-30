@@ -427,6 +427,113 @@
         border: 1px solid rgba(239, 68, 68, 0.35);
         color: #fca5a5;
       }
+    
+      /* ── Prominent Bottom Navigation Styling ── */
+      .bottom-nav {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-top: 1px solid var(--bd) !important;
+        padding: 28px 0 16px !important;
+        margin-top: 56px !important;
+        gap: 16px !important;
+        width: 100% !important;
+      }
+
+      .bottom-nav button {
+        display: inline-flex !important;
+        flex-direction: column !important;
+        background: #18181b !important;
+        color: var(--tx) !important;
+        border: 1px solid #3f3f46 !important;
+        padding: 14px 22px !important;
+        border-radius: 10px !important;
+        cursor: pointer !important;
+        font-family: inherit !important;
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        max-width: 48% !important;
+        min-width: 200px !important;
+        text-decoration: none !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      }
+
+      .bottom-nav button .btn-label {
+        font-size: 0.68rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.2px !important;
+        font-weight: 700 !important;
+        color: var(--mt) !important;
+        margin-bottom: 4px !important;
+        display: block !important;
+      }
+
+      .bottom-nav button .btn-title {
+        color: #f4f4f5 !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 100% !important;
+        display: block !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) {
+        border-color: var(--ac) !important;
+        background: #27272a !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(217, 119, 87, 0.28) !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) .btn-label {
+        color: var(--ac) !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) .btn-title {
+        color: #ffffff !important;
+      }
+
+      #prev-btn {
+        align-items: flex-start !important;
+        text-align: left !important;
+        margin-right: auto !important;
+      }
+      #prev-btn div {
+        text-align: left !important;
+        max-width: 100% !important;
+      }
+
+      #next-btn {
+        align-items: flex-end !important;
+        text-align: right !important;
+        margin-left: auto !important;
+      }
+      #next-btn div {
+        text-align: right !important;
+        max-width: 100% !important;
+      }
+
+      @media (max-width: 768px) {
+        .bottom-nav {
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        .bottom-nav button {
+          max-width: 100% !important;
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        #prev-btn, #next-btn {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          align-items: center !important;
+          text-align: center !important;
+        }
+        #prev-btn div, #next-btn div {
+          text-align: center !important;
+        }
+      }
+
     </style>
   </head>
   <body>
@@ -436,11 +543,11 @@
     <!-- ═══════════════════════════════════════════════════════
      SIDEBAR NAVIGATION
      ═══════════════════════════════════════════════════════ -->
-    <div id="sidebar">
+        <div id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-header-text">
-          <div class="sidebar-course-label">Course Notes</div>
-          <div class="sidebar-title">Data Analysis &amp; Visualization</div>
+          <div class="sidebar-course-label">Midterm 2 Syllabus</div>
+          <div class="sidebar-title">Data Visualization</div>
         </div>
       </div>
       <div class="sidebar-search-wrap">
@@ -452,100 +559,80 @@
         />
       </div>
       <ul class="nav-list" id="nav-list">
-        <!-- Current Module (Active & Expandable) -->
+        <!-- Current Midterm 2 Module (Active & Expandable) -->
         <li class="nav-section">
           <div class="nav-section-title" onclick="toggleSection(this)">
-            <span>Module 9 — Figure Design &amp; Pitfalls</span>
+            <span>Module 9 — Figure Design & Pitfalls (Ch 18–25)</span>
             <span class="chevron">▼</span>
           </div>
           <ul class="nav-sublist">
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-1')">
-                <span class="nav-num">01</span>Overplotting &amp; Overlap
+                <span class="nav-num">01</span>Handling Overplotting (Ch 18)
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-2')">
-                <span class="nav-num">02</span>Pitfalls of Color Use
+                <span class="nav-num">02</span>Common Color Pitfalls (Ch 19)
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-3')">
-                <span class="nav-num">03</span>Redundant Coding &amp; Legends
+                <span class="nav-num">03</span>Redundant Coding & Legends (Ch 20)
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-4')">
-                <span class="nav-num">04</span>Balance Data &amp; Context
+                <span class="nav-num">04</span>Balance Data & Context (Ch 23)
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-5')">
-                <span class="nav-num">05</span>Typography &amp; Axis Labels
+                <span class="nav-num">05</span>Typography & Larger Labels (Ch 24)
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-6')">
-                <span class="nav-num">06</span>Avoid Line Drawings
+                <span class="nav-num">06</span>Avoid Line Drawings: Solid Shapes (Ch 25)
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-7')">
-                <span class="nav-num">07</span>📋 Master Exam Summary
+                <span class="nav-num">07</span>📋 Master Exam Review & Summary
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-8')">
-                <span class="nav-num">08</span>🎯 Interactive MCQ Quiz
+                <span class="nav-num">08</span>🎯 Interactive MCQ Exam Quiz
               </a>
             </li>
           </ul>
         </li>
 
-        <!-- Other Course Modules (Cross-File Links) -->
-        <li>
-          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
-            <span class="nav-num">01</span>Introduction to DAV
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
-            <span class="nav-num">02</span>Data Analysis Lifecycle
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./3- Data Preparation.html">
-            <span class="nav-num">03</span>Data Preparation
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
-            <span class="nav-num">04</span>Exploratory Data Analysis
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
-            <span class="nav-num">05</span>Evolution of Data Architecture
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./6- Distributed Data Processing & Apache Spark.html">
-            <span class="nav-num">06</span>Distributed Processing &amp; Spark
-          </a>
-        </li>
+        <!-- Midterm 2 Syllabus: Fundamentals of Data Visualization (Wilke) -->
         <li>
           <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
-            <span class="nav-num">07</span>Visualizing Data (Ch 2 &amp; 3)
+            <span class="nav-num">07</span>Aesthetics & Coordinates (Ch 2–3)
           </a>
         </li>
         <li>
-          <a class="nav-module-link" href="./8- Lab Midterm Sequential Codes & Exam Guide.html">
-            <span class="nav-num">08</span>Lab Midterm Sequential Codes &amp; Guide
+          <a class="nav-module-link" href="./10- Visualizing Time Series & Trends.html">
+            <span class="nav-num">10</span>Time Series & Trends (Ch 13–14)
           </a>
         </li>
         <li>
-          <a class="nav-module-link" href="./10- Visualizing Time Series &amp; Trends.html">
-            <span class="nav-num">10</span>Time Series &amp; Trends
+          <a class="nav-module-link" href="./11- Color Scales & Proportional Ink.html">
+            <span class="nav-num">11</span>Color Scales & Proportional Ink (Ch 4 & 17)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./12- Visualizing Geospatial Data.html">
+            <span class="nav-num">12</span>Geospatial Data & Maps (Ch 15)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./13- Midterm Exam Prep - Fundamentals of Data Visualization.html">
+            <span class="nav-num">13</span>🎯 Midterm 2 Exam Prep Master
           </a>
         </li>
       </ul>
@@ -2160,16 +2247,7 @@ ightarrow$ Direct text labeling.</li>
      JAVASCRIPT LOGIC & INTERACTIVE QUIZ ENGINE
      ═══════════════════════════════════════════════════════ -->
     <script>
-      const topics = [
-        "topic-1",
-        "topic-2",
-        "topic-3",
-        "topic-4",
-        "topic-5",
-        "topic-6",
-        "topic-7",
-        "topic-8"
-      ];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7", "topic-8"];
       let currentTopicIndex = 0;
       let userAnswers = {};
       let currentCategory = "All";
@@ -2739,13 +2817,24 @@ ightarrow$ Direct text labeling.</li>
       }
 
       // ── Pagination and Topic Switching ─────────────────────
-      function getTopicTitle(id) {
+            function getTopicTitle(id) {
         const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
                      document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
         if (link) {
-          const numEl = link.querySelector(".nav-num");
-          if (numEl) return link.textContent.replace(numEl.textContent, "").trim();
-          return link.textContent.replace(/^\d+\s*/, "").trim();
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector("h2");
+          if (h2) {
+            const numEl = h2.querySelector(".topic-num");
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, "").trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, "").trim();
+          }
         }
         return "Topic";
       }
@@ -2770,7 +2859,7 @@ ightarrow$ Direct text labeling.</li>
         }
       }
 
-      function showTopic(id) {
+            function showTopic(id) {
         document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
         const t = document.getElementById(id);
         if (t) t.style.display = "block";
@@ -2794,31 +2883,21 @@ ightarrow$ Direct text labeling.</li>
         const pt = document.getElementById("prev-title");
         const nt = document.getElementById("next-title");
 
-        if (pb && pt) {
+        if (pb) {
           if (currentTopicIndex > 0) {
-            pb.disabled = false;
-            pb.style.opacity = "1";
-            pb.style.pointerEvents = "auto";
-            pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+            pb.style.display = "inline-flex";
+            if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
           } else {
-            pb.disabled = true;
-            pb.style.opacity = "0.3";
-            pb.style.pointerEvents = "none";
-            pt.textContent = "Start";
+            pb.style.display = "none";
           }
         }
 
-        if (nb && nt) {
+        if (nb) {
           if (currentTopicIndex < topics.length - 1) {
-            nb.disabled = false;
-            nb.style.opacity = "1";
-            nb.style.pointerEvents = "auto";
-            nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+            nb.style.display = "inline-flex";
+            if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
           } else {
-            nb.disabled = true;
-            nb.style.opacity = "0.3";
-            nb.style.pointerEvents = "none";
-            nt.textContent = "End";
+            nb.style.display = "none";
           }
         }
 
@@ -2827,7 +2906,7 @@ ightarrow$ Direct text labeling.</li>
 
         const sb = document.getElementById("sidebar");
         const bd = document.getElementById("sidebar-backdrop");
-        if (window.innerWidth <= 900 && sb && sb.classList.contains("open")) {
+        if (window.innerWidth <= 768 && sb && sb.classList.contains("open")) {
           sb.classList.remove("open");
           if (bd) bd.classList.remove("active");
         }

@@ -1,0 +1,1556 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Analysis &amp; Visualization — Color Scales &amp; Proportional Ink</title>
+    <meta
+      name="description"
+      content="Comprehensive, high-yield exam notes for Claus O. Wilke's Fundamentals of Data Visualization (Chapters 4 & 17). Covers qualitative, sequential, diverging, and accent color scales, the Okabe-Ito and ColorBrewer palettes, the Principle of Proportional Ink, the linear axis zero-baseline law, logarithmic amounts vs ratios, Cleveland dot plots, and direct area perception."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      /* ── Custom Diagram & Visual Enhancements ── */
+      .citation-header {
+        background: rgba(217, 119, 87, 0.08);
+        border: 1px solid rgba(217, 119, 87, 0.25);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.84rem;
+        color: var(--mt);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .citation-header strong {
+        color: var(--ac);
+      }
+
+      .visual-card {
+        background: rgba(24, 24, 27, 0.7);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      }
+      .visual-card h4 {
+        margin: 0 0 6px;
+        color: var(--tx);
+        font-size: 1rem;
+      }
+      .visual-card p.visual-caption {
+        font-size: 0.82rem;
+        color: var(--mt);
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      .diagram-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .diagram-box {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.2s, border-color 0.2s;
+      }
+      .diagram-box:hover {
+        transform: translateY(-2px);
+        border-color: var(--ac);
+      }
+      .diagram-box-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--tx);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .tag-status {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .tag-bad {
+        background: rgba(240, 82, 79, 0.2);
+        color: #f87171;
+        border: 1px solid rgba(240, 82, 79, 0.4);
+      }
+      .tag-good {
+        background: rgba(79, 191, 139, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(79, 191, 139, 0.4);
+      }
+      .tag-warn {
+        background: rgba(240, 169, 78, 0.2);
+        color: #fbbf24;
+        border: 1px solid rgba(240, 169, 78, 0.4);
+      }
+
+      .svg-canvas-wrap {
+        width: 100%;
+        background: #111114;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: auto;
+      }
+      .svg-canvas-wrap svg {
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* Color Swatch Bars */
+      .swatch-bar {
+        display: flex;
+        height: 28px;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid var(--bd);
+        margin: 8px 0;
+      }
+      .swatch-segment {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      }
+
+      .matrix-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 0.85rem;
+      }
+      .matrix-table th {
+        background: rgba(217, 119, 87, 0.12);
+        color: var(--ac);
+        padding: 10px 14px;
+        text-align: left;
+        border: 1px solid var(--bd);
+        font-weight: 600;
+      }
+      .matrix-table td {
+        padding: 9px 14px;
+        border: 1px solid var(--bd);
+        color: var(--tx);
+        vertical-align: top;
+      }
+      .matrix-table tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      /* Quiz Controls */
+      .quiz-header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 12px 18px;
+        background: rgba(24, 24, 27, 0.6);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+      }
+      .score-pill {
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid var(--bd);
+        padding: 7px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--ac);
+      }
+      .reset-quiz-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--bd);
+        color: var(--tx);
+        padding: 7px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .reset-quiz-btn:hover {
+        background: var(--hv);
+        border-color: var(--ac);
+        color: var(--ac);
+      }
+      .mcq-card {
+        background: rgba(24, 24, 27, 0.75);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+      .mcq-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .mcq-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        background: rgba(217, 119, 87, 0.15);
+        color: var(--ac);
+        padding: 3px 8px;
+        border-radius: 5px;
+      }
+      .mcq-question {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--tx);
+        line-height: 1.5;
+      }
+      .mcq-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 14px 0 10px;
+      }
+      .mcq-opt {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 10px 14px;
+        text-align: left;
+        color: var(--tx);
+        font-family: inherit;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        transition: all 0.15s ease;
+      }
+      .mcq-opt:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: var(--ac);
+      }
+      .opt-letter {
+        font-weight: 700;
+        font-size: 0.78rem;
+        color: var(--mt);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 2px 7px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .mcq-opt.selected-correct {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: #10b981;
+        color: #a7f3d0;
+      }
+      .mcq-opt.selected-correct .opt-letter {
+        background: #10b981;
+        color: #064e3b;
+      }
+      .mcq-opt.selected-incorrect {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: #ef4444;
+        color: #fca5a5;
+      }
+      .mcq-opt.selected-incorrect .opt-letter {
+        background: #ef4444;
+        color: #450a0a;
+      }
+      .mcq-opt.show-correct {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.08);
+      }
+      .mcq-explanation {
+        display: none;
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        line-height: 1.5;
+        border: 1px solid var(--bd);
+        background: rgba(0, 0, 0, 0.4);
+      }
+    
+      
+
+    
+      /* ── Prominent Bottom Navigation Styling ── */
+      .bottom-nav {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-top: 1px solid var(--bd) !important;
+        padding: 28px 0 16px !important;
+        margin-top: 56px !important;
+        gap: 16px !important;
+        width: 100% !important;
+      }
+
+      .bottom-nav button {
+        display: inline-flex !important;
+        flex-direction: column !important;
+        background: #18181b !important;
+        color: var(--tx) !important;
+        border: 1px solid #3f3f46 !important;
+        padding: 14px 22px !important;
+        border-radius: 10px !important;
+        cursor: pointer !important;
+        font-family: inherit !important;
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        max-width: 48% !important;
+        min-width: 200px !important;
+        text-decoration: none !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      }
+
+      .bottom-nav button .btn-label {
+        font-size: 0.68rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.2px !important;
+        font-weight: 700 !important;
+        color: var(--mt) !important;
+        margin-bottom: 4px !important;
+        display: block !important;
+      }
+
+      .bottom-nav button .btn-title {
+        color: #f4f4f5 !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 100% !important;
+        display: block !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) {
+        border-color: var(--ac) !important;
+        background: #27272a !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(217, 119, 87, 0.28) !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) .btn-label {
+        color: var(--ac) !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) .btn-title {
+        color: #ffffff !important;
+      }
+
+      #prev-btn {
+        align-items: flex-start !important;
+        text-align: left !important;
+        margin-right: auto !important;
+      }
+      #prev-btn div {
+        text-align: left !important;
+        max-width: 100% !important;
+      }
+
+      #next-btn {
+        align-items: flex-end !important;
+        text-align: right !important;
+        margin-left: auto !important;
+      }
+      #next-btn div {
+        text-align: right !important;
+        max-width: 100% !important;
+      }
+
+      @media (max-width: 768px) {
+        .bottom-nav {
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        .bottom-nav button {
+          max-width: 100% !important;
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        #prev-btn, #next-btn {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          align-items: center !important;
+          text-align: center !important;
+        }
+        #prev-btn div, #next-btn div {
+          text-align: center !important;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR
+     ═══════════════════════════════════════════════════════ -->
+        <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Midterm 2 Syllabus</div>
+          <div class="sidebar-title">Data Visualization</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <!-- Current Midterm 2 Module (Active & Expandable) -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 11 — Color Scales & Proportional Ink (Ch 4 & 17)</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')">
+                <span class="nav-num">01</span>Three Core Uses & Qualitative Scales
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                <span class="nav-num">02</span>Sequential & Diverging Color Scales
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                <span class="nav-num">03</span>Accent Scales & Contrast Traps
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')">
+                <span class="nav-num">04</span>Proportional Ink: Baselines & Areas
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-5')">
+                <span class="nav-num">05</span>Log Axes & Direct Area Perception
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-6')">
+                <span class="nav-num">06</span>📋 Summary & Practice Exam (5-Word Keys)
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Midterm 2 Syllabus: Fundamentals of Data Visualization (Wilke) -->
+        <li>
+          <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
+            <span class="nav-num">07</span>Aesthetics & Coordinates (Ch 2–3)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./9- Principles of Figure Design & Visualization Pitfalls.html">
+            <span class="nav-num">09</span>Figure Design & Pitfalls (Ch 18–25)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./10- Visualizing Time Series & Trends.html">
+            <span class="nav-num">10</span>Time Series & Trends (Ch 13–14)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./12- Visualizing Geospatial Data.html">
+            <span class="nav-num">12</span>Geospatial Data & Maps (Ch 15)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./13- Midterm Exam Prep - Fundamentals of Data Visualization.html">
+            <span class="nav-num">13</span>🎯 Midterm 2 Exam Prep Master
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-11">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Analysis &amp; Visualization • Wilke Ch. 4 &amp; 17</div>
+          <h1 class="module-title">Color Scales &amp; The Principle of Proportional Ink</h1>
+        </div>
+
+        <div class="citation-header">
+          <span>📖</span>
+          <div>
+            <strong>Required Textbook Reference:</strong> Claus O. Wilke, <em>Fundamentals of Data Visualization</em>, Chapter 4 (<em>Color Scales</em>, pp. 27–35) and Chapter 17 (<em>The Principle of Proportional Ink</em>, pp. 207–217). Bergstrom &amp; West (2016).
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 1: THREE CORE USES & QUALITATIVE SCALES (CH 4)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Three Core Uses of Color &amp; Qualitative Color Scales</h2>
+          <p class="topic-subtitle">The foundational taxonomy of color in visualization and the strict conditions for unordered categorical data.</p>
+
+          <p>
+            Color is one of the most expressive aesthetics in visual communication, but it is also the easiest to misuse. Claus O. Wilke establishes that before picking any hue, a designer must answer one fundamental question: <em>What specific function is color performing in this graphic?</em> Color is never decorative; it is a mathematical mapping.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">The Three Fundamental Use Cases for Color</div>
+            <p>In data visualization, color serves exactly three distinct analytical functions:</p>
+            <ol style="margin-left: 20px; margin-top: 8px;">
+              <li><strong>To Distinguish:</strong> Differentiate discrete items or categories that have no inherent ranking or numerical order (uses <em>Qualitative scales</em>).</li>
+              <li><strong>To Represent Data Values:</strong> Encode quantitative magnitudes, continuous measurements, or directional deviations (uses <em>Sequential</em> or <em>Diverging scales</em>).</li>
+              <li><strong>To Highlight:</strong> Guide the reader's attention to a selective subset of focal data points or categories against a subdued backdrop (uses <em>Accent scales</em>).</li>
+            </ol>
+            <p style="margin-top: 8px; font-size: 0.85rem; color: var(--mt);"><strong>Intuitive Summary:</strong> Distinguish separates nominal buckets; Represent plots numbers; Highlight tells a story.</p>
+          </div>
+
+          <h3>Qualitative Color Scales (Nominal Data)</h3>
+          <p>
+            When data points represent discrete categories without an intrinsic order—such as different countries on a map, manufacturing brands, or US geographic regions—we map them using a <strong>qualitative color scale</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Qualitative Color Scale: The Two Inviolable Conditions</div>
+            <p>A qualitative scale contains a finite set of distinct colors that must satisfy two simultaneous conditions:</p>
+            <ul style="margin-left: 20px; margin-top: 6px;">
+              <li><strong>Condition 1: Visual Distinctness:</strong> Colors must be easily distinguishable from one another by normal and color-deficient observers.</li>
+              <li><strong>Condition 2: Perceptual Equivalence:</strong> No single color should stand out relative to the others (no color possesses higher visual weight, luminance, or extreme saturation), and the colors <em>must not create the impression of an ordered sequence</em> (such as getting progressively darker or lighter).</li>
+            </ul>
+          </div>
+
+          <div class="warning-box">
+            <div class="warning-title">The False-Order Trap in Qualitative Scales</div>
+            <p>If you use a sequence of blues that get successively lighter to represent categorical items (e.g., Apple, Samsung, Google), the viewer's brain automatically perceives a hierarchy or ranking (e.g., Apple is "more" or "better" than Google). <strong>Unordered categories demand unordered, equal-luminance hues!</strong></p>
+          </div>
+
+          <!-- Visual Demonstration of Color Scales -->
+          <div class="visual-card">
+            <h4>Standard Qualitative Color Scales in Data Science</h4>
+            <p class="visual-caption">Representative qualitative scales tested for equal perceptual weighting and colorblind accessibility.</p>
+            
+            <div style="margin-bottom: 14px;">
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <strong>Okabe-Ito Scale (Wilke Default — Universally Colorblind Safe)</strong>
+                <span style="color:var(--mt);">8 Distinct Hues</span>
+              </div>
+              <div class="swatch-bar">
+                <div class="swatch-segment" style="background:#E69F00; color:#000;">Orange</div>
+                <div class="swatch-segment" style="background:#56B4E9; color:#000;">Sky Blue</div>
+                <div class="swatch-segment" style="background:#009E73;">Bluish Green</div>
+                <div class="swatch-segment" style="background:#F0E442; color:#000;">Yellow</div>
+                <div class="swatch-segment" style="background:#0072B2;">Blue</div>
+                <div class="swatch-segment" style="background:#D55E00;">Vermilion</div>
+                <div class="swatch-segment" style="background:#CC79A7;">Reddish Purple</div>
+                <div class="swatch-segment" style="background:#000000;">Black</div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <strong>ColorBrewer Dark2 (Cynthia Brewer)</strong>
+                <span style="color:var(--mt);">Balanced Dark Palette</span>
+              </div>
+              <div class="swatch-bar">
+                <div class="swatch-segment" style="background:#1b9e77;">#1b9e77</div>
+                <div class="swatch-segment" style="background:#d95f02;">#d95f02</div>
+                <div class="swatch-segment" style="background:#7570b3;">#7570b3</div>
+                <div class="swatch-segment" style="background:#e7298a;">#e7298a</div>
+                <div class="swatch-segment" style="background:#66a61e;">#66a61e</div>
+                <div class="swatch-segment" style="background:#e6ab02; color:#000;">#e6ab02</div>
+                <div class="swatch-segment" style="background:#a6761d;">#a6761d</div>
+                <div class="swatch-segment" style="background:#666666;">#666666</div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <strong>ggplot2 Default Hue Scale (Equally spaced HCL circle)</strong>
+                <span style="color:var(--mt);">Standard R ggplot2</span>
+              </div>
+              <div class="swatch-bar">
+                <div class="swatch-segment" style="background:#F8766D; color:#000;">Hue 0°</div>
+                <div class="swatch-segment" style="background:#A3A500; color:#000;">Hue 90°</div>
+                <div class="swatch-segment" style="background:#00BF7D; color:#000;">Hue 180°</div>
+                <div class="swatch-segment" style="background:#00B0F6; color:#000;">Hue 240°</div>
+                <div class="swatch-segment" style="background:#E76BF3; color:#000;">Hue 300°</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Book Case Study: US Population Growth by Region (2000–2010)</div>
+            <p>
+              In Figure 4-2, Wilke displays the population growth percentage of all 50 US states, sorted by growth rate, and colors the bars by <strong>Geographic Region</strong> (West, South, Midwest, Northeast).
+            </p>
+            <ul>
+              <li><strong>Why a qualitative scale?</strong> The four regions have no inherent mathematical ranking (West is not mathematically "greater" than Northeast).</li>
+              <li><strong>Result:</strong> States in the West and South immediately group together at the top of the chart with the highest growth rates (Nevada, Arizona, Utah, Texas), whereas Midwest and Northeast states cluster at the bottom (Michigan actually experienced a decrease).</li>
+            </ul>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">Exam Pro Tip: Okabe-Ito is the Gold Standard</div>
+            <p>If an exam asks for the default qualitative color scale used by Claus O. Wilke throughout <em>Fundamentals of Data Visualization</em>, the answer is the <strong>Okabe-Ito scale</strong> (Okabe &amp; Ito, 2008). It was mathematically designed to be unambiguous under all forms of Color Vision Deficiency (deuteranopia, protanopia, tritanopia).</p>
+          </div>
+
+          <h3>Practice Questions (Topic 1)</h3>
+          <details>
+            <summary>Q1: Why is a sequence of colors transitioning from light blue to dark blue inappropriate for nominal categories?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> It violates Condition 2 of qualitative scales. Succesively darker colors create the perceptual illusion of an inherent rank or quantitative hierarchy among categories that have no actual order.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: What two conditions must all qualitative color scales satisfy according to Chapter 4?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> (1) The colors must be clearly distinct from each other; (2) The colors must be perceptually equivalent, meaning no single color stands out and they do not imply an ordered progression.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: Which qualitative scale is the Wilke textbook default, and why was it chosen?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> The <strong>Okabe-Ito scale</strong>. It was chosen because its 8 colors are universally distinguishable by individuals with normal vision as well as those with deuteranopia, protanopia, and tritanopia.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 2: SEQUENTIAL & DIVERGING SCALES (CH 4)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Representing Data Values: Sequential &amp; Diverging Color Scales</h2>
+          <p class="topic-subtitle">Encoding numerical magnitudes, gradients, perceptual uniformity, and the mathematics of neutral midpoints.</p>
+
+          <p>
+            When color represents a quantitative numerical variable—such as income, temperature, vehicle speed, or density—it must convey two mathematical properties simultaneously:
+            <strong>(1) Order</strong> (which value is larger or smaller) and <strong>(2) Distance</strong> (how far apart two values are).
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Sequential Color Scale &amp; Perceptual Uniformity</div>
+            <p>
+              A <strong>sequential color scale</strong> maps a continuous numerical range onto a gradient of colors that progress smoothly in visual lightness/luminance.
+            </p>
+            <p style="margin-top:6px;">
+              <strong>The Perceptual Uniformity Law:</strong> A sequential scale must be perceived to vary uniformly across its entire range. An equal numerical difference ($\Delta x$) anywhere along the scale must produce an equal perceived difference ($\Delta E$) in color.
+            </p>
+          </div>
+
+          <h3>Single-Hue vs. Multi-Hue Sequential Scales</h3>
+          <p>
+            Sequential scales can be built using a single hue or multiple hues:
+          </p>
+          <ul>
+            <li><strong>Single-Hue (Monochromatic):</strong> Varies luminance within a single hue (e.g., ColorBrewer Blues: from very light blue to deep navy blue). Highly effective, simple, and colorblind-safe.</li>
+            <li><strong>Multi-Hue:</strong> Varies both hue and luminance simultaneously (e.g., <em>Heat</em>: dark red to light yellow; <em>Viridis</em>: dark purple/blue via green to light yellow). Multi-hue scales provide wider dynamic range and sharper contrast for fine gradations.</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="warning-title">The Natural Color Gradient Law</div>
+            <p>
+              Multi-hue sequential scales <strong>must follow color gradients found in nature</strong>—specifically progressing from dark saturated cool/warm tones (dark red, dark blue, dark purple) to bright, light tones (light yellow, pale green).
+            </p>
+            <p style="margin-top:6px;">
+              <strong>Fatal Error:</strong> Reversing this progression (such as starting with dark yellow and moving to light blue) appears unnatural, contradicts human cognitive models of illumination, and fails as a sequential scale!
+            </p>
+          </div>
+
+          <!-- Swatches for Sequential and Diverging -->
+          <div class="visual-card">
+            <h4>Quantitative Color Scale Architectures</h4>
+            <p class="visual-caption">Standard sequential and diverging palettes illustrated with their perceptual properties.</p>
+
+            <div style="margin-bottom: 14px;">
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <strong>Sequential Monochromatic: ColorBrewer Blues</strong>
+                <span style="color:var(--mt);">Light to Dark Blue</span>
+              </div>
+              <div class="swatch-bar" style="background: linear-gradient(to right, #eff3ff, #c6dbef, #9ecae1, #6baed6, #4292c6, #2171b5, #084594);"></div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <strong>Sequential Multi-Hue: Viridis (Perceptually Monotonic)</strong>
+                <span style="color:var(--mt);">Dark Purple &rarr; Teal &rarr; Green &rarr; Bright Yellow</span>
+              </div>
+              <div class="swatch-bar" style="background: linear-gradient(to right, #440154, #3b528b, #21908d, #5dc863, #fde725);"></div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <strong>Diverging Balanced: Blue &ndash; Light Neutral &ndash; Red</strong>
+                <span style="color:var(--mt);">Midpoint: 0 or Meaningful Threshold</span>
+              </div>
+              <div class="swatch-bar" style="background: linear-gradient(to right, #2166ac, #67a9cf, #d1e5f0, #f7f7f7, #fddbc7, #ef8a62, #b2182b);"></div>
+            </div>
+          </div>
+
+          <h3>Diverging Color Scales &amp; The Neutral Midpoint</h3>
+          <p>
+            When data values deviate in two opposite directions relative to a critical baseline or neutral reference point, a sequential scale is inadequate. We must use a <strong>diverging color scale</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Diverging Color Scale: Structural Requirements</div>
+            <p>
+              A diverging color scale consists of <strong>two sequential scales stitched together at a common neutral midpoint</strong> (typically represented by a light, desaturated color like white, light gray, or pale yellow).
+            </p>
+            <p style="margin-top:6px;">
+              <strong>The Balance Rule:</strong> The progression from light center to dark extremes must be visually symmetrical in both directions. If one side darkens faster than the other, viewers will perceive values on that side as having greater deviation or magnitude than equivalent values on the other side.
+            </p>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Texas Counties: When Percentages Require a Diverging Scale</div>
+            <p>
+              Percentages are mathematically always positive ($0\%$ to $100\%$). One might naively assume they require a sequential scale. However, Wilke demonstrates in Figure 4-6 that for the <em>percentage of people identifying as white in Texas counties</em>, a <strong>diverging scale is mandatory</strong>:
+            </p>
+            <ul>
+              <li><strong>The Midpoint:</strong> $50\%$ represents the demographic tipping point.</li>
+              <li><strong>Above $50\%$:</strong> Whites are in the majority (encoded in shades of blue).</li>
+              <li><strong>Below $50\%$:</strong> Whites are in the minority (encoded in shades of red/brown).</li>
+              <li><strong>At $50\%$:</strong> Equal proportions (encoded as pale neutral white).</li>
+            </ul>
+            <p><em>Conclusion:</em> A diverging scale is justified whenever a specific reference point has profound qualitative or domain significance, regardless of whether numbers are negative!</p>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">Missing Data Convention in Choropleths</div>
+            <p>In Figure 4-4 (Median Income in Texas Counties), Loving County in West Texas had no data available. Wilke explicitly colors Loving County in <strong>neutral light gray</strong>. <em>Exam Rule:</em> Missing or undefined values must always be rendered in an unambiguous neutral tone (gray) that is not part of the active color scale.</p>
+          </div>
+
+          <h3>Practice Questions (Topic 2)</h3>
+          <details>
+            <summary>Q1: Why does a multi-hue scale progressing from dark yellow to light blue fail as a sequential scale?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> It violates the natural light gradient law. Natural illumination transitions from dark cool tones to bright yellow/white; reversing it appears unnatural and hinders monotonic lightness perception.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: What is the structural definition of a diverging color scale, and why must it be balanced?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> It is two sequential scales stitched at a common light midpoint. It must be balanced so that equal numerical deviations above and below the midpoint produce equal perceived visual magnitude.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: Can a variable that contains only positive numbers (like percentages from 0 to 100) use a diverging scale?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Yes. If a specific internal value (such as 50% majority/minority or 100% budget baseline) represents a critical qualitative dividing line, a diverging scale is justified.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 3: ACCENT SCALES & HIGHLIGHTING (CH 4)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Color as a Tool to Highlight: Accent Scales &amp; Contrast Traps</h2>
+          <p class="topic-subtitle">Guiding visual attention, the three methods to derive accent palettes, and the baseline desaturation remedy.</p>
+
+          <p>
+            In exploratory analysis, every data point is equal. But in <strong>explanatory communication</strong>, specific categories or data points carry the core message of your narrative. We use color to highlight those focal elements so they pop out instantaneously.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Accent Color Scales</div>
+            <p>
+              An <strong>accent color scale</strong> pairs a set of subdued, low-saturation baseline colors with a matching set of strong, vivid, darker, or highly saturated accent colors.
+            </p>
+          </div>
+
+          <h3>Three Ways to Derive Accent Color Scales</h3>
+          <p>Wilke outlines three distinct engineering approaches to create effective accent scales:</p>
+          <ol style="margin-left:20px; line-height:1.8;">
+            <li><strong>Scale Modification:</strong> Take an existing qualitative scale (like Okabe-Ito), lighten and desaturate the baseline categories, and darken/saturate the focal categories.</li>
+            <li><strong>Grayscale Pairing:</strong> Map all non-focal baseline categories to neutral gray tones, and assign vivid saturated colors exclusively to the focal categories.</li>
+            <li><strong>Pre-designed Accent Scales:</strong> Use established cartographic or design palettes specifically built for highlighting (such as <em>ColorBrewer Accent</em>).</li>
+          </ol>
+
+          <!-- SVG Visual Comparison of Accent Technique -->
+          <div class="visual-card">
+            <h4>Case Study: Highlighting Neighboring States (Texas vs. Louisiana)</h4>
+            <p class="visual-caption">Demonstrating how identical population data supports different narratives through strategic accent coloring.</p>
+
+            <div class="svg-canvas-wrap">
+              <svg viewBox="0 0 680 180" width="100%" height="180">
+                <!-- Background grid -->
+                <line x1="100" y1="20" x2="100" y2="150" stroke="#27272a" stroke-dasharray="3,3" />
+                <line x1="300" y1="20" x2="300" y2="150" stroke="#27272a" stroke-dasharray="3,3" />
+                <line x1="500" y1="20" x2="500" y2="150" stroke="#27272a" stroke-dasharray="3,3" />
+
+                <!-- Axes -->
+                <line x1="80" y1="150" x2="640" y2="150" stroke="#52525b" stroke-width="2" />
+                <text x="80" y="170" fill="#a1a1aa" font-size="11" text-anchor="middle">0%</text>
+                <text x="300" y="170" fill="#a1a1aa" font-size="11" text-anchor="middle">15%</text>
+                <text x="500" y="170" fill="#a1a1aa" font-size="11" text-anchor="middle">30% Growth</text>
+
+                <!-- Subdued bars -->
+                <text x="75" y="42" fill="#71717a" font-size="11" text-anchor="end">Nevada</text>
+                <rect x="80" y="30" width="460" height="16" fill="#3f3f46" rx="3" />
+
+                <text x="75" y="66" fill="#d97757" font-weight="700" font-size="11" text-anchor="end">Texas (5th)</text>
+                <rect x="80" y="54" width="350" height="16" fill="#d97757" rx="3" />
+
+                <text x="75" y="90" fill="#71717a" font-size="11" text-anchor="end">Florida</text>
+                <rect x="80" y="78" width="310" height="16" fill="#3f3f46" rx="3" />
+
+                <text x="75" y="114" fill="#56b4e9" font-weight="700" font-size="11" text-anchor="end">Louisiana (48th)</text>
+                <rect x="80" y="102" width="60" height="16" fill="#56b4e9" rx="3" />
+
+                <text x="75" y="138" fill="#71717a" font-size="11" text-anchor="end">Michigan</text>
+                <rect x="70" y="126" width="10" height="16" fill="#3f3f46" rx="3" />
+
+                <!-- Callout annotation -->
+                <rect x="460" y="50" width="190" height="50" rx="6" fill="#18181b" stroke="#d97757" stroke-width="1" />
+                <text x="470" y="70" fill="#ededed" font-size="10" font-weight="600">Neighboring Southern States</text>
+                <text x="470" y="86" fill="#a1a1aa" font-size="9">Texas boomed (+20.6%), LA stalled (+1.4%)</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <div class="warning-title">The Baseline Competition Trap &amp; Wilke's Universal Remedy</div>
+            <p>
+              A very common design error is using baseline colors that are still moderately saturated. When baseline elements are colorful, they <em>compete with the accent color</em> for the viewer's attention, diluting the visual hierarchy.
+            </p>
+            <p style="margin-top:6px;">
+              <strong>Wilke's Remedy:</strong> When in doubt, <strong>remove all color completely</strong> from all background and baseline elements. Turn everything into shades of gray or muted slate, and reserve color exclusively for the highlighted data! (Demonstrated in Figure 4-9 with male professional athlete body types, highlighting track athletes).
+            </p>
+          </div>
+
+          <h3>Practice Questions (Topic 3)</h3>
+          <details>
+            <summary>Q1: What is the primary visual failure when designing accent color scales?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Making baseline colors too saturated, causing them to compete for the reader's attention against the intended accent highlights.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: What is Wilke's "easy remedy" when baseline colors distract from the highlight?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Remove all color from every element in the figure except the specific highlighted categories or data points (full grayscale baseline).</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: In the comparison between Texas and Louisiana population growth, what insight was unlocked by accent coloring?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Even though both are immediate southern neighbors, Texas was the 5th fastest growing US state while Louisiana was the 3rd slowest.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 4: PRINCIPLE OF PROPORTIONAL INK (CH 17)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>The Principle of Proportional Ink: Linear Axes &amp; Baseline Laws</h2>
+          <p class="topic-subtitle">Bergstrom &amp; West's law, the internal inconsistency of truncated axes, and the Facebook stock price collapse myth.</p>
+
+          <p>
+            In visual displays, graphical elements occupy physical space on the screen or paper. When graphical elements have a defined visual extent—such as the height of a bar, the area of a polygon, or the shading under a curve—our visual cortex automatically interprets that physical area as a magnitude.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">The Principle of Proportional Ink (Bergstrom &amp; West, 2016)</div>
+            <p>
+              <em>"When a shaded region is used to represent a numerical value, the area of that shaded region should be directly proportional to the corresponding value."</em>
+            </p>
+            <p style="margin-top:6px; font-size:0.85rem; color:var(--mt);">
+              <strong>What is "Ink"?</strong> In visualization literature, "ink" refers to any mark that deviates from the blank background (lines, dots, shaded areas, text). In Chapter 17, the primary focus is on shaded regions and bars.
+            </p>
+          </div>
+
+          <h3>The Dual Encoding &amp; Internal Inconsistency on Linear Axes</h3>
+          <p>
+            In a standard bar plot along a linear axis, the data value is encoded in <strong>two distinct ways</strong>:
+          </p>
+          <ol style="margin-left:20px; line-height:1.7;">
+            <li>The <strong>location of the bar endpoint</strong> along the axis.</li>
+            <li>The <strong>physical length and surface area</strong> of the bar.</li>
+          </ol>
+          <p>
+            If the bar begins at $0$, both encodings are perfectly aligned. But if the bar begins at an arbitrary non-zero baseline (e.g., $y = \$50,000$), the figure becomes <strong>internally inconsistent</strong>: the endpoint shows the actual value, but the area represents the difference above the arbitrary cutoff!
+          </p>
+
+          <div class="warning-box">
+            <div class="warning-title">The Human Perception Flaw</div>
+            <p>
+              Human perception is hardwired to evaluate the <strong>overall size and length of the bar</strong>, NOT the tiny numeric coordinate of its endpoint relative to the axis tick marks. A truncated bar chart visually lies to the viewer's brain!
+            </p>
+          </div>
+
+          <!-- SVG Visual Comparison: Hawaii Income -->
+          <div class="visual-card">
+            <h4>Case Study: Median Income in Hawaii Counties (Truncated vs. Zero Baseline)</h4>
+            <p class="visual-caption">Figure 17-1 vs. 17-2 in Claus O. Wilke. Truncating the y-axis at $50k exaggerates income differences by over 500%.</p>
+
+            <div class="diagram-grid">
+              <!-- Bad Truncated -->
+              <div class="diagram-box">
+                <div class="diagram-box-title">
+                  <span>Truncated Baseline ($50,000)</span>
+                  <span class="tag-status tag-bad">Misleading (Bad)</span>
+                </div>
+                <div class="svg-canvas-wrap">
+                  <svg viewBox="0 0 280 160" width="100%" height="160">
+                    <!-- Y Axis -->
+                    <line x1="50" y1="20" x2="50" y2="130" stroke="#71717a" stroke-width="1.5" />
+                    <text x="45" y="134" fill="#ef4444" font-size="9" text-anchor="end" font-weight="700">$50k</text>
+                    <text x="45" y="80" fill="#a1a1aa" font-size="9" text-anchor="end">$65k</text>
+                    <text x="45" y="30" fill="#a1a1aa" font-size="9" text-anchor="end">$80k</text>
+
+                    <!-- Bars starting at 50k -->
+                    <!-- Hawaii: 52k (height = 10px) -->
+                    <rect x="65" y="118" width="28" height="12" fill="#ef4444" />
+                    <text x="79" y="145" fill="#a1a1aa" font-size="9" text-anchor="middle">Hawaii</text>
+
+                    <!-- Maui: 66k (height = 60px) -->
+                    <rect x="105" y="70" width="28" height="60" fill="#71717a" />
+                    <text x="119" y="145" fill="#a1a1aa" font-size="9" text-anchor="middle">Maui</text>
+
+                    <!-- Honolulu: 75k (height = 100px) -->
+                    <rect x="145" y="30" width="28" height="100" fill="#71717a" />
+                    <text x="159" y="145" fill="#a1a1aa" font-size="9" text-anchor="middle">Honolulu</text>
+
+                    <!-- Illusion text -->
+                    <text x="80" y="105" fill="#ef4444" font-size="8">Tiny bar</text>
+                    <text x="160" y="24" fill="#a1a1aa" font-size="8">8x taller bar!</text>
+                  </svg>
+                </div>
+                <p style="font-size:0.75rem; color:var(--mt); margin:0;">Honolulu appears 8 times wealthier than Hawaii County, when the true difference is merely $75k vs $52k (~1.4x).</p>
+              </div>
+
+              <!-- Good Zero Baseline -->
+              <div class="diagram-box">
+                <div class="diagram-box-title">
+                  <span>Zero Baseline ($0)</span>
+                  <span class="tag-status tag-good">Accurate (Good)</span>
+                </div>
+                <div class="svg-canvas-wrap">
+                  <svg viewBox="0 0 280 160" width="100%" height="160">
+                    <!-- Y Axis -->
+                    <line x1="50" y1="20" x2="50" y2="130" stroke="#71717a" stroke-width="1.5" />
+                    <text x="45" y="134" fill="#10b981" font-size="9" text-anchor="end" font-weight="700">$0</text>
+                    <text x="45" y="80" fill="#a1a1aa" font-size="9" text-anchor="end">$40k</text>
+                    <text x="45" y="30" fill="#a1a1aa" font-size="9" text-anchor="end">$80k</text>
+
+                    <!-- Bars starting at 0 -->
+                    <!-- Hawaii: 52k (height = 68px) -->
+                    <rect x="65" y="62" width="28" height="68" fill="#10b981" />
+                    <text x="79" y="145" fill="#a1a1aa" font-size="9" text-anchor="middle">Hawaii</text>
+
+                    <!-- Maui: 66k (height = 86px) -->
+                    <rect x="105" y="44" width="28" height="86" fill="#10b981" />
+                    <text x="119" y="145" fill="#a1a1aa" font-size="9" text-anchor="middle">Maui</text>
+
+                    <!-- Honolulu: 75k (height = 98px) -->
+                    <rect x="145" y="32" width="28" height="98" fill="#10b981" />
+                    <text x="159" y="145" fill="#a1a1aa" font-size="9" text-anchor="middle">Honolulu</text>
+                  </svg>
+                </div>
+                <p style="font-size:0.75rem; color:var(--mt); margin:0;">Bars accurately convey comparable standards of living across counties. Bar length is strictly proportional to income.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">The Absolute Inviolable Rule of Linear Bar Charts</div>
+            <p style="font-size:1.05rem; font-weight:600; color:var(--ac);">
+              Bars on a linear scale MUST ALWAYS start at 0.
+            </p>
+            <p style="margin-top:4px;">There are no exceptions. If your bars do not start at zero, you are actively violating the Principle of Proportional Ink.</p>
+          </div>
+
+          <h3>The Shaded Area Under Time Series (The Facebook Stock Example)</h3>
+          <p>
+            The proportional ink trap applies equally to shaded line charts (area charts). In Figure 17-3, Wilke examines a financial chart of <strong>Facebook (FB) stock price</strong> from Oct 2016 to Jan 2017:
+          </p>
+          <ul>
+            <li><strong>The Deception:</strong> The y-axis starts at $\$110$ instead of $\$0$, and the area under the price line is filled with solid shading. Around Nov 1, 2016, the stock dropped from $\$133$ to $\$118$. Because the shading stops at $\$110$, the shaded area shrunk by almost $70\%$, conveying the visual illusion of a catastrophic company collapse!</li>
+            <li><strong>The Reality (Figure 17-4):</strong> Plotted on a true $\$0$ to $\$150$ scale, the price decline was moderate and normal relative to the total value of the company.</li>
+            <li><strong>Why Shading Exacerbates the Error:</strong> Shading fills the space between the curve and the axis. The eye perceives the <em>height of the ink column</em> as the stock price. If the axis is truncated, the ink represents only the difference from an arbitrary baseline.</li>
+          </ul>
+
+          <h3>How to Legally Show Small Changes &amp; Differences</h3>
+          <p>
+            Does the zero-baseline rule mean we can never use bars or shading to highlight subtle differences? <strong>No!</strong> Wilke provides two legitimate techniques:
+          </p>
+          <div class="definition">
+            <div class="def-title">Valid Techniques for Small Magnitudes</div>
+            <ul style="margin-left:20px; line-height:1.7;">
+              <li><strong>Plot the Difference Directly (Starting at 0):</strong> Instead of plotting total income from $50k, plot the <em>change in median income</em> from 2010 to 2015 starting at $0$ (Figure 17-5). Positive growth bars extend upwards; negative growth (Hawaii County) extends downwards below $0$. Proportional ink is preserved!</li>
+              <li><strong>Shade Relative to a Peak Baseline:</strong> Instead of shading Facebook's price down to an arbitrary floor, shade the drop downward from its temporary high ($133$) (Figure 17-6). The shaded area now legitimately measures the exact depth of the price decline.</li>
+              <li><strong>Switch from Bars to Points (Dots):</strong> A dot encodes data <em>strictly by its position along the axis</em>. A dot has no length or fill area. Therefore, a dot plot (Cleveland plot) on a truncated axis does NOT violate proportional ink!</li>
+            </ul>
+          </div>
+
+          <h3>Practice Questions (Topic 4)</h3>
+          <details>
+            <summary>Q1: Formulate Bergstrom &amp; West's Principle of Proportional Ink in exact textbook wording.</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> <em>"When a shaded region is used to represent a numerical value, the area of that shaded region should be directly proportional to the corresponding value."</em></p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: Why does plotting dots (scatter/dot plots) on a truncated axis not violate proportional ink, whereas bars do?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Dots encode data solely through coordinate position along an axis, not through physical length or area. Bars encode data through visual extent/area, which becomes inconsistent if truncated.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: How can a visualization legitimately use bars to show modest year-over-year income changes without violating proportional ink?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> By explicitly defining the variable as the <em>numerical change</em> ($\Delta y$) and starting the axis at $0$, with positive changes extending upward and negative changes extending downward.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 5: LOG AXES & DIRECT AREA (CH 17)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Proportional Ink on Logarithmic Axes &amp; Direct Area Perception</h2>
+          <p class="topic-subtitle">The fatal flaw of bars on log scales, amounts vs. ratios, the Cleveland dot plot alternative, and pie chart area limitations.</p>
+
+          <p>
+            When visualizing data along a logarithmic axis, spatial distance is non-linear: each constant step represents multiplication by a factor (e.g., $10\times$ or $2\times$). This creates a unique mathematical dilemma for the Principle of Proportional Ink.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">The Logarithmic Axis Proportional Ink Dilemma</div>
+            <p>
+              On a log scale, the physical area of a bar is proportional to the <strong>logarithm of the data value</strong> ($\log x$), NOT to the value $x$ itself. Therefore:
+            </p>
+            <ul style="margin-left:20px; margin-top:6px;">
+              <li>Bars on a log scale satisfy proportional ink <em>in log-transformed space</em>.</li>
+              <li>Bars on a log scale violate proportional ink <em>in linear real-world space</em>.</li>
+            </ul>
+            <p style="margin-top:6px;">
+              To resolve this conflict, Wilke states the decisive test: <strong>Are you visualizing amounts or ratios?</strong>
+            </p>
+          </div>
+
+          <h3>Amounts vs. Ratios on a Logarithmic Scale</h3>
+          <p>
+            Consider the Gross Domestic Products (GDPs) of countries in Oceania in 2007, which ranged from less than $\$1$ billion to over $\$300$ billion (Figures 17-7 and 17-8):
+          </p>
+          <ul>
+            <li><strong>Why linear bars fail:</strong> Australia and New Zealand completely dwarf all other island nations; Tuvalu and Kiribati become invisible 0-pixel slivers.</li>
+            <li><strong>Why log bars fail for amounts:</strong> On a logarithmic axis, $0$ is located at $-\infty$. Where does the bar start? If you start bars at $\$0.3$ billion, the bar length represents excess over $0.3\text{B}$. If you push the origin to $10^{-9}$ billion, all bars become enormous. <strong>Any bar origin on a log scale for amounts is 100% arbitrary and meaningless!</strong></li>
+          </ul>
+
+          <div class="note-box">
+            <div class="note-title">Remedy for Amounts on a Log Scale: Cleveland Dot Plots</div>
+            <p>
+              To visualize amounts spanning multiple orders of magnitude, <strong>never use bars</strong>. Place a <strong>dot</strong> at each country's GDP value along the log axis (Figure 17-9).
+            </p>
+            <p style="margin-top:4px;">
+              <em>Wilke's Critical Label Placement Rule:</em> Place the country names <strong>directly next to the dots</strong> rather than along the y-axis margin! If names are on the margin, the white space between the label and the dot creates the illusion of a horizontal bar length.
+            </p>
+          </div>
+
+          <h3>When ARE Bars Allowed on a Log Scale? (Ratios!)</h3>
+          <p>
+            Bars on a log scale are not just permissible—they are <strong>superior to linear bars</strong>—when visualizing <strong>ratios</strong> relative to a reference standard (Figure 17-10).
+          </p>
+
+          <div class="definition">
+            <div class="def-title">The Logarithmic Ratio Baseline Law</div>
+            <p>
+              The natural mathematical neutral midpoint of a ratio is $1$ (where numerator equals denominator: $A/B = 1$). On a logarithmic axis, $\log(1) = 0$.
+            </p>
+            <ul style="margin-left:20px; margin-top:6px;">
+              <li>Bars representing ratios $> 1$ extend to the right (multiples).</li>
+              <li>Bars representing ratios $< 1$ extend to the left (fractions).</li>
+            </ul>
+            <p style="margin-top:6px; font-weight:600; color:var(--ac);">
+              Exam Golden Rule: Bars on a linear scale represent amounts and MUST start at 0. Bars on a log scale represent ratios and MUST start at 1.
+            </p>
+          </div>
+
+          <!-- Comparison Table: Linear vs Log Bars -->
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Linear Scale Bars</th>
+                <th>Logarithmic Scale Bars</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Valid Data Type</strong></td>
+                <td>Amounts (counts, revenue, weights)</td>
+                <td>Ratios (relative to reference standard)</td>
+              </tr>
+              <tr>
+                <td><strong>Mandatory Baseline Origin</strong></td>
+                <td><strong>Must start at 0</strong></td>
+                <td><strong>Must start at 1</strong> (where $\log(1) = 0$)</td>
+              </tr>
+              <tr>
+                <td><strong>Opposite Direction Meaning</strong></td>
+                <td>Values below 0 (negative quantities)</td>
+                <td>Ratios below 1 (fractions: $1/2, 1/4, 1/16$)</td>
+              </tr>
+              <tr>
+                <td><strong>Fatal Anti-Pattern</strong></td>
+                <td>Truncating baseline (e.g., starting at 50)</td>
+                <td>Using bars for absolute amounts (origin at $-\infty$)</td>
+              </tr>
+              <tr>
+                <td><strong>Recommended Alternative</strong></td>
+                <td>Dot plot or slopegraph if showing small diffs</td>
+                <td><strong>Cleveland Dot Plot</strong> (dots with direct labels)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Direct Area Visualizations: Pie Charts &amp; Treemaps</h3>
+          <p>
+            Unlike bar charts (where area is secondary to linear coordinate position), <strong>pie charts</strong> and <strong>treemaps</strong> map numerical values directly onto 2D surface areas.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Direct Area Perception &amp; Perceptual Inaccuracy</div>
+            <p>
+              <strong>Do pie charts violate proportional ink?</strong> Technically, <strong>no!</strong> In a 2D pie chart, the angle of each wedge and the surface area of each slice are strictly proportional to the data value.
+            </p>
+            <p style="margin-top:6px;">
+              <strong>The Perceptual Problem:</strong> Human visual psychology judges <strong>1D linear lengths and distances</strong> with far higher precision than <strong>2D areas or angles</strong>.
+            </p>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Rhode Island Counties: Pie Chart vs. Bar Plot (Figures 17-11 to 17-13)</div>
+            <p>
+              Wilke demonstrates county population across Rhode Island using three charts:
+            </p>
+            <ul>
+              <li><strong>Pie Chart (17-11):</strong> Providence County dominates, but estimating whether Kent is twice Washington County or three times Bristol County is mentally exhausting and imprecise.</li>
+              <li><strong>Bar Plot (17-12):</strong> The length difference between Providence and other counties is instantly quantifiable. Distances along a common scale leverage human perceptual strengths.</li>
+              <li><strong>Treemap (17-13):</strong> A square version of a pie chart. Rectangular areas with different aspect ratios (tall/skinny vs short/wide) are notoriously difficult for human eyes to compare accurately.</li>
+            </ul>
+          </div>
+
+          <h3>Practice Questions (Topic 5)</h3>
+          <details>
+            <summary>Q1: Why is it fundamentally impossible to draw legitimate bar charts of absolute amounts on a logarithmic scale?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> On a logarithmic axis, $0$ lies infinitely far away at $-\infty$. Therefore, any bar origin selected is completely arbitrary and makes bar lengths meaningless.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: What is the mandatory starting baseline for bars drawn on a logarithmic scale, and what do those bars represent?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Bars on a log scale must start at <strong>1</strong>, and they represent <strong>ratios</strong> relative to a baseline reference.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: Do pie charts violate the Principle of Proportional Ink? If not, why are bar plots usually preferred?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> No, pie charts satisfy proportional ink (wedge area is proportional to value). Bar plots are preferred because human perception judges 1D linear lengths far more accurately than 2D areas or angles.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 6: MASTER SUMMARY & PRACTICE EXAM (CH 4 & 17)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>📋 Master Summary &amp; Chapter 4 &amp; 17 Practice Exam</h2>
+          <p class="topic-subtitle">Quick-reference cheat sheet and interactive exam questions with strictly concise 5-word solution keys.</p>
+
+          <div class="summary-box">
+            <div class="summary-title">Chapter 4 &amp; 17 High-Yield Takeaways</div>
+            <ul>
+              <li><strong>3 Color Uses:</strong> Distinguish (qualitative nominal), Represent values (quantitative sequential/diverging), Highlight (accent).</li>
+              <li><strong>Qualitative Rule:</strong> Finite distinct hues, equal visual weight, <em>no perceived order</em>. Standard: Okabe-Ito (colorblind safe).</li>
+              <li><strong>Sequential Gradient Rule:</strong> Must vary perceptually uniformly. Multi-hue scales must follow natural gradients (dark cool/warm &rarr; light yellow). Reversing is fatal.</li>
+              <li><strong>Diverging Rule:</strong> Two sequential scales stitched at neutral light midpoint. Must be balanced symmetrically. Midpoint must have domain meaning (e.g., $50\%$).</li>
+              <li><strong>Accent Remedy:</strong> If baseline colors compete with accent highlights, strip all color from baseline (pure grayscale background).</li>
+              <li><strong>Proportional Ink Definition:</strong> Shaded region area must be directly proportional to represented numerical data value (Bergstrom &amp; West).</li>
+              <li><strong>Linear Bar Law:</strong> Bars on linear axes <strong>must always start at 0</strong>. Truncating creates internal inconsistency between endpoint and bar length.</li>
+              <li><strong>Log Bar Law:</strong> Never use bars for amounts on log scale (origin at $-\infty$; use Cleveland dot plots). Bars on log scale <strong>must start at 1</strong> and represent <strong>ratios</strong>.</li>
+              <li><strong>Direct Area Law:</strong> Pie charts and treemaps satisfy proportional ink, but human eyes judge linear lengths far more accurately than 2D areas.</li>
+            </ul>
+          </div>
+
+          <div class="quiz-header-bar">
+            <div>
+              <h3 style="margin:0; font-size:1rem; color:var(--tx);">Interactive Exam Practice: Chapters 4 &amp; 17</h3>
+              <p style="margin:2px 0 0; font-size:0.75rem; color:var(--mt);">Test your mastery. Solutions strictly follow the professor's 5-word limit rule!</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="score-pill" id="quiz-score">Score: 0 / 6</div>
+              <button class="reset-quiz-btn" onclick="resetQuiz()">Reset Quiz</button>
+            </div>
+          </div>
+
+          <!-- MCQ Container -->
+          <div id="quiz-container">
+            <!-- MCQ 1 -->
+            <div class="mcq-card" data-correct="B">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 1</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 4 • Color Scales</span>
+              </div>
+              <div class="mcq-question">
+                According to Claus O. Wilke, what is the fatal mistake when selecting colors for a qualitative color scale representing nominal categories?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Using colors with distinct hues such as orange, blue, and green.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Using a sequence of colors that get successively lighter or darker, creating a false perceived order.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Selecting the Okabe-Ito color palette for colorblind accessibility.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Keeping all colors at equal perceptual weight and saturation.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>False gradients imply non-existent order.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 2 -->
+            <div class="mcq-card" data-correct="C">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 2</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 4 • Diverging Scales</span>
+              </div>
+              <div class="mcq-question">
+                Under what condition is a diverging color scale justified for a dataset where all numerical values are strictly positive percentages (0% to 100%)?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Only if the data values are transformed by taking their natural logarithm.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Whenever the designer wants to use more than three contrasting colors.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>When a specific value like 50% represents a meaningful domain tipping point (majority vs. minority).</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Positive percentages can never legitimately use a diverging color scale.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Meaningful midpoint justifies diverging scale.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 3 -->
+            <div class="mcq-card" data-correct="D">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 3</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 4 • Highlighting</span>
+              </div>
+              <div class="mcq-question">
+                What is the recommended design remedy when baseline elements in an accent visualization are too colorful and compete for the reader's attention?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Increase the thickness of all grid lines.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Switch to the rainbow jet colormap for maximum contrast.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Invert the y-axis coordinates.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Remove all color from baseline elements, turning them into pure neutral grays.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Grayscale baseline removes visual competition.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 4 -->
+            <div class="mcq-card" data-correct="A">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 4</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 17 • Proportional Ink</span>
+              </div>
+              <div class="mcq-question">
+                Why does truncating the y-axis on a linear bar chart (e.g., starting at $50,000 instead of $0) create an "internally inconsistent" graphic?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>The bar endpoint encodes the true value, but the bar length/area encodes only the difference above $50k.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>It violates the central limit theorem.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>It prevents the chart from being exported to vector SVG format.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>It converts continuous variables into discrete ordinal variables.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Inconsistent bar length and endpoint.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 5 -->
+            <div class="mcq-card" data-correct="B">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 5</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 17 • Log Axes</span>
+              </div>
+              <div class="mcq-question">
+                Why should bars NEVER be used to display absolute amounts (such as GDPs of countries) on a logarithmic axis?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Because logarithmic axes cannot display positive numbers greater than 100.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Because zero lies at negative infinity on a log scale, making any chosen bar origin completely arbitrary.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Because software cannot render rectangles on non-linear coordinates.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Because bars on a log scale automatically invert negative data values.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Zero lies at negative infinity.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 6 -->
+            <div class="mcq-card" data-correct="C">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 6</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 17 • Log Ratios</span>
+              </div>
+              <div class="mcq-question">
+                When bars ARE drawn on a logarithmic scale to display ratios relative to a reference country, where must the bars originate?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>At zero (0).</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>At negative ten (-10).</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>At one (1), because log(1) = 0 and 1 represents the neutral ratio equality.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>At the maximum value of the dataset.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Log ratio bars start one.</em>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         BOTTOM PAGINATION & BACK-TO-TOP
+         ═════════════════════════════════════════════════════ -->
+              </div>
+      <!-- end module-container -->
+
+      <!-- ── PAGINATION CONTROLS ── -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous Topic</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next Topic →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({top:0, behavior:'smooth'})"
+      aria-label="Back to top"
+    >
+      ↑
+    </button>
+
+    <!-- ═════════════════════════════════════════════════════
+     SCRIPTS & STATE MANAGEMENT
+     ═════════════════════════════════════════════════════ -->
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6"];
+      let currentTopicIndex = 0;
+
+                  function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector("h2");
+          if (h2) {
+            const numEl = h2.querySelector(".topic-num");
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, "").trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, "").trim();
+          }
+        }
+        return "Topic";
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById("sidebar");
+        const bd = document.getElementById("sidebar-backdrop");
+        if (sb) sb.classList.toggle("open");
+        if (bd) bd.classList.toggle("active");
+      }
+
+            function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest(".nav-sublist");
+          if (sublist && sublist.style.display === "none") {
+            sublist.style.display = "block";
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector(".chevron") : null;
+            if (chevron) chevron.style.transform = "rotate(0deg)";
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (pb) {
+          if (currentTopicIndex > 0) {
+            pb.style.display = "inline-flex";
+            if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+          } else {
+            pb.style.display = "none";
+          }
+        }
+
+        if (nb) {
+          if (currentTopicIndex < topics.length - 1) {
+            nb.style.display = "inline-flex";
+            if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+          } else {
+            nb.style.display = "none";
+          }
+        }
+
+        const mc = document.getElementById("main-content");
+        if (mc) mc.scrollTo({ top: 0, behavior: "smooth" });
+
+        const sb = document.getElementById("sidebar");
+        const bd = document.getElementById("sidebar-backdrop");
+        if (window.innerWidth <= 768 && sb && sb.classList.contains("open")) {
+          sb.classList.remove("open");
+          if (bd) bd.classList.remove("active");
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      /* Quiz Engine */
+      let answeredCount = 0;
+      let correctCount = 0;
+
+      function checkAnswer(btn) {
+        const card = btn.closest(".mcq-card");
+        if (card.classList.contains("answered")) return;
+
+        card.classList.add("answered");
+        const selectedOpt = btn.getAttribute("data-opt");
+        const correctOpt = card.getAttribute("data-correct");
+        const exp = card.querySelector(".mcq-explanation");
+
+        const allBtns = card.querySelectorAll(".mcq-opt");
+        allBtns.forEach((b) => (b.disabled = true));
+
+        if (selectedOpt === correctOpt) {
+          btn.classList.add("selected-correct");
+          correctCount++;
+        } else {
+          btn.classList.add("selected-incorrect");
+          const correctBtn = card.querySelector(`.mcq-opt[data-opt="${correctOpt}"]`);
+          if (correctBtn) correctBtn.classList.add("show-correct");
+        }
+
+        answeredCount++;
+        if (exp) exp.style.display = "block";
+        document.getElementById("quiz-score").textContent = `Score: ${correctCount} / ${document.querySelectorAll(".mcq-card").length}`;
+      }
+
+      function resetQuiz() {
+        answeredCount = 0;
+        correctCount = 0;
+        document.getElementById("quiz-score").textContent = `Score: 0 / ${document.querySelectorAll(".mcq-card").length}`;
+        document.querySelectorAll(".mcq-card").forEach((card) => {
+          card.classList.remove("answered");
+          card.querySelectorAll(".mcq-opt").forEach((btn) => {
+            btn.disabled = false;
+            btn.classList.remove("selected-correct", "selected-incorrect", "show-correct");
+          });
+          const exp = card.querySelector(".mcq-explanation");
+          if (exp) exp.style.display = "none";
+        });
+      }
+
+      // Initialize
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => {
+        bb.style.display = mc.scrollTop > 300 ? "flex" : "none";
+      });
+    </script>
+  </body>
+</html>

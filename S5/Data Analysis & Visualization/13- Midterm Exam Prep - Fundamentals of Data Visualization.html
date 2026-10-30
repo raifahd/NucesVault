@@ -1,0 +1,1742 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Analysis &amp; Visualization — Midterm Exam Preparation Master</title>
+    <meta
+      name="description"
+      content="The definitive, comprehensive, high-yield Midterm Exam Preparation Guide for Claus O. Wilke's Fundamentals of Data Visualization. Covers Chapters 2, 3, 4, 13, 14, 15, 17, 18, 19, 20, 23, 24, and 25 with deep analytical rigor, native diagrams, comparison matrices, master summary, and 30+ interactive exam practice questions with strictly 5-word solution keys."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      /* ── Visual Enhancements & Custom Master Styles ── */
+      .citation-header {
+        background: rgba(217, 119, 87, 0.08);
+        border: 1px solid rgba(217, 119, 87, 0.25);
+        border-radius: 8px;
+        padding: 14px 18px;
+        font-size: 0.85rem;
+        color: var(--mt);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .citation-header strong {
+        color: var(--ac);
+      }
+
+      .syllabus-pill-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 14px 0 20px;
+      }
+      .syllabus-pill {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--bd);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        color: var(--tx);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .syllabus-pill strong {
+        color: var(--ac);
+      }
+
+      .visual-card {
+        background: rgba(24, 24, 27, 0.75);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 22px;
+        margin: 20px 0;
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.3);
+      }
+      .visual-card h4 {
+        margin: 0 0 6px;
+        color: var(--tx);
+        font-size: 1.05rem;
+      }
+      .visual-card p.visual-caption {
+        font-size: 0.82rem;
+        color: var(--mt);
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      .diagram-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .diagram-box {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.2s, border-color 0.2s;
+      }
+      .diagram-box:hover {
+        transform: translateY(-2px);
+        border-color: var(--ac);
+      }
+      .diagram-box-title {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: var(--tx);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .tag-status {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .tag-bad {
+        background: rgba(240, 82, 79, 0.2);
+        color: #f87171;
+        border: 1px solid rgba(240, 82, 79, 0.4);
+      }
+      .tag-good {
+        background: rgba(79, 191, 139, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(79, 191, 139, 0.4);
+      }
+      .tag-warn {
+        background: rgba(240, 169, 78, 0.2);
+        color: #fbbf24;
+        border: 1px solid rgba(240, 169, 78, 0.4);
+      }
+
+      .svg-canvas-wrap {
+        width: 100%;
+        background: #111114;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: auto;
+      }
+      .svg-canvas-wrap svg {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .swatch-bar {
+        display: flex;
+        height: 28px;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid var(--bd);
+        margin: 8px 0;
+      }
+      .swatch-segment {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      }
+
+      .matrix-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 0.85rem;
+      }
+      .matrix-table th {
+        background: rgba(217, 119, 87, 0.12);
+        color: var(--ac);
+        padding: 10px 14px;
+        text-align: left;
+        border: 1px solid var(--bd);
+        font-weight: 600;
+      }
+      .matrix-table td {
+        padding: 9px 14px;
+        border: 1px solid var(--bd);
+        color: var(--tx);
+        vertical-align: top;
+      }
+      .matrix-table tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      /* Quiz Engine Styles */
+      .quiz-header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 14px 20px;
+        background: rgba(24, 24, 27, 0.6);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+      }
+      .quiz-filter-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--bd);
+      }
+      .quiz-filter-btn {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--bd);
+        color: var(--mt);
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-family: inherit;
+      }
+      .quiz-filter-btn:hover {
+        border-color: var(--ac);
+        color: var(--tx);
+      }
+      .quiz-filter-btn.active {
+        background: rgba(217, 119, 87, 0.18);
+        border-color: var(--ac);
+        color: var(--ac);
+        font-weight: 600;
+      }
+      .score-pill {
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid var(--bd);
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--ac);
+      }
+      .reset-quiz-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--bd);
+        color: var(--tx);
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .reset-quiz-btn:hover {
+        background: var(--hv);
+        border-color: var(--ac);
+        color: var(--ac);
+      }
+      .mcq-card {
+        background: rgba(24, 24, 27, 0.75);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+      .mcq-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .mcq-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        background: rgba(217, 119, 87, 0.15);
+        color: var(--ac);
+        padding: 3px 8px;
+        border-radius: 5px;
+      }
+      .mcq-category-tag {
+        font-size: 0.68rem;
+        color: var(--mt);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--bd);
+        padding: 2px 7px;
+        border-radius: 4px;
+      }
+      .mcq-question {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--tx);
+        line-height: 1.5;
+      }
+      .mcq-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 14px 0 10px;
+      }
+      .mcq-opt {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 10px 14px;
+        text-align: left;
+        color: var(--tx);
+        font-family: inherit;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        transition: all 0.15s ease;
+      }
+      .mcq-opt:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: var(--ac);
+      }
+      .opt-letter {
+        font-weight: 700;
+        font-size: 0.78rem;
+        color: var(--mt);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 2px 7px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .mcq-opt.selected-correct {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: #10b981;
+        color: #a7f3d0;
+      }
+      .mcq-opt.selected-correct .opt-letter {
+        background: #10b981;
+        color: #064e3b;
+      }
+      .mcq-opt.selected-incorrect {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: #ef4444;
+        color: #fca5a5;
+      }
+      .mcq-opt.selected-incorrect .opt-letter {
+        background: #ef4444;
+        color: #450a0a;
+      }
+      .mcq-opt.show-correct {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.08);
+      }
+      .mcq-explanation {
+        display: none;
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        border: 1px solid var(--bd);
+        background: rgba(0, 0, 0, 0.45);
+      }
+      .five-word-key {
+        display: inline-block;
+        background: rgba(217, 119, 87, 0.15);
+        color: var(--ac);
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        font-size: 0.88rem;
+      }
+    
+      
+
+    
+      /* ── Prominent Bottom Navigation Styling ── */
+      .bottom-nav {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-top: 1px solid var(--bd) !important;
+        padding: 28px 0 16px !important;
+        margin-top: 56px !important;
+        gap: 16px !important;
+        width: 100% !important;
+      }
+
+      .bottom-nav button {
+        display: inline-flex !important;
+        flex-direction: column !important;
+        background: #18181b !important;
+        color: var(--tx) !important;
+        border: 1px solid #3f3f46 !important;
+        padding: 14px 22px !important;
+        border-radius: 10px !important;
+        cursor: pointer !important;
+        font-family: inherit !important;
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        max-width: 48% !important;
+        min-width: 200px !important;
+        text-decoration: none !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      }
+
+      .bottom-nav button .btn-label {
+        font-size: 0.68rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.2px !important;
+        font-weight: 700 !important;
+        color: var(--mt) !important;
+        margin-bottom: 4px !important;
+        display: block !important;
+      }
+
+      .bottom-nav button .btn-title {
+        color: #f4f4f5 !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 100% !important;
+        display: block !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) {
+        border-color: var(--ac) !important;
+        background: #27272a !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(217, 119, 87, 0.28) !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) .btn-label {
+        color: var(--ac) !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) .btn-title {
+        color: #ffffff !important;
+      }
+
+      #prev-btn {
+        align-items: flex-start !important;
+        text-align: left !important;
+        margin-right: auto !important;
+      }
+      #prev-btn div {
+        text-align: left !important;
+        max-width: 100% !important;
+      }
+
+      #next-btn {
+        align-items: flex-end !important;
+        text-align: right !important;
+        margin-left: auto !important;
+      }
+      #next-btn div {
+        text-align: right !important;
+        max-width: 100% !important;
+      }
+
+      @media (max-width: 768px) {
+        .bottom-nav {
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        .bottom-nav button {
+          max-width: 100% !important;
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        #prev-btn, #next-btn {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          align-items: center !important;
+          text-align: center !important;
+        }
+        #prev-btn div, #next-btn div {
+          text-align: center !important;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR
+     ═══════════════════════════════════════════════════════ -->
+        <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Midterm 2 Syllabus</div>
+          <div class="sidebar-title">Data Visualization</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <!-- Current Midterm 2 Module (Active & Expandable) -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 13 — 🎯 Midterm 2 Exam Prep Master</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')">
+                <span class="nav-num">01</span>Aesthetics, Scales & Coordinates (Ch 2–3)
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                <span class="nav-num">02</span>Color Design & Pitfalls (Ch 4 & 19)
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                <span class="nav-num">03</span>Principle of Proportional Ink (Ch 17)
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')">
+                <span class="nav-num">04</span>Time Series, Trends & Smoothing (Ch 13–14)
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-5')">
+                <span class="nav-num">05</span>Geospatial Data & Maps (Ch 15)
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-6')">
+                <span class="nav-num">06</span>Design Polish & Overplotting (Ch 18–25)
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-7')">
+                <span class="nav-num">07</span>📋 Grand Midterm Master Summary & Matrix
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-8')">
+                <span class="nav-num">08</span>🎯 Exam Practice (5-Word Keys)
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Midterm 2 Syllabus: Fundamentals of Data Visualization (Wilke) -->
+        <li>
+          <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
+            <span class="nav-num">07</span>Aesthetics & Coordinates (Ch 2–3)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./9- Principles of Figure Design & Visualization Pitfalls.html">
+            <span class="nav-num">09</span>Figure Design & Pitfalls (Ch 18–25)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./10- Visualizing Time Series & Trends.html">
+            <span class="nav-num">10</span>Time Series & Trends (Ch 13–14)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./11- Color Scales & Proportional Ink.html">
+            <span class="nav-num">11</span>Color Scales & Proportional Ink (Ch 4 & 17)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./12- Visualizing Geospatial Data.html">
+            <span class="nav-num">12</span>Geospatial Data & Maps (Ch 15)
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-13">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Analysis &amp; Visualization • Midterm Exam Master Guide</div>
+          <h1 class="module-title">Fundamentals of Data Visualization: Midterm Master Prep</h1>
+        </div>
+
+        <div class="citation-header">
+          <span>📚</span>
+          <div>
+            <strong>Midterm Exam Scope:</strong> Covers 100% of the textbook chapters from Claus O. Wilke's <em>Fundamentals of Data Visualization</em> uploaded for the course.
+            <div class="syllabus-pill-grid">
+              <span class="syllabus-pill"><strong>Ch 2:</strong> Aesthetics Mapping</span>
+              <span class="syllabus-pill"><strong>Ch 3:</strong> Coordinate Systems</span>
+              <span class="syllabus-pill"><strong>Ch 4:</strong> Color Scales</span>
+              <span class="syllabus-pill"><strong>Ch 13:</strong> Time Series</span>
+              <span class="syllabus-pill"><strong>Ch 14:</strong> Trends &amp; Smoothing</span>
+              <span class="syllabus-pill"><strong>Ch 15:</strong> Geospatial Data</span>
+              <span class="syllabus-pill"><strong>Ch 17:</strong> Proportional Ink</span>
+              <span class="syllabus-pill"><strong>Ch 18:</strong> Overplotting</span>
+              <span class="syllabus-pill"><strong>Ch 19:</strong> Color Pitfalls</span>
+              <span class="syllabus-pill"><strong>Ch 20:</strong> Redundant Coding</span>
+              <span class="syllabus-pill"><strong>Ch 23:</strong> Context Balance</span>
+              <span class="syllabus-pill"><strong>Ch 24:</strong> Axis Labels</span>
+              <span class="syllabus-pill"><strong>Ch 25:</strong> Line Drawings</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 1: AESTHETICS & COORDINATE SYSTEMS (CH 2 & 3)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Aesthetics, Scales &amp; Coordinate Systems (Chapters 2 &amp; 3)</h2>
+          <p class="topic-subtitle">Grammar of graphics foundations, scale mappings, aspect ratios, Cleveland's 45° banking, and non-linear coordinates.</p>
+
+          <p>
+            At its core, data visualization is the systematic mapping of data values onto visual attributes of graphical objects. This concept forms the foundation of Leland Wilkinson's <em>Grammar of Graphics</em> and Hadley Wickham's <em>ggplot2</em>.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Aesthetics &amp; Scales: The Core Duality</div>
+            <ul style="margin-left:20px; line-height:1.7;">
+              <li><strong>Aesthetic:</strong> A visual property of a graphical mark (geometry) that can encode information. Key aesthetics include: <em>Position</em> ($x, y$), <em>Shape</em>, <em>Size</em>, <em>Color (Hue)</em>, <em>Fill</em>, <em>Line width</em>, and <em>Line type</em> (solid, dashed).</li>
+              <li><strong>Scale:</strong> A mathematical function that uniquely maps data values from the original data space into visual aesthetic coordinates (e.g., mapping kilograms to pixel heights, or categories to RGB hex codes). Scales can be <strong>Continuous</strong> (numerical gradients) or <strong>Discrete</strong> (finite categories).</li>
+            </ul>
+          </div>
+
+          <h3>Variable Types in Data Space</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Data Variable Type</th>
+                <th>Mathematical Property</th>
+                <th>Appropriate Aesthetics</th>
+                <th>Wilke Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Continuous Quantitative</strong></td>
+                <td>Arbitrary real values within a range; measurable intervals.</td>
+                <td>Position ($x,y$), size, color luminance / saturation.</td>
+                <td>Engine displacement (liters), fuel economy (mpg), salary.</td>
+              </tr>
+              <tr>
+                <td><strong>Discrete Quantitative</strong></td>
+                <td>Countable integers; discrete jumps between steps.</td>
+                <td>Position, size, number of marks.</td>
+                <td>Number of car cylinders (4, 6, 8), employee count.</td>
+              </tr>
+              <tr>
+                <td><strong>Categorical Nominal (Unordered)</strong></td>
+                <td>Discrete buckets with NO intrinsic order or hierarchy.</td>
+                <td>Hue (qualitative), shape (up to ~5), position.</td>
+                <td>Drivetrain (FWD, RWD, 4WD), US geographic regions.</td>
+              </tr>
+              <tr>
+                <td><strong>Categorical Ordinal (Ordered)</strong></td>
+                <td>Discrete buckets WITH a meaningful natural ranking.</td>
+                <td>Position, ordered lightness, size.</td>
+                <td>Education level (High School, BSc, MSc, PhD), survey ratings.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Coordinate Systems &amp; Cleveland's 45° Banking Law</h3>
+          <p>
+            Coordinate systems combine two or more spatial scales to define locations in 2D space. The standard is <strong>2D Cartesian coordinates</strong> ($x, y$ orthogonal axes).
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Aspect Ratio &amp; Banking to 45 Degrees (Cleveland, 1988)</div>
+            <p>
+              The <strong>aspect ratio</strong> is the ratio of figure height to width. Changing the aspect ratio changes the visual slope of lines without changing the underlying mathematical data!
+            </p>
+            <p style="margin-top:6px;">
+              <strong>Cleveland's 45° Banking Rule:</strong> When visualizing time series or functions, choose an aspect ratio such that the average absolute visual orientation of line segments is <strong>banked to approximately 45°</strong> ($\pm 45^\circ$).
+            </p>
+            <p style="margin-top:4px; font-size:0.85rem; color:var(--mt);">
+              <em>Psychophysical Rationale:</em> The human visual system is most sensitive to differences in slope and changes in rate of growth when orientations hover near 45°. Flat lines (~0°) or near-vertical lines (~90°) mask subtle velocity changes.
+            </p>
+          </div>
+
+          <h3>Non-Linear Coordinate Systems</h3>
+          <ul>
+            <li><strong>Logarithmic Scales:</strong> A constant linear distance corresponds to multiplication by a constant factor ($10\times$ on base-10, $2\times$ on base-2). Used when values span multiple orders of magnitude or when visualizing <strong>ratios</strong>. (Note: Transforming the axis coordinates preserves original data labels; transforming raw data changes tick labels to logarithms).</li>
+            <li><strong>Square Root Scales:</strong> Scales $x \to \sqrt{x}$. Compresses large numbers less aggressively than log; ideal for counts generated by Poisson processes or surface areas.</li>
+            <li><strong>Polar Coordinates:</strong> Specifies points via angle ($\theta$) and radius ($r$). Used for circular phenomena: pie charts (angle = proportion), wind roses, and seasonal cyclical clocks.</li>
+          </ul>
+
+          <div class="summary-box">
+            <div class="summary-title">Topic 1 High-Yield Takeaways</div>
+            <ul>
+              <li>Continuous data maps best to position or luminance; nominal data maps to hue or shape.</li>
+              <li>Aspect ratio directly governs slope perception; bank slopes to ~45° for maximum sensitivity.</li>
+              <li>Log scales are multiplicative; polar coordinates map data to angles and radii.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 2: COLOR SCALES & PITFALLS (CH 4 & 19)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Color Design, Scales &amp; Common Pitfalls (Chapters 4 &amp; 19)</h2>
+          <p class="topic-subtitle">The three functional uses, qualitative/sequential/diverging rules, and the four fatal color traps.</p>
+
+          <p>
+            Color must always serve an analytical function. Wilke organizes color into three core scale families and identifies the dangerous cognitive traps that ruin otherwise sound visualizations.
+          </p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Scale Family</th>
+                <th>Analytical Purpose</th>
+                <th>Design Rules &amp; Constraints</th>
+                <th>Standard Palettes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Qualitative</strong></td>
+                <td>Distinguish unordered nominal categories.</td>
+                <td>Colors must be distinct yet <strong>perceptually equivalent</strong> (equal visual weight). <em>Must NOT imply order</em> (no lightness gradients!).</td>
+                <td><strong>Okabe-Ito</strong> (Wilke default, colorblind safe), ColorBrewer Dark2, ggplot2 hue.</td>
+              </tr>
+              <tr>
+                <td><strong>Sequential</strong></td>
+                <td>Represent continuous quantitative magnitude.</td>
+                <td>Must vary <strong>perceptually uniformly</strong> across lightness. Multi-hue scales must follow natural gradients (dark cool/warm &rarr; light yellow).</td>
+                <td>ColorBrewer Blues (monochrome), <strong>Viridis</strong>, Heat, Magma.</td>
+              </tr>
+              <tr>
+                <td><strong>Diverging</strong></td>
+                <td>Represent deviation in two directions from a neutral midpoint.</td>
+                <td>Two sequential scales stitched at a light neutral center. <strong>Must be strictly balanced</strong> in both directions. Midpoint must have domain meaning.</td>
+                <td>Blue-White-Red, Brown-Teal, Pink-YellowGreen.</td>
+              </tr>
+              <tr>
+                <td><strong>Accent</strong></td>
+                <td>Highlight focal elements against a background story.</td>
+                <td>Subdued/drab base colors paired with vivid saturated accents. If base colors distract, <strong>remove all color from baseline (pure grayscale)</strong>.</td>
+                <td>ColorBrewer Accent, Grayscale + Accent.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Chapter 19: The Four Fatal Pitfalls of Color Use</h3>
+          <div class="diagram-grid">
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Trap 1: Too Many Colors</span>
+                <span class="tag-status tag-bad">Cognitive Overload</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Attempting to distinguish more than <strong>5 to 8 discrete colors</strong> fails human working memory. Readers spend all their time cross-referencing the legend.
+              </p>
+              <div style="font-size:0.75rem; color:var(--mt);"><strong>Remedy:</strong> Direct labeling, or group minor categories into "Other".</div>
+            </div>
+
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Trap 2: Rainbow / Jet Colormap</span>
+                <span class="tag-status tag-bad">False Visual Edges</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                The classic <em>Jet</em> colormap has <strong>non-monotonic luminance</strong> (yellow is artificially bright; cyan has sharp bands). It creates false visual boundaries where none exist in data!
+              </p>
+              <div style="font-size:0.75rem; color:var(--mt);"><strong>Remedy:</strong> Monotonically increasing scales like <strong>Viridis</strong>.</div>
+            </div>
+
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Trap 3: Unintuitive Color Order</span>
+                <span class="tag-status tag-bad">Brain Friction</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Using unordered hues for ordered data, or using colors that contradict cultural conventions (e.g., using red for cold water and blue for hot boiling steam).
+              </p>
+              <div style="font-size:0.75rem; color:var(--mt);"><strong>Remedy:</strong> Align lightness and established cultural associations.</div>
+            </div>
+
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Trap 4: Ignoring Color Deficiency</span>
+                <span class="tag-status tag-bad">Inaccessible</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                ~8% of men have red-green color vision deficiency (deuteranopia or protanopia). Pairing standard green against standard red makes data completely identical to them!
+              </p>
+              <div style="font-size:0.75rem; color:var(--mt);"><strong>Remedy:</strong> Use <strong>Okabe-Ito</strong> or test with CVD simulators.</div>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <div class="summary-title">Topic 2 High-Yield Takeaways</div>
+            <ul>
+              <li>Qualitative scales require equal visual weight and no implied order (Okabe-Ito).</li>
+              <li>Multi-hue sequential scales must move dark cool/warm &rarr; light yellow. Never reverse it.</li>
+              <li>Diverging scales must be balanced symmetrically around a domain-meaningful midpoint.</li>
+              <li>Never use the Rainbow/Jet colormap; never exceed 5–8 categories without direct labels.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 3: PRINCIPLE OF PROPORTIONAL INK (CH 17)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>The Principle of Proportional Ink (Chapter 17)</h2>
+          <p class="topic-subtitle">Bergstrom &amp; West's law, linear baseline violations, log amounts vs ratios, and direct area limitations.</p>
+
+          <p>
+            When a visual element has a defined physical extent (height, area, volume), human perception instinctively evaluates that extent as the data quantity.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">The Principle of Proportional Ink (Bergstrom &amp; West, 2016)</div>
+            <p>
+              <em>"When a shaded region is used to represent a numerical value, the area of that shaded region should be directly proportional to the corresponding value."</em>
+            </p>
+          </div>
+
+          <h3>The Linear Axis Zero-Baseline Law</h3>
+          <p>
+            In a bar chart on a linear scale, value is encoded by <strong>(1) bar endpoint position</strong> and <strong>(2) total bar length/area</strong>.
+          </p>
+          <ul>
+            <li><strong>The Truncation Violation (Figure 17-1):</strong> When bars start at an arbitrary non-zero baseline (e.g. Hawaii counties starting at $\$50,000$), the endpoint shows the actual value, but the area represents excess over $\$50\text{k}$. Because human eyes perceive area/length, a $1.4\times$ income difference looks like an $8\times$ disparity!</li>
+            <li><strong>The Inviolable Law:</strong> <strong>Bars on a linear scale MUST ALWAYS start at 0.</strong></li>
+            <li><strong>Shaded Line Charts (Figure 17-3):</strong> Shading underneath a time-series line (e.g., Facebook stock price) emphasizes distance to the axis. Truncating the axis at $\$110$ makes a modest dip look like a catastrophic company bankruptcy.</li>
+          </ul>
+
+          <h3>Logarithmic Axes: The Amounts vs. Ratios Law</h3>
+          <p>
+            On a log scale, bar area is proportional to $\log(x)$, not $x$. This leads to a strict mathematical bifurcation:
+          </p>
+          <div class="definition">
+            <div class="def-title">Wilke's Log Scale Decision Matrix</div>
+            <ul style="margin-left:20px; line-height:1.7;">
+              <li><strong>Amounts on a Log Scale (GDPs of Oceania):</strong> <strong>NEVER use bars!</strong> Zero lies at $-\infty$. Any baseline chosen (e.g., $0.3\text{B}$ or $10^{-9}\text{B}$) is completely arbitrary. <em>Remedy:</em> Use <strong>Cleveland Dot Plots</strong> (dots with country names placed directly next to dots).</li>
+              <li><strong>Ratios on a Log Scale (Relative to Reference):</strong> <strong>Bars ARE valid and superior!</strong> The natural midpoint of a ratio is $1$ ($\log 1 = 0$). Bars representing ratios $> 1$ extend right; bars representing ratios $< 1$ extend left.</li>
+            </ul>
+            <p style="margin-top:6px; font-weight:700; color:var(--ac);">
+              Exam Golden Rule: Linear bars represent amounts &rarr; MUST start at 0. Log bars represent ratios &rarr; MUST start at 1.
+            </p>
+          </div>
+
+          <h3>Direct Area Perception: Pie Charts &amp; Treemaps</h3>
+          <p>
+            In pie charts (Figure 17-11) and treemaps (Figure 17-13), wedge angle/area is directly proportional to value, so they <em>satisfy proportional ink</em>.
+            However, <strong>human psychophysics is significantly more accurate at judging 1D linear distances along a common scale than 2D areas or angles</strong>. Rhode Island county populations are far easier to evaluate accurately on a simple bar chart!
+          </p>
+
+          <div class="summary-box">
+            <div class="summary-title">Topic 3 High-Yield Takeaways</div>
+            <ul>
+              <li>Shaded area must be directly proportional to data value (Bergstrom &amp; West).</li>
+              <li>Linear bars must start at 0. Truncating creates internal inconsistency between length and coordinate.</li>
+              <li>Never use bars for amounts on log scale; use Cleveland dot plots with names adjacent to dots.</li>
+              <li>Bars on log scale are valid ONLY for ratios, and must start at 1.</li>
+              <li>Pie charts satisfy proportional ink, but 1D bar length perception is far more accurate.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 4: TIME SERIES & TRENDS (CH 13 & 14)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Time Series, Trends &amp; Mathematical Smoothing (Chapters 13 &amp; 14)</h2>
+          <p class="topic-subtitle">Line charts, connected scatterplots, LOESS 6-step algorithm, cubic splines, eager vs lazy learning, and data straightening.</p>
+
+          <p>
+            Visualizing time series requires understanding continuity, autocorrelation, trend estimation, and mathematical data straightening.
+          </p>
+
+          <h3>Time Series Principles (Chapter 13)</h3>
+          <ul>
+            <li><strong>Line Graphs:</strong> Time flows on the x-axis from left to right. Lines imply continuous temporal evolution and chronological ordering.</li>
+            <li><strong>The Zero-Baseline Exception for Lines:</strong> While <em>bars</em> must start at 0, <em>unshaded line charts</em> do NOT have to start at 0 if the goal is to visualize subtle fluctuations (as long as there is no shading underneath!).</li>
+            <li><strong>Connected Scatterplots:</strong> Plotting two continuous variables ($x$ vs $y$) where points are connected chronologically by a line. Uniquely reveals <strong>cyclical phases and trajectories</strong> (e.g. unemployment vs inflation Phillips curves, or vehicle miles vs gas prices).</li>
+          </ul>
+
+          <h3>Smoothing Mechanics: LOESS vs. Cubic Splines (Chapter 14)</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>LOESS (Locally Estimated Scatterplot Smoothing)</th>
+                <th>Smoothing Splines (Cubic Splines)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Learning Paradigm</strong></td>
+                <td><strong>Lazy Learning:</strong> No single global formula. Recomputed locally for every single query point.</td>
+                <td><strong>Eager Learning:</strong> Fits a single global analytic piecewise cubic polynomial once during training.</td>
+              </tr>
+              <tr>
+                <td><strong>Mathematical Formulation</strong></td>
+                <td>Weighted least squares in local window using <strong>Tricube Weight Function</strong>: $W(u) = (1 - |u|^3)^3$ for $|u| < 1$.</td>
+                <td>Minimizes penalized sum of squares: $\sum (y_i - f(x_i))^2 + \lambda \int [f''(x)]^2 dx$.</td>
+              </tr>
+              <tr>
+                <td><strong>Tuning Parameter</strong></td>
+                <td><strong>Span / Bandwidth ($\alpha$):</strong> Proportion of total data points included in each local neighborhood ($0 < \alpha \le 1$).</td>
+                <td><strong>Roughness Penalty ($\lambda$):</strong> Balances residual sum of squares against integrated squared second derivative (curvature).</td>
+              </tr>
+              <tr>
+                <td><strong>Extreme Behavior</strong></td>
+                <td>Small $\alpha$ &rarr; overfits noise; Large $\alpha$ &rarr; approaches simple global linear regression.</td>
+                <td>$\lambda \to 0$ &rarr; exact interpolating spline; $\lambda \to \infty$ &rarr; perfectly straight OLS line.</td>
+              </tr>
+              <tr>
+                <td><strong>Robustness</strong></td>
+                <td>Iterative reweighting using bisquare residuals eliminates outliers.</td>
+                <td>Sensitive to extreme outliers unless explicitly using robust loss functions.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>The OLS Exponential Trap &amp; Data Straightening</h3>
+          <p>
+            When data exhibits exponential growth ($y = a \cdot e^{bx}$), fitting a standard Ordinary Least Squares (OLS) straight line fails catastrophically: residuals grow exponentially, violating homoscedasticity.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">The Three Data Straightening Transformations</div>
+            <ul style="margin-left:20px; line-height:1.7;">
+              <li><strong>Log-Linear (Exponential: $y = a \cdot e^{bx}$):</strong> Transform $y \to \ln(y)$. Equation becomes $\ln(y) = \ln(a) + bx$. The slope $b$ represents the continuous growth rate.</li>
+              <li><strong>Log-Log (Power Law: $y = a \cdot x^k$):</strong> Transform both $x \to \ln(x)$ and $y \to \ln(y)$. Equation becomes $\ln(y) = \ln(a) + k\ln(x)$. The slope $k$ is the scaling exponent.</li>
+              <li><strong>Linear-Log (Logarithmic: $y = a + b\ln(x)$):</strong> Transform $x \to \ln(x)$. Values grow rapidly initially, then flatten out.</li>
+            </ul>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">STL Decomposition (The Keeling Curve)</div>
+            <p>
+              In Chapter 14, Wilke analyzes the atmospheric $\text{CO}_2$ Keeling curve using <strong>STL Decomposition</strong> (Seasonal-Trend decomposition using LOESS):
+            </p>
+            <p style="margin-top:4px; font-weight:600; color:var(--ac);">
+              $\text{Data}_t = \text{Trend}_t + \text{Seasonal}_t + \text{Remainder}_t$
+            </p>
+            <p style="margin-top:4px;">LOESS separates the long-term anthropogenic upward trend from the yearly biological photosynthetic cycle (seasonal oscillation).</p>
+          </div>
+
+          <div class="summary-box">
+            <div class="summary-title">Topic 4 High-Yield Takeaways</div>
+            <ul>
+              <li>Connected scatterplots reveal cyclical phase relationships across two continuous time series.</li>
+              <li>LOESS is lazy learning with tricube weights and span $\alpha$; Splines are eager learning with roughness penalty $\lambda$.</li>
+              <li>Data straightening linearizes exponential (log-linear) and power law (log-log) curves before regression.</li>
+              <li>STL decomposition splits time series into Trend, Seasonal, and Remainder components using LOESS.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 5: GEOSPATIAL DATA & MAPS (CH 15)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Geospatial Data, Projections &amp; Choropleths (Chapter 15)</h2>
+          <p class="topic-subtitle">Oblate spheroid, conformal vs equal-area, Mercator vs Goode homolosine, Alaska scaling, and the Choropleth Density Law.</p>
+
+          <p>
+            Geospatial figures link data to physical coordinates on Earth. Projecting curved 3D coordinates onto flat 2D planes requires navigating geometric trade-offs.
+          </p>
+
+          <h3>Spherical Geometry &amp; The Projection Dilemma</h3>
+          <ul>
+            <li><strong>Coordinates:</strong> Longitude (meridians, equal length half-great circles, $0^\circ$ Greenwich, $\pm 180^\circ$ Date Line), Latitude (parallels, parallel to equator, shrink from Equator to $0$ length at poles). Datum: <strong>WGS 84</strong> (EPSG:4326).</li>
+            <li><strong>Gauss's Impossibility:</strong> Curved surfaces cannot flatten without distortion. <strong>Conformal</strong> preserves local angles and shapes (Mercator); <strong>Equal-Area</strong> preserves relative land surface areas (Albers, Goode homolosine).</li>
+            <li><strong>The Mercator Flaw:</strong> Conformal cylinder projection; polar areas expand to infinity. Greenland looks bigger than Africa (Africa is actually 14× larger!).</li>
+            <li><strong>US State Standard:</strong> Albers Equal-Area (ESRI:102003). Inset Alaska and Hawaii at <strong>100% true scale</strong>. Downscaling Alaska to 35% is a deceptive cartographic fraud.</li>
+          </ul>
+
+          <h3>The Choropleth Density Law &amp; Non-Density Exceptions</h3>
+          <div class="definition">
+            <div class="def-title">The Density Law of Choropleth Mapping</div>
+            <p>
+              Choropleths work best when the mapped variable is a <strong>DENSITY</strong> (quantity divided by surface area, e.g., people/km²). Because the human visual system equates polygon surface area with total magnitude, shading by density neutralizes area-size bias. Never map raw counts!
+            </p>
+            <p style="margin-top:6px;">
+              <strong>The 2 Strict Exceptions for Non-Density Choropleths (e.g. Median Income):</strong>
+            </p>
+            <ol style="margin-left:20px; margin-top:4px;">
+              <li>Regions have approximately equal physical size and shape.</li>
+              <li>Regions are very small relative to the map canvas AND the variable changes on a geographic scale larger than individual regions (e.g., Texas counties).</li>
+            </ol>
+          </div>
+
+          <div class="warning-box">
+            <div class="warning-title">The State-Level Failure &amp; Cartogram Alternatives</div>
+            <p>
+              Mapping median income at the state level (Figure 15-14) fails because massive, sparsely populated Alaska visually dominates the graphic.
+            </p>
+            <ul style="margin-left:20px; margin-top:6px;">
+              <li><strong>Cartograms:</strong> Distort state boundaries proportional to population (Figure 15-15).</li>
+              <li><strong>Cartogram Heatmaps:</strong> Represent each state as an <strong>identically sized square tile</strong> arranged in approximate geographic topology (Figure 15-16). Gives every state equal visual weight!</li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <div class="summary-title">Topic 5 High-Yield Takeaways</div>
+            <ul>
+              <li>Conformal preserves angles/shapes; Equal-Area preserves surface areas.</li>
+              <li>Mercator distorts poles severely (Africa is 14× larger than Greenland).</li>
+              <li>Choropleths must map densities, not raw counts, to counteract polygon area bias.</li>
+              <li>Bin choropleth color scales into 4–6 discrete buckets for readability.</li>
+              <li>Cartogram heatmaps use equal-sized square tiles to eliminate geographic area bias.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 6: DESIGN POLISH & OVERPLOTTING (CH 18–25)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>Design Polish, Overplotting &amp; Visualization Pitfalls (Chapters 18–25)</h2>
+          <p class="topic-subtitle">Handling overplotting, redundant coding, data-ink balance, large axis labels, and avoiding line drawings.</p>
+
+          <p>
+            The final section of the book covers practical design craftsmanship: resolving visual clutter, balancing context, and avoiding graphic antiquities.
+          </p>
+
+          <h3>Chapter 18: Handling Overlapping Points (Overplotting)</h3>
+          <p>
+            Overplotting occurs when large datasets or rounded numbers cause many points to plot directly on top of each other, obscuring sample size and distributions.
+          </p>
+          <div class="diagram-grid">
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>1. Partial Transparency (Alpha)</span>
+                <span class="tag-status tag-good">Solution 1</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Make points partially transparent. Overlapping points build up darker ink saturation, revealing density clusters.
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>2. Jittering</span>
+                <span class="tag-status tag-good">Solution 2</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Add small random noise to coordinates. Best for discrete, rounded data (e.g. 2.0L engine fuel economy).
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>3. 2D Histograms (Hexbins)</span>
+                <span class="tag-status tag-good">Solution 3</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Bin points into 2D bins. <strong>Hexagonal bins (hexbin)</strong> are superior to rectangular bins because all 6 neighbors are equidistant.
+              </p>
+            </div>
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>4. 2D Density Contours</span>
+                <span class="tag-status tag-good">Solution 4</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Estimate 2D kernel density (kde2d) and plot elevation contour lines, analogous to a topographic elevation map.
+              </p>
+            </div>
+          </div>
+
+          <h3>Chapter 20: Redundant Coding &amp; Direct Labeling</h3>
+          <p>
+            <strong>Redundant coding</strong> means encoding the exact same categorical variable using two different aesthetics simultaneously (e.g., mapping drivetrain to <strong>both color AND shape</strong>).
+          </p>
+          <ul>
+            <li><strong>Why do it?</strong> It ensures the graphic is readable by colorblind viewers, survives black-and-white photocopying, and speeds up cognitive identification.</li>
+            <li><strong>Direct Labeling:</strong> Placing category names directly next to data curves/lines instead of in a separate legend box. Eliminates the cognitive penalty of visual back-and-forth scanning!</li>
+          </ul>
+
+          <h3>Chapters 23, 24 &amp; 25: Context, Sizing &amp; Fills</h3>
+          <ul>
+            <li><strong>Chapter 23 (Balance Data and Context):</strong> The data must be the visual hero. Grid lines and backgrounds must be subtle (thin, light gray). Heavy black grids distract and compete with data marks.</li>
+            <li><strong>Chapter 24 (Use Larger Axis Labels):</strong> Design figures at the physical scale they will be consumed. Axis titles and tick numbers must remain instantly legible when embedded in slides or papers. If category names are long, rotate the chart into a <strong>horizontal bar plot</strong>.</li>
+            <li><strong>Chapter 25 (Avoid Line Drawings):</strong> Empty wireframe outlines look hollow and outdated. Solid fills define boundaries and surface areas far more clearly. Avoid cross-hatched patterns (they cause optical <em>moiré vibrations</em>). Use violin plots or sina plots instead of raw empty boxplots.</li>
+          </ul>
+
+          <div class="summary-box">
+            <div class="summary-title">Topic 6 High-Yield Takeaways</div>
+            <ul>
+              <li>Combat overplotting with alpha transparency, jittering, hexbin histograms, or 2D contours.</li>
+              <li>Hexagonal bins avoid the directional orientation bias of rectangular bins.</li>
+              <li>Redundant coding (color + shape) protects accessibility and black-and-white printing.</li>
+              <li>Direct labeling eliminates separate legend lookup friction.</li>
+              <li>Keep grid lines light and unobtrusive; use large readable axis labels and solid fills.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 7: GRAND MIDTERM MASTER SUMMARY
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-7">
+          <h2><span class="topic-num">7</span>📋 The Grand Midterm Master Summary &amp; Comparison Matrix</h2>
+          <p class="topic-subtitle">The complete synoptic cheat sheet covering every chapter, golden rule, fatal mistake, and exam keyword.</p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Chapter</th>
+                <th>Core Concept / Algorithm</th>
+                <th>The Golden Rule</th>
+                <th>The Fatal Mistake</th>
+                <th>Exam Keywords</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Ch 2</strong></td>
+                <td>Aesthetics &amp; Scales</td>
+                <td>Match variable type to appropriate aesthetic dimension.</td>
+                <td>Mapping nominal data to continuous lightness scale.</td>
+                <td>Grammar of Graphics, scales, continuous vs discrete.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 3</strong></td>
+                <td>Coordinate Systems</td>
+                <td>Bank time series slopes to ~45° for maximum sensitivity.</td>
+                <td>Ignoring aspect ratio changes on slope perception.</td>
+                <td>Cartesian, Cleveland 45° banking, isotropic aspect ratio.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 4</strong></td>
+                <td>Color Scales</td>
+                <td>Qualitative = equal weight; Sequential = natural gradient.</td>
+                <td>Reversing natural gradient (dark yellow &rarr; light blue).</td>
+                <td>Okabe-Ito, ColorBrewer, Viridis, Diverging midpoint.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 13</strong></td>
+                <td>Time Series</td>
+                <td>Implicitly connects ordered time; direct labels over legends.</td>
+                <td>Truncating baseline on shaded area charts.</td>
+                <td>Chronological ordering, Connected scatterplot, phase cycles.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 14</strong></td>
+                <td>Trends &amp; Smoothing</td>
+                <td>Straighten data before OLS; choose span $\alpha$ and penalty $\lambda$.</td>
+                <td>Fitting linear regression directly on exponential data.</td>
+                <td>LOESS, Tricube, Splines, Eager vs Lazy, STL Keeling curve.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 15</strong></td>
+                <td>Geospatial Data</td>
+                <td>Color choropleths by density; keep insets at 100% scale.</td>
+                <td>Mapping raw totals on choropleths; shrinking Alaska to 35%.</td>
+                <td>Oblate spheroid, WGS 84, Conformal vs Equal-area, Cartogram.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 17</strong></td>
+                <td>Proportional Ink</td>
+                <td>Linear bars MUST start at 0; Log ratio bars start at 1.</td>
+                <td>Truncating linear bar baseline (Hawaii income illusion).</td>
+                <td>Bergstrom &amp; West, Zero-baseline, Cleveland dot plot, 1D lengths.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 18</strong></td>
+                <td>Overplotting</td>
+                <td>Use alpha, jittering, or hexbins for crowded points.</td>
+                <td>Plotting opaque points that occlude true sample density.</td>
+                <td>Alpha blending, Jitter, Hexagonal bins, 2D density kde2d.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 19</strong></td>
+                <td>Color Pitfalls</td>
+                <td>Limit categories to 5–8; use colorblind-safe scales.</td>
+                <td>Using Rainbow/Jet with non-monotonic luminance.</td>
+                <td>Jet colormap, Deuteranopia, Protanopia, 5–8 limit.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 20</strong></td>
+                <td>Redundant Coding</td>
+                <td>Encode with multiple aesthetics (color + shape); label directly.</td>
+                <td>Relying strictly on subtle hue differences across distant legends.</td>
+                <td>Accessibility, B&amp;W printing, Direct labeling.</td>
+              </tr>
+              <tr>
+                <td><strong>Ch 23–25</strong></td>
+                <td>Context, Labels &amp; Fills</td>
+                <td>Subtle gray gridlines; large font labels; solid shape fills.</td>
+                <td>Heavy black grids; illegible tick marks; hatched moiré lines.</td>
+                <td>Data-ink ratio, Horizontal bars, Solid fills vs wireframes.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="definition">
+            <div class="def-title">Mathematical Formula Master Cheat Sheet</div>
+            <ul style="margin-left:20px; line-height:1.8;">
+              <li><strong>Proportional Ink Ratio:</strong> $\frac{\text{Visual Ink Area}(A)}{\text{Visual Ink Area}(B)} = \frac{\text{Data Value}(A)}{\text{Data Value}(B)}$</li>
+              <li><strong>LOESS Tricube Weight:</strong> $W(u) = (1 - |u|^3)^3 \quad \text{for } |u| < 1, \quad 0 \text{ otherwise}$</li>
+              <li><strong>Splines Penalized Objective:</strong> $\min_{f} \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int [f''(x)]^2 dx$</li>
+              <li><strong>Log-Linear Straightening:</strong> $y = a e^{bx} \implies \ln(y) = \ln(a) + bx \quad (\text{linear in } x)$</li>
+              <li><strong>Log-Log Straightening:</strong> $y = a x^k \implies \ln(y) = \ln(a) + k\ln(x) \quad (\text{linear in } \ln x)$</li>
+              <li><strong>STL Decomposition:</strong> $Y_t = T_t + S_t + R_t \quad (\text{Data} = \text{Trend} + \text{Seasonal} + \text{Remainder})$</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 8: EXAM PRACTICE PAGE (STRICTLY 5-WORD KEYS)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-8">
+          <h2><span class="topic-num">8</span>🎯 Ultimate Exam Question Practice Page</h2>
+          <p class="topic-subtitle">Comprehensive bank of exam questions across all Wilke chapters. Solutions strictly follow the professor's 5-word limit rule!</p>
+
+          <div class="quiz-header-bar">
+            <div>
+              <h3 style="margin:0; font-size:1.05rem; color:var(--tx);">Interactive Midterm Practice Simulator</h3>
+              <p style="margin:2px 0 0; font-size:0.75rem; color:var(--mt);">Every single explanation is strictly at most 5 words, matching your teacher's grading constraints!</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="score-pill" id="quiz-score">Score: 0 / 14</div>
+              <button class="reset-quiz-btn" onclick="resetQuiz()">Reset All</button>
+            </div>
+          </div>
+
+          <!-- Category Filters -->
+          <div class="quiz-filter-wrap">
+            <button class="quiz-filter-btn active" onclick="filterQuiz('all', this)">All Chapters (14)</button>
+            <button class="quiz-filter-btn" onclick="filterQuiz('ch2-3', this)">Ch 2 &amp; 3 (Aesthetics &amp; Coords)</button>
+            <button class="quiz-filter-btn" onclick="filterQuiz('ch4-19', this)">Ch 4 &amp; 19 (Color Scales)</button>
+            <button class="quiz-filter-btn" onclick="filterQuiz('ch13-14', this)">Ch 13 &amp; 14 (Time &amp; Trends)</button>
+            <button class="quiz-filter-btn" onclick="filterQuiz('ch15', this)">Ch 15 (Geospatial)</button>
+            <button class="quiz-filter-btn" onclick="filterQuiz('ch17', this)">Ch 17 (Proportional Ink)</button>
+            <button class="quiz-filter-btn" onclick="filterQuiz('ch18-25', this)">Ch 18–25 (Design &amp; Pitfalls)</button>
+          </div>
+
+          <!-- Quiz Question Bank -->
+          <div id="quiz-container">
+            <!-- MCQ 1 -->
+            <div class="mcq-card" data-category="ch2-3" data-correct="B">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q1</span>
+                <span class="mcq-category-tag">Wilke Ch. 3 • Aspect Ratio</span>
+              </div>
+              <div class="mcq-question">
+                What is William S. Cleveland's principle of "banking to 45 degrees" when plotting time-series curves?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>The x and y axes must always have equal pixel lengths.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>The aspect ratio should be chosen so the average absolute slope of line segments is approximately 45°.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>The origin of the y-axis must be tilted at a 45-degree angle.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Grid lines must intersect at 45-degree diagonals.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Maximizes human slope perception sensitivity.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 2 -->
+            <div class="mcq-card" data-category="ch2-3" data-correct="C">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q2</span>
+                <span class="mcq-category-tag">Wilke Ch. 2 • Scales</span>
+              </div>
+              <div class="mcq-question">
+                What is the fundamental functional role of a "scale" in the Grammar of Graphics?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>To compress large file sizes during vector export.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>To calculate p-values for hypothesis tests.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>To map values from data space uniquely into visual aesthetic space.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>To enforce normal distribution assumptions on residuals.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Maps data into visual space.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 3 -->
+            <div class="mcq-card" data-category="ch4-19" data-correct="A">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q3</span>
+                <span class="mcq-category-tag">Wilke Ch. 4 • Qualitative Scales</span>
+              </div>
+              <div class="mcq-question">
+                Why does Claus O. Wilke use the Okabe-Ito palette as the default qualitative scale throughout the textbook?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>It is universally distinguishable by colorblind individuals across all major deficiency types.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>It contains 25 distinct hues for massive categorical datasets.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>It was patented by Cynthia Brewer for cartographic displays.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>It uses a sequential gradient of blues for nominal categories.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Universally safe for colorblind readers.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 4 -->
+            <div class="mcq-card" data-category="ch4-19" data-correct="D">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q4</span>
+                <span class="mcq-category-tag">Wilke Ch. 19 • Color Pitfalls</span>
+              </div>
+              <div class="mcq-question">
+                Why is the Rainbow / Jet colormap considered a dangerous visualization anti-pattern?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>It consumes too much printer ink during paper publication.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>It only supports discrete binary variables.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>It cannot be displayed on LCD monitors.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Its non-monotonic luminance creates false edges and boundaries not present in data.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Non-monotonic luminance creates false edges.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 5 -->
+            <div class="mcq-card" data-category="ch17" data-correct="B">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q5</span>
+                <span class="mcq-category-tag">Wilke Ch. 17 • Linear Baseline</span>
+              </div>
+              <div class="mcq-question">
+                What is the inviolable rule for drawing bar charts on a linear coordinate axis?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Bars must always be colored using a diverging color palette.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Bars on a linear scale must always start at zero.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Bars must be truncated at the sample minimum to save visual space.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Bars must be plotted vertically, never horizontally.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Linear bars must start zero.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 6 -->
+            <div class="mcq-card" data-category="ch17" data-correct="C">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q6</span>
+                <span class="mcq-category-tag">Wilke Ch. 17 • Log Axes</span>
+              </div>
+              <div class="mcq-question">
+                Why are Cleveland dot plots recommended over bar charts when visualizing absolute amounts (like country GDPs) on a logarithmic scale?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Dots consume less memory than SVG rectangles.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Logarithmic axes cannot display numerical labels.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Zero lies at negative infinity, making any chosen bar origin completely arbitrary.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Dot plots automatically convert base-10 logs into natural logs.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Zero lies at negative infinity.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 7 -->
+            <div class="mcq-card" data-category="ch17" data-correct="A">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q7</span>
+                <span class="mcq-category-tag">Wilke Ch. 17 • Log Ratios</span>
+              </div>
+              <div class="mcq-question">
+                When bars ARE legitimately drawn on a logarithmic scale to represent ratios relative to a standard, where must they originate?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>At one (1), because log(1) = 0 and 1 represents neutral ratio equality.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>At zero (0).</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>At the mean of the dataset.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>At negative infinity.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Log ratio bars start one.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 8 -->
+            <div class="mcq-card" data-category="ch13-14" data-correct="D">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q8</span>
+                <span class="mcq-category-tag">Wilke Ch. 13 • Connected Scatter</span>
+              </div>
+              <div class="mcq-question">
+                What unique analytical insight is unlocked by a connected scatterplot compared to two separate time series line graphs?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>It proves statistical causality between independent variables.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>It automatically detrends seasonal variations.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>It eliminates the need for Cartesian coordinate axes.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>It clearly highlights cyclical phase loops and trajectories between two continuous variables.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Reveals cyclical phases and trajectories.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 9 -->
+            <div class="mcq-card" data-category="ch13-14" data-correct="B">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q9</span>
+                <span class="mcq-category-tag">Wilke Ch. 14 • LOESS vs Splines</span>
+              </div>
+              <div class="mcq-question">
+                In statistical learning theory, why is LOESS classified as a "lazy learner" whereas smoothing splines are "eager learners"?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>LOESS uses fewer CPU cycles than splines during training.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Splines fit a global analytic formula once; LOESS recomputes local weighted regressions per query point.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>LOESS requires manual knot placement while splines do not.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Splines only work with linear models.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">LOESS evaluates local points dynamically.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 10 -->
+            <div class="mcq-card" data-category="ch13-14" data-correct="A">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q10</span>
+                <span class="mcq-category-tag">Wilke Ch. 14 • Data Straightening</span>
+              </div>
+              <div class="mcq-question">
+                Which data straightening transformation linearizes an exponential growth relationship of the form $y = a \cdot e^{bx}$?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Log-linear transformation (taking the natural logarithm of y: $\ln y = \ln a + bx$).</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Log-log transformation (taking the logarithm of both x and y).</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Linear-log transformation (taking the logarithm of x only).</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Square root transformation on x.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Log-linear linearizes exponential relationships.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 11 -->
+            <div class="mcq-card" data-category="ch15" data-correct="C">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q11</span>
+                <span class="mcq-category-tag">Wilke Ch. 15 • Map Projections</span>
+              </div>
+              <div class="mcq-question">
+                What is the fundamental property of a conformal map projection?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>It preserves relative surface areas exactly across all latitudes.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>It eliminates the need for a coordinate datum.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>It accurately preserves local shapes and angles, but severely distorts surface areas.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>It introduces four large cuts through the continents.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Preserves angles, distorts surface area.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 12 -->
+            <div class="mcq-card" data-category="ch15" data-correct="D">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q12</span>
+                <span class="mcq-category-tag">Wilke Ch. 15 • Choropleths</span>
+              </div>
+              <div class="mcq-question">
+                Why does Claus O. Wilke formulate the rule that choropleth maps must encode densities rather than raw counts?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Because raw numbers cannot be stored in GIS shapefiles.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Because densities eliminate the need for discrete binning.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Because raw totals always follow a Poisson distribution.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Human vision equates polygon area with quantity; density corrects for arbitrary landmass size.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Density neutralizes land area bias.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 13 -->
+            <div class="mcq-card" data-category="ch18-25" data-correct="A">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q13</span>
+                <span class="mcq-category-tag">Wilke Ch. 18 • Hexagonal Bins</span>
+              </div>
+              <div class="mcq-question">
+                What is the geometric advantage of hexagonal binning (hexbin) over square rectangular bins in 2D density histograms?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>All six neighboring cell centers are equidistant, avoiding directional orientation artifacts.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Hexagons can only be rendered using logarithmic scales.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Hexagons automatically remove missing values from the dataset.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Hexagons require fewer color swatches than squares.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Equidistant neighbors prevent directional bias.</span>
+              </div>
+            </div>
+
+            <!-- MCQ 14 -->
+            <div class="mcq-card" data-category="ch18-25" data-correct="B">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Q14</span>
+                <span class="mcq-category-tag">Wilke Ch. 20 • Redundant Coding</span>
+              </div>
+              <div class="mcq-question">
+                Why is "redundant coding" (e.g., encoding a category with BOTH color hue AND point shape) considered good practice?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>It doubles the statistical degrees of freedom of the test.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>It preserves legibility for colorblind readers and survives black-and-white printing.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>It eliminates the need for axis labels.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>It converts ordinal variables into ratio variables.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <span class="five-word-key">Aids accessibility and monochrome printing.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         BOTTOM PAGINATION & BACK-TO-TOP
+         ═════════════════════════════════════════════════════ -->
+              </div>
+      <!-- end module-container -->
+
+      <!-- ── PAGINATION CONTROLS ── -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous Topic</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next Topic →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({top:0, behavior:'smooth'})"
+      aria-label="Back to top"
+    >
+      ↑
+    </button>
+
+    <!-- ═════════════════════════════════════════════════════
+     SCRIPTS & STATE MANAGEMENT
+     ═════════════════════════════════════════════════════ -->
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7", "topic-8"];
+      let currentTopicIndex = 0;
+
+                  function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector("h2");
+          if (h2) {
+            const numEl = h2.querySelector(".topic-num");
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, "").trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, "").trim();
+          }
+        }
+        return "Topic";
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById("sidebar");
+        const bd = document.getElementById("sidebar-backdrop");
+        if (sb) sb.classList.toggle("open");
+        if (bd) bd.classList.toggle("active");
+      }
+
+            function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest(".nav-sublist");
+          if (sublist && sublist.style.display === "none") {
+            sublist.style.display = "block";
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector(".chevron") : null;
+            if (chevron) chevron.style.transform = "rotate(0deg)";
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (pb) {
+          if (currentTopicIndex > 0) {
+            pb.style.display = "inline-flex";
+            if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+          } else {
+            pb.style.display = "none";
+          }
+        }
+
+        if (nb) {
+          if (currentTopicIndex < topics.length - 1) {
+            nb.style.display = "inline-flex";
+            if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+          } else {
+            nb.style.display = "none";
+          }
+        }
+
+        const mc = document.getElementById("main-content");
+        if (mc) mc.scrollTo({ top: 0, behavior: "smooth" });
+
+        const sb = document.getElementById("sidebar");
+        const bd = document.getElementById("sidebar-backdrop");
+        if (window.innerWidth <= 768 && sb && sb.classList.contains("open")) {
+          sb.classList.remove("open");
+          if (bd) bd.classList.remove("active");
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      /* Quiz Engine */
+      let answeredCount = 0;
+      let correctCount = 0;
+
+      function checkAnswer(btn) {
+        const card = btn.closest(".mcq-card");
+        if (card.classList.contains("answered")) return;
+
+        card.classList.add("answered");
+        const selectedOpt = btn.getAttribute("data-opt");
+        const correctOpt = card.getAttribute("data-correct");
+        const exp = card.querySelector(".mcq-explanation");
+
+        const allBtns = card.querySelectorAll(".mcq-opt");
+        allBtns.forEach((b) => (b.disabled = true));
+
+        if (selectedOpt === correctOpt) {
+          btn.classList.add("selected-correct");
+          correctCount++;
+        } else {
+          btn.classList.add("selected-incorrect");
+          const correctBtn = card.querySelector(`.mcq-opt[data-opt="${correctOpt}"]`);
+          if (correctBtn) correctBtn.classList.add("show-correct");
+        }
+
+        answeredCount++;
+        if (exp) exp.style.display = "block";
+        updateScoreDisplay();
+      }
+
+      function updateScoreDisplay() {
+        const visibleCards = document.querySelectorAll('.mcq-card:not([style*="display: none"])');
+        document.getElementById("quiz-score").textContent = `Score: ${correctCount} / ${document.querySelectorAll(".mcq-card").length}`;
+      }
+
+      function resetQuiz() {
+        answeredCount = 0;
+        correctCount = 0;
+        document.getElementById("quiz-score").textContent = `Score: 0 / ${document.querySelectorAll(".mcq-card").length}`;
+        document.querySelectorAll(".mcq-card").forEach((card) => {
+          card.classList.remove("answered");
+          card.querySelectorAll(".mcq-opt").forEach((btn) => {
+            btn.disabled = false;
+            btn.classList.remove("selected-correct", "selected-incorrect", "show-correct");
+          });
+          const exp = card.querySelector(".mcq-explanation");
+          if (exp) exp.style.display = "none";
+        });
+      }
+
+      function filterQuiz(cat, btn) {
+        document.querySelectorAll(".quiz-filter-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        document.querySelectorAll(".mcq-card").forEach((card) => {
+          if (cat === "all" || card.getAttribute("data-category") === cat) {
+            card.style.display = "block";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      }
+
+      // Initialize
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => {
+        bb.style.display = mc.scrollTop > 300 ? "flex" : "none";
+      });
+    </script>
+  </body>
+</html>

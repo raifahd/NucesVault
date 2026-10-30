@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Analysis &amp; Visualization — Visualizing Geospatial Data</title>
+    <meta
+      name="description"
+      content="Comprehensive, high-yield exam notes for Claus O. Wilke's Fundamentals of Data Visualization (Chapter 15). Covers oblate spheroids, datum WGS 84, map projections (conformal vs equal-area, Mercator, Goode homolosine, Albers), Alaska scaling pitfalls, 4 map layers, choropleth density rules, discrete binning, cartograms, cartogram heatmaps, and spatial small multiples."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../notes.css" />
+    <style>
+      /* ── Custom Diagram & Visual Enhancements ── */
+      .citation-header {
+        background: rgba(217, 119, 87, 0.08);
+        border: 1px solid rgba(217, 119, 87, 0.25);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.84rem;
+        color: var(--mt);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .citation-header strong {
+        color: var(--ac);
+      }
+
+      .visual-card {
+        background: rgba(24, 24, 27, 0.7);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      }
+      .visual-card h4 {
+        margin: 0 0 6px;
+        color: var(--tx);
+        font-size: 1rem;
+      }
+      .visual-card p.visual-caption {
+        font-size: 0.82rem;
+        color: var(--mt);
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      .diagram-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .diagram-box {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.2s, border-color 0.2s;
+      }
+      .diagram-box:hover {
+        transform: translateY(-2px);
+        border-color: var(--ac);
+      }
+      .diagram-box-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--tx);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .tag-status {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .tag-bad {
+        background: rgba(240, 82, 79, 0.2);
+        color: #f87171;
+        border: 1px solid rgba(240, 82, 79, 0.4);
+      }
+      .tag-good {
+        background: rgba(79, 191, 139, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(79, 191, 139, 0.4);
+      }
+      .tag-warn {
+        background: rgba(240, 169, 78, 0.2);
+        color: #fbbf24;
+        border: 1px solid rgba(240, 169, 78, 0.4);
+      }
+
+      .svg-canvas-wrap {
+        width: 100%;
+        background: #111114;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: auto;
+      }
+      .svg-canvas-wrap svg {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .matrix-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 0.85rem;
+      }
+      .matrix-table th {
+        background: rgba(217, 119, 87, 0.12);
+        color: var(--ac);
+        padding: 10px 14px;
+        text-align: left;
+        border: 1px solid var(--bd);
+        font-weight: 600;
+      }
+      .matrix-table td {
+        padding: 9px 14px;
+        border: 1px solid var(--bd);
+        color: var(--tx);
+        vertical-align: top;
+      }
+      .matrix-table tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      /* Quiz Controls */
+      .quiz-header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 12px 18px;
+        background: rgba(24, 24, 27, 0.6);
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+      }
+      .score-pill {
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid var(--bd);
+        padding: 7px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--ac);
+      }
+      .reset-quiz-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--bd);
+        color: var(--tx);
+        padding: 7px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .reset-quiz-btn:hover {
+        background: var(--hv);
+        border-color: var(--ac);
+        color: var(--ac);
+      }
+      .mcq-card {
+        background: rgba(24, 24, 27, 0.75);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+      .mcq-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .mcq-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        background: rgba(217, 119, 87, 0.15);
+        color: var(--ac);
+        padding: 3px 8px;
+        border-radius: 5px;
+      }
+      .mcq-question {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--tx);
+        line-height: 1.5;
+      }
+      .mcq-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 14px 0 10px;
+      }
+      .mcq-opt {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 10px 14px;
+        text-align: left;
+        color: var(--tx);
+        font-family: inherit;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        transition: all 0.15s ease;
+      }
+      .mcq-opt:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: var(--ac);
+      }
+      .opt-letter {
+        font-weight: 700;
+        font-size: 0.78rem;
+        color: var(--mt);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 2px 7px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .mcq-opt.selected-correct {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: #10b981;
+        color: #a7f3d0;
+      }
+      .mcq-opt.selected-correct .opt-letter {
+        background: #10b981;
+        color: #064e3b;
+      }
+      .mcq-opt.selected-incorrect {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: #ef4444;
+        color: #fca5a5;
+      }
+      .mcq-opt.selected-incorrect .opt-letter {
+        background: #ef4444;
+        color: #450a0a;
+      }
+      .mcq-opt.show-correct {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.08);
+      }
+      .mcq-explanation {
+        display: none;
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        line-height: 1.5;
+        border: 1px solid var(--bd);
+        background: rgba(0, 0, 0, 0.4);
+      }
+    
+      
+
+    
+      /* ── Prominent Bottom Navigation Styling ── */
+      .bottom-nav {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-top: 1px solid var(--bd) !important;
+        padding: 28px 0 16px !important;
+        margin-top: 56px !important;
+        gap: 16px !important;
+        width: 100% !important;
+      }
+
+      .bottom-nav button {
+        display: inline-flex !important;
+        flex-direction: column !important;
+        background: #18181b !important;
+        color: var(--tx) !important;
+        border: 1px solid #3f3f46 !important;
+        padding: 14px 22px !important;
+        border-radius: 10px !important;
+        cursor: pointer !important;
+        font-family: inherit !important;
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        max-width: 48% !important;
+        min-width: 200px !important;
+        text-decoration: none !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      }
+
+      .bottom-nav button .btn-label {
+        font-size: 0.68rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.2px !important;
+        font-weight: 700 !important;
+        color: var(--mt) !important;
+        margin-bottom: 4px !important;
+        display: block !important;
+      }
+
+      .bottom-nav button .btn-title {
+        color: #f4f4f5 !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 100% !important;
+        display: block !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) {
+        border-color: var(--ac) !important;
+        background: #27272a !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(217, 119, 87, 0.28) !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) .btn-label {
+        color: var(--ac) !important;
+      }
+
+      .bottom-nav button:hover:not(:disabled) .btn-title {
+        color: #ffffff !important;
+      }
+
+      #prev-btn {
+        align-items: flex-start !important;
+        text-align: left !important;
+        margin-right: auto !important;
+      }
+      #prev-btn div {
+        text-align: left !important;
+        max-width: 100% !important;
+      }
+
+      #next-btn {
+        align-items: flex-end !important;
+        text-align: right !important;
+        margin-left: auto !important;
+      }
+      #next-btn div {
+        text-align: right !important;
+        max-width: 100% !important;
+      }
+
+      @media (max-width: 768px) {
+        .bottom-nav {
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        .bottom-nav button {
+          max-width: 100% !important;
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        #prev-btn, #next-btn {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          align-items: center !important;
+          text-align: center !important;
+        }
+        #prev-btn div, #next-btn div {
+          text-align: center !important;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SIDEBAR
+     ═══════════════════════════════════════════════════════ -->
+        <div id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-text">
+          <div class="sidebar-course-label">Midterm 2 Syllabus</div>
+          <div class="sidebar-title">Data Visualization</div>
+        </div>
+      </div>
+      <div class="sidebar-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search topics…"
+          onkeyup="filterContent()"
+        />
+      </div>
+      <ul class="nav-list" id="nav-list">
+        <!-- Current Midterm 2 Module (Active & Expandable) -->
+        <li class="nav-section">
+          <div class="nav-section-title" onclick="toggleSection(this)">
+            <span>Module 12 — Visualizing Geospatial Data (Ch 15)</span>
+            <span class="chevron">▼</span>
+          </div>
+          <ul class="nav-sublist">
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-1')">
+                <span class="nav-num">01</span>Geospatial Coordinates & The Dilemma
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                <span class="nav-num">02</span>Classic Projections & US Inset Traps
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                <span class="nav-num">03</span>Multi-Layer Map Architecture
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')">
+                <span class="nav-num">04</span>Choropleth Mapping: The Density Law
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-5')">
+                <span class="nav-num">05</span>Cartograms & Spatial Small Multiples
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-6')">
+                <span class="nav-num">06</span>📋 Summary & Practice Exam (5-Word Keys)
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Midterm 2 Syllabus: Fundamentals of Data Visualization (Wilke) -->
+        <li>
+          <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
+            <span class="nav-num">07</span>Aesthetics & Coordinates (Ch 2–3)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./9- Principles of Figure Design & Visualization Pitfalls.html">
+            <span class="nav-num">09</span>Figure Design & Pitfalls (Ch 18–25)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./10- Visualizing Time Series & Trends.html">
+            <span class="nav-num">10</span>Time Series & Trends (Ch 13–14)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./11- Color Scales & Proportional Ink.html">
+            <span class="nav-num">11</span>Color Scales & Proportional Ink (Ch 4 & 17)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./13- Midterm Exam Prep - Fundamentals of Data Visualization.html">
+            <span class="nav-num">13</span>🎯 Midterm 2 Exam Prep Master
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="main-content">
+      <div class="module-container" id="module-12">
+        <div class="module-header">
+          <div class="module-eyebrow">Data Analysis &amp; Visualization • Wilke Ch. 15</div>
+          <h1 class="module-title">Visualizing Geospatial Data</h1>
+        </div>
+
+        <div class="citation-header">
+          <span>🌍</span>
+          <div>
+            <strong>Required Textbook Reference:</strong> Claus O. Wilke, <em>Fundamentals of Data Visualization</em>, Chapter 15 (<em>Visualizing Geospatial Data</em>, pp. 161–179).
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 1: GEOSPATIAL COORDINATES & THE PROJECTION DILEMMA
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-1">
+          <h2><span class="topic-num">1</span>Geospatial Coordinates &amp; The Projection Dilemma</h2>
+          <p class="topic-subtitle">The physical geometry of the Earth, spherical coordinates, datums, and Gauss's mathematical impossibility.</p>
+
+          <p>
+            Many modern datasets contain variables tethered to physical locations on Earth: wildlife tracking coordinates, epidemiologic outbreaks, census demographics, or civil infrastructure. Showing these records in their true spatial context requires mapping them onto a flat visual canvas.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Earth Geometry &amp; The Three Spatial Dimensions</div>
+            <p>
+              The Earth is not a perfect sphere; it is an <strong>oblate spheroid</strong> (slightly flattened along its polar axis of rotation). The axis intersects the surface at the <strong>North and South Poles</strong>.
+            </p>
+            <ul style="margin-left:20px; margin-top:8px; line-height:1.7;">
+              <li><strong>Equator (0° Latitude):</strong> The line equidistant from both poles, dividing Earth into Northern and Southern hemispheres.</li>
+              <li><strong>Longitude (Meridians):</strong> Measures how far east or west a location lies (angles from $-180^\circ$ to $+180^\circ$). Lines of equal longitude are called <em>meridians</em>; all meridians terminate at the poles and have identical lengths (each is half of a great circle). The <strong>Prime Meridian (0°)</strong> passes through Greenwich, UK.</li>
+              <li><strong>Latitude (Parallels):</strong> Measures how far north or south a location lies (angles from $-90^\circ$ to $+90^\circ$). Lines of equal latitude are called <em>parallels</em> because they run parallel to the equator. Parallels vary in length: the Equator is the longest parallel, while the poles have length zero.</li>
+              <li><strong>Altitude:</strong> Distance above or below the reference surface (elevation).</li>
+            </ul>
+          </div>
+
+          <div class="definition">
+            <div class="def-title">Datum &amp; Coordinate Reference Systems (CRS)</div>
+            <p>
+              Longitude, latitude, and altitude cannot exist in a vacuum; they must be specified relative to a mathematically defined model of the Earth's size and center known as a <strong>datum</strong>.
+            </p>
+            <ul style="margin-left:20px; margin-top:6px;">
+              <li><strong>WGS 84 (World Geodetic System 1984):</strong> The standard global datum used by the Global Positioning System (GPS).</li>
+              <li><strong>EPSG:4326:</strong> The standard registry identifier for unprojected longitude and latitude coordinates based on the WGS 84 datum.</li>
+            </ul>
+          </div>
+
+          <h3>The Fundamental Map-Making Dilemma</h3>
+          <p>
+            By Carl Friedrich Gauss's <em>Theorema Egregium</em>, a curved 3D spherical surface cannot be flattened onto a 2D sheet without distortion. When designing a projection, <strong>you cannot preserve both angles and areas simultaneously</strong>:
+          </p>
+
+          <div class="diagram-grid">
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Conformal Projections</span>
+                <span class="tag-status tag-good">Preserves Angles</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Accurately preserves <strong>local shapes and angles</strong>. Compass bearings and small geographic features look correct, but <strong>surface areas are heavily distorted</strong>, especially near the poles.
+              </p>
+              <div style="font-size:0.75rem; color:var(--mt);">Example: Mercator, Transverse Mercator.</div>
+            </div>
+
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Equal-Area Projections</span>
+                <span class="tag-status tag-good">Preserves Areas</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Accurately preserves <strong>surface areas</strong> across the entire map. A square centimeter anywhere on the map represents the exact same number of square kilometers on Earth, but <strong>angles and shapes are sheared/distorted</strong>.
+              </p>
+              <div style="font-size:0.75rem; color:var(--mt);">Example: Albers Equal-Area, Goode Homolosine.</div>
+            </div>
+
+            <div class="diagram-box">
+              <div class="diagram-box-title">
+                <span>Compromise Projections</span>
+                <span class="tag-status tag-warn">Balances Both</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--tx); margin:0;">
+                Strikes an aesthetic middle ground: accepts moderate distortion in both shape and area to provide visually pleasing full-world maps.
+              </p>
+              <div style="font-size:0.75rem; color:var(--mt);">Example: Robinson, Winkel Tripel.</div>
+            </div>
+          </div>
+
+          <h3>Practice Questions (Topic 1)</h3>
+          <details>
+            <summary>Q1: Why do parallels vary in physical circumference while all meridians have identical lengths?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Meridians run from pole to pole (half great circles of equal size). Parallels are horizontal cross-sections of an oblate spheroid that shrink toward zero at the poles.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: What is the defining trade-off between conformal and equal-area projections?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Conformal projections preserve local shapes and angles but severely distort surface areas; equal-area projections preserve exact relative surface areas but distort angles and shapes.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: What standard datum and EPSG code underpin modern GPS coordinates?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> WGS 84 (World Geodetic System 1984), identified as <strong>EPSG:4326</strong>.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 2: CLASSIC PROJECTIONS & US INSET TRAPS
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-2">
+          <h2><span class="topic-num">2</span>Classic Map Projections &amp; The US State Inset Trap</h2>
+          <p class="topic-subtitle">The Mercator pole distortion, Goode homolosine cuts, Albers equal-area, and the 35% Alaska scaling fraud.</p>
+
+          <p>
+            Choosing the correct projection is not a cosmetic choice; it directly governs how readers perceive geographic truth.
+          </p>
+
+          <h3>The Mercator Projection &amp; Variants</h3>
+          <p>
+            Developed in the 16th century for maritime navigation, the <strong>Mercator projection</strong> projects the globe onto a cylinder tangent at the equator and unrolls it into a rectangle:
+          </p>
+          <ul>
+            <li><strong>Geometry:</strong> Meridians are vertical lines spaced equally apart. Parallels are horizontal lines whose vertical spacing expands drastically as they approach the poles.</li>
+            <li><strong>Navigational Benefit:</strong> It is conformal. A straight line drawn on a Mercator map represents a constant compass bearing (a rhumb line or loxodrome).</li>
+            <li><strong>The Polar Distortion:</strong> Because parallels must be stretched horizontally to keep meridians vertical, vertical spacing is stretched by the exact same ratio to preserve local angles. Near the poles, areas blow up toward infinity!</li>
+          </ul>
+
+          <div class="warning-box">
+            <div class="warning-title">The Mercator Distortion Factoid</div>
+            <p>
+              On a Mercator map (Figure 15-2), <strong>Greenland appears larger than the entire continent of Africa</strong>. In reality, <strong>Africa is 14 times larger than Greenland!</strong> (Africa is ~30.3 million km²; Greenland is ~2.16 million km²). For this reason, Mercator is entirely obsolete for world maps.
+            </p>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">Mercator Living Variants</div>
+            <ul style="margin-left:20px; margin-top:4px;">
+              <li><strong>Transverse Mercator:</strong> Rotates the cylinder 90° so it is tangent along a specific central meridian. Ideal for mapping narrow north-south strips (less than a few degrees of longitude) at high magnification without distortion.</li>
+              <li><strong>Web Mercator (EPSG:3857):</strong> Introduced by Google Maps; adopted across web mapping because it projects squares seamlessly onto screen pixels.</li>
+            </ul>
+          </div>
+
+          <h3>The Interrupted Goode Homolosine</h3>
+          <p>
+            If a global map requires <strong>perfect area preservation</strong>, Wilke champions the <strong>Interrupted Goode Homolosine</strong> (Figure 15-3):
+          </p>
+          <ul>
+            <li><strong>How it works:</strong> It introduces carefully positioned cuts (one in the Northern hemisphere, three in the Southern hemisphere) placed exclusively through major ocean basins.</li>
+            <li><strong>The Trade-off:</strong> The cuts allow the projection to preserve area while minimizing local shape distortion across all continental landmasses, at the cost of noncontiguous oceans and split ice sheets (Greenland and Antarctica).</li>
+          </ul>
+
+          <h3>Projecting the United States &amp; The Alaska Inset Trap</h3>
+          <p>
+            The standard projection for the contiguous 48 states is the <strong>Albers Equal-Area Conic projection (ESRI:102003)</strong>. However, visualizing all 50 states creates a severe spatial layout challenge: Alaska and Hawaii are thousands of miles away from the "lower 48" (Figure 15-4).
+          </p>
+
+          <div class="visual-card">
+            <h4>The Great Alaska Scaling Trap (Figure 15-6 vs 15-7)</h4>
+            <p class="visual-caption">How common cartographic practice visually lies about state sizes by shrinking Alaska.</p>
+
+            <div class="diagram-grid">
+              <div class="diagram-box">
+                <div class="diagram-box-title">
+                  <span>Moved &amp; Scaled to 35%</span>
+                  <span class="tag-status tag-bad">Deceptive (Bad)</span>
+                </div>
+                <div class="svg-canvas-wrap">
+                  <svg viewBox="0 0 280 150" width="100%" height="150">
+                    <!-- Lower 48 outline box -->
+                    <rect x="80" y="20" width="180" height="90" fill="#27272a" stroke="#52525b" rx="4" />
+                    <text x="170" y="70" fill="#ededed" font-size="11" text-anchor="middle">Contiguous US (Lower 48)</text>
+
+                    <!-- Shrunk Alaska -->
+                    <rect x="20" y="115" width="45" height="30" fill="#f87171" stroke="#ef4444" rx="3" />
+                    <text x="42" y="133" fill="#fff" font-size="8" text-anchor="middle" font-weight="700">AK (35%)</text>
+                    
+                    <text x="140" y="135" fill="#ef4444" font-size="9">Linear size shrunk to 35% (Area = 12%!)</text>
+                  </svg>
+                </div>
+                <p style="font-size:0.75rem; color:var(--mt); margin:0;">Cartographers downscale Alaska so it fits neatly under California, making it look similar in size to Kansas or Texas. This is a severe visual lie labeled "bad" by Wilke!</p>
+              </div>
+
+              <div class="diagram-box">
+                <div class="diagram-box-title">
+                  <span>Moved at True Scale (100%)</span>
+                  <span class="tag-status tag-good">Accurate (Good)</span>
+                </div>
+                <div class="svg-canvas-wrap">
+                  <svg viewBox="0 0 280 150" width="100%" height="150">
+                    <!-- Lower 48 outline box -->
+                    <rect x="80" y="20" width="180" height="90" fill="#27272a" stroke="#52525b" rx="4" />
+                    <text x="170" y="70" fill="#ededed" font-size="11" text-anchor="middle">Contiguous US (Lower 48)</text>
+
+                    <!-- True size Alaska -->
+                    <rect x="10" y="75" width="65" height="68" fill="#34d399" stroke="#10b981" rx="3" />
+                    <text x="42" y="112" fill="#064e3b" font-size="10" text-anchor="middle" font-weight="700">AK (True)</text>
+                    
+                    <text x="140" y="135" fill="#34d399" font-size="9">Alaska is over 2× the size of Texas!</text>
+                  </svg>
+                </div>
+                <p style="font-size:0.75rem; color:var(--mt); margin:0;">Move Alaska and Hawaii underneath the lower 48, but <strong>never rescale them</strong>! At true 100% scale, Alaska correctly reveals itself as the largest state in the nation.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3>Practice Questions (Topic 2)</h3>
+          <details>
+            <summary>Q1: Why does Greenland appear larger than Africa on a Mercator projection, and what is the real ratio?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Mercator stretches high latitudes to preserve conformal angles. In reality, Africa is 14 times larger than Greenland.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: What is the primary advantage and disadvantage of the Interrupted Goode Homolosine projection?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Advantage: Perfectly preserves surface areas with minimal continental shape distortion. Disadvantage: Oceans and ice sheets are severed and noncontiguous.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: Why does Claus O. Wilke label the common practice of showing Alaska under the lower 48 as "bad" in Figure 15-6?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Because Alaska is scaled down to 35% of its linear extent (reducing its visual area to ~12%), deceiving the viewer into believing it is comparable to Midwestern states.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 3: MAP LAYERS & CONTEXTUAL AESTHETICS
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-3">
+          <h2><span class="topic-num">3</span>Multi-Layer Map Architecture &amp; Contextual Aesthetics</h2>
+          <p class="topic-subtitle">The four architectural map layers, essential cartographic metadata, and aesthetic mappings in physical space.</p>
+
+          <p>
+            Geospatial figures are rarely drawn as a single graphic pass. They are built as a composited stack of distinct visual layers, each providing specific physical context or domain data.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">The Four Standard Map Layers (Wilke Figure 15-8 &amp; 15-9)</div>
+            <ol style="margin-left:20px; line-height:1.8;">
+              <li><strong>Layer 1 (Bottom): Terrain &amp; Hydrology:</strong> Physical geography, topographic hill shading, elevation contours, rivers, and water bodies.</li>
+              <li><strong>Layer 2: Infrastructure &amp; Roads:</strong> Human-made transit networks, highways, rail lines, and administrative boundaries.</li>
+              <li><strong>Layer 3: Primary Data Observations:</strong> The core analytical data being visualized (e.g., individual wind turbine coordinates, earthquake epicenters, store locations).</li>
+              <li><strong>Layer 4 (Top): Labels, Metadata &amp; Context:</strong> City names, focal region callout boundaries, and orientation indicators.</li>
+            </ol>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">Mandatory Cartographic Metadata: Scale Bar &amp; North Arrow</div>
+            <p>Wilke explicitly states that regardless of which layers you include or omit, you should almost always add:</p>
+            <ul style="margin-left:20px; margin-top:4px;">
+              <li><strong>Scale Bar:</strong> Essential for the reader to decipher the real-world physical size and distance of features.</li>
+              <li><strong>North Arrow:</strong> Clarifies the map's orientation, especially in non-standard projections where lines of longitude converge.</li>
+            </ul>
+          </div>
+
+          <h3>Pruning Layers for Analytical Clarity</h3>
+          <p>
+            Layers must serve the analytical narrative. Adding unnecessary layers creates visual clutter:
+          </p>
+          <ul>
+            <li><strong>Voting Districts:</strong> Terrain is completely irrelevant and distracting; remove Layer 1 entirely and keep political boundaries.</li>
+            <li><strong>Solar Power Potential:</strong> Standard terrain is insufficient; swap Layer 1 for high-resolution satellite imagery showing individual roof geometries and tree canopies.</li>
+          </ul>
+
+          <div class="example">
+            <div class="example-title">Mapping Aesthetics on Maps: Shiloh Wind Farm (Figure 15-10)</div>
+            <p>
+              All aesthetic mapping principles from Chapter 2 transfer directly onto maps:
+            </p>
+            <ul>
+              <li><strong>Spatial Position ($x, y$):</strong> Encodes Longitude and Latitude (physical turbine location).</li>
+              <li><strong>Color Aesthetic:</strong> Encodes <em>Year Built</em> (sequential scale from pre-2000 to post-2010).</li>
+              <li><strong>Shape Aesthetic:</strong> Encodes <em>Project Developer</em> (discrete shapes: circles for Shiloh, squares for Solano, triangles for High Winds).</li>
+            </ul>
+            <p><em>Analytical Takeaway:</em> A single map immediately reveals both spatial clusters and chronological development patterns across energy projects.</p>
+          </div>
+
+          <h3>Practice Questions (Topic 3)</h3>
+          <details>
+            <summary>Q1: List the four standard layers of a geospatial visualization from bottom to top.</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> (1) Terrain/hydrology layer; (2) Roads/infrastructure layer; (3) Data observations layer; (4) Labels, scale bar, and north arrow.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: What two pieces of contextual metadata should almost always be included on a geographic map?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> A <strong>scale bar</strong> (to measure distances) and a <strong>north arrow</strong> (to clarify orientation).</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: When should terrain information be deliberately pruned from a map?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> When topography is irrelevant to the question (e.g., voting districts, economic sales territories) and serves only to clutter the figure.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 4: CHOROPLETH MAPPING & THE DENSITY LAW
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-4">
+          <h2><span class="topic-num">4</span>Choropleth Mapping: The Density Law &amp; Binning Mechanics</h2>
+          <p class="topic-subtitle">Why raw counts on maps lie, the two exceptions for non-densities, continuous vs. discrete scales, and the state-level fallacy.</p>
+
+          <p>
+            A <strong>choropleth map</strong> visualizes spatial variation by coloring geographic sub-regions (counties, states, countries) according to a data variable. While ubiquitous, choropleths are among the most frequently misinterpreted graphics in data science.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">The Fundamental Choropleth Law: The Density Rule</div>
+            <p>
+              <strong>Choropleths work best when the mapped variable represents a DENSITY</strong> (a quantity divided by surface area, such as persons per square kilometer, crop yield per hectare, or cases per square mile).
+            </p>
+            <p style="margin-top:6px;">
+              <strong>The Perceptual Reason:</strong> The human visual cortex automatically equates the <em>physical area of a colored polygon</em> with total magnitude. Shading by density mathematically compensates for polygon land area!
+            </p>
+          </div>
+
+          <div class="warning-box">
+            <div class="warning-title">The Fatal Raw Count Sin</div>
+            <p>
+              Mapping raw counts (total population, total COVID-19 cases, total votes) on a choropleth is completely invalid. It simply produces a map of geographic landmass or general population clustering, completely obscuring local intensity!
+            </p>
+          </div>
+
+          <h3>The Two Strict Exceptions for Non-Density Choropleths</h3>
+          <p>
+            Can you ever map a variable that is <em>not a density</em> (such as median household income or unemployment rate)? Wilke states <strong>yes, but strictly under two conditions</strong>:
+          </p>
+          <div class="definition">
+            <div class="def-title">The Two Permissible Conditions for Non-Density Choropleths</div>
+            <ul style="margin-left:20px; line-height:1.7;">
+              <li><strong>Condition 1 (Equal Size &amp; Shape):</strong> If all the individual geographic sub-regions being colored have approximately identical land area and geometry (so no single polygon dominates visual attention solely by being large).</li>
+              <li><strong>Condition 2 (Fine Granularity / Smooth Scale):</strong> If the sub-regions are very small relative to the overall map canvas, AND the mapped quantity changes across spatial regions larger than the individual polygons (e.g., Texas county median income in Figure 4-4).</li>
+            </ul>
+          </div>
+
+          <h3>Continuous vs. Discrete (Binned) Color Scales in Choropleths</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Continuous Color Scale</th>
+                <th>Discrete / Binned Color Scale (Recommended)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Visual Appeal</strong></td>
+                <td>Smooth, aesthetically elegant gradient</td>
+                <td>Segmented, stepped appearance</td>
+              </tr>
+              <tr>
+                <td><strong>Perceptual Readability</strong></td>
+                <td><strong>Extremely poor:</strong> Eyes cannot match continuous shades to legend values.</td>
+                <td><strong>High:</strong> Human eyes can rapidly identify and match 4 to 6 discrete colors.</td>
+              </tr>
+              <tr>
+                <td><strong>Recommended Bins</strong></td>
+                <td>N/A (Infinite)</td>
+                <td><strong>4 to 6 bins</strong> (Wilke's sweet spot)</td>
+              </tr>
+              <tr>
+                <td><strong>Information Loss</strong></td>
+                <td>None (exact math)</td>
+                <td>Slight quantization loss, compensated by total readability</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <div class="example-title">The State-Level Choropleth Failure (Wilke Figure 15-14)</div>
+            <p>
+              Wilke maps <strong>median annual income at the state level</strong> across the US and labels the figure <strong>"bad"</strong>:
+            </p>
+            <ul>
+              <li><strong>The Illusion:</strong> Alaska is massive and has a high median income ($> \$70,000$). Because Alaska takes up such a huge proportion of the map area, the map falsely suggests that high incomes are dominant across America.</li>
+              <li><strong>The Reality:</strong> Alaska is virtually empty (extremely low population density). Highly populated, high-income states in the Northeast (New Jersey, Connecticut, Massachusetts) are tiny slivers that disappear into the background. The choropleth misleads the audience about the population's economic reality!</li>
+            </ul>
+          </div>
+
+          <h3>Practice Questions (Topic 4)</h3>
+          <details>
+            <summary>Q1: Why do choropleth maps work best when encoding densities rather than absolute totals?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> The eye equates polygon area with quantity; dividing by land area (density) neutralizes arbitrary physical size differences.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: What are the two conditions under which non-density variables (like median income) can legitimately be used in a choropleth?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> (1) Colored regions have roughly equal size and shape; OR (2) regions are small relative to the map and the variable varies on a scale larger than the regions.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: Why does Wilke recommend binning choropleth colors into 4–6 discrete categories instead of using continuous scales?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> The human visual system cannot match continuous color gradations to legend values; 4–6 discrete bins allow unambiguous value identification.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 5: CARTOGRAMS, HEATMAPS & SMALL MULTIPLES
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-5">
+          <h2><span class="topic-num">5</span>Cartograms, Cartogram Heatmaps &amp; Spatial Small Multiples</h2>
+          <p class="topic-subtitle">Deforming landmasses by population, equal-weight tile heatmaps, and faceted topological trend arrays.</p>
+
+          <p>
+            When geographic accuracy misleads the reader about human or economic realities, cartographers abandon physical geography in favor of <strong>abstract topological diagrams</strong>.
+          </p>
+
+          <div class="definition">
+            <div class="def-title">Cartogram Definition &amp; Mechanics</div>
+            <p>
+              A <strong>cartogram</strong> is a modified map where geographic region boundaries are purposefully distorted such that <strong>their surface area is directly proportional to a specific demographic variable</strong> (typically population).
+            </p>
+            <p style="margin-top:6px;">
+              <strong>Effect on US Map (Figure 15-15):</strong> Dense coastal states (California, Florida, New York, New Jersey) expand dramatically in physical size, while vast, sparsely populated Western states (Wyoming, Montana, Alaska) collapse into tiny shapes. Area now matches human representation!
+            </p>
+          </div>
+
+          <h3>Cartogram Heatmaps (Tile Maps)</h3>
+          <p>
+            While distorted cartograms correctly weight population, they can be difficult to recognize because state borders become warped. The cleaner alternative is a <strong>cartogram heatmap</strong> (Figure 15-16):
+          </p>
+          <ul>
+            <li><strong>Equal Geometric Weight:</strong> Every single state is rendered as an <strong>identically sized square tile</strong>.</li>
+            <li><strong>Topological Layout:</strong> The squares are arranged on a regular grid that preserves the approximate relative geographic position of each state to its neighbors (Washington in top-left, Florida in bottom-right, Maine in top-right).</li>
+            <li><strong>Core Benefit:</strong> Completely eliminates the landmass bias of large states like Alaska or Montana without requiring complex shape warping. Every state has equal visual weight.</li>
+          </ul>
+
+          <!-- SVG Visual Demonstration: Cartogram Tile Concept -->
+          <div class="visual-card">
+            <h4>Concept: The Cartogram Heatmap (Equal-Weight Topology)</h4>
+            <p class="visual-caption">How states are transformed into equal-sized tiles while retaining topological neighborhood relationships.</p>
+
+            <div class="svg-canvas-wrap">
+              <svg viewBox="0 0 540 180" width="100%" height="180">
+                <!-- Row 1 -->
+                <rect x="30" y="20" width="34" height="34" fill="#3f3f46" rx="4" /><text x="47" y="42" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">WA</text>
+                <rect x="70" y="20" width="34" height="34" fill="#3f3f46" rx="4" /><text x="87" y="42" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">ID</text>
+                <rect x="110" y="20" width="34" height="34" fill="#3f3f46" rx="4" /><text x="127" y="42" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">MT</text>
+                <rect x="150" y="20" width="34" height="34" fill="#3f3f46" rx="4" /><text x="167" y="42" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">ND</text>
+                <rect x="190" y="20" width="34" height="34" fill="#3f3f46" rx="4" /><text x="207" y="42" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">MN</text>
+                <rect x="230" y="20" width="34" height="34" fill="#3f3f46" rx="4" /><text x="247" y="42" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">WI</text>
+                <rect x="430" y="20" width="34" height="34" fill="#3f3f46" rx="4" /><text x="447" y="42" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">VT</text>
+                <rect x="470" y="20" width="34" height="34" fill="#3f3f46" rx="4" /><text x="487" y="42" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">ME</text>
+
+                <!-- Row 2 -->
+                <rect x="30" y="60" width="34" height="34" fill="#3f3f46" rx="4" /><text x="47" y="82" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">OR</text>
+                <rect x="70" y="60" width="34" height="34" fill="#3f3f46" rx="4" /><text x="87" y="82" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">NV</text>
+                <rect x="110" y="60" width="34" height="34" fill="#3f3f46" rx="4" /><text x="127" y="82" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">WY</text>
+                <rect x="150" y="60" width="34" height="34" fill="#3f3f46" rx="4" /><text x="167" y="82" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">SD</text>
+                <rect x="190" y="60" width="34" height="34" fill="#3f3f46" rx="4" /><text x="207" y="82" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">IA</text>
+                <rect x="230" y="60" width="34" height="34" fill="#3f3f46" rx="4" /><text x="247" y="82" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">IL</text>
+                <rect x="390" y="60" width="34" height="34" fill="#d97757" rx="4" /><text x="407" y="82" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">NY</text>
+                <rect x="430" y="60" width="34" height="34" fill="#3f3f46" rx="4" /><text x="447" y="82" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">MA</text>
+
+                <!-- Row 3 -->
+                <rect x="30" y="100" width="34" height="34" fill="#d97757" rx="4" /><text x="47" y="122" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">CA</text>
+                <rect x="70" y="100" width="34" height="34" fill="#3f3f46" rx="4" /><text x="87" y="122" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">UT</text>
+                <rect x="110" y="100" width="34" height="34" fill="#3f3f46" rx="4" /><text x="127" y="122" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">CO</text>
+                <rect x="150" y="100" width="34" height="34" fill="#3f3f46" rx="4" /><text x="167" y="122" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">NE</text>
+                <rect x="190" y="100" width="34" height="34" fill="#3f3f46" rx="4" /><text x="207" y="122" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">MO</text>
+                <rect x="230" y="100" width="34" height="34" fill="#3f3f46" rx="4" /><text x="247" y="122" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">KY</text>
+                <rect x="390" y="100" width="34" height="34" fill="#d97757" rx="4" /><text x="407" y="122" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">NJ</text>
+
+                <!-- Alaska and Hawaii Insets as Equal Squares -->
+                <rect x="30" y="140" width="34" height="34" fill="#52525b" rx="4" /><text x="47" y="162" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">AK</text>
+                <rect x="70" y="140" width="34" height="34" fill="#52525b" rx="4" /><text x="87" y="162" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">HI</text>
+                <rect x="430" y="140" width="34" height="34" fill="#d97757" rx="4" /><text x="447" y="162" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">FL</text>
+
+                <text x="270" y="162" fill="#a1a1aa" font-size="11">Identical 34x34px tile area gives equal visual weight</text>
+              </svg>
+            </div>
+          </div>
+
+          <h3>Spatial Small Multiples (Faceted Cartograms)</h3>
+          <p>
+            When visualizing complex multi-dimensional data—such as time series for all 50 states—a single map cannot encode time, space, and value simultaneously.
+          </p>
+
+          <div class="example">
+            <div class="example-title">State Unemployment Trends 2007–2013 (Figure 15-17)</div>
+            <p>
+              Wilke plots unemployment rates spanning the 2008 Great Recession across all 50 states plus DC:
+            </p>
+            <ul>
+              <li><strong>The Setup:</strong> Each state receives an individual small-multiple time-series plot (unemployment on y-axis, 2007–2013 on x-axis).</li>
+              <li><strong>The Spatial Arrangement:</strong> Rather than sorting panels alphabetically, the panels are arranged on the page <em>according to their approximate geographic positions relative to each other</em>.</li>
+              <li><strong>The Payoff:</strong> Geographic proximity immediately reveals correlated macro-trends: all Rust Belt states spike simultaneously, while Great Plains farming states remain stable. Arranging plots by geography facilitates rapid regional pattern discovery.</li>
+            </ul>
+          </div>
+
+          <h3>Practice Questions (Topic 5)</h3>
+          <details>
+            <summary>Q1: What is the primary difference between a traditional map, a deformed cartogram, and a cartogram heatmap?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Traditional maps preserve physical geography; deformed cartograms scale boundaries to population; cartogram heatmaps give every region identical square tiles in approximate topology.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q2: Why is a cartogram heatmap considered superior to a state-level choropleth for visualizing social indicators like median income?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> It gives every state equal visual weight, preventing massive empty states (Alaska, Montana) from dominating the visual story.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Q3: In Figure 15-17, why are state unemployment line graphs arranged in a geographic grid instead of alphabetical order?</summary>
+            <div class="faq-answer">
+              <p><strong>Answer:</strong> Neighboring states experience similar economic shocks; spatial arrangement allows readers to detect regional clusters and trends instantly.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         TOPIC 6: MASTER SUMMARY & PRACTICE EXAM (CH 15)
+         ═════════════════════════════════════════════════════ -->
+        <div class="topic-card" id="topic-6">
+          <h2><span class="topic-num">6</span>📋 Master Summary &amp; Chapter 15 Practice Exam</h2>
+          <p class="topic-subtitle">High-yield takeaway cheat sheet and exam practice questions with strictly concise 5-word solution keys.</p>
+
+          <div class="summary-box">
+            <div class="summary-title">Chapter 15 High-Yield Cartographic Takeaways</div>
+            <ul>
+              <li><strong>Earth Model:</strong> Oblate spheroid flattened at poles; WGS 84 datum (EPSG:4326 for unprojected lon/lat).</li>
+              <li><strong>The Trade-off:</strong> Flattening 3D sphere to 2D guarantees distortion: <em>Conformal</em> preserves angles/shapes; <em>Equal-Area</em> preserves surface areas.</li>
+              <li><strong>Mercator Distortion:</strong> Conformal cylinder projection; polar areas expand to infinity. Greenland appears larger than Africa (Africa is actually 14× larger!).</li>
+              <li><strong>Goode Homolosine:</strong> Interrupted composite equal-area projection; cuts through oceans to preserve continental areas and shapes.</li>
+              <li><strong>US Projection Standard:</strong> Albers Equal-Area (ESRI:102003) for lower 48. Inset Alaska and Hawaii at 100% true scale; shrinking Alaska to 35% is deceptive.</li>
+              <li><strong>4 Map Layers:</strong> (1) Terrain/hydrology &rarr; (2) Roads/infrastructure &rarr; (3) Data observations &rarr; (4) Labels, scale bar, and north arrow.</li>
+              <li><strong>Choropleth Density Law:</strong> Mapped quantities must be densities (divided by area) to neutralize polygon area visual bias. Never map raw counts!</li>
+              <li><strong>Non-Density Exceptions:</strong> Allowed only if polygons are equal size/shape, or regions are small and variation spans across multiple units.</li>
+              <li><strong>Binning Sweet Spot:</strong> Continuous choropleth scales fail human readability; use 4 to 6 discrete bins.</li>
+              <li><strong>Cartogram Heatmaps:</strong> Equal-sized square tiles in topological alignment give every administrative unit identical visual weight.</li>
+            </ul>
+          </div>
+
+          <div class="quiz-header-bar">
+            <div>
+              <h3 style="margin:0; font-size:1rem; color:var(--tx);">Interactive Exam Practice: Chapter 15</h3>
+              <p style="margin:2px 0 0; font-size:0.75rem; color:var(--mt);">Mastery assessment. Solutions strictly adhere to the professor's 5-word limit rule!</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="score-pill" id="quiz-score">Score: 0 / 6</div>
+              <button class="reset-quiz-btn" onclick="resetQuiz()">Reset Quiz</button>
+            </div>
+          </div>
+
+          <!-- MCQ Container -->
+          <div id="quiz-container">
+            <!-- MCQ 1 -->
+            <div class="mcq-card" data-correct="B">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 1</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 15 • Projections</span>
+              </div>
+              <div class="mcq-question">
+                What fundamental mathematical constraint governs all 2D flat map projections of the spherical Earth?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Projections can only preserve areas if the prime meridian is set to Greenwich.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>A projection can preserve either angles or areas, but it can never preserve both simultaneously.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Projections must be cylindrical to avoid longitudinal compression.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Conformal projections always preserve exact landmass surface areas.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Cannot preserve angles and areas.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 2 -->
+            <div class="mcq-card" data-correct="A">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 2</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 15 • Mercator</span>
+              </div>
+              <div class="mcq-question">
+                Why has the standard Mercator projection fallen completely out of favor for maps showing the entire world?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>It introduces extreme area distortions near the poles, making Greenland look larger than Africa.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>It cannot be calculated on modern digital computers.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>It shears local compass angles, making navigation impossible.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>It introduces four large cuts through the continents.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Severe polar area distortion occurs.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 3 -->
+            <div class="mcq-card" data-correct="D">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 3</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 15 • Alaska Scaling</span>
+              </div>
+              <div class="mcq-question">
+                According to Claus O. Wilke, what is the proper practice when creating an inset map of the 50 US states showing Alaska and Hawaii?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Downscale Alaska to 35% linear size so it fits neatly under California.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Convert Alaska into a polar stereographic projection.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Omit Alaska and Hawaii entirely from the visualization.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Move Alaska and Hawaii underneath the lower 48 states at their true scale without downscaling.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Move insets without changing scale.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 4 -->
+            <div class="mcq-card" data-correct="C">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 4</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 15 • Choropleths</span>
+              </div>
+              <div class="mcq-question">
+                Why does Claus O. Wilke establish that choropleth maps work best when the data values represent densities (e.g., persons per km²) rather than raw counts?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Because raw numbers cannot be mapped to RGB color scales.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Because densities eliminate the need for a map scale bar.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Because human perception equates larger polygon surface areas with larger values, and density corrects for area bias.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Because density data is always normally distributed.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Density neutralizes land area bias.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 5 -->
+            <div class="mcq-card" data-correct="A">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 5</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 15 • Binning</span>
+              </div>
+              <div class="mcq-question">
+                Why is a discrete color scale with 4 to 6 bins generally preferred over a continuous color scale in choropleth mapping?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>Readers cannot accurately match continuous color gradations to values in a legend, but can easily identify 4–6 discrete bins.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>Continuous color scales cannot be rendered in SVG format.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>Binned scales prevent the need for projecting coordinates.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>Printers cannot produce gradients with more than 6 colors.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Discrete bins ensure recognizable values.</em>
+              </div>
+            </div>
+
+            <!-- MCQ 6 -->
+            <div class="mcq-card" data-correct="B">
+              <div class="mcq-meta">
+                <span class="mcq-badge">Question 6</span>
+                <span style="font-size:0.75rem; color:var(--mt);">Wilke Ch. 15 • Cartograms</span>
+              </div>
+              <div class="mcq-question">
+                What is the primary advantage of a cartogram heatmap (tile map of equal squares) over a traditional geographic choropleth?
+              </div>
+              <div class="mcq-options">
+                <button class="mcq-opt" data-opt="A" onclick="checkAnswer(this)"><span class="opt-letter">A</span>It accurately preserves true geographic latitudes and physical coastlines.</button>
+                <button class="mcq-opt" data-opt="B" onclick="checkAnswer(this)"><span class="opt-letter">B</span>It treats all administrative units equally, preventing large sparsely populated states from dominating visual attention.</button>
+                <button class="mcq-opt" data-opt="C" onclick="checkAnswer(this)"><span class="opt-letter">C</span>It requires no legend or color scale.</button>
+                <button class="mcq-opt" data-opt="D" onclick="checkAnswer(this)"><span class="opt-letter">D</span>It eliminates the need for computing demographic summary statistics.</button>
+              </div>
+              <div class="mcq-explanation">
+                <strong>5-Word Solution:</strong> <em>Equal tiles give equal weight.</em>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════
+         BOTTOM PAGINATION & BACK-TO-TOP
+         ═════════════════════════════════════════════════════ -->
+              </div>
+      <!-- end module-container -->
+
+      <!-- ── PAGINATION CONTROLS ── -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous Topic</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next Topic →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- end main-content -->
+
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({top:0, behavior:'smooth'})"
+      aria-label="Back to top"
+    >
+      ↑
+    </button>
+
+    <!-- ═════════════════════════════════════════════════════
+     SCRIPTS & STATE MANAGEMENT
+     ═════════════════════════════════════════════════════ -->
+    <script>
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6"];
+      let currentTopicIndex = 0;
+
+                  function getTopicTitle(id) {
+        const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                     document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (link) {
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector("h2");
+          if (h2) {
+            const numEl = h2.querySelector(".topic-num");
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, "").trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, "").trim();
+          }
+        }
+        return "Topic";
+      }
+
+      function toggleSidebar() {
+        const sb = document.getElementById("sidebar");
+        const bd = document.getElementById("sidebar-backdrop");
+        if (sb) sb.classList.toggle("open");
+        if (bd) bd.classList.toggle("active");
+      }
+
+            function showTopic(id) {
+        document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
+        const t = document.getElementById(id);
+        if (t) t.style.display = "block";
+        currentTopicIndex = topics.indexOf(id);
+
+        document.querySelectorAll(".nav-sublist a").forEach((a) => a.classList.remove("active"));
+        const lk = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
+                   document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
+        if (lk) {
+          lk.classList.add("active");
+          const sublist = lk.closest(".nav-sublist");
+          if (sublist && sublist.style.display === "none") {
+            sublist.style.display = "block";
+            const chevron = sublist.previousElementSibling ? sublist.previousElementSibling.querySelector(".chevron") : null;
+            if (chevron) chevron.style.transform = "rotate(0deg)";
+          }
+        }
+
+        const pb = document.getElementById("prev-btn");
+        const nb = document.getElementById("next-btn");
+        const pt = document.getElementById("prev-title");
+        const nt = document.getElementById("next-title");
+
+        if (pb) {
+          if (currentTopicIndex > 0) {
+            pb.style.display = "inline-flex";
+            if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
+          } else {
+            pb.style.display = "none";
+          }
+        }
+
+        if (nb) {
+          if (currentTopicIndex < topics.length - 1) {
+            nb.style.display = "inline-flex";
+            if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
+          } else {
+            nb.style.display = "none";
+          }
+        }
+
+        const mc = document.getElementById("main-content");
+        if (mc) mc.scrollTo({ top: 0, behavior: "smooth" });
+
+        const sb = document.getElementById("sidebar");
+        const bd = document.getElementById("sidebar-backdrop");
+        if (window.innerWidth <= 768 && sb && sb.classList.contains("open")) {
+          sb.classList.remove("open");
+          if (bd) bd.classList.remove("active");
+        }
+      }
+
+      function goPrev() {
+        if (currentTopicIndex > 0) showTopic(topics[currentTopicIndex - 1]);
+      }
+      function goNext() {
+        if (currentTopicIndex < topics.length - 1) showTopic(topics[currentTopicIndex + 1]);
+      }
+
+      function toggleSection(el) {
+        const s = el.nextElementSibling,
+          c = el.querySelector(".chevron");
+        if (s.style.display === "none") {
+          s.style.display = "block";
+          c.style.transform = "rotate(0deg)";
+        } else {
+          s.style.display = "none";
+          c.style.transform = "rotate(-90deg)";
+        }
+      }
+
+      function filterContent() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        document.querySelectorAll(".nav-sublist li").forEach((i) => {
+          i.style.display = i.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      }
+
+      /* Quiz Engine */
+      let answeredCount = 0;
+      let correctCount = 0;
+
+      function checkAnswer(btn) {
+        const card = btn.closest(".mcq-card");
+        if (card.classList.contains("answered")) return;
+
+        card.classList.add("answered");
+        const selectedOpt = btn.getAttribute("data-opt");
+        const correctOpt = card.getAttribute("data-correct");
+        const exp = card.querySelector(".mcq-explanation");
+
+        const allBtns = card.querySelectorAll(".mcq-opt");
+        allBtns.forEach((b) => (b.disabled = true));
+
+        if (selectedOpt === correctOpt) {
+          btn.classList.add("selected-correct");
+          correctCount++;
+        } else {
+          btn.classList.add("selected-incorrect");
+          const correctBtn = card.querySelector(`.mcq-opt[data-opt="${correctOpt}"]`);
+          if (correctBtn) correctBtn.classList.add("show-correct");
+        }
+
+        answeredCount++;
+        if (exp) exp.style.display = "block";
+        document.getElementById("quiz-score").textContent = `Score: ${correctCount} / ${document.querySelectorAll(".mcq-card").length}`;
+      }
+
+      function resetQuiz() {
+        answeredCount = 0;
+        correctCount = 0;
+        document.getElementById("quiz-score").textContent = `Score: 0 / ${document.querySelectorAll(".mcq-card").length}`;
+        document.querySelectorAll(".mcq-card").forEach((card) => {
+          card.classList.remove("answered");
+          card.querySelectorAll(".mcq-opt").forEach((btn) => {
+            btn.disabled = false;
+            btn.classList.remove("selected-correct", "selected-incorrect", "show-correct");
+          });
+          const exp = card.querySelector(".mcq-explanation");
+          if (exp) exp.style.display = "none";
+        });
+      }
+
+      // Initialize
+      if (topics.length > 0) showTopic(topics[0]);
+      const mc = document.getElementById("main-content");
+      const bb = document.getElementById("back-to-top");
+      mc.addEventListener("scroll", () => {
+        bb.style.display = mc.scrollTop > 300 ? "flex" : "none";
+      });
+    </script>
+  </body>
+</html>

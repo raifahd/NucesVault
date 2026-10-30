@@ -372,49 +372,51 @@
         color: #fca5a5;
       }
     
+      
+
       /* ── Prominent Bottom Navigation Styling ── */
       .bottom-nav {
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
         border-top: 1px solid var(--bd) !important;
-        padding: 24px 0 16px !important;
-        margin-top: 48px !important;
+        padding: 28px 0 16px !important;
+        margin-top: 56px !important;
         gap: 16px !important;
         width: 100% !important;
       }
 
       .bottom-nav button {
-        display: flex !important;
+        display: inline-flex !important;
         flex-direction: column !important;
         background: #18181b !important;
         color: var(--tx) !important;
         border: 1px solid #3f3f46 !important;
-        border-radius: 8px !important;
-        padding: 12px 20px !important;
+        padding: 14px 22px !important;
+        border-radius: 10px !important;
         cursor: pointer !important;
         font-family: inherit !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
         max-width: 48% !important;
-        min-width: 180px !important;
+        min-width: 200px !important;
         text-decoration: none !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
       }
 
       .bottom-nav button .btn-label {
         font-size: 0.68rem !important;
         text-transform: uppercase !important;
-        letter-spacing: 1px !important;
-        font-weight: 600 !important;
+        letter-spacing: 1.2px !important;
+        font-weight: 700 !important;
         color: var(--mt) !important;
         margin-bottom: 4px !important;
         display: block !important;
       }
 
       .bottom-nav button .btn-title {
-        color: #ededed !important;
-        font-size: 0.88rem !important;
-        font-weight: 500 !important;
+        color: #f4f4f5 !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
@@ -426,7 +428,7 @@
         border-color: var(--ac) !important;
         background: #27272a !important;
         transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(217, 119, 87, 0.25) !important;
+        box-shadow: 0 8px 24px rgba(217, 119, 87, 0.28) !important;
       }
 
       .bottom-nav button:hover:not(:disabled) .btn-label {
@@ -434,7 +436,7 @@
       }
 
       .bottom-nav button:hover:not(:disabled) .btn-title {
-        color: #fff !important;
+        color: #ffffff !important;
       }
 
       #prev-btn {
@@ -442,13 +444,43 @@
         text-align: left !important;
         margin-right: auto !important;
       }
+      #prev-btn div {
+        text-align: left !important;
+        max-width: 100% !important;
+      }
 
       #next-btn {
         align-items: flex-end !important;
         text-align: right !important;
         margin-left: auto !important;
       }
-</style>
+      #next-btn div {
+        text-align: right !important;
+        max-width: 100% !important;
+      }
+
+      @media (max-width: 768px) {
+        .bottom-nav {
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        .bottom-nav button {
+          max-width: 100% !important;
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+        #prev-btn, #next-btn {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          align-items: center !important;
+          text-align: center !important;
+        }
+        #prev-btn div, #next-btn div {
+          text-align: center !important;
+        }
+      }
+
+    </style>
   </head>
   <body>
     <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
@@ -457,11 +489,11 @@
     <!-- ═══════════════════════════════════════════════════════
      SIDEBAR NAVIGATION
      ═══════════════════════════════════════════════════════ -->
-    <div id="sidebar">
+        <div id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-header-text">
-          <div class="sidebar-course-label">Course Notes</div>
-          <div class="sidebar-title">Data Analysis &amp; Visualization</div>
+          <div class="sidebar-course-label">Midterm 2 Syllabus</div>
+          <div class="sidebar-title">Data Visualization</div>
         </div>
       </div>
       <div class="sidebar-search-wrap">
@@ -473,100 +505,80 @@
         />
       </div>
       <ul class="nav-list" id="nav-list">
-        <!-- Current Module (Active & Expandable) -->
+        <!-- Current Midterm 2 Module (Active & Expandable) -->
         <li class="nav-section">
           <div class="nav-section-title" onclick="toggleSection(this)">
-            <span>Module 10 — Time Series &amp; Trends</span>
+            <span>Module 10 — Time Series & Trends (Ch 13–14)</span>
             <span class="chevron">▼</span>
           </div>
           <ul class="nav-sublist">
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-1')">
-                <span class="nav-num">01</span>Time Series Foundations &amp; Lines
+                <span class="nav-num">01</span>Time Series Foundations & Lines
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-2')">
-                <span class="nav-num">02</span>Connected Scatterplots &amp; Cycles
+                <span class="nav-num">02</span>Multiple Response & Connected Scatter
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-3')">
-                <span class="nav-num">03</span>Smoothing &amp; LOESS Mechanics
+                <span class="nav-num">03</span>Smoothing Techniques & LOESS
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-4')">
-                <span class="nav-num">04</span>Splines vs. LOESS (Eager vs Lazy)
+                <span class="nav-num">04</span>Splines vs. LOESS Mechanics
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-5')">
-                <span class="nav-num">05</span>The OLS Trap &amp; Data Straightening
+                <span class="nav-num">05</span>The OLS Trap & Data Straightening
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-6')">
-                <span class="nav-num">06</span>Detrending &amp; STL Decomposition
+                <span class="nav-num">06</span>Detrending & STL Decomposition
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-7')">
-                <span class="nav-num">07</span>📋 Master Summary &amp; Formulas
+                <span class="nav-num">07</span>📋 Master High-Yield Summary
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-8')">
-                <span class="nav-num">08</span>🎯 Interactive MCQ Exam Quiz
+                <span class="nav-num">08</span>🎯 Interactive Exam MCQ Quiz
               </a>
             </li>
           </ul>
         </li>
 
-        <!-- Other Course Modules (Cross-File Links) -->
-        <li>
-          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
-            <span class="nav-num">01</span>Introduction to DAV
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
-            <span class="nav-num">02</span>Data Analysis Lifecycle
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./3- Data Preparation.html">
-            <span class="nav-num">03</span>Data Preparation
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
-            <span class="nav-num">04</span>Exploratory Data Analysis
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
-            <span class="nav-num">05</span>Evolution of Data Architecture
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./6- Distributed Data Processing & Apache Spark.html">
-            <span class="nav-num">06</span>Distributed Processing &amp; Spark
-          </a>
-        </li>
+        <!-- Midterm 2 Syllabus: Fundamentals of Data Visualization (Wilke) -->
         <li>
           <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
-            <span class="nav-num">07</span>Visualizing Data (Ch 2 &amp; 3)
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./8- Lab Midterm Sequential Codes & Exam Guide.html">
-            <span class="nav-num">08</span>Lab Midterm Sequential Codes &amp; Guide
+            <span class="nav-num">07</span>Aesthetics & Coordinates (Ch 2–3)
           </a>
         </li>
         <li>
           <a class="nav-module-link" href="./9- Principles of Figure Design & Visualization Pitfalls.html">
-            <span class="nav-num">09</span>Figure Design &amp; Pitfalls
+            <span class="nav-num">09</span>Figure Design & Pitfalls (Ch 18–25)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./11- Color Scales & Proportional Ink.html">
+            <span class="nav-num">11</span>Color Scales & Proportional Ink (Ch 4 & 17)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./12- Visualizing Geospatial Data.html">
+            <span class="nav-num">12</span>Geospatial Data & Maps (Ch 15)
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./13- Midterm Exam Prep - Fundamentals of Data Visualization.html">
+            <span class="nav-num">13</span>🎯 Midterm 2 Exam Prep Master
           </a>
         </li>
       </ul>
@@ -1518,44 +1530,40 @@
           <div id="quiz-container">
             <!-- Quiz cards will be rendered dynamically by JavaScript -->
           </div>
-        </div>
+              </div>
+      <!-- end module-container -->
 
-
-        <!-- ── PAGINATION CONTROLS ── -->
-        <div class="bottom-nav">
-          <button id="prev-btn" onclick="goPrev()">
-            <div>
-              <span class="btn-label">← Previous Topic</span>
-              <span class="btn-title" id="prev-title">Topic</span>
-            </div>
-          </button>
-          <button id="next-btn" onclick="goNext()">
-            <div>
-              <span class="btn-label">Next Topic →</span>
-              <span class="btn-title" id="next-title">Topic</span>
-            </div>
-          </button>
-        </div>
+      <!-- ── PAGINATION CONTROLS ── -->
+      <div class="bottom-nav">
+        <button id="prev-btn" onclick="goPrev()">
+          <div>
+            <span class="btn-label">← Previous Topic</span>
+            <span class="btn-title" id="prev-title">Topic</span>
+          </div>
+        </button>
+        <button id="next-btn" onclick="goNext()">
+          <div>
+            <span class="btn-label">Next Topic →</span>
+            <span class="btn-title" id="next-title">Topic</span>
+          </div>
+        </button>
       </div>
     </div>
+    <!-- end main-content -->
 
-    <!-- Back to top button -->
-    <button id="back-to-top" onclick="document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+    <button
+      id="back-to-top"
+      onclick="document.getElementById('main-content').scrollTo({top:0, behavior:'smooth'})"
+      aria-label="Back to top"
+    >
+      ↑
+    </button>
 
     <!-- ═══════════════════════════════════════════════════════
      INTERACTIVE JAVASCRIPT LOGIC
      ═══════════════════════════════════════════════════════ -->
     <script>
-      const topics = [
-        "topic-1",
-        "topic-2",
-        "topic-3",
-        "topic-4",
-        "topic-5",
-        "topic-6",
-        "topic-7",
-        "topic-8"
-      ];
+      const topics = ["topic-1", "topic-2", "topic-3", "topic-4", "topic-5", "topic-6", "topic-7", "topic-8"];
       let currentTopicIndex = 0;
 
       // ── Quiz Data Store ────────────────────────────────────
@@ -2178,13 +2186,24 @@
       }
 
       // ── Pagination and Topic Switching ─────────────────────
-      function getTopicTitle(id) {
+            function getTopicTitle(id) {
         const link = document.querySelector(`.nav-sublist a[onclick*="'${id}'"]`) ||
                      document.querySelector(`.nav-sublist a[onclick*='"${id}"']`);
         if (link) {
-          const numEl = link.querySelector(".nav-num");
-          if (numEl) return link.textContent.replace(numEl.textContent, "").trim();
-          return link.textContent.replace(/^\d+\s*/, "").trim();
+          const numEl = link.querySelector('.nav-num');
+          if (numEl) return link.textContent.replace(numEl.textContent, '').trim();
+          return link.textContent.replace(/^\d+\s*/, '').trim();
+        }
+        const card = document.getElementById(id);
+        if (card) {
+          const h2 = card.querySelector("h2");
+          if (h2) {
+            const numEl = h2.querySelector(".topic-num");
+            if (numEl) {
+              return h2.textContent.replace(numEl.textContent, "").trim();
+            }
+            return h2.textContent.replace(/^\d+\s*/, "").trim();
+          }
         }
         return "Topic";
       }
@@ -2209,7 +2228,7 @@
         }
       }
 
-      function showTopic(id) {
+            function showTopic(id) {
         document.querySelectorAll(".topic-card").forEach((c) => (c.style.display = "none"));
         const t = document.getElementById(id);
         if (t) t.style.display = "block";
@@ -2235,31 +2254,19 @@
 
         if (pb) {
           if (currentTopicIndex > 0) {
-            pb.style.display = "flex";
-            pb.disabled = false;
-            pb.style.opacity = "1";
-            pb.style.pointerEvents = "auto";
+            pb.style.display = "inline-flex";
             if (pt) pt.textContent = getTopicTitle(topics[currentTopicIndex - 1]);
           } else {
             pb.style.display = "none";
-            pb.disabled = true;
-            pb.style.opacity = "0.3";
-            pb.style.pointerEvents = "none";
           }
         }
 
         if (nb) {
           if (currentTopicIndex < topics.length - 1) {
-            nb.style.display = "flex";
-            nb.disabled = false;
-            nb.style.opacity = "1";
-            nb.style.pointerEvents = "auto";
+            nb.style.display = "inline-flex";
             if (nt) nt.textContent = getTopicTitle(topics[currentTopicIndex + 1]);
           } else {
             nb.style.display = "none";
-            nb.disabled = true;
-            nb.style.opacity = "0.3";
-            nb.style.pointerEvents = "none";
           }
         }
 
@@ -2268,7 +2275,7 @@
 
         const sb = document.getElementById("sidebar");
         const bd = document.getElementById("sidebar-backdrop");
-        if (window.innerWidth <= 900 && sb && sb.classList.contains("open")) {
+        if (window.innerWidth <= 768 && sb && sb.classList.contains("open")) {
           sb.classList.remove("open");
           if (bd) bd.classList.remove("active");
         }
