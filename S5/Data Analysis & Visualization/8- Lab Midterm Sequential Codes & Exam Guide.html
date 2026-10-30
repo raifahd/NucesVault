@@ -283,143 +283,149 @@
     <!-- ═══════════════════════════════════════════════════════
      SIDEBAR
      ═══════════════════════════════════════════════════════ -->
-    <div id="sidebar">
+        <div id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-header-text">
-          <div class="sidebar-course-label">FAST-NU • DS-3001</div>
-          <div class="sidebar-title">DAV Lab Mid Prep</div>
+          <div class="sidebar-course-label">Course Notes</div>
+          <div class="sidebar-title">Data Analysis &amp; Visualization</div>
         </div>
       </div>
       <div class="sidebar-search-wrap">
         <input
           type="text"
           id="search-input"
-          placeholder="Search topics or functions…"
+          placeholder="Search topics…"
           onkeyup="filterContent()"
         />
       </div>
       <ul class="nav-list" id="nav-list">
-        <!-- Current Module (Active & Expandable) -->
+        <li>
+          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
+            <span class="nav-mod-num">01</span>Introduction to DAV
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
+            <span class="nav-mod-num">02</span>Data Analysis Lifecycle
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./3- Data Preparation.html">
+            <span class="nav-mod-num">03</span>Data Preparation
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
+            <span class="nav-mod-num">04</span>Exploratory Data Analysis
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
+            <span class="nav-mod-num">05</span>Evolution of Data Architecture
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./6- Distributed Data Processing & Apache Spark.html">
+            <span class="nav-mod-num">06</span>Distributed Processing & Spark
+          </a>
+        </li>
+        <li>
+          <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
+            <span class="nav-mod-num">07</span>Aesthetics & Coordinates (Ch 2–3)
+          </a>
+        </li>
+        <!-- Active Module 08 -->
         <li class="nav-section">
           <div class="nav-section-title" onclick="toggleSection(this)">
-            <span>🎯 08 — Lab Midterm Exam Guide</span>
+            <span>Module 08 — Lab Midterm Codes & Guide</span>
             <span class="chevron">▼</span>
           </div>
           <ul class="nav-sublist">
             <li>
               <a href="javascript:void(0)" onclick="showTopic('topic-1')">
-                <span class="nav-num">01</span>Master Execution Roadmap &amp; Strategy
+                <span class="nav-num">01</span>Master Exam Execution Roadmap & Strategy
               </a>
             </li>
-
-        <!-- Other Course Modules (Cross-File Links) -->
-        <li>
-          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
-            <span class="nav-num">01</span>Introduction to DAV
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
-            <span class="nav-num">02</span>Data Analysis Lifecycle
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./3- Data Preparation.html">
-            <span class="nav-num">03</span>Data Preparation
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
-            <span class="nav-num">04</span>Exploratory Data Analysis
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
-            <span class="nav-num">05</span>Evolution of Data Architecture
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./6- Distributed Data Processing & Apache Spark.html">
-            <span class="nav-num">06</span>Distributed Processing & Spark
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
-            <span class="nav-num">07</span>Visualizing Data (Ch 2 & 3)
-          </a>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-2')">
+                <span class="nav-num">02</span>REST APIs & Deep Nested JSON
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-3')">
+                <span class="nav-num">03</span>Databricks Medallion & Delta Upsert
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-4')">
+                <span class="nav-num">04</span>Schema Drift, Stringified JSON & Joins
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-5')">
+                <span class="nav-num">05</span>Pandas Core: Cleaning & Hygiene
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-6')">
+                <span class="nav-num">06</span>MultiIndex: Grids & Exposing Absences
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-7')">
+                <span class="nav-num">07</span>MultiIndex Navigation: Slicing & .xs()
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-8')">
+                <span class="nav-num">08</span>Reshaping: Stack, Unstack, Pivot & Melt
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-9')">
+                <span class="nav-num">09</span>Level GroupBy, Transform & Columns
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-10')">
+                <span class="nav-num">10</span>Power BI ETL, Star Schema & DAX
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-11')">
+                <span class="nav-num">11</span>Master Syntax & Quick Lookup Cheatsheet
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="showTopic('topic-12')">
+                <span class="nav-num">12</span>Viva Traps & Interactive Exam MCQs
+              </a>
+            </li>
+          </ul>
         </li>
         <li>
           <a class="nav-module-link" href="./9- Principles of Figure Design & Visualization Pitfalls.html">
-            <span class="nav-num">09</span>Figure Design & Pitfalls (Ch 18–25)
+            <span class="nav-mod-num">09</span>Figure Design & Pitfalls (Ch 18–25)
           </a>
         </li>
         <li>
           <a class="nav-module-link" href="./10- Visualizing Time Series & Trends.html">
-            <span class="nav-num">10</span>Time Series & Trends (Ch 13–14)
+            <span class="nav-mod-num">10</span>Time Series & Trends (Ch 13–14)
           </a>
         </li>
         <li>
           <a class="nav-module-link" href="./11- Color Scales & Proportional Ink.html">
-            <span class="nav-num">11</span>Color Scales & Proportional Ink (Ch 4 & 17)
+            <span class="nav-mod-num">11</span>Color Scales & Proportional Ink (Ch 4 & 17)
           </a>
         </li>
         <li>
           <a class="nav-module-link" href="./12- Visualizing Geospatial Data.html">
-            <span class="nav-num">12</span>Geospatial Data (Ch 15)
+            <span class="nav-mod-num">12</span>Geospatial Data & Maps (Ch 15)
           </a>
         </li>
         <li>
           <a class="nav-module-link" href="./13- Midterm Exam Prep - Fundamentals of Data Visualization.html">
-            <span class="nav-num">13</span>🎯 Midterm Exam Prep Master
-          </a>
-        </li>
-      </ul>
-        </li>
-
-        <!-- Other Course Modules (Cross-File Links) -->
-        <li>
-          <a class="nav-module-link" href="./1- Introduction to Data Analysis & Visualization.html">
-            <span class="nav-num">01</span>Introduction to DAV
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./2- Data Analysis Lifecycle.html">
-            <span class="nav-num">02</span>Data Analysis Lifecycle
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./3- Data Preparation.html">
-            <span class="nav-num">03</span>Data Preparation
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./4- Exploratory Data Analysis.html">
-            <span class="nav-num">04</span>Exploratory Data Analysis
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./5- Evolution of Data Architecture.html">
-            <span class="nav-num">05</span>Evolution of Data Architecture
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./6- Distributed Data Processing & Apache Spark.html">
-            <span class="nav-num">06</span>Distributed Processing & Spark
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./7- Visualizing Data - Aesthetics & Coordinate Systems.html">
-            <span class="nav-num">07</span>Visualizing Data (Aesthetics & Coords)
-          </a>
-        </li>
-              <li>
-          <a class="nav-module-link" href="./9- Principles of Figure Design & Visualization Pitfalls.html">
-            <span class="nav-num">09</span>Principles of Figure Design &amp; Pitfalls
-          </a>
-        </li>
-        <li>
-          <a class="nav-module-link" href="./10- Visualizing Time Series &amp; Trends.html">
-            <span class="nav-num">10</span>Time Series &amp; Trends
+            <span class="nav-mod-num">13</span>🎯 Midterm 2 Exam Prep Master
           </a>
         </li>
       </ul>
