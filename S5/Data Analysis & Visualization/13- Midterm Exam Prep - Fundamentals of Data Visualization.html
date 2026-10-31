@@ -13,7 +13,146 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../notes.css" />
+    <!-- MathJax 3 for Crisp Mathematical Formula Rendering -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
+      /* ── Formula Cards & Math Display System ── */
+      .formula-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+        margin: 18px 0;
+      }
+      .formula-card {
+        background: rgba(24, 24, 27, 0.85);
+        border: 1px solid var(--bd);
+        border-left: 4px solid var(--ac);
+        border-radius: 10px;
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .formula-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--ac);
+        box-shadow: 0 6px 20px rgba(217, 119, 87, 0.15);
+      }
+      .formula-card.card-blue { border-left-color: var(--exp-bd); }
+      .formula-card.card-emerald { border-left-color: var(--def-bd); }
+      .formula-card.card-violet { border-left-color: var(--qst-bd); }
+      .formula-card.card-amber { border-left-color: var(--wrn-bd); }
+
+      .formula-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .formula-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--tx);
+      }
+      .formula-badge {
+        font-size: 0.7rem;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: rgba(217, 119, 87, 0.15);
+        color: var(--ac);
+        border: 1px solid rgba(217, 119, 87, 0.3);
+      }
+      .formula-badge.badge-blue {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+        border-color: rgba(59, 130, 246, 0.3);
+      }
+      .formula-badge.badge-emerald {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border-color: rgba(16, 185, 129, 0.3);
+      }
+      .formula-badge.badge-violet {
+        background: rgba(139, 92, 246, 0.15);
+        color: #a78bfa;
+        border-color: rgba(139, 92, 246, 0.3);
+      }
+      .formula-badge.badge-amber {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border-color: rgba(245, 158, 11, 0.3);
+      }
+
+      .formula-math {
+        background: rgba(0, 0, 0, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin: 4px 0;
+        text-align: center;
+        font-size: 1.05rem;
+        color: #f4f4f5;
+        overflow-x: auto;
+      }
+      .formula-desc {
+        font-size: 0.82rem;
+        color: var(--mt);
+        line-height: 1.55;
+        margin: 0;
+      }
+      .formula-vars {
+        margin: 4px 0 0 16px;
+        padding: 0;
+        font-size: 0.78rem;
+        color: var(--mt);
+        line-height: 1.5;
+      }
+      .formula-vars li {
+        margin-bottom: 2px;
+      }
+      .formula-vars strong {
+        color: var(--tx);
+      }
+
+      /* Single full-width formula callout */
+      .formula-callout {
+        background: rgba(24, 24, 27, 0.85);
+        border: 1px solid var(--bd);
+        border-left: 4px solid var(--ac);
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin: 16px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      }
+      .formula-callout-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .formula-callout-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--tx);
+      }
+
       /* ── Visual Enhancements & Custom Master Styles ── */
       .citation-header {
         background: rgba(217, 119, 87, 0.08);
@@ -853,6 +992,12 @@
             <p>
               <em>"When a shaded region is used to represent a numerical value, the area of that shaded region should be directly proportional to the corresponding value."</em>
             </p>
+            <div class="formula-math" style="margin-top:10px;">
+              $$\frac{\text{Visual Ink Area}(A)}{\text{Visual Ink Area}(B)} = \frac{\text{Data Value}(A)}{\text{Data Value}(B)}$$
+            </div>
+            <p style="font-size:0.8rem; color:var(--mt); margin-top:6px;">
+              Any visual violation occurs when this proportionality ratio breaks, deceiving the human visual cortex which instinctively interprets surface area as quantity.
+            </p>
           </div>
 
           <h3>The Linear Axis Zero-Baseline Law</h3>
@@ -860,20 +1005,37 @@
             In a bar chart on a linear scale, value is encoded by <strong>(1) bar endpoint position</strong> and <strong>(2) total bar length/area</strong>.
           </p>
           <ul>
-            <li><strong>The Truncation Violation (Figure 17-1):</strong> When bars start at an arbitrary non-zero baseline (e.g. Hawaii counties starting at $\$50,000$), the endpoint shows the actual value, but the area represents excess over $\$50\text{k}$. Because human eyes perceive area/length, a $1.4\times$ income difference looks like an $8\times$ disparity!</li>
+            <li><strong>The Truncation Violation (Figure 17-1):</strong> When bars start at an arbitrary non-zero baseline (e.g. Hawaii counties starting at &dollar;50,000), the endpoint shows the actual value, but the area represents excess over &dollar;50k. Because human eyes perceive area/length, a $1.4\times$ income difference looks like an $8\times$ disparity!</li>
             <li><strong>The Inviolable Law:</strong> <strong>Bars on a linear scale MUST ALWAYS start at 0.</strong></li>
-            <li><strong>Shaded Line Charts (Figure 17-3):</strong> Shading underneath a time-series line (e.g., Facebook stock price) emphasizes distance to the axis. Truncating the axis at $\$110$ makes a modest dip look like a catastrophic company bankruptcy.</li>
+            <li><strong>Shaded Line Charts (Figure 17-3):</strong> Shading underneath a time-series line (e.g., Facebook stock price) emphasizes distance to the axis. Truncating the axis at &dollar;110 makes a modest dip look like a catastrophic company bankruptcy.</li>
           </ul>
 
           <h3>Logarithmic Axes: The Amounts vs. Ratios Law</h3>
           <p>
             On a log scale, bar area is proportional to $\log(x)$, not $x$. This leads to a strict mathematical bifurcation:
           </p>
+          <div class="formula-callout" style="border-left-color: var(--wrn-bd);">
+            <div class="formula-callout-header">
+              <span class="formula-callout-title">The Log Scale Area Paradox</span>
+              <span class="formula-badge badge-amber">Mathematical Rule</span>
+            </div>
+            <div class="formula-math">
+              $$\text{Ink Area} \propto \log(x) \neq x \quad\implies\quad \text{On log axes, bar areas violate proportional ink for raw amounts!}$$
+            </div>
+            <p class="formula-desc">
+              Because $\log(0) = -\infty$, any bar origin picked on a logarithmic axis is 100% arbitrary.
+            </p>
+          </div>
+
           <div class="definition">
             <div class="def-title">Wilke's Log Scale Decision Matrix</div>
             <ul style="margin-left:20px; line-height:1.7;">
               <li><strong>Amounts on a Log Scale (GDPs of Oceania):</strong> <strong>NEVER use bars!</strong> Zero lies at $-\infty$. Any baseline chosen (e.g., $0.3\text{B}$ or $10^{-9}\text{B}$) is completely arbitrary. <em>Remedy:</em> Use <strong>Cleveland Dot Plots</strong> (dots with country names placed directly next to dots).</li>
-              <li><strong>Ratios on a Log Scale (Relative to Reference):</strong> <strong>Bars ARE valid and superior!</strong> The natural midpoint of a ratio is $1$ ($\log 1 = 0$). Bars representing ratios $> 1$ extend right; bars representing ratios $< 1$ extend left.</li>
+              <li><strong>Ratios on a Log Scale (Relative to Reference):</strong> <strong>Bars ARE valid and superior!</strong>
+                <div class="formula-math" style="margin:8px 0; font-size:0.95rem;">
+                  $$\text{Natural Midpoint} = 1.0 \quad (\log 1 = 0) \quad\implies\quad \begin{cases} \text{Ratio } > 1: & \text{bar extends right} \\ \text{Ratio } < 1: & \text{bar extends left} \end{cases}$$
+                </div>
+              </li>
             </ul>
             <p style="margin-top:6px; font-weight:700; color:var(--ac);">
               Exam Golden Rule: Linear bars represent amounts &rarr; MUST start at 0. Log bars represent ratios &rarr; MUST start at 1.
@@ -933,18 +1095,42 @@
               </tr>
               <tr>
                 <td><strong>Mathematical Formulation</strong></td>
-                <td>Weighted least squares in local window using <strong>Tricube Weight Function</strong>: $W(u) = (1 - |u|^3)^3$ for $|u| < 1$.</td>
-                <td>Minimizes penalized sum of squares: $\sum (y_i - f(x_i))^2 + \lambda \int [f''(x)]^2 dx$.</td>
+                <td>
+                  <strong>Weighted Local Least Squares</strong> with <strong>Tricube Weight Function</strong>:
+                  <div class="formula-math" style="font-size:0.9rem; padding:8px 10px; margin:6px 0;">
+                    $$W(u) = \begin{cases} (1 - |u|^3)^3 & \text{for } |u| < 1 \\ 0 & \text{for } |u| \ge 1 \end{cases} \quad \text{where } u = \frac{|x_i - x_0|}{\Delta(x_0)}$$
+                  </div>
+                  Smoothly tapers weight from 1 at focal point $x_0$ down to 0 at window boundary $\Delta(x_0)$.
+                </td>
+                <td>
+                  <strong>Penalized Residual Sum of Squares (PRSS)</strong>:
+                  <div class="formula-math" style="font-size:0.9rem; padding:8px 10px; margin:6px 0;">
+                    $$\min_{f} \left\{ \sum_{i=1}^n \left(y_i - f(x_i)\right)^2 + \lambda \int [f''(x)]^2 dx \right\}$$
+                  </div>
+                  Balances fit fidelity against curve roughness (integrated squared second derivative).
+                </td>
               </tr>
               <tr>
                 <td><strong>Tuning Parameter</strong></td>
-                <td><strong>Span / Bandwidth ($\alpha$):</strong> Proportion of total data points included in each local neighborhood ($0 < \alpha \le 1$).</td>
-                <td><strong>Roughness Penalty ($\lambda$):</strong> Balances residual sum of squares against integrated squared second derivative (curvature).</td>
+                <td>
+                  <strong>Span / Bandwidth ($\alpha$):</strong> Proportion of total points in each local window ($0 < \alpha \le 1$).<br />
+                  <span style="font-size:0.75rem; color:var(--mt);">Example: $\alpha = 0.5$ means the nearest 50% of all observations contribute.</span>
+                </td>
+                <td>
+                  <strong>Roughness Penalty ($\lambda \ge 0$):</strong> Global stiffness controller.<br />
+                  <span style="font-size:0.75rem; color:var(--mt);">Higher $\lambda$ penalizes high curvature $f''(x)$, forcing a smoother curve.</span>
+                </td>
               </tr>
               <tr>
                 <td><strong>Extreme Behavior</strong></td>
-                <td>Small $\alpha$ &rarr; overfits noise; Large $\alpha$ &rarr; approaches simple global linear regression.</td>
-                <td>$\lambda \to 0$ &rarr; exact interpolating spline; $\lambda \to \infty$ &rarr; perfectly straight OLS line.</td>
+                <td>
+                  Small $\alpha \to 0$ &rarr; overfits local noise (high variance).<br />
+                  Large $\alpha \to 1$ &rarr; approaches standard global linear regression (high bias).
+                </td>
+                <td>
+                  $\lambda \to 0$ &rarr; exact interpolating spline (passes through every single point).<br />
+                  $\lambda \to \infty$ &rarr; perfectly straight Ordinary Least Squares line ($f''(x) = 0$).
+                </td>
               </tr>
               <tr>
                 <td><strong>Robustness</strong></td>
@@ -961,11 +1147,60 @@
 
           <div class="definition">
             <div class="def-title">The Three Data Straightening Transformations</div>
-            <ul style="margin-left:20px; line-height:1.7;">
-              <li><strong>Log-Linear (Exponential: $y = a \cdot e^{bx}$):</strong> Transform $y \to \ln(y)$. Equation becomes $\ln(y) = \ln(a) + bx$. The slope $b$ represents the continuous growth rate.</li>
-              <li><strong>Log-Log (Power Law: $y = a \cdot x^k$):</strong> Transform both $x \to \ln(x)$ and $y \to \ln(y)$. Equation becomes $\ln(y) = \ln(a) + k\ln(x)$. The slope $k$ is the scaling exponent.</li>
-              <li><strong>Linear-Log (Logarithmic: $y = a + b\ln(x)$):</strong> Transform $x \to \ln(x)$. Values grow rapidly initially, then flatten out.</li>
-            </ul>
+            <p style="margin-bottom:12px; font-size:0.85rem;">
+              Linearize non-linear phenomena to satisfy Ordinary Least Squares (OLS) constant variance assumptions:
+            </p>
+            <div class="formula-grid">
+              <!-- Card 1: Log-Linear -->
+              <div class="formula-card card-blue">
+                <div class="formula-header">
+                  <span class="formula-title">1. Log-Linear (Exponential)</span>
+                  <span class="formula-badge badge-blue">Growth Rate</span>
+                </div>
+                <div class="formula-math">
+                  $$y = a \cdot e^{bx} \iff \ln(y) = \ln(a) + bx$$
+                </div>
+                <p class="formula-desc"><strong>Transform:</strong> $y \to \ln(y)$ (leave $x$ untransformed).</p>
+                <ul class="formula-vars">
+                  <li><strong>Slope ($b$):</strong> Instantaneous continuous fractional growth rate per unit time.</li>
+                  <li><strong>Intercept ($\ln a$):</strong> Initial baseline quantity at $x = 0$.</li>
+                  <li><strong>Exam Note:</strong> Straight line on semi-log axis = true exponential growth.</li>
+                </ul>
+              </div>
+
+              <!-- Card 2: Log-Log -->
+              <div class="formula-card card-emerald">
+                <div class="formula-header">
+                  <span class="formula-title">2. Log-Log (Power Law)</span>
+                  <span class="formula-badge badge-emerald">Scaling Law</span>
+                </div>
+                <div class="formula-math">
+                  $$y = a \cdot x^k \iff \ln(y) = \ln(a) + k \cdot \ln(x)$$
+                </div>
+                <p class="formula-desc"><strong>Transform:</strong> Both $x \to \ln(x)$ and $y \to \ln(y)$.</p>
+                <ul class="formula-vars">
+                  <li><strong>Slope ($k$):</strong> Power-law elasticity / scaling exponent (1% change in $x \to k\%$ in $y$).</li>
+                  <li><strong>Intercept ($\ln a$):</strong> Normalization constant.</li>
+                  <li><strong>Exam Note:</strong> Straight line on log-log axis = true power law (e.g. Kleiber's Law).</li>
+                </ul>
+              </div>
+
+              <!-- Card 3: Linear-Log -->
+              <div class="formula-card card-violet">
+                <div class="formula-header">
+                  <span class="formula-title">3. Linear-Log (Logarithmic)</span>
+                  <span class="formula-badge badge-violet">Saturation</span>
+                </div>
+                <div class="formula-math">
+                  $$y = a + b \cdot \ln(x)$$
+                </div>
+                <p class="formula-desc"><strong>Transform:</strong> $x \to \ln(x)$ (leave $y$ untransformed).</p>
+                <ul class="formula-vars">
+                  <li><strong>Slope ($b$):</strong> Absolute change in $y$ when $x$ increases by factor of $e$.</li>
+                  <li><strong>Behavior:</strong> Rapid initial rise that tapers into diminishing marginal returns.</li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <div class="note-box">
@@ -973,10 +1208,20 @@
             <p>
               In Chapter 14, Wilke analyzes the atmospheric $\text{CO}_2$ Keeling curve using <strong>STL Decomposition</strong> (Seasonal-Trend decomposition using LOESS):
             </p>
-            <p style="margin-top:4px; font-weight:600; color:var(--ac);">
-              $\text{Data}_t = \text{Trend}_t + \text{Seasonal}_t + \text{Remainder}_t$
-            </p>
-            <p style="margin-top:4px;">LOESS separates the long-term anthropogenic upward trend from the yearly biological photosynthetic cycle (seasonal oscillation).</p>
+            <div class="formula-math" style="margin:10px 0; font-size:1.15rem;">
+              $$Y_t = T_t + S_t + R_t$$
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin-top:10px; font-size:0.82rem;">
+              <div style="background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px; border-left:3px solid var(--ac);">
+                <strong>$T_t$ (Trend):</strong> Long-term anthropogenic upward trajectory (> 50 ppm rise over 60 years).
+              </div>
+              <div style="background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px; border-left:3px solid var(--exp-bd);">
+                <strong>$S_t$ (Seasonal):</strong> Annual biological cycle (~8 ppm oscillation from Northern hemisphere summer photosynthesis).
+              </div>
+              <div style="background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px; border-left:3px solid var(--def-bd);">
+                <strong>$R_t$ (Remainder):</strong> Irregular residual noise / measurement fluctuations (< 1.6 ppm).
+              </div>
+            </div>
           </div>
 
           <div class="summary-box">
@@ -1229,14 +1474,106 @@
 
           <div class="definition">
             <div class="def-title">Mathematical Formula Master Cheat Sheet</div>
-            <ul style="margin-left:20px; line-height:1.8;">
-              <li><strong>Proportional Ink Ratio:</strong> $\frac{\text{Visual Ink Area}(A)}{\text{Visual Ink Area}(B)} = \frac{\text{Data Value}(A)}{\text{Data Value}(B)}$</li>
-              <li><strong>LOESS Tricube Weight:</strong> $W(u) = (1 - |u|^3)^3 \quad \text{for } |u| < 1, \quad 0 \text{ otherwise}$</li>
-              <li><strong>Splines Penalized Objective:</strong> $\min_{f} \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int [f''(x)]^2 dx$</li>
-              <li><strong>Log-Linear Straightening:</strong> $y = a e^{bx} \implies \ln(y) = \ln(a) + bx \quad (\text{linear in } x)$</li>
-              <li><strong>Log-Log Straightening:</strong> $y = a x^k \implies \ln(y) = \ln(a) + k\ln(x) \quad (\text{linear in } \ln x)$</li>
-              <li><strong>STL Decomposition:</strong> $Y_t = T_t + S_t + R_t \quad (\text{Data} = \text{Trend} + \text{Seasonal} + \text{Remainder})$</li>
-            </ul>
+            <p style="margin-bottom:14px; font-size:0.85rem; color:var(--mt);">
+              Comprehensive high-yield formula reference matrix for Claus O. Wilke's <em>Fundamentals of Data Visualization</em>:
+            </p>
+            <div class="formula-grid">
+              <!-- Card 1: Proportional Ink -->
+              <div class="formula-card card-amber">
+                <div class="formula-header">
+                  <span class="formula-title">Proportional Ink Law</span>
+                  <span class="formula-badge badge-amber">Ch 17</span>
+                </div>
+                <div class="formula-math">
+                  $$\frac{\text{Visual Ink Area}(A)}{\text{Visual Ink Area}(B)} = \frac{\text{Data Value}(A)}{\text{Data Value}(B)}$$
+                </div>
+                <p class="formula-desc">Visual extent must scale 1:1 with data value. Mandatory 0-baseline on linear bars.</p>
+              </div>
+
+              <!-- Card 2: LOESS Tricube -->
+              <div class="formula-card card-blue">
+                <div class="formula-header">
+                  <span class="formula-title">LOESS Tricube Weight</span>
+                  <span class="formula-badge badge-blue">Ch 14</span>
+                </div>
+                <div class="formula-math">
+                  $$W(u) = (1 - |u|^3)^3 \quad \text{for } |u| < 1$$
+                </div>
+                <p class="formula-desc">Local window weight where $u = |x_i - x_0|/\Delta(x_0)$. Smoothly reaches 0 at boundary.</p>
+              </div>
+
+              <!-- Card 3: Smoothing Splines -->
+              <div class="formula-card card-emerald">
+                <div class="formula-header">
+                  <span class="formula-title">Spline Penalized Objective</span>
+                  <span class="formula-badge badge-emerald">Ch 14</span>
+                </div>
+                <div class="formula-math">
+                  $$\min_{f} \left\{ \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int [f''(x)]^2 dx \right\}$$
+                </div>
+                <p class="formula-desc">Balances fit error against total curvature. $\lambda \to 0$: interpolator; $\lambda \to \infty$: OLS straight line.</p>
+              </div>
+
+              <!-- Card 4: Log-Linear -->
+              <div class="formula-card card-blue">
+                <div class="formula-header">
+                  <span class="formula-title">Log-Linear (Exponential)</span>
+                  <span class="formula-badge badge-blue">Ch 14</span>
+                </div>
+                <div class="formula-math">
+                  $$y = a \cdot e^{bx} \iff \ln(y) = \ln(a) + bx$$
+                </div>
+                <p class="formula-desc">Transform $y \to \ln(y)$. Straight line slope $b$ represents constant continuous fractional growth rate.</p>
+              </div>
+
+              <!-- Card 5: Log-Log -->
+              <div class="formula-card card-emerald">
+                <div class="formula-header">
+                  <span class="formula-title">Log-Log (Power Law)</span>
+                  <span class="formula-badge badge-emerald">Ch 14</span>
+                </div>
+                <div class="formula-math">
+                  $$y = a \cdot x^k \iff \ln(y) = \ln(a) + k \cdot \ln(x)$$
+                </div>
+                <p class="formula-desc">Transform both $x$ and $y$ to logarithms. Straight line slope $k$ is power-law scaling exponent.</p>
+              </div>
+
+              <!-- Card 6: STL Decomposition -->
+              <div class="formula-card card-violet">
+                <div class="formula-header">
+                  <span class="formula-title">STL Decomposition</span>
+                  <span class="formula-badge badge-violet">Ch 14</span>
+                </div>
+                <div class="formula-math">
+                  $$Y_t = T_t + S_t + R_t$$
+                </div>
+                <p class="formula-desc">Additive decomposition via LOESS: $\text{Observed Data} = \text{Trend} + \text{Seasonal} + \text{Remainder}$.</p>
+              </div>
+
+              <!-- Card 7: Cleveland 45 Degree Banking -->
+              <div class="formula-card card-amber">
+                <div class="formula-header">
+                  <span class="formula-title">Cleveland's 45° Banking Rule</span>
+                  <span class="formula-badge badge-amber">Ch 3</span>
+                </div>
+                <div class="formula-math">
+                  $$\text{Aspect Ratio } \alpha^* \implies \text{mean}(|\theta_i|) \approx 45^\circ$$
+                </div>
+                <p class="formula-desc">Choose aspect ratio so mean segment orientation is $\approx 45^\circ$ to maximize human slope resolution.</p>
+              </div>
+
+              <!-- Card 8: Choropleth Density Law -->
+              <div class="formula-card card-violet">
+                <div class="formula-header">
+                  <span class="formula-title">Choropleth Density Law</span>
+                  <span class="formula-badge badge-violet">Ch 15</span>
+                </div>
+                <div class="formula-math">
+                  $$\text{Density} = \frac{\text{Quantity}}{\text{Land Area}} \quad \left[\frac{\text{people}}{\text{km}^2}\right]$$
+                </div>
+                <p class="formula-desc">Never map raw counts to polygons; area bias distorts visual weighting. Always normalize by area.</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1665,6 +2002,10 @@
 
         const mc = document.getElementById("main-content");
         if (mc) mc.scrollTo({ top: 0, behavior: "smooth" });
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise();
+        }
 
         const sb = document.getElementById("sidebar");
         const bd = document.getElementById("sidebar-backdrop");
